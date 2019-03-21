@@ -78,14 +78,14 @@ A complete listing of the variables is given in Table \ref{variable}. They can r
       \textbf{Mean (1/2)} & Mean of patient measurements \textit{if} outcome is continuous.\\
       \textbf{Standard deviation (1/2)} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
     \end{tabular}
-  \caption{Dataset variable descriptions}
-  \label{variable}
+  \caption{Dataset variable descriptions  \label{variable}}
+
   \end{center}
 \end{table}
 
 The structure of a hypothetical review is shown in Figure \ref{review}. 
 % Comparisons of a review can consecutively be subdivided into different comparison types, different outcome measures and different subgroups. 
-The comparison type variable specifies what is compared, the outcome variable how it is compared, and the subgroup variable indicates if the comparison belongs to a certain subgroup. If desired, Figure \ref{review} can be compared to Table \ref{barbiturates} where an examplary review is listed.
+The comparison type variable specifies what is compared, the outcome variable how it is compared, and the subgroup variable indicates if the comparison belongs to a certain subgroup. If desired, Figure \ref{review} can be compared to Table \ref{barbiturates} where an exemplary review is listed.
 
 \begin{figure}
 \tikzstyle{every node}=[draw=black,thick,anchor=west]
@@ -105,7 +105,7 @@ The comparison type variable specifies what is compared, the outcome variable ho
     child [missing] {}		
     child { node {Comparison type 1  }};
 \end{tikzpicture}
-\caption{Structure of a hypothetical review with two different comparisons.}
+\caption{Structure of a hypothetical review with two different comparisons\label{review.structure}}
 \label{review.structure}
 \end{figure}
 
@@ -128,7 +128,7 @@ The comparison type variable specifies what is compared, the outcome variable ho
 tp1 <- arrange(filter(madata, file.nr == 21) %>% 
           select(Study = study.name, Comparison = comparison.name,Outcome = outcome.name), Study)
 tp1[tp1$Study == "P\303\251rez-B\303\241rcena 2008", 1] = "Perez-Barcena 2008"
-print(xtable(tp1, label = "barbiturates", caption = "Barbiturate and head injury review. In the columns, study names, comparison types and outcome measure of the comparisons are given."), include.rownames = F, size = "footnotesize")
+print(xtable(tp1, label = "barbiturates", caption = "Barbiturate and head injury review. In the columns, study names, comparison types and outcome measure of the comparisons are given"), include.rownames = F, size = "footnotesize")
 @
 
 % The research subject or outcome type can possibly already be well defined in the general review question. Conversely, research subject or comparison has to be further specified in outcome and subgroup categories. As may have been implied, the terminology does not rely to a hundred percent on strict functional definitions.
@@ -137,7 +137,7 @@ print(xtable(tp1, label = "barbiturates", caption = "Barbiturate and head injury
 It is important to not confuse comparisons with studies. A study can contribute multiple comparisons to a systematic review. Also, despite a comparison has variables concerning event counts and means, it can only have one of the two, either means (if the outcome measure is continuous) or event counts (for binary outcomes).
 
 \vspace{0mm}
-Having provided a rough overview over the dataset, now, some more specific information is provided. The dataset consists of \Sexpr{dim(madata)[1]} comparisons and has \Sexpr{dim(madata)[2]} variables that specify the comparisons. The abundancy of some missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative abundancy of missing values is very low except for study years.
+Having provided a rough overview over the dataset, now, some more specific information is provided. The dataset consists of \Sexpr{dim(madata)[1]} comparisons and has \Sexpr{dim(madata)[2]} variables that specify the comparisons. The abundance of some missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative abundance of missing values is very low except for study years.
 
 <<echo=FALSE>>=
 missing.mean <- madata %>% filter(!is.na(sd1) & sd1 > 0) %>% filter(!is.na(sd2) & sd2 > 0) %>% 
@@ -179,7 +179,7 @@ missing.year <- sum(is.na(madata$study.year)) + length(madata$study.year[madata$
                          "Missing effects" = missing.effect,
                          "Missing study year" = missing.year)
 
-print(xtable(missing.table, label = "missing", caption = "Number of missing variables and measurements in the dataset.", align = "lr"), include.colnames = F,
+print(xtable(missing.table, label = "missing", caption = "Number of missing variables and measurements in the dataset", align = "lr"), include.colnames = F,
       size = "footnotesize", digits = 0)
 @
 
@@ -191,11 +191,11 @@ More properties of the reviews, the studies and the comparisons in the dataset w
 madata %>% filter(study.year < 2019 & study.year > 1920) %>% ggplot(aes(x = study.year)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
   theme_bw() + xlab("Year") + ylab("Study frequency")
 @
-\caption{Frequencies of study publication years in the dataset. 44655 were excluded due to likely wrong indications.}
+\caption{Frequencies of study publication years in the dataset. 44655 were excluded due to likely wrong indications}
 \label{study.years}
 \end{figure}
 
-Figure \ref{study.outcomes} provides the frequencies of outcome types of the comparisons. Note that the abundancy of mean differences and standardized mean differences can also give an impression of the proportion of continuous outcome comparisons vs. binary outcome comparisons in the dataset.
+Figure \ref{study.outcomes} provides the frequencies of outcome types of the comparisons. Note that the abundance of mean differences and standardized mean differences can also give an impression of the proportion of continuous outcome comparisons vs. binary outcome comparisons in the dataset.
 
 \begin{figure}
 <<echo=FALSE>>=
@@ -204,7 +204,7 @@ yodata %>% group_by(outcome.measure) %>% count() %>% arrange(desc(n)) %>% ungrou
   geom_col(col = "gray15", fill = "dodgerblue") +
   theme_bw() + ylab("Comparison frequency") + xlab("Outcome measure")
 @
-\caption{Frequencies of some outcome measures for the effects in the dataset. 5593 measures with other outcome measures are excluded.}
+\caption{Frequencies of some outcome measures for the effects in the dataset. 5593 measures with other outcome measures are excluded}
 \label{study.outcomes}
 \end{figure}
 
@@ -220,7 +220,7 @@ madata %>% group_by(file.nr) %>% distinct(study.name) %>% count() %>%
   ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
   theme_bw() + xlab("Study number") + ylab("Reviews Frequency")
 @
-\caption{Empirical distribution of number of studies per review.}
+\caption{Empirical distribution of number of studies per review}
 \label{studies.per.review}
 \end{figure}
 
@@ -241,7 +241,7 @@ madata %>% group_by(file.nr) %>% count() %>%
 #   ungroup() %>% group_by(file.nr) %>% 
 #   count() %>% ungroup %>% summarise(mean = median(n))
 @
-\caption{Empirical distribution of number of comparisons per review.}
+\caption{Empirical distribution of number of comparisons per review}
 \label{comparisons.per.review}
 \end{figure}
 
@@ -267,7 +267,7 @@ median.diff.out <- madata %>% group_by(file.nr, comparison.nr) %>% distinct(outc
   ungroup() %>% group_by(file.nr) %>% 
   count() %>% ungroup %>% summarise(mean = median(n))
 @
-\caption{Empirical distribution of number of different research subjects per review.}
+\caption{Empirical distribution of number of different research subjects per review}
 \label{subjects.per.review}
 \end{figure}
 

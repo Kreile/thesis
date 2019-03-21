@@ -121,23 +121,26 @@ Howdy!
 
 \chapter{Introduction}
 
-In science, there is not only a need for accumulation of knowledge, but also for concentration. For the same reason as statistical analysis is performed on single experiments, it can also be used for results of multiple experiments or studies: to simplify and summarize the data at hand to a degree that is understandable for humans. The latter procedure goes usually under the term of meta-analysis. Meta analyses are used to summarize results and evidence over multiple studies when they are considered to be similar enough.
+In science, there is not only a need for accumulation of knowledge, but also for concentration. For the same reason as statistical analysis is performed on single experiments, it can also be used for results of multiple experiments or studies: to simplify and summarize the data at hand to a degree that is understandable. The latter procedure goes usually under the name of meta-analysis. Meta analyses are used to summarize results and evidence over multiple studies when they are considered to be similar enough.
 
 \vspace{0mm}
-In the face of the large amount of research that is done in some fields of empirical science, meta-analysis becomes increasingly important, for looking at all evidence would simply take very long for one person. Meta-analysises are often part of a systematic review, an effort of experts of a field to provide an overlook over the evidence. In the course of a review, all literature and data with respect to a scientific question is collected and a meta-analysis is operated at the end to summarize the findings.
+In the face of the large amount of research that is done in some fields of empirical science, meta-analysis becomes increasingly important, for looking at all evidence would simply take very long for one person. Meta-analyses are often part of a systematic review, an effort of experts of a field to provide an overlook over the evidence. In the course of a review, all literature and data with respect to a scientific question is collected and a meta-analysis is operated at the end to summarize the findings.
 
 \vspace{0mm}
 In the case of clinical science, systematic reviews and meta-analyses do not only benefit scientists but also patients and clinicians, for both are provided with up-to-date summaries of current evidence with respect to a certain treatment. Therefore, meta-analysis is at the core of what is called evidence-based medicine. 
 
 \vspace{0mm}
-However, there are problems that potentially limit the validity of meta-analysis; studies at hand can be biased or heterogeneity between study results can be large and the number of studies small. The importance and the issues of meta-analysis are the reasons why they have been chosen as one general topic of the masters thesis. One particular problem will furthermore be investigated in more detail: reporting bias and meta-analysis. Not only will the methods to deal with issues as reporting bias be discussed, but also will they be applied on a dataset of systematic reviews that can be used for meta-analysis. So at the end of the report, the reader will not only have an impression of the technical issues caused by reporting bias, but also of the abundance and extent of it in the dataset. Since the dataset is very large and of good quality, results might be again be generalizable to some extent to reporting bias in clinical science in general.
+However, there are problems that potentially limit the validity of meta-analysis; studies at hand can be biased or heterogeneity between study results can be large and the number of studies small. The importance and the issues of meta-analysis are the reasons why they have been chosen as one general topic of the masters thesis. One particular problem will furthermore be investigated in more detail: reporting bias and meta-analysis. Not only will the methods to deal with issues as reporting bias be discussed, but also will they be applied on a dataset of systematic reviews that can be used for meta-analysis. So at the end of the report, the reader will not only have an impression of the technical issues caused by reporting bias, but also of the abundance and extent of it in the dataset. Since the dataset is very large and of good quality, results might also be representative to some extent for reporting bias in clinical science.
 
 
 \subsection{Cochrane and the Cochrane Database of Systematic Reviews}
 The Cochrane Organization has specialized on systematic reviews in clinical science. It publishes and maintains a library with a large number of systematic reviews that are available in some countries to the public.
 
 \vspace{0mm}
-The data analyzed in this thesis stems completely from the Cochrane Library of systematic Reviews (cite). The reviews are arguably of good quality, since the authors are following elaborated guidelines, and there are control-mechanisms within the organisation that should prohibit conflicts of interests. This might further improve the validity and precision of findings and conclusions that have been made based on this data. 
+The data analyzed in this thesis stems completely from the Cochrane Library of systematic Reviews (cite). 
+
+\vspace{0mm}
+The reviews are arguably of good quality, since the authors are following elaborated guidelines, and there are control-mechanisms within the organisation that should prohibit conflicts of interests. This might further improve the validity and precision of findings and conclusions that have been made based on this data. 
 
 
 
@@ -166,7 +169,7 @@ Each study provides data of (multiple) comparisons of clinical interventions.
 In Table \ref{barbiturate.row}, two comparisons from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, the comparison is further specified by the variables in the columns. One row of the dataset is one comparison.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Mar 21 11:15:04 2019
+% Thu Mar 21 12:54:57 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -209,14 +212,14 @@ A complete listing of the variables is given in Table \ref{variable}. They can r
       \textbf{Mean (1/2)} & Mean of patient measurements \textit{if} outcome is continuous.\\
       \textbf{Standard deviation (1/2)} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
     \end{tabular}
-  \caption{Dataset variable descriptions}
-  \label{variable}
+  \caption{Dataset variable descriptions  \label{variable}}
+
   \end{center}
 \end{table}
 
 The structure of a hypothetical review is shown in Figure \ref{review}. 
 % Comparisons of a review can consecutively be subdivided into different comparison types, different outcome measures and different subgroups. 
-The comparison type variable specifies what is compared, the outcome variable how it is compared, and the subgroup variable indicates if the comparison belongs to a certain subgroup. If desired, Figure \ref{review} can be compared to Table \ref{barbiturates} where an examplary review is listed.
+The comparison type variable specifies what is compared, the outcome variable how it is compared, and the subgroup variable indicates if the comparison belongs to a certain subgroup. If desired, Figure \ref{review} can be compared to Table \ref{barbiturates} where an exemplary review is listed.
 
 \begin{figure}
 \tikzstyle{every node}=[draw=black,thick,anchor=west]
@@ -236,7 +239,7 @@ The comparison type variable specifies what is compared, the outcome variable ho
     child [missing] {}		
     child { node {Comparison type 1  }};
 \end{tikzpicture}
-\caption{Structure of a hypothetical review with two different comparisons.}
+\caption{Structure of a hypothetical review with two different comparisons\label{review.structure}}
 \label{review.structure}
 \end{figure}
 
@@ -256,7 +259,7 @@ The comparison type variable specifies what is compared, the outcome variable ho
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Mar 21 11:15:04 2019
+% Thu Mar 21 12:54:57 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -285,7 +288,7 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
    \hline
 \end{tabular}
 \endgroup
-\caption{Barbiturate and head injury review. In the columns, study names, comparison types and outcome measure of the comparisons are given.} 
+\caption{Barbiturate and head injury review. In the columns, study names, comparison types and outcome measure of the comparisons are given} 
 \label{barbiturates}
 \end{table}
 
@@ -296,12 +299,12 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
 It is important to not confuse comparisons with studies. A study can contribute multiple comparisons to a systematic review. Also, despite a comparison has variables concerning event counts and means, it can only have one of the two, either means (if the outcome measure is continuous) or event counts (for binary outcomes).
 
 \vspace{0mm}
-Having provided a rough overview over the dataset, now, some more specific information is provided. The dataset consists of 463820 comparisons and has 25 variables that specify the comparisons. The abundancy of some missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative abundancy of missing values is very low except for study years.
+Having provided a rough overview over the dataset, now, some more specific information is provided. The dataset consists of 463820 comparisons and has 25 variables that specify the comparisons. The abundance of some missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative abundance of missing values is very low except for study years.
 
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Mar 21 11:15:04 2019
+% Thu Mar 21 12:54:58 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -315,7 +318,7 @@ Missing mean values & 1287 \\
    \hline
 \end{tabular}
 \endgroup
-\caption{Number of missing variables and measurements in the dataset.} 
+\caption{Number of missing variables and measurements in the dataset} 
 \label{missing}
 \end{table}
 
@@ -334,11 +337,11 @@ More properties of the reviews, the studies and the comparisons in the dataset w
 
 
 \end{knitrout}
-\caption{Frequencies of study publication years in the dataset. 44655 were excluded due to likely wrong indications.}
+\caption{Frequencies of study publication years in the dataset. 44655 were excluded due to likely wrong indications}
 \label{study.years}
 \end{figure}
 
-Figure \ref{study.outcomes} provides the frequencies of outcome types of the comparisons. Note that the abundancy of mean differences and standardized mean differences can also give an impression of the proportion of continuous outcome comparisons vs. binary outcome comparisons in the dataset.
+Figure \ref{study.outcomes} provides the frequencies of outcome types of the comparisons. Note that the abundance of mean differences and standardized mean differences can also give an impression of the proportion of continuous outcome comparisons vs. binary outcome comparisons in the dataset.
 
 \begin{figure}
 \begin{knitrout}
@@ -351,7 +354,7 @@ Figure \ref{study.outcomes} provides the frequencies of outcome types of the com
 
 
 \end{knitrout}
-\caption{Frequencies of some outcome measures for the effects in the dataset. 5593 measures with other outcome measures are excluded.}
+\caption{Frequencies of some outcome measures for the effects in the dataset. 5593 measures with other outcome measures are excluded}
 \label{study.outcomes}
 \end{figure}
 
@@ -368,7 +371,7 @@ It is also possible to look at the properties of the reviews. One question could
 
 
 \end{knitrout}
-\caption{Empirical distribution of number of studies per review.}
+\caption{Empirical distribution of number of studies per review}
 \label{studies.per.review}
 \end{figure}
 
@@ -383,7 +386,7 @@ It is also possible to look at the properties of the reviews. One question could
 
 
 \end{knitrout}
-\caption{Empirical distribution of number of comparisons per review.}
+\caption{Empirical distribution of number of comparisons per review}
 \label{comparisons.per.review}
 \end{figure}
 
@@ -401,7 +404,7 @@ A question not to be mistaken with the previous would be how many comparison \te
 
 
 \end{knitrout}
-\caption{Empirical distribution of number of different research subjects per review.}
+\caption{Empirical distribution of number of different research subjects per review}
 \label{subjects.per.review}
 \end{figure}
 
@@ -415,7 +418,7 @@ In Table \ref{repr.groups}, two different similarity criteria have been used. On
 Table \ref{repr.groups} shows the cumulative number of \textit{groups} of comparisons with equal or more than $n$ comparisons. Practically, this means that this number of meta analyses can be performed with each having at least $n$ comparisons.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Mar 21 11:15:10 2019
+% Thu Mar 21 12:55:03 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
