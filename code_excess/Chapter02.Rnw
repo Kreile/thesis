@@ -1,0 +1,430 @@
+% LaTeX file for Chapter 02
+
+
+<<echo=FALSE>>=
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'thesis/code')
+source(file.path(PATH, 'prepare.R'))
+
+require(biostatUZH)
+require(tidyverse)
+require(meta)
+require(xtable)
+@
+
+<<echo=FALSE>>=
+library(knitr)
+opts_chunk$set(
+    fig.path='figure/ch02_fig',
+    self.contained=FALSE,
+    cache=TRUE
+)
+@
+
+<<echo=FALSE>>=
+library(knitr)
+opts_chunk$set(fig.path='figure/ch02_fig',
+               echo=TRUE, message=FALSE,
+               fig.width=8, fig.height=3,
+               out.width='\\textwidth-3cm',
+               message=FALSE, fig.align='center',
+               background="gray98", tidy=FALSE, #tidy.opts=list(width.cutoff=60),
+               cache=TRUE
+)
+options(width=74)
+@
+
+
+
+
+\chapter{The Cochrane Dataset} 
+
+\subsection{Structure and Content}
+The dataset consists of 5,006 reviews from the Cochrane Library. The sum of studies in the single reviews is 62,278 (some of them might being shared between reviews). In figure \ref{studies.per.review}, the empirical distribution of the number of distinct studies per review is depicted. It can be seen that while almost 400 reviews consist of one study only, there are more than 150 with equal or more than 30 distinct studies. 
+
+\begin{figure}
+<<echo=FALSE>>=
+madata %>% group_by(file.nr) %>% distinct(study.name) %>% count() %>%
+  filter(n < 50) %>%
+  full_join( madata %>% group_by(file.nr) %>% distinct(study.name) %>% count %>%
+               filter(n > 49) %>% mutate(n = 50)) %>%
+  group_by(n) %>% count() %>%
+  ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Study Number per Review") + xlab("Study number") + ylab("Number of reviews")
+@
+\caption{Empirical distribution of number of studies per review.}
+\label{studies.per.review}
+\end{figure}
+
+% (DOI: 10.1002/14651858.CD000033.pub2). 
+The research question of a review can often be further subdivided into multiple research subjects or comparisons. As an example, consider a review about barbiturate effect on head injuries: there are different drugs of the barbiturate class that can again be compared to different alternatives (as other drugs or placebo). Therefore, the studies in a review often have their own research subject. Again, figure \ref{subjects.per.review} provides an illustration of the distribution of the number of different research subjects or comparisons per review. 
+
+\begin{figure}
+<<echo=FALSE>>=
+madata %>% group_by(file.nr) %>% distinct(comparison.name) %>% count() %>%
+  filter(n < 15) %>%
+  full_join( madata %>% group_by(file.nr) %>% distinct(comparison.name) %>% count %>%
+               filter(n > 14) %>% mutate(n = 15)) %>%
+  group_by(n) %>% count() %>%
+  ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Research Subject Number per Review") + xlab("Research subject number") + ylab("Number of reviews")
+
+
+mean.diff.out <- madata %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
+  ungroup() %>% group_by(file.nr) %>% 
+  count() %>% ungroup %>% summarise(mean = mean(n))
+
+median.diff.out <- madata %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
+  ungroup() %>% group_by(file.nr) %>% 
+  count() %>% ungroup %>% summarise(mean = median(n))
+@
+\caption{Empirical distribution of number of different research subjects per review.}
+\label{subjects.per.review}
+\end{figure}
+
+Despite that studies within a review compare the same things/interventions, they could still be different with respect to their outcome. For example, in the case of the barbiturate and head injury review, different measurements of mortality (e.g. after 6 or 12 months) could be considered. Considering this, one might want to look at the distribution of number of different outcomes within a review (given that the research subject is the same). If one sums up the number of different outcomes given that they share the research subject, the empirical distribution of the sums per review can be seen in figure \ref{outcomes.per.review}. It is necessary to consider the research subject, because it can be that the outcome is the same (mortality after ..) but not the research subject (other barbiturate). One can see that the heterogeneity considering research subjects and outcomes between reviews is considerably large. Almost 500 reviews have more than 50 different study settings, i.e. different research subjects and outcome measures. The mean number of different outcome measures is \Sexpr{round(mean.diff.out,2)} and the median \Sexpr{median.diff.out}.
+
+\begin{figure}
+<<echo=FALSE>>=
+madata %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>%
+  ungroup() %>% group_by(file.nr) %>%
+  count() %>% filter(n < 50) %>%
+  full_join( madata %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% ungroup() %>% group_by(file.nr) %>%
+               count() %>% filter(n > 49) %>% mutate(n = 50)) %>%
+  group_by(n) %>% count() %>%
+  ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Outcome Number per Review") + xlab("Outcome number") + ylab("Number of reviews")
+
+mean.diff.subg <- madata %>% group_by(file.nr, comparison.nr, outcome.nr) %>% distinct(subgroup.name) %>% 
+  ungroup() %>% group_by(file.nr) %>% 
+  count() %>% ungroup() %>% summarise(mean = mean(n))
+  
+median.diff.subg <- madata %>% group_by(file.nr, comparison.nr, outcome.nr) %>% distinct(subgroup.name) %>% 
+  ungroup() %>% group_by(file.nr) %>% 
+  count() %>% ungroup() %>% summarise(median = median(n))
+
+@
+\caption{Empirical distribution of number of outcomes per subject per review.}
+\label{outcomes.per.review}
+\end{figure}
+
+Still it could be that studies with the same research subjects and the same outcome differ in important details. An example for such details could be the exact dosage of barbiturate or its application to a specific age group. Such further details specify subgroups in the dataset. Another important property of the dataset is how many subgroups are present in a review (given that they share research subject and outcome). This is shown in figure \ref{subgroups.per.review}. We can see that compared to figure \ref{outcomes.per.review}, we have to further adjust our idea of heterogeneity within reviews towards larger experimental design diversity within a review: most reviews bear quite a lot more than 20 experimental setups. The mean subgroup number is \Sexpr{round(mean.diff.subg,2)} and the median \Sexpr{median.diff.subg}.
+
+\begin{figure}
+<<echo=FALSE>>=
+madata %>% group_by(file.nr, comparison.nr, outcome.nr) %>% distinct(subgroup.name) %>% 
+  ungroup() %>% group_by(file.nr) %>% 
+  count() %>% filter(n < 100) %>%
+  full_join( madata %>% group_by(file.nr, comparison.nr, outcome.nr) %>% distinct(subgroup.name) %>% 
+               ungroup() %>% group_by(file.nr) %>% 
+               count() %>% filter(n > 99) %>% mutate(n = 100)) %>%
+  ggplot(aes(x = n)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Subgroup Number per Review") + xlab("Subgroup number") + ylab("Number of reviews")
+@
+\caption{Empirical distribution of the number of subgroups per review (given that they share subject and outcome).}
+\label{subgroups.per.review}
+\end{figure}
+
+To summarize what has been described up to now, the structure of a review as provided in the dataset is presented visually as in figure \ref{review.structure}.
+Experimental data of studies in a review can be subdivided into different research subjects, different outcomes and different subgroups.
+
+
+\begin{figure}
+\tikzstyle{every node}=[draw=black,thick,anchor=west]
+\tikzstyle{selected}=[draw=red,fill=red!30]
+\tikzstyle{optional}=[dashed,fill=gray!50]
+\begin{tikzpicture}
+[grow = right, anchor = west, 
+  growth parent anchor=east, % added code
+  parent anchor=east]
+  \node {Review} [edge from parent fork right]
+    child { node {Comparison 2}
+      child { node {Outcome 2}}
+      child { node {Outcome 1}
+        child { node {Subgroup 2}}
+        child { node {Subgroup 1}}}
+    }
+    child [missing] {}		
+    child { node {Comparison 1  }};
+\end{tikzpicture}
+\caption{Structure of a hypothetical review with two different comparisons.}
+\label{review.structure}
+\end{figure}
+
+The data that is given in different outcomes and different subgroups must not necessarily stem from different studies. It can be that the authors of the study did measure multiple outcomes or further divide their groups into subgroups for special analyses. To illustrate this, the previously mentioned barbiturate review is explained in detail for the matter to become more understandable. 
+
+\vspace{0mm}
+Lets consider the previously mentioned barbiturate and head injury review. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates''. The medical background is that one knew that barbiturates could cause relief in intra-cranial pressure, but also reduce cerebral blood flow. Because one effect is thought to be beneficial for persons with severe head injuries while the other isn't, the authors of the review wanted to find out if there is a net benefit of barbiturates.
+
+\vspace{0mm}
+The review comprises five studies in total. Three of them compared barbiturate to placebo, one compared barbiturate to Mannitol and one Pentobarbital to Thiopental, which would be the comparison/research subject to speak in the previously introduced notions. 
+
+\vspace{0mm}
+All the studies convey multiple information to the review. As an example, that could be death or death \textit{and} severe disability at follow up as an outcome. Again, the study can be further split up in different subgroups, here for example in a group with - and without haematoma. 
+
+\vspace{0mm}
+The complete listing of outcomes is in table \ref{barbiturates}. The table also gives an illustration of the variety of data that can be included in a review. We have for example continuous and binary outcome data, that again is divided into a variety of different things that have been measured. Often, additionally to the main study result, also adverse effects are for example included which are in this case separate outcomes and possibly subgroups.
+
+
+<<echo=FALSE, results='asis'>>=
+tp1 <- arrange(filter(madata, file.nr == 21) %>% 
+          select(Study = study.name, Comparison = comparison.name,Outcome = outcome.name), Study)
+tp1[tp1$Study == "P\303\251rez-B\303\241rcena 2008", 1] = "Perez-Barcena 2008"
+print(xtable(tp1, label = "barbiturates", caption = "Barbiturate and head injury review listing of studies, their research subjects and outcomes"), include.rownames = F, size = "footnotesize")
+@
+
+The research subject or outcome type can possibly already be well defined in the general review question. Conversely, research subject or comparison has to be further specified in outcome and subgroup categories. As may have been implied, the terminology does not rely to a hundred percent on strict functional definitions.
+
+% The categories that have been brung up und are used throughout the report do not necessarily represent precisely what their name implies. They are rather functional indicators of the similarity of the data, i.e. the experiment or data collection that resulted in the data. It might well be that a review uses the classifier ``research subject'' already to distinguish dosages, or conversely that a ``subgroup'' comes with a very important difference between data (not as the name would suggest). As an example, serious concerns about biasness of the results could have prompted the review authors to classify some data in a different subgroup.
+% 
+% \vspace{0mm}
+% However, the categories are reliable in general such that outcome really means most often the outcome of the study. The dataset covers a large variety of topics such as clinical research or prevention measures and corporal activity, and therefore, also the subdivision of topics and the data is heterogeneous to some extent.
+
+\vspace{0mm}
+After this rough description of the scope of the dataset, a more detailed and complete description has to be made. Speaking in very broad terms, the dataset is set up such that each observation is a comparison between two groups, which are most often interventions, which are further specified by additional variables. Their similarity with respect to experimental design compared to other studies in the review is specified by additional variables.  
+%Considering those variables, one can find conceptually meaningful (~ identical) comparisons, i.e. comparisons that are sufficiently homogeneous in experimental design and data collection. 
+
+\vspace{0mm}
+In technical terms, the dataset is rather large data frame with 463,820 rows and 25 columns. It is structured after the tidy format, meaning that every row is an ``observation'' (here: results from a study) and each column a variable, so some form of classification or property of the observation, as for example study name etc.
+In general, there are variables that describe properties of the review, i.e. are on the level of the review, and variables that describe properties of the comparisons and are therefore on the level of the study data. Both are listed and explained in table \ref{variables}.
+
+\begin{table}%[h!]
+  \begin{center}
+    \label{Variables}
+    \begin{tabular}{l l}
+      \textbf{Variable} & \textbf{Description}\\
+      \hline
+      \textbf{File name} & The name of the file from which the review data has been . \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
+      \textbf{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
+      \textbf{File index} & Internal index of the file in the Cochrane library.\\
+      \textbf{File version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
+      %\multicolumn{2}{c}{textbf{Study level variables}}\\ 
+      \hline
+      \textbf{Comparison} & Specification of the interventions compared in the study\\
+      \textbf{Outcome} & Specification by which outcome the interventions are compared\\
+      \textbf{Subgroup} & Potentially indication of affiliation to subgroups\\
+      \textbf{Study name} & Name of the study to which the comparison belongs\\
+      \textbf{Study publication year} & Year in which the study was published\\
+      \textbf{Outcome measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
+      \textbf{Effect} & Measure of the effect given in the quantity denoted by \\ &``outcome measure''.\\
+      \textbf{Events (1/2)} & The counts of patients with an outcome if\\ & measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
+      \textbf{Total (1/2)} & Number of patients in groups.\\
+      \textbf{Mean (1/2)} & Mean of patient measurements if outcome is continuous.\\
+      \textbf{Standard deviation (1/2)} & Standard deviation of mean.\\
+    \end{tabular}
+  \caption{Dataset variable descriptions}
+  \end{center}
+\end{table}
+
+
+One might be interested in the distribution of some of the mentioned variables in the dataset. For example, the variety of different outcome measures types could partly impose problems since they are not easily comparable. The eight most abundant outcome measures are given in figure \ref{study.outcomes}
+
+\begin{figure}
+<<echo=FALSE>>=
+yodata %>% group_by(outcome.measure) %>% count() %>% arrange(desc(n)) %>% ungroup() %>% filter(row_number() < 9) %>% 
+  ggplot(aes(x = outcome.measure, y = n)) +
+  geom_col(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Outcome measure frequencies") + xlab("Frequency") + ylab("Outcome measure")
+@
+\caption{Frequencies of some outcome measures for the effects in the dataset. 5593 measures with other outcome measures are excluded.}
+\label{study.outcomes}
+\end{figure}
+
+Since standards in trial design and research in general are also not independent of time, also the distribution of study publication years of the studies are given in figure \ref{study.years}. 
+
+\begin{figure}
+<<echo=FALSE>>=
+madata %>% filter(study.year < 2019 & study.year > 1920) %>% ggplot(aes(x = study.year)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Study publication year frequency") + xlab("Year") + ylab("Frequency")
+@
+\caption{Frequencies of study publication years in the dataset. 44655 were excluded due to likely wrong indications.}
+\label{study.years}
+\end{figure}
+
+The frequency of missing or erroneous variables is also important. No missing values can be reported for variables as research subject, outcome and subgroup name. Table \ref{missing.table} presents five fractions of missing or erroneous variables in the dataset. Note that an event count equal to zero is per se not erroneous, but can cause computation issues if not taken into account, therefore it is also included. The difference between zero and missing event counts specified in the table refer to the situations where only one event count is zero versus both event counts being zero (``missing'').
+
+<<echo=FALSE>>=
+missing.mean <- madata %>% filter(!is.na(sd1) & sd1 > 0) %>% filter(!is.na(sd2) & sd2 > 0) %>% 
+  summarise(total = length(sd1), na  = sum(is.na(mean1) | is.na(mean1))) %>% mutate(f = na/total) %>% select(f)
+
+missing.sd <- madata %>% filter(!is.na(mean1) & !is.na(mean2)) %>% filter(mean1 != 0 & mean2 != 0) %>%
+  summarise(total = length(mean1), na.sd  = sum(is.na(sd1) | is.na(sd1)), null.sd = length(sd1[sd1 <= 0 | sd2 <= 0])) %>% 
+  mutate(f = (na.sd + null.sd)/total) %>% select(f)
+
+missing.ssize <- madata %>% summarize(total = length(total1), null.ss = length(total1[total1 <= 0 | total2 <= 0])) %>% 
+  mutate(f = null.ss / total) %>% select(f)
+
+missing.events <- madata %>% filter(is.na(mean1) | mean1 == 0) %>% filter(is.na(mean2) | mean2 == 0) %>% 
+  filter(is.na(sd1) | sd1 <= 0) %>% filter(is.na(sd2) | sd2 <= 0) %>% 
+  summarise(null.ev = length(total1[events1 <= 0 & events2 <= 0]), total = length(events1)) %>% mutate(f = null.ev/total) %>% select(f)
+
+null.events <- madata %>% filter(is.na(mean1) | mean1 == 0) %>% filter(is.na(mean2) | mean2 == 0) %>% 
+  filter(is.na(sd1) | sd1 <= 0) %>% filter(is.na(sd2) | sd2 <= 0) %>% 
+  summarise(null.ev = length(total1[events1 <= 0 | events2 <= 0]), total = length(events1)) %>% mutate(f = null.ev/total) %>% select(f)
+
+missing.table <- rbind("missing mean value fraction (among all data with standard devitations)" = missing.mean,
+                       "missing standard deviations (among all data with means)" = missing.sd,
+                       "missing sample size" = missing.ssize,
+                       "missing events (among all data with no mean and standard deviation)" = missing.events,
+                       "missing or zero events (among all data with no mean and standard deviation)" = null.events)
+@
+
+<<echo=FALSE, results='asis'>>=
+print(xtable(missing.table, label = "missing.table", caption = "Fraction of some erronous and missing variables", align = "lr"), include.colnames = F, size = "small")
+@
+
+One particular question that remains is how many identical comparisons, i.e. comparisons with same outcome (and potentially same subgroup) there are. This is shown in figure \ref{repr.trials}. The identical comparisons can just be called reproduction trials.
+
+% \begin{figure}
+% <<echo=FALSE>>=
+% yodata %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+%   filter(n < 20) %>%
+%   full_join( yodata %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+%                filter(n > 19) %>% ungroup %>% summarise(n = 20, nn = sum(nn))) %>%
+%   ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
+%   theme_bw() + labs(title = "Number of groups with number of reproduction trials = n (ignoring subgroups)") + xlab("n") + ylab("Number of groups")
+% @
+% \caption{Number of groups with n identical experiments or reproduction trials. Groups with more than 20 identical experiments are summed up in n = 20.
+% Subgroups have not been taken into account for assessment of trial homogeneity.}
+% \label{repr.trials}
+% \end{figure}
+
+\begin{figure}
+<<echo=FALSE>>=
+yodata %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
+  filter(n < 20) %>%
+  full_join( yodata %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+               filter(n > 19) %>% ungroup %>% summarise(n = 20, nn = sum(nn))) %>%
+  ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Number of groups with number of reproduction trials = n") + xlab("n") + ylab("Number of groups")
+@
+\caption{Number of groups with n identical experiments or reproduction trials. Groups with more than 20 identical experiments are summed up in n = 20.
+Subgroups have been taken into account for assessment of trial homogeneity.}
+\label{sum.repr.trials}
+\end{figure}
+
+Since the availability of a certain number of reproduction trial groups might be of special interest (as some sort of sample size for statistical tests with the groups), the cumulative number of groups with number of reproduction trials larger or equal than $n$ is listed in table \ref{repr.groups}.
+
+<<echo=FALSE, results='asis'>>=
+cum.repr.trials <- yodata %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
+  filter(n < 15) %>%
+  full_join( yodata %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+               filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>% 
+  ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
+
+colnames(cum.repr.trials)  <- c("n", "", "Cumulative sum")
+
+print(xtable(cum.repr.trials[,-2], label = "repr.groups", caption = "Cumulative number of groups with number of reproduction trials >= n", align = "llr", digits = 0), include.rownames = F, size = "footnotesize")
+@
+
+
+% The same data but with the cumulative sum of groups for $n$ being larger or equal the number of reproduction trials can also be of interest, therefore this is shown in figure \ref{cumsum.repr.trials}. 
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% yodata %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
+%   filter(n < 20) %>%
+%   full_join( yodata %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+%                filter(n > 19) %>% ungroup %>% summarise(n = 20, nn = sum(nn))) %>% 
+%   ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% 
+%   ggplot(aes(x = n, y = csum)) + geom_point(col = "gray15", fill = "dodgerblue") +
+%   theme_bw() + labs(title = "Number of groups with number of reproduction trials >= n") + xlab("n") + ylab("Number of groups")
+% @
+
+
+
+% \subsection{General Properties according to the Cochrane Guidelines}
+% 
+% It has already been mentioned that Cochrane tries to ensure quality of its review by the application of protocols and guidelines. Those protocols are open to the public. From those guidelines, it is tried to further infer properties of the dataset. The information is all taken from version 5.1.0 of the Handbook for Systematic Reviews of Interventions \Citep{cochrane.handbook}.
+% 
+% \vspace{0mm}
+% The handbook provides not strict rules, but guidelines to the review authors. However, there is a basic principle that all groups should follow: the scientific question of the review, the objectives and the inclusion criteria for studies have to be pre-specified. A review protocoll has therefore to be published in advance. This is important because it supposedly prevents the authors from going back and forth between data and conclusions when for example the conclusions do not match the expectations, and makes therefore the results more reliable. 
+% 
+% \vspace{0mm}
+% Also it imposes a code of conduct to avoid potential financial conflicts of interest. Funding of the reviews as well as of the studies included is made public and there are steering groups that are responsible for tracking down possible conflicts of interests.
+% 
+% \vspace{0mm}
+
+
+
+
+
+
+% So in terms of outcome, there are 10 different outcomes within the review. For example, mortality after different time spans and intracranial pressure after treatment are considered, but also mean body temperature (after treatment). One study contritubes with 5 different outcomes to the study. 
+% 
+% \vspace{0mm}
+% In general, no subgroups are present within the studies or outcomes, with one exception. The study that compares Barbiturates with Mannitol is divided into two subgroups with patients with and without haematoma.   
+% 
+% \vspace{0mm}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% Maybe it is the methods section. Here however, we give a couple hints.
+% Note that you can wisely use \rr{preamble}-chunks. Minimal, is likely:
+% 
+% \bigskip
+% 
+% \hrule
+% <<echo=TRUE>>=
+% library(knitr)
+% opts_chunk$set(
+%     fig.path='figure/ch02_fig',
+%     self.contained=FALSE,
+%     cache=TRUE
+% )
+% @
+% \hrule
+% 
+% \bigskip
+% 
+% Defining figure options is very helpful:
+% 
+% 
+% \bigskip
+% 
+% 
+% \hrule
+% <<echo=TRUE>>=
+% library(knitr)
+% opts_chunk$set(fig.path='figure/ch02_fig',
+%                echo=TRUE, message=FALSE,
+%                fig.width=8, fig.height=2.5,
+%                out.width='\\textwidth-3cm',
+%                message=FALSE, fig.align='center',
+%                background="gray98", tidy=FALSE, #tidy.opts=list(width.cutoff=60),
+%                cache=TRUE
+% )
+% options(width=74)
+% @
+% \hrule
+% 
+% \bigskip
+% 
+% Notice how in Figure~\ref{f02:1} everything is properly scaled.
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% par(mai=c(.8,.8,.1,.1))
+% set.seed(12)
+% plot( runif(30), type='l')
+% @
+%   \caption{Test figure to illustrate figure options used by knitr.}
+%   \label{f02:1}
+% \end{figure}

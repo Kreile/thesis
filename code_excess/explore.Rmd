@@ -1,0 +1,310 @@
+---
+title: "Cochrane Dataset"
+output: html_notebook
+---
+
+```{r}
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'thesis/cochrane')
+```
+
+# Read data
+```{r}
+source(file.path(PATH, 'prepare.R'))
+```
+
+```{r}
+# load(file = "cochrane.RData")
+
+require(tidyverse)
+require(meta)
+```
+
+###Example Reviews
+Anti-D administration in pregnancy for preventing Rhesus alloimmunisation: 2 Trials, 3 Identical outcome measures, but with different subgroups.
+
+```{r}
+# arrange(filter(madata, file.nr==10) %>% select(comparison.name, outcome.name, outcome.measure, subgroup.name, study.name), study.name)
+```
+
+Comparison of 
+
+```{r}
+# arrange(filter(madata, file.nr==21) %>% select(comparison.name, outcome.name, outcome.measure, subgroup.name, study.name), study.name)
+```
+
+###Frequencies of Trials in the Reviews
+
+Frequencies of trials analyzing the same subject in a review (with the same outcome measure):
+
+```{r}
+madata %>% group_by(file.nr, outcome.nr, comparison.nr) %>% count %>% group_by(n) %>% count %>% 
+  filter(n < 15) %>% 
+  full_join( madata %>% group_by(file.nr, outcome.nr, comparison.nr) %>% count %>% group_by(n) %>% count %>% 
+    filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>%  
+  ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Trials Comparing the Same Subject per Review") + ylab("Trials")
+```
+
+Frequencies of trials analyzing the same subject with the same subgroups in a review (and the same outcome measure):
+
+```{r}
+madata %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>% filter(n < 15) %>% 
+  full_join( madata %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>% 
+               filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>%  
+  ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Trials Comparing the Same Subject in the Same Subgroups per Review") +  ylab ("Trials")
+```
+
+###Frequencies of Different Outcome Subjects per Review
+
+```{r}
+# madata %>% group_by(file.nr) %>% summarise(diff.out = length(unique(outcome.name))) %>% count(diff.out) %>%  
+#   ggplot(aes(x = diff.out, y = n)) + geom_col(col = "gray15", fill = "dodgerblue") +
+#   theme_bw() + labs(title = "Different subjects per Review") + xlab("study subjects per review")
+```
+
+###Analysis Study Year Frequencies
+
+```{r}
+madata %>% filter(study.year > 1900 & study.year < 2019) %>% ggplot(aes(x = study.year)) + geom_histogram(col = "gray15", fill = "dodgerblue") + theme_bw() + labs(title = "Study years of analyses")
+```
+
+
+###Effect sizes over time
+
+Odds ratios with initial finding > 1:
+
+```{r}
+madata %>% filter(outcome.measure == "Odds Ratio") %>% filter(!is.na(study.year)) %>% 
+  group_by(file.nr, comparison.nr, subgroup.nr) %>% 
+  mutate(counts = n()) %>% filter(counts > 1) %>% 
+  mutate(first.effect = effect[which.min(study.year)]) %>% 
+  filter(first.effect > 1) %>% 
+  mutate(scaled.effect = scale(effect), scaled.time = scale(study.year)) %>% 
+  ggplot(aes(x = scaled.time, y = scaled.effect)) + geom_point(size = .5, alpha = 0.2)  + 
+  geom_smooth(method = lm) + theme_bw()  + 
+  labs(title = "Scaled and centered OR over time", subtitle = "Initial finding > 1") + ylab("Odds Ratio")  + ylab("Time")
+```
+
+Odds ratios with initial finding < 1:
+
+```{r}
+madata %>% filter(outcome.measure == "Odds Ratio") %>% filter(!is.na(study.year)) %>% 
+  group_by(file.nr, comparison.nr, subgroup.nr) %>% 
+  mutate(counts = n()) %>% filter(counts > 1) %>% 
+  mutate(first.effect = effect[which.min(study.year)]) %>% 
+  filter(first.effect < 1) %>% 
+  mutate(scaled.effect = scale(effect), scaled.time = scale(study.year)) %>% 
+  ggplot(aes(x = scaled.time, y = scaled.effect)) + geom_point(size = .35, alpha = 0.1)  + 
+  geom_smooth(method = lm) + theme_bw() + 
+  labs(title = "Scaled and centered OR over time", subtitle = "Initial finding < 1") + ylab("Odds Ratio")  + ylab("Time")
+```
+
+Risk ratios with initial finding > 1:
+
+```{r}
+#Scaled RR over time with initial RR > 1
+madata %>% filter(outcome.measure == "Risk Ratio") %>% filter(!is.na(study.year)) %>% 
+  group_by(file.nr, comparison.nr, subgroup.nr) %>% 
+  mutate(counts = n()) %>% filter(counts > 1) %>% 
+  mutate(first.effect = effect[which.min(study.year)]) %>% 
+  filter(first.effect > 1) %>% 
+  mutate(scaled.effect = scale(effect), scaled.time = scale(study.year)) %>% 
+  ggplot(aes(x = scaled.time, y = scaled.effect)) + geom_point(size = .25, alpha = 0.025)  + 
+  geom_smooth(method = lm) + theme_bw() + 
+  labs(title = "Scaled and centered RR over time", subtitle = "Initial finding > 1") + ylab("Risk Ratio")  + ylab("Time") + xlim(c(-4,4)) + ylim(c(-5,7))
+```
+
+Risk ratios with initial finding < 1:
+
+```{r}
+#Scaled RR over time with initial RR > 1
+madata %>% filter(outcome.measure == "Risk Ratio") %>% filter(!is.na(study.year)) %>% 
+  group_by(file.nr, comparison.nr, subgroup.nr) %>% 
+  mutate(counts = n()) %>% filter(counts > 1) %>% 
+  mutate(first.effect = effect[which.min(study.year)]) %>% 
+  filter(first.effect < 1) %>% 
+  mutate(scaled.effect = scale(effect), scaled.time = scale(study.year)) %>% 
+  ggplot(aes(x = scaled.time, y = scaled.effect)) + geom_point(size = .2, alpha = 0.025)  + 
+  geom_smooth(method = lm) + theme_bw() + 
+  labs(title = "Scaled and centered RR over time", subtitle = "Initial finding < 1") + ylab("Risk Ratio")  + ylab("Time") + xlim(c(-5,5)) + ylim(c(-5, 10))
+```
+
+Statistical test to see if incorporation of a time - intial RR estimate improves a linear model for RR and time:
+
+```{r}
+regression.temp <- madata %>% filter(outcome.measure == "Risk Ratio") %>% filter(!is.na(study.year)) %>% 
+  group_by(file.nr, comparison.nr, subgroup.nr) %>% 
+  mutate(counts = n()) %>% filter(counts > 1) %>% 
+  mutate(first.effect = effect[which.min(study.year)]) %>% 
+  mutate(effect.sign = ifelse(first.effect > 1, "pos", "neg"), scaled.effect = scale(effect), scaled.time = scale(study.year))
+regression.temp$effect.sign <- as.factor(regression.temp$effect.sign)
+
+m1 <- lm(scaled.effect ~ scaled.time, data = regression.temp)
+m2 <- lm(scaled.effect ~ scaled.time + effect.sign, data = regression.temp)
+m3 <- lm(scaled.effect ~ scaled.time * effect.sign, data = regression.temp)
+anova(m1, m2, m3)
+```
+
+###Cochrane Heterogeneity test
+
+By hand computation of Cochrane's Q is not equal to Q computed with metabin package, as can be seen when comparing the histogramm. The shape of the histogramms suggest that the by hand computed one ist wrong (large right tail). The formula used for computing is:
+
+\begin{align} 
+Q = sum_{i=1}^{n} w_{i} (\hat{\theta} - \theta_{i}) 
+\end{align}
+
+with $n$ = number of trials, $w_{i}$ the inverse of the variance of the log effect estimate, $\theta_{i}$ the log effect estimate and $\hat{\theta}$ the weigthed average of the log effect estimates. The variance of the log odds ratio was computed as $(1/a + 1/b + 1/c + 1/d)$, $a,b,c,d$ being the entries in a two-by-two table.
+
+Cochrane heterogeneity test for Odds Ratios (``manual''):
+
+```{r}
+madata %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% 
+  filter(outcome.measure == "Odds Ratio") %>% 
+  mutate(counts = n()) %>% filter(counts > 1) %>%
+  mutate(log.OR = log(effect), 
+         se.log.OR = sqrt( (1/events1) + (1/(total1 - events1)) + (1/events2) + (1/(total2 - events2)))) %>% 
+  filter(!is.na(se.log.OR) & se.log.OR != Inf) %>% mutate(summary.effect = sum( log.OR/se.log.OR^2 ) / sum( 1/se.log.OR^2 )) %>% 
+  summarise(Q = sum(((log.OR - summary.effect)^2)/se.log.OR^2), n = n(), OR =  exp(min(summary.effect))) %>% 
+  mutate(p.value = 1 - pchisq(Q, df = n - 1)) %>% 
+  ggplot(aes(x = p.value)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Cochrane Heterogeneity Test P-values of ORs")
+```
+
+Cochrane heterogeneity test for Odds Ratios (with meta::metabin()):
+
+```{r}
+madata %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% 
+  filter(outcome.measure == "Odds Ratio") %>% 
+  mutate(counts = n()) %>% filter(counts > 1) %>%
+  filter(events1 > 0 & events2 > 0) %>% 
+  summarise(
+    Q = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, method = "Inverse", sm = "OR")$Q,
+    p.value = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, 
+                      method = "Inverse", sm =  "OR")$pval.Q) %>% 
+  ggplot(aes(x = p.value)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Cochrane Heterogeneity Test P-values of ORs")
+```
+
+For comparison, the single Q's are shown computed by the two methods:
+
+```{r}
+file.number.to.compare <- 23
+ds <- madata %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% filter(file.nr == file.number.to.compare) %>% 
+  filter(outcome.measure == "Odds Ratio") %>% filter(events1 > 0 & events2 > 0) %>% 
+  mutate(counts = n()) %>% filter(counts > 1) %>%
+  summarise(
+    Q = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, method = "Inverse", sm = "OR")$Q,
+    p.value = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, 
+                      method = "Inverse", sm =  "OR")$pval.Q)
+
+ds2 <- madata %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% filter(file.nr == file.number.to.compare) %>% 
+  filter(outcome.measure == "Odds Ratio") %>% filter(events1 > 0 & events2 > 0) %>%
+  mutate(counts = n()) %>% filter(counts > 1) %>%
+  mutate(log.OR = log(effect), 
+         se.log.OR = sqrt( (1/events1) + (1/(total1 - events1)) + (1/events2) + (1/(total2 - events2)))) %>% 
+  filter(!is.na(se.log.OR)) %>% mutate(summary.effect = sum( log.OR/se.log.OR^2 ) / sum( 1/se.log.OR^2 )) %>% 
+  summarise(Q = sum(((log.OR - summary.effect)^2)/se.log.OR^2), n = n(), OR =  exp(min(summary.effect))) %>% 
+  mutate(p.value = 1 - pchisq(Q, df = n - 1))
+
+identical(ds$Q, ds2$Q)
+print(data_frame(metabin = ds$Q, manual = ds2$Q, ds$p.value, ds2$p.value), n = 11)
+```
+
+One example where the Qs were different:
+
+```{r}
+madata %>% filter(file.nr == 23, outcome.nr == 3, comparison.nr == 1, subgroup.nr == 3) %>% mutate(log.OR = log(effect), 
+         se.log.OR = sqrt( (1/events1) + (1/(total1 - events1)) + (1/events2) + (1/(total2 - events2)))) %>% 
+  filter(!is.na(se.log.OR) ) %>% mutate(summary.effect = sum( log.OR/se.log.OR^2 ) / sum( 1/se.log.OR^2 )) %>% 
+  select(effect, events1, events2, total1, total2, log.OR, se.log.OR, summary.effect)
+```
+
+
+
+```{r}
+
+madata %>% filter(file.nr == 23, outcome.nr == 3, comparison.nr == 1, subgroup.nr == 3) %>%
+mutate(log.OR = log(effect), 
+         se.log.OR = sqrt( (1/events1) + (1/(total1 - events1)) + (1/events2) + (1/(total2 - events2)))) %>% 
+  filter(!is.na(se.log.OR)) %>% mutate(summary.effect = sum( log.OR/se.log.OR^2 ) / sum( 1/se.log.OR^2 )) %>% 
+  summarise(Q = sum(((log.OR - summary.effect)^2)/se.log.OR^2), n = n())
+```
+
+
+Cochrane heterogeneity test for Risk Ratios:
+```{r}
+# madata %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% 
+#   filter(outcome.measure == "Risk Ratio") %>% 
+#   mutate(counts = n()) %>% filter(counts > 1) %>%
+#   mutate(log.RR = log(effect), 
+#          se.log.RR = sqrt( (total1 - events1)/(events1*total1)) + (total2 - events2)/(events2*total2)) %>% 
+#   filter(!is.na(se.log.RR)) %>% mutate(summary.effect = sum( log.RR/se.log.RR^2 ) / sum( 1/se.log.RR^2 )) %>% 
+#   summarise(Q = sum(((log.RR - summary.effect)^2)/se.log.RR^2), n = n(), RR =  exp(min(summary.effect))) %>% 
+#   mutate(p.value = 1 - pchisq(Q, df = n - 1)) %>% 
+#   ggplot(aes(x = p.value)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+#   theme_bw() + labs(title = "Cochrane Heterogeneity Test P-values of RRs")
+```
+
+
+
+##Transformation to fishers z-scaled correlation
+
+Mean differences and binary outcomes can be compared by transformation to standardized mean difference to correlation and finally to fishers z-scaled correlation.
+
+```{r}
+#Transform Binary outcomes to odds ratios -> standardized mean difference -> correlation -> fisher scala correlation
+madata <- madata %>% 
+  filter(!is.na(outcome.measure)) %>% 
+  mutate(odds.ratio = (events1/(total1 - events1)) / (events2/(total2 - events2))) %>% 
+  mutate(std.mean.d = log(odds.ratio) * (sqrt(3)/pi)) %>% 
+  mutate(correlation = std.mean.d/sqrt((std.mean.d^2) + ((total1 + total2)^2)/(total2*total1))) %>% 
+  mutate(fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), variance = 1/(total1 + total2 - 3))
+
+
+#Transform mean difference to standardized mean difference -> correlation -> fisher scala correlation
+madata[madata$outcome.measure == "Mean Difference", ] <- madata %>% filter(outcome.measure == "Mean Difference") %>% 
+  mutate(std.mean.d = effect/se) %>% 
+  mutate(correlation = std.mean.d/sqrt(std.mean.d^2 + ((total1 + total2)^2)/(total2*total1))) %>% 
+  mutate(fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), variance = 1/(total1 + total2 - 3))
+
+madata[madata$outcome.measure == "Std. Mean Difference", ] <- madata %>% filter(outcome.measure == "Std. Mean Difference") %>% 
+  mutate(std.mean.d = effect) %>% 
+  mutate(correlation = std.mean.d/sqrt(std.mean.d^2 + ((total1 + total2)^2)/(total2*total1))) %>% 
+  mutate(fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), variance = 1/(total1 + total2 - 3))
+
+madata[madata$outcome.measure == "Mean difference", ] <- madata %>% filter(outcome.measure == "Mean difference") %>% 
+  mutate(std.mean.d = effect) %>% 
+  mutate(correlation = std.mean.d/sqrt(std.mean.d^2 + ((total1 + total2)^2)/(total2*total1))) %>% 
+  mutate(fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), variance = 1/(total1 + total2 - 3))
+
+madata[madata$outcome.measure == "mean difference", ] <- madata %>% filter(outcome.measure == "mean difference") %>% 
+  mutate(std.mean.d = effect) %>% 
+  mutate(correlation = std.mean.d/sqrt(std.mean.d^2 + ((total1 + total2)^2)/(total2*total1))) %>% 
+  mutate(fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), variance = 1/(total1 + total2 - 3))
+```
+
+
+
+```{r}
+madata %>% filter(!is.na(fishersz)) %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
+  ungroup %>% arrange(desc(n)) %>% mutate(trials = cumsum(n * nn)) %>% 
+  filter(n < 50) %>% 
+  full_join( madata %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>% 
+               filter(n > 49) %>% ungroup %>% summarise(n = 50, nn = sum(nn))) %>%  
+  ggplot(aes(x = n, y = trials)) + geom_point(col = "gray15") + 
+  theme_bw() + labs(title = "Total Number of Trials with Number of Replicates >= n") + ylab("Number of trials") + xlab("n, number of replicates")
+```
+
+```{r}
+madata %>% filter(!is.na(fishersz)) %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
+  ungroup %>% arrange(desc(n)) %>% mutate(trials = cumsum(nn)) %>% 
+  filter(n < 50) %>% 
+  full_join( madata %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>% 
+               filter(n > 49) %>% ungroup %>% summarise(n = 50, nn = sum(nn))) %>%  
+  ggplot(aes(x = n, y = trials)) + geom_point(col = "gray15") + 
+  theme_bw() + labs(title = "Total Number of Studies with Number of Replicate (Trials) >= n") + ylab("Number of Studies") + xlab("n, number of replicates")
+```
+
+
