@@ -1,0 +1,16 @@
+% LaTeX file for Chapter 01
+<<'preambleA1',include=FALSE>>=
+library(knitr)
+opts_chunk$set(
+    fig.path='figure/cha1_fig', 
+    self.contained=FALSE,
+    cache=TRUE
+)
+
+@
+
+
+\chapter{Appendix}
+
+Maybe some R code here, probably a \rr{sessionInfo()}
+

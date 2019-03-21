@@ -1,0 +1,185 @@
+% LaTeX file for Chapter 03
+<<'preamble03',include=FALSE>>=
+library(knitr)
+opts_chunk$set(
+    fig.path='figure/ch03_fig', 
+    self.contained=FALSE,
+    cache=FALSE
+) 
+@
+
+<<echo=FALSE>>=
+library(knitr)
+opts_chunk$set(
+    fig.path='figure/ch02_fig',
+    self.contained=FALSE,
+    cache=TRUE
+)
+@
+
+<<echo=FALSE>>=
+library(knitr)
+opts_chunk$set(fig.path='figure/ch02_fig',
+               echo=TRUE, message=FALSE,
+               fig.width=8, fig.height=3,
+               out.width='\\textwidth-3cm',
+               message=FALSE, fig.align='center',
+               background="gray98", tidy=FALSE, #tidy.opts=list(width.cutoff=60),
+               cache=TRUE
+)
+options(width=74)
+@
+
+<<echo=FALSE>>=
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'thesis/code')
+source(file.path(PATH, 'prepare.R'))
+
+require(biostatUZH)
+require(tidyverse)
+require(meta)
+require(xtable)
+@
+
+
+\chapter{Results}
+
+One crucial assumption in meta analysis is that the availability and publication of studies does not depend on their effect. This is termed reporting bias in the scientific world. If reporting bias is present, the classical approaches to merge single study results in to an overall intervention effect may fail because the underlying studies are biased. There are tests that can be applied to find out if reporting bias is present in the meta analysis.
+
+\vspace{0mm}
+For continuous outcomes, three tests are available: Eggers (based on linear regression), Thompson and Sharp (weighted linear regression) and Begg and Mazumdar (rank based) test. The following three figures show the distribution of p-values of the corresponding tests. Note that only meta analyses with more than 10 comparisons have been included. 
+
+\vspace{0mm}
+Since each histogram of p-values has 20 bins, the content of the bin with the smallest p-values is equal to the number of meta-analyses whose reporting bias test reports a p-value < 0.05. The fraction of those analyses in which we would reject the null-hypothesis based on the 5 \% threshold can therefore be assessed by eye, and would be for example for Eggers test somewhat less than one third of all analyses. 
+
+\begin{figure}
+<<echo=FALSE>>=
+yodata %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
+  filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
+  filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
+  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  mutate(n = n()) %>% filter(n > 9) %>% 
+  summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+                            method = "linreg")$p.val) %>% 
+  ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+  theme_bw() + labs(title = "Eggers Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+@
+\caption{Histogram of p-values for Eggers reporting bias test (linear regression based) for continuous outcome meta analysis.}
+\label{egger.cont}
+\end{figure}
+
+
+\begin{figure}
+<<echo=FALSE>>=
+yodata %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
+  filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
+  filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
+  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  mutate(n = n()) %>% filter(n > 9) %>% 
+  summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+                            method = "mm")$p.val) %>% 
+  ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+  theme_bw() + labs(title = "Thomson Sharp Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+@
+\caption{Histogram of p-values for Thompsom and Sharp reporting bias test (weighted linear regression based) for continuous outcome meta analysis.}
+\label{thomson.cont}
+\end{figure}
+
+\begin{figure}
+<<echo=FALSE>>=
+yodata %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
+  filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
+  filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
+  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  mutate(n = n()) %>% filter(n > 9) %>% 
+  summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+                            method = "rank")$p.val) %>% 
+  ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+  theme_bw() + labs(title = "Begg and Mazumdar Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+@
+\caption{Histogram of p-values for Begg and Mazumdar reporting bias test (rank based) for continuous outcome meta analysis.}
+\label{begg.cont}
+\end{figure}
+
+
+For binary outcomes, Peters and Harbords reporting bias test have been chosen. Also here, only meta-analyses with more than 10 comparisons are included.
+
+\begin{figure}
+<<echo=FALSE>>=
+yodata %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
+  filter(events1 > 0 | events2 > 0) %>% 
+  filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
+  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  mutate(n = n()) %>% filter(n > 9) %>% 
+  summarize(pval = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "peters")$p.val) %>% 
+  ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+  theme_bw() + labs(title = "Peters Reporting Bias Test P-values for Binary Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+@
+\caption{Histogram of p-values for Peters reporting bias test (rank based) for continuous outcome meta analysis.}
+\label{peters.bin}
+\end{figure}
+
+
+\begin{figure}
+<<echo=FALSE>>=
+yodata %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
+  filter(events1 > 0 | events2 > 0) %>% 
+  filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
+  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  mutate(n = n()) %>% filter(n > 9) %>% 
+  summarize(pval = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "score")$p.val) %>% 
+  ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+  theme_bw() + labs(title = "Harbord Reporting Bias Test P-values for Binary Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+@
+\caption{Histogram of p-values for Harbord reporting bias test (rank based) for continuous outcome meta analysis.}
+\label{harbord.bin}
+\end{figure}
+
+
+
+
+Another less conventional way to look for publication bias is to see how many studies are ``reflected'' by the trim and fill method. As a first impression, a histogram with the fraction of trimmed of all comparisons is shown in figure \ref{trimfill.cont}. 
+
+\begin{figure}
+<<echo=FALSE>>=
+trimfill.cont <- yodata %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 50) %>% 
+  filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
+  filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
+  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  mutate(n = n()) %>% filter(n > 9) %>% 
+  summarize(trim = trimfill(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2))$k0 / n()) 
+
+trimfill.cont.mean <- trimfill.cont %>% ungroup %>% summarise(mean = mean(trim)) %>% select(mean)
+trimfill.cont.median <- trimfill.cont %>% ungroup %>% summarise(median = median(trim)) %>% select(median)
+
+trimfill.cont %>% ggplot(aes(x = trim)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Fraction of Trimmed Comparisons (continuous outcome)") + xlab("Fraction") + ylab("Frequency")
+@
+\caption{Histogram of fractions of trimmed comparisons from meta analyses with continuous outcomes.}
+\label{trimfill.cont}
+\end{figure}
+
+The mean fraction of trimmed comparisons for continuous outcomes is \Sexpr{round(trimfill.cont.mean,2)} and the median \Sexpr{round(trimfill.cont.median,2)}.
+
+The same is repeated for binary outcomes in figure \ref{trimfill.bin}. 
+\begin{figure}
+<<echo=FALSE>>=
+trimfill.bin <- yodata %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% #filter(file.nr < 503) %>% 
+  filter(events1 > 0 | events2 > 0) %>% 
+  filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
+  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  mutate(n = n()) %>% filter(n > 9) %>% 
+  summarize(trim = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2))$k0 / n())
+
+trimfill.bin.mean <- trimfill.bin %>% ungroup %>% summarise(mean = mean(trim)) %>% select(mean)
+trimfill.bin.median <- trimfill.bin %>% ungroup %>% summarise(median = median(trim)) %>% select(median)
+
+trimfill.bin %>% ggplot(aes(x = trim)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+  theme_bw() + labs(title = "Fraction of Trimmed Comparisons (binary outcome)") + xlab("Fraction") + ylab("Frequency")
+@
+\caption{Histogram of fractions of trimmed comparisons from meta analyses with binary outcomes.}
+\label{trimfill.bin}
+\end{figure}
+
+The mean fraction of trimmed comparisons for binary outcomes is \Sexpr{round(trimfill.bin.mean,2)} and the median \Sexpr{round(trimfill.bin.median,2)}.
+

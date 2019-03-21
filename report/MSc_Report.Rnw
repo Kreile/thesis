@@ -1,0 +1,117 @@
+\documentclass[11pt,a4paper,twoside]{book}
+\input{header.sty}   % packages, layout and standard macros
+
+
+\usepackage{verbatim}
+\usepackage{tikz}
+\usetikzlibrary{trees}
+
+
+\begin{document}
+\input{title}
+
+<<'main-setup',include=FALSE,purl=FALSE>>=
+library(knitr)
+opts_chunk$set(
+    concordance=TRUE,
+    child.command = 'include',
+    cache=TRUE)
+@
+
+
+\graphicspath{{./figure/}}
+\DeclareGraphicsExtensions{.pdf,.png}
+\setcounter{tocdepth}{1}
+
+
+
+\thispagestyle{empty}
+\begin{center}
+  \vspace*{6cm}{\bfseries\Huge
+  $p$-values:\\[5mm] their use, abuse and proper use \\[5mm]
+  illustrated with seven facets 
+  }
+  \vfill
+  \rm
+
+  \LARGE
+  M\"axli Musterli\\[12mm]
+  
+  \normalsize
+  Version \today
+\end{center}
+\newpage
+\thispagestyle{empty}~
+\newpage
+\pagenumbering{roman}
+
+\thispagestyle{plain}\markboth{Contents}{Contents}
+\tableofcontents
+\setkeys{Gin}{width=.8\textwidth}
+
+\chapter*{Preface}
+\addtocontents{toc}{\protect \vspace*{13.mm}}
+\addcontentsline{toc}{chapter}{\bfseries{Preface}}
+\thispagestyle{plain}\markboth{Preface}{Preface}
+
+Howdy!
+
+\bigskip
+
+\begin{flushright}
+  Max Muster\\
+  June 2018
+\end{flushright}
+
+\addtocontents{toc}{\protect \vspace*{10mm}}
+
+\cleardoublepage
+\pagenumbering{arabic}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<'child-chapter01', child='chapter01.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<'child-chapter02', child='chapter02.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<'child-chapter03', child='chapter03.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<'child-chapter04', child='chapter04.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<'child-chapter05', child='chapter05.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+<<'child-chapterA1', child='chapterA1.Rnw'>>=
+@
+
+
+
+\cleardoublepage
+\phantomsection
+\addtocontents{toc}{\protect \vspace*{10mm}}
+\addcontentsline{toc}{chapter}{\bfseries Bibliography}
+
+
+\bibliographystyle{mywiley} 
+\bibliography{biblio}
+
+\cleardoublepage
+
+\end{document}
+
