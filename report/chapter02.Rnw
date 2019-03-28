@@ -2,15 +2,34 @@
 
 
 <<echo=FALSE>>=
+# PATH_HOME = path.expand("~") # user home
+# PATH = file.path(PATH_HOME, 'thesis/code')
+# source(file.path(PATH, 'prepare.R'))
+
+
 PATH_HOME = path.expand("~") # user home
-PATH = file.path(PATH_HOME, 'thesis/code')
-source(file.path(PATH, 'prepare.R'))
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+FILE = 'cochrane_2018-06-09.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH, 'code')
+PATH_RESULTS = file.path(PATH, 'results')
+PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+
+file_results = "pb.RData"
+
+source(file.path(PATH_CODE, 'PubBias_functions.R'))
+
+data = pb.readData(path = PATH_DATA, file = FILE)
+tmp = pb.clean(data)
+data = tmp[[1]]
+aliases = tmp[[2]]
 
 require(biostatUZH)
 require(tidyverse)
 require(meta)
 require(xtable)
 @
+
 
 <<echo=FALSE>>=
 library(knitr)
@@ -25,7 +44,7 @@ opts_chunk$set(
 library(knitr)
 opts_chunk$set(fig.path='figure/ch02_fig',
                echo=TRUE, message=FALSE,
-               fig.width=8.5, fig.height=3,
+               fig.width=8, fig.height=3,
                out.width='\\textwidth-3cm',
                message=FALSE, fig.align='center',
                background="gray98", tidy=FALSE, #tidy.opts=list(width.cutoff=60),
@@ -40,13 +59,13 @@ options(width=74)
 \chapter{The Cochrane Dataset} 
 
 \subsection{Structure and Content}
-The dataset consists of \Sexpr{length(unique(madata$file.nr))} systematic reviews from the Cochrane Library with \Sexpr{length(unique(madata$study.name))} studies.
+The dataset consists of \Sexpr{length(unique(data$file.nr))} systematic reviews from the Cochrane Library with \Sexpr{length(unique(data$study.name))} studies.
 Each study provides data of (multiple) comparisons of clinical interventions. 
 % It can not be ruled out that some comparisons are retrospective, e.g. from observational studies. 
 In Table \ref{barbiturate.row}, two comparisons from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, the comparison is further specified by the variables in the columns. One row of the dataset is one comparison.
 
 <<echo=FALSE, results = 'asis'>>=
-tp1 <- arrange(filter(madata, file.nr == 21) %>% 
+tp1 <- arrange(filter(data, file.nr == 21) %>% 
           select(Study = study.name, Comparison_type = comparison.name, Outcome = outcome.name, 
                  Events = events1, Total = total1, Events_c = events2, Total_c = total2) %>% 
             slice(c(1,3)), Study)
@@ -60,30 +79,30 @@ A complete listing of the variables is given in Table \ref{variable}. They can r
     \begin{tabular}{l l}
       \textbf{Variable} & \textbf{Description}\\
       \hline
-      \textbf{File name} & The name of the file from which the review data has been . \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
+      \textbf{file.nr} & The number of the file from which the review data has been . \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
       \textbf{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
-      \textbf{File index} & Internal index of the file in the Cochrane library.\\
-      \textbf{File version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
+      \textbf{file.index} & Internal index of the file in the Cochrane library.\\
+      \textbf{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
       %\multicolumn{2}{c}{textbf{Study level variables}}\\ 
       \hline
-      \textbf{Comparison type} & Specification of the interventions compared in the study\\
-      \textbf{Outcome} & Specification by which outcome the interventions are compared\\
-      \textbf{Subgroup} & Potentially indication of affiliation to subgroups\\
-      \textbf{Study name} & Name of the study to which the comparison belongs\\
-      \textbf{Study publication year} & Year in which the study was published\\
-      \textbf{Outcome measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
-      \textbf{Effect} & Measure of the effect given in the quantity denoted by \\ &``outcome measure''.\\
-      \textbf{Events (1/2)} & The counts of patients with an outcome \textit{if}\\ & measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
-      \textbf{Total (1/2)} & Number of patients in groups.\\
-      \textbf{Mean (1/2)} & Mean of patient measurements \textit{if} outcome is continuous.\\
-      \textbf{Standard deviation (1/2)} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
+      \textbf{comparison.name/.nr} & Specification of the interventions compared in the study  \\ and a unique number for the comparison\\
+      \textbf{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ and a unique number for the outcome\\
+      \textbf{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ unique number for the subgroup\\
+      \textbf{study.name} & Name of the study to which the comparison belongs\\
+      \textbf{study.year} & Year in which the study was published\\
+      \textbf{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
+      \textbf{effect} & Measure of the effect given in the quantity denoted by \\ &``outcome measure''.\\
+      \textbf{events1/events2} & The counts of patients with an outcome \textit{if}\\ & measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
+      \textbf{total1/total2} & Number of patients in groups.\\
+      \textbf{mean1/mean2)} & Mean of patient measurements \textit{if} outcome is continuous.\\
+      \textbf{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
     \end{tabular}
-  \caption{Dataset variable descriptions  \label{variable}}
+  \caption{Dataset variable names and descriptions  \label{variable}}
 
   \end{center}
 \end{table}
 
-The structure of a hypothetical review is shown in Figure \ref{review}. 
+The structure of a review is shown in Figure \ref{review}. 
 % Comparisons of a review can consecutively be subdivided into different comparison types, different outcome measures and different subgroups. 
 The comparison type variable specifies what is compared, the outcome variable how it is compared, and the subgroup variable indicates if the comparison belongs to a certain subgroup. If desired, Figure \ref{review} can be compared to Table \ref{barbiturates} where an exemplary review is listed.
 
@@ -125,7 +144,7 @@ The comparison type variable specifies what is compared, the outcome variable ho
 
 
 <<echo=FALSE, results='asis'>>=
-tp1 <- arrange(filter(madata, file.nr == 21) %>% 
+tp1 <- arrange(filter(data, file.nr == 21) %>% 
           select(Study = study.name, Comparison = comparison.name,Outcome = outcome.name), Study)
 tp1[tp1$Study == "P\303\251rez-B\303\241rcena 2008", 1] = "Perez-Barcena 2008"
 print(xtable(tp1, label = "barbiturates", caption = "Barbiturate and head injury review. In the columns, study names, comparison types and outcome measure of the comparisons are given"), include.rownames = F, size = "footnotesize")
@@ -137,36 +156,36 @@ print(xtable(tp1, label = "barbiturates", caption = "Barbiturate and head injury
 It is important to not confuse comparisons with studies. A study can contribute multiple comparisons to a systematic review. Also, despite a comparison has variables concerning event counts and means, it can only have one of the two, either means (if the outcome measure is continuous) or event counts (for binary outcomes).
 
 \vspace{0mm}
-Having provided a rough overview over the dataset, now, some more specific information is provided. The dataset consists of \Sexpr{dim(madata)[1]} comparisons and has \Sexpr{dim(madata)[2]} variables that specify the comparisons. The abundance of some missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative abundance of missing values is very low except for study years.
+Having provided an overview over the dataset, now, some more specific information is provided. The dataset consists of \Sexpr{dim(data)[1]} comparisons and has \Sexpr{dim(data)[2]} variables that specify the comparisons. Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years.
 
 <<echo=FALSE>>=
-missing.mean <- madata %>% filter(!is.na(sd1) & sd1 > 0) %>% filter(!is.na(sd2) & sd2 > 0) %>% 
+missing.mean <- data %>% filter(!is.na(sd1) & sd1 > 0) %>% filter(!is.na(sd2) & sd2 > 0) %>% 
   summarise(total = length(sd1), na  = sum(is.na(mean1) | is.na(mean1))) %>% select(na)
 
-missing.sd <- madata %>% filter(!is.na(mean1) & !is.na(mean2)) %>% filter(mean1 != 0 & mean2 != 0) %>%
+missing.sd <- data %>% filter(!is.na(mean1) & !is.na(mean2)) %>% filter(mean1 != 0 & mean2 != 0) %>%
   summarise(total = length(mean1), na.sd  = sum(is.na(sd1) | is.na(sd1)), null.sd = length(sd1[sd1 <= 0 | sd2 <= 0])) %>% 
   mutate(miss = na.sd + null.sd) %>% select(miss)
 
-missing.ssize <- madata %>% summarize(total = length(total1), null.ss = length(total1[total1 <= 0 | total2 <= 0])) %>% 
+missing.ssize <- data %>% summarize(total = length(total1), null.ss = length(total1[total1 <= 0 | total2 <= 0])) %>% 
   select(null.ss)
 
-missing.effect <- sum(is.na(madata$effect))
+missing.effect <- sum(is.na(data$effect))
 
-missing.year <- sum(is.na(madata$study.year)) + length(madata$study.year[madata$study.year == 0])
+missing.year <- sum(is.na(data$study.year)) + length(data$study.year[data$study.year == 0])
 
-# missing.outcome <- sum(is.na(madata$effect))
+# missing.outcome <- sum(is.na(data$effect))
 
-# null.events <- madata %>% filter(is.na(mean1) | mean1 == 0) %>% filter(is.na(mean2) | mean2 == 0) %>% 
+# null.events <- data %>% filter(is.na(mean1) | mean1 == 0) %>% filter(is.na(mean2) | mean2 == 0) %>% 
 #   filter(is.na(sd1) | sd1 <= 0) %>% filter(is.na(sd2) | sd2 <= 0) %>% 
 #   summarise(null.ev = length(total1[events1 <= 0 & events2 <= 0]), total = length(events1)) %>% 
 #   mutate(f = null.ev/total) %>% select(f)
 # 
-# null.events.single <- madata %>% filter(is.na(mean1) | mean1 == 0) %>% filter(is.na(mean2) | mean2 == 0) %>% 
+# null.events.single <- data %>% filter(is.na(mean1) | mean1 == 0) %>% filter(is.na(mean2) | mean2 == 0) %>% 
 #   filter(is.na(sd1) | sd1 <= 0) %>% filter(is.na(sd2) | sd2 <= 0) %>% 
 #   summarise(null.ev = length(total1[events1 <= 0 | events2 <= 0]), total = length(events1)) %>% 
 #   mutate(f = null.ev/total) %>% select(f)
 # 
-# missing.events <- madata %>% filter(is.na(mean1) | mean1 == 0) %>% filter(is.na(mean2) | mean2 == 0) %>% 
+# missing.events <- data %>% filter(is.na(mean1) | mean1 == 0) %>% filter(is.na(mean2) | mean2 == 0) %>% 
 #   filter(is.na(sd1) | sd1 <= 0) %>% filter(is.na(sd2) | sd2 <= 0) %>% 
 #   summarise(na.ev = sum(is.na(events1) | is.na(events2)), total = length(events1)) %>% 
 #   mutate(f = na.ev/total) %>% select(f)
@@ -184,11 +203,11 @@ print(xtable(missing.table, label = "missing", caption = "Number of missing vari
 @
 
 
-More properties of the reviews, the studies and the comparisons in the dataset will be provided on the following pages. The publication dates of the studies included in the dataset are shown in Figure \ref{study.years}. 
+More properties of the reviews, the studies and the comparisons in the dataset will be provided on the following pages. The publication dates of the studies included in the dataset are shown in Figure \ref{study.years}. Most studies were published after 2000.
 
 \begin{figure}
 <<echo=FALSE>>=
-madata %>% filter(study.year < 2019 & study.year > 1920) %>% ggplot(aes(x = study.year)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+data %>% filter(study.year < 2019 & study.year > 1920) %>% ggplot(aes(x = study.year)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
   theme_bw() + xlab("Year") + ylab("Study frequency")
 @
 \caption{Frequencies of study publication years in the dataset. 44655 were excluded due to likely wrong indications}
@@ -199,8 +218,8 @@ Figure \ref{study.outcomes} provides the frequencies of outcome types of the com
 
 \begin{figure}
 <<echo=FALSE>>=
-yodata %>% group_by(outcome.measure) %>% count() %>% arrange(desc(n)) %>% ungroup() %>% filter(row_number() < 9) %>% 
-  ggplot(aes(x = outcome.measure, y = n)) +
+data %>% group_by(outcome.measure.new) %>% count() %>% arrange(desc(n)) %>% ungroup() %>% filter(row_number() < 9) %>% 
+  ggplot(aes(x = outcome.measure.new, y = n)) +
   geom_col(col = "gray15", fill = "dodgerblue") +
   theme_bw() + ylab("Comparison frequency") + xlab("Outcome measure")
 @
@@ -212,9 +231,9 @@ It is also possible to look at the properties of the reviews. One question could
 
 \begin{figure}
 <<echo=FALSE>>=
-madata %>% group_by(file.nr) %>% distinct(study.name) %>% count() %>%
+data %>% group_by(file.nr) %>% distinct(study.name) %>% count() %>%
   filter(n < 50) %>%
-  full_join( madata %>% group_by(file.nr) %>% distinct(study.name) %>% count %>%
+  full_join( data %>% group_by(file.nr) %>% distinct(study.name) %>% count %>%
                filter(n > 49) %>% mutate(n = 50)) %>%
   group_by(n) %>% count() %>%
   ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
@@ -226,18 +245,18 @@ madata %>% group_by(file.nr) %>% distinct(study.name) %>% count() %>%
 
 \begin{figure}
 <<echo=FALSE>>=
-madata %>% group_by(file.nr) %>% count() %>%
+data %>% group_by(file.nr) %>% count() %>%
   filter(n < 50) %>%
-  full_join( madata %>% group_by(file.nr) %>% distinct(comparison.name) %>% count %>%
+  full_join( data %>% group_by(file.nr) %>% distinct(comparison.name) %>% count %>%
                filter(n > 49) %>% mutate(n = 50)) %>%
   group_by(n) %>% count() %>%
   ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
   theme_bw() +  xlab("Comparisons") + ylab("Review Frequency")
-# mean.diff.out <- madata %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
+# mean.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
 #   ungroup() %>% group_by(file.nr) %>% 
 #   count() %>% ungroup %>% summarise(mean = mean(n))
 # 
-# median.diff.out <- madata %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
+# median.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
 #   ungroup() %>% group_by(file.nr) %>% 
 #   count() %>% ungroup %>% summarise(mean = median(n))
 @
@@ -250,24 +269,24 @@ A question not to be mistaken with the previous would be how many comparison \te
 
 \begin{figure}
 <<echo=FALSE>>=
-madata %>% group_by(file.nr) %>% distinct(comparison.name) %>% count() %>%
+data %>% group_by(file.nr) %>% distinct(comparison.name) %>% count() %>%
   filter(n < 15) %>%
-  full_join( madata %>% group_by(file.nr) %>% distinct(comparison.name) %>% count %>%
+  full_join( data %>% group_by(file.nr) %>% distinct(comparison.name) %>% count %>%
                filter(n > 14) %>% mutate(n = 15)) %>%
   group_by(n) %>% count() %>%
   ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
   theme_bw() +  xlab("Comparison type number") + ylab("Review frequency")
 
 
-mean.diff.out <- madata %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
+mean.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
   ungroup() %>% group_by(file.nr) %>% 
   count() %>% ungroup %>% summarise(mean = mean(n))
 
-median.diff.out <- madata %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
+median.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
   ungroup() %>% group_by(file.nr) %>% 
   count() %>% ungroup %>% summarise(mean = median(n))
 @
-\caption{Empirical distribution of number of different research subjects per review}
+\caption{Empirical distribution of number of different comparison types per review}
 \label{subjects.per.review}
 \end{figure}
 
@@ -281,15 +300,15 @@ In Table \ref{repr.groups}, two different similarity criteria have been used. On
 Table \ref{repr.groups} shows the cumulative number of \textit{groups} of comparisons with equal or more than $n$ comparisons. Practically, this means that this number of meta analyses can be performed with each having at least $n$ comparisons.
 
 <<echo=FALSE, results='asis'>>=
-cum.repr.trials.nosub <- yodata %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+cum.repr.trials.nosub <- data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
   filter(n < 15) %>%
-  full_join( yodata %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+  full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
                filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>% 
   ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
 
-cum.repr.trials.subg <- yodata %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
+cum.repr.trials.subg <- data %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
   filter(n < 15) %>%
-  full_join( yodata %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+  full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
                filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>% 
   ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
 

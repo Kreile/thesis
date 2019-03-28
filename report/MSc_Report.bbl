@@ -1,8 +1,15 @@
 \begin{thebibliography}{}
 
-\bibitem[Higgins~JPT, 2011]{cochrane.handbook}
-Higgins~JPT, G.~S. (2011).
-\newblock {\em Cochrane Handbook for Systematic Reviews of Interventions}.
-\newblock The Cochrane Collaboration.
+\bibitem[Borenstein {\it et~al.}, 2011]{metaanalysis}
+Borenstein, M., Hedges, L.~V., Higgins, J. P.~T., Rothstein, H.~R., and
+  Higgins, D. J. P.~T. (2011).
+\newblock {\em Introduction to Meta-Analysis}.
+\newblock John Wiley \& Sons, Incorporated, Hoboken, UNKNOWN.
+
+\bibitem[Duval and Tweedie, 2000]{trimfill}
+Duval, S. and Tweedie, R. (2000).
+\newblock Trim and fill: A simple funnel-plot?based method of testing and
+  adjusting for publication bias in meta-analysis.
+\newblock {\em Biometrics}, {\bf56},  455--463.
 
 \end{thebibliography}

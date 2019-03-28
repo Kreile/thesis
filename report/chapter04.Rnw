@@ -10,3 +10,47 @@ opts_chunk$set(
 
 \chapter{Discussion and Outlook}
 
+\section{Meta Analysis}
+There are numerous methods to pool the estimates of multiple studies into one estimate, and two will be introduced here; fixed and random effects meta-analysis.
+First the fixed effect meta-analysis will be explained. For convenience, notatotion will be identical whenever possible for both methods. Note that both methods can be used for continuous or dichotomous outcomes. For more details about the methods, see chapter 11 and 12 in \citep{metaanalysis}
+
+\vspace{0mm}
+Let $y_{i}$ be the effect size estimate of the study $i$ and $v_{i}$ be the corresponding variance of the effect size estimate. Effect measures have to be identical for all studies. Furthermore, let $w_i$ be the inverse of the variance of the estimate from study $i$, $1/v_{i}$ and $n$ the total number of studies.
+
+\vspace{0mm}
+The pooled estimate of the fixed effects model is then simply the weighted average with the weights given by the inverses of the variances, $w_{i}$.
+
+\begin{align*}
+\Delta &= \frac{\sum_{i = 1}^n w_{i}y_{i}}{\sum_{i = 1}^n w_{i}}
+\end{align*}
+
+and the variance is the reciprocal of the sum of the weights,
+
+\begin{align*}
+\nu &= \frac{1}{\sum_{i = 1}^n w_{i}}
+\end{align*}
+
+\section{Reporting Bias Adjustment}
+One method to account for publication bias in meta-analysis is to apply the Trim and Fill adjustment method \citep{trimfill}. Its basic working principle is to mirror studies in a funnel plot that cause the funnel plot to be asymmetric and then to perform one of the meta-analyses as described in section {meta-analysis} with the mirrored studies. In the subsequent equations, the same terminology as for meta analyses will be used. 
+
+
+% \begin{align} \label{cox reg}
+% P(Y < y|\mathbf{x}) = 1 - exp(-exp(h(y) - (\mathbf{x})^\top\beta)
+% \end{align}
+% 
+% See \cite{hothorn} for further information. It specifies the instantaneous risk of an event at time t to be
+% 
+% \begin{align}
+% \lambda_{0}(t)exp((\mathbf{x})^\top\beta) \nonumber
+% \end{align}
+% 
+% The model is regarded as a semi parametric model since it includes the covariates in a linear fashion but leaves the baseline hazard $\lambda_{0}(t)$ unspecified. The factor $exp((\mathbf{x})^\top\beta)$ has the interpretation of a hazard ratio between the reference with $\mathbf{x} = 0$. The formal definition of the hazard is
+% 
+% \begin{align}
+% h(t) = \lim_{h \to 0} \frac{P(t < T < t + h| T > t)}{h}
+% \end{align}
+% 
+% 
+% \begin{align} \label{generalized linear model}
+% \mathbf{Y}{_{ij}}|U{_i},\epsilon{_{ij}} = (1,x{_i}^\top)\beta + U{_i} + \epsilon{_{ij}}
+% \end{align}

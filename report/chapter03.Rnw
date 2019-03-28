@@ -17,11 +17,12 @@ opts_chunk$set(
 )
 @
 
+
 <<echo=FALSE>>=
 library(knitr)
 opts_chunk$set(fig.path='figure/ch02_fig',
                echo=TRUE, message=FALSE,
-               fig.width=8, fig.height=3,
+               fig.width=8.5, fig.height=3,
                out.width='\\textwidth-3cm',
                message=FALSE, fig.align='center',
                background="gray98", tidy=FALSE, #tidy.opts=list(width.cutoff=60),
@@ -31,9 +32,27 @@ options(width=74)
 @
 
 <<echo=FALSE>>=
+# PATH_HOME = path.expand("~") # user home
+# PATH = file.path(PATH_HOME, 'thesis/code')
+# source(file.path(PATH, 'prepare.R'))
+
+
 PATH_HOME = path.expand("~") # user home
-PATH = file.path(PATH_HOME, 'thesis/code')
-source(file.path(PATH, 'prepare.R'))
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+FILE = 'cochrane_2018-06-09.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH, 'code')
+PATH_RESULTS = file.path(PATH, 'results')
+PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+
+file_results = "pb.RData"
+
+source(file.path(PATH_CODE, 'PubBias_functions.R'))
+
+data = pb.readData(path = PATH_DATA, file = FILE)
+tmp = pb.clean(data)
+data = tmp[[1]]
+aliases = tmp[[2]]
 
 require(biostatUZH)
 require(tidyverse)
@@ -54,7 +73,7 @@ Since each histogram of p-values has 20 bins, the content of the bin with the sm
 
 \begin{figure}
 <<echo=FALSE>>=
-yodata %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
+data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
@@ -71,7 +90,7 @@ yodata %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std
 
 \begin{figure}
 <<echo=FALSE>>=
-yodata %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
+data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
@@ -87,7 +106,7 @@ yodata %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std
 
 \begin{figure}
 <<echo=FALSE>>=
-yodata %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
+data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
@@ -106,7 +125,7 @@ For binary outcomes, Peters and Harbords reporting bias test have been chosen. A
 
 \begin{figure}
 <<echo=FALSE>>=
-yodata %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
+data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
   filter(events1 > 0 | events2 > 0) %>% 
   filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
@@ -122,7 +141,7 @@ yodata %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Rat
 
 \begin{figure}
 <<echo=FALSE>>=
-yodata %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
+data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
   filter(events1 > 0 | events2 > 0) %>% 
   filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
@@ -142,7 +161,7 @@ Another less conventional way to look for publication bias is to see how many st
 
 \begin{figure}
 <<echo=FALSE>>=
-trimfill.cont <- yodata %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 50) %>% 
+trimfill.cont <- data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 50) %>% 
   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
@@ -164,7 +183,7 @@ The mean fraction of trimmed comparisons for continuous outcomes is \Sexpr{round
 The same is repeated for binary outcomes in figure \ref{trimfill.bin}. 
 \begin{figure}
 <<echo=FALSE>>=
-trimfill.bin <- yodata %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% #filter(file.nr < 503) %>% 
+trimfill.bin <- data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% #filter(file.nr < 503) %>% 
   filter(events1 > 0 | events2 > 0) %>% 
   filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
   group_by(file.nr, outcome.nr, subgroup.nr) %>% 

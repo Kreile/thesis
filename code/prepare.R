@@ -1,6 +1,6 @@
 ##########################################################
 # read the generated (single) CSV file into a data frame:
-madata <- read.csv("~/Data/cochrane/cochrane_2018-06-09.csv",
+madata <- read.csv("~/Data/PubBias/data/cochrane_2018-06-09.csv",
                    colClasses=c("integer", "character", "character",  # file       :  nr, name, doi
                                 "integer", "integer",                 # file       :  index, version
                                 "integer", "character",               # comparison :  nr, name

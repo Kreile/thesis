@@ -121,13 +121,22 @@ Howdy!
 
 \chapter{Introduction}
 
-In science, there is not only a need for accumulation of knowledge, but also for concentration. For the same reason as statistical analysis is performed on single experiments, it can also be used for results of multiple experiments or studies: to simplify and summarize the data at hand to a degree that is understandable. The latter procedure goes usually under the name of meta-analysis. Meta analyses are used to summarize results and evidence over multiple studies when they are considered to be similar enough.
+Meta-analysis is at the core of evidence based medicine because it allows to summarise evidence over multiple studies and provide a more broad view on success and effectivity of clinical treatments. The necessity of meta-analyses is also increased by the abundance of data and publications. Especially when the findings differ or even contradict between studies, meta-analysis is the only way to go if one wants to keep decisions based on quantitative and scientific criteria.
 
 \vspace{0mm}
-In the face of the large amount of research that is done in some fields of empirical science, meta-analysis becomes increasingly important, for looking at all evidence would simply take very long for one person. Meta-analyses are often part of a systematic review, an effort of experts of a field to provide an overlook over the evidence. In the course of a review, all literature and data with respect to a scientific question is collected and a meta-analysis is operated at the end to summarize the findings.
+For this, meta-analyses do not only benefit research, but also clinical practice, and may lead to better health care and prevention. However, since the amount of empirical research is expanding, meta-analysis can be part in any field where repeated experiments are performed. The usefulness of meta-analysis expands therefore well over clinical science.
 
 \vspace{0mm}
-In the case of clinical science, systematic reviews and meta-analyses do not only benefit scientists but also patients and clinicians, for both are provided with up-to-date summaries of current evidence with respect to a certain treatment. Therefore, meta-analysis is at the core of what is called evidence-based medicine. 
+Usually, a meta-analysis is part of a systematic review where researchers decided to summarise all research in a given field or more specifically, that concerns a given question. Systematic reviews may also incorporate results that can not be included in a meta-analysis, such as adverse effects reported in one trial, but a meta-analysis is the central part of a systematic review if results from multiple studies are available. The authors usually take their conclusions largely based on the results of the meta-analysis.
+
+% In science, there is not only a need for accumulation of knowledge, but also for concentration. For the same reason as statistical analysis is performed on single experiments, it can also be used for results of multiple experiments or studies: to simplify and summarize the data at hand to a degree that is understandable. The latter procedure goes usually under the name of meta-analysis. Meta analyses are used to summarize results and evidence over multiple studies when they are considered to be similar enough.
+% 
+% \vspace{0mm}
+% In the face of the large amount of research that is done in some fields of empirical science, meta-analysis becomes increasingly important, for looking at all evidence would simply take very long for one person. Meta-analyses are often part of a systematic review, an effort of experts of a field to provide an overlook over the evidence. In the course of a review, all literature and data with respect to a scientific question is collected and a meta-analysis is operated at the end to summarize the findings.
+% 
+% \vspace{0mm}
+% In the case of clinical science, systematic reviews and meta-analyses do not only benefit scientists but also patients and clinicians, for both are provided with up-to-date summaries of current evidence with respect to a certain treatment. Therefore, meta-analysis is at the core of what is called evidence-based medicine. 
+% 
 
 \vspace{0mm}
 However, there are problems that potentially limit the validity of meta-analysis; studies at hand can be biased or heterogeneity between study results can be large and the number of studies small. The importance and the issues of meta-analysis are the reasons why they have been chosen as one general topic of the masters thesis. One particular problem will furthermore be investigated in more detail: reporting bias and meta-analysis. Not only will the methods to deal with issues as reporting bias be discussed, but also will they be applied on a dataset of systematic reviews that can be used for meta-analysis. So at the end of the report, the reader will not only have an impression of the technical issues caused by reporting bias, but also of the abundance and extent of it in the dataset. Since the dataset is very large and of good quality, results might also be representative to some extent for reporting bias in clinical science.
@@ -160,6 +169,7 @@ The reviews are arguably of good quality, since the authors are following elabor
 
 
 
+
 \chapter{The Cochrane Dataset} 
 
 \subsection{Structure and Content}
@@ -169,7 +179,7 @@ Each study provides data of (multiple) comparisons of clinical interventions.
 In Table \ref{barbiturate.row}, two comparisons from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, the comparison is further specified by the variables in the columns. One row of the dataset is one comparison.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Mar 21 12:54:57 2019
+% Thu Mar 28 18:28:12 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -177,8 +187,8 @@ In Table \ref{barbiturate.row}, two comparisons from a systematic review about e
   \hline
 Study & Comparison\_type & Outcome & Events & Total & Events\_c & Total\_c \\ 
   \hline
-Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up &  11 &  41 &  11 &  41 \\ 
-  Ward 1985 & Barbiturate vs no barbiturate & Death at the end of follow-up &  14 &  27 &  13 &  26 \\ 
+Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up & 11.00 & 41.00 & 11.00 & 41.00 \\ 
+  Ward 1985 & Barbiturate vs no barbiturate & Death at the end of follow-up & 14.00 & 27.00 & 13.00 & 26.00 \\ 
    \hline
 \end{tabular}
 \endgroup
@@ -194,30 +204,30 @@ A complete listing of the variables is given in Table \ref{variable}. They can r
     \begin{tabular}{l l}
       \textbf{Variable} & \textbf{Description}\\
       \hline
-      \textbf{File name} & The name of the file from which the review data has been . \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
+      \textbf{file.nr} & The number of the file from which the review data has been . \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
       \textbf{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
-      \textbf{File index} & Internal index of the file in the Cochrane library.\\
-      \textbf{File version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
+      \textbf{file.index} & Internal index of the file in the Cochrane library.\\
+      \textbf{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
       %\multicolumn{2}{c}{textbf{Study level variables}}\\ 
       \hline
-      \textbf{Comparison type} & Specification of the interventions compared in the study\\
-      \textbf{Outcome} & Specification by which outcome the interventions are compared\\
-      \textbf{Subgroup} & Potentially indication of affiliation to subgroups\\
-      \textbf{Study name} & Name of the study to which the comparison belongs\\
-      \textbf{Study publication year} & Year in which the study was published\\
-      \textbf{Outcome measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
-      \textbf{Effect} & Measure of the effect given in the quantity denoted by \\ &``outcome measure''.\\
-      \textbf{Events (1/2)} & The counts of patients with an outcome \textit{if}\\ & measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
-      \textbf{Total (1/2)} & Number of patients in groups.\\
-      \textbf{Mean (1/2)} & Mean of patient measurements \textit{if} outcome is continuous.\\
-      \textbf{Standard deviation (1/2)} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
+      \textbf{comparison.name/.nr} & Specification of the interventions compared in the study  \\ and a unique number for the comparison\\
+      \textbf{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ and a unique number for the outcome\\
+      \textbf{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ unique number for the subgroup\\
+      \textbf{study.name} & Name of the study to which the comparison belongs\\
+      \textbf{study.year} & Year in which the study was published\\
+      \textbf{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
+      \textbf{effect} & Measure of the effect given in the quantity denoted by \\ &``outcome measure''.\\
+      \textbf{events1/events2} & The counts of patients with an outcome \textit{if}\\ & measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
+      \textbf{total1/total2} & Number of patients in groups.\\
+      \textbf{mean1/mean2)} & Mean of patient measurements \textit{if} outcome is continuous.\\
+      \textbf{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
     \end{tabular}
-  \caption{Dataset variable descriptions  \label{variable}}
+  \caption{Dataset variable names and descriptions  \label{variable}}
 
   \end{center}
 \end{table}
 
-The structure of a hypothetical review is shown in Figure \ref{review}. 
+The structure of a review is shown in Figure \ref{review}. 
 % Comparisons of a review can consecutively be subdivided into different comparison types, different outcome measures and different subgroups. 
 The comparison type variable specifies what is compared, the outcome variable how it is compared, and the subgroup variable indicates if the comparison belongs to a certain subgroup. If desired, Figure \ref{review} can be compared to Table \ref{barbiturates} where an exemplary review is listed.
 
@@ -259,7 +269,7 @@ The comparison type variable specifies what is compared, the outcome variable ho
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Mar 21 12:54:57 2019
+% Thu Mar 28 18:28:12 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -299,12 +309,12 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
 It is important to not confuse comparisons with studies. A study can contribute multiple comparisons to a systematic review. Also, despite a comparison has variables concerning event counts and means, it can only have one of the two, either means (if the outcome measure is continuous) or event counts (for binary outcomes).
 
 \vspace{0mm}
-Having provided a rough overview over the dataset, now, some more specific information is provided. The dataset consists of 463820 comparisons and has 25 variables that specify the comparisons. The abundance of some missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative abundance of missing values is very low except for study years.
+Having provided an overview over the dataset, now, some more specific information is provided. The dataset consists of 463820 comparisons and has 26 variables that specify the comparisons. Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years.
 
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Mar 21 12:54:58 2019
+% Thu Mar 28 18:28:12 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -324,7 +334,7 @@ Missing mean values & 1287 \\
 
 
 
-More properties of the reviews, the studies and the comparisons in the dataset will be provided on the following pages. The publication dates of the studies included in the dataset are shown in Figure \ref{study.years}. 
+More properties of the reviews, the studies and the comparisons in the dataset will be provided on the following pages. The publication dates of the studies included in the dataset are shown in Figure \ref{study.years}. Most studies were published after 2000.
 
 \begin{figure}
 \begin{knitrout}
@@ -404,7 +414,7 @@ A question not to be mistaken with the previous would be how many comparison \te
 
 
 \end{knitrout}
-\caption{Empirical distribution of number of different research subjects per review}
+\caption{Empirical distribution of number of different comparison types per review}
 \label{subjects.per.review}
 \end{figure}
 
@@ -418,7 +428,7 @@ In Table \ref{repr.groups}, two different similarity criteria have been used. On
 Table \ref{repr.groups} shows the cumulative number of \textit{groups} of comparisons with equal or more than $n$ comparisons. Practically, this means that this number of meta analyses can be performed with each having at least $n$ comparisons.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Mar 21 12:55:03 2019
+% Thu Mar 28 18:28:18 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -426,21 +436,21 @@ Table \ref{repr.groups} shows the cumulative number of \textit{groups} of compar
   \hline
 n & Cumulative sum (without subgroups) & Cumulative sum (with subgroups) \\ 
   \hline
-1 & 109177 & 186267 \\ 
-  2 & 67685 & 83924 \\ 
-  3 & 47786 & 52245 \\ 
-  4 & 36155 & 36176 \\ 
-  5 & 28077 & 26552 \\ 
-  6 & 22689 & 20113 \\ 
-  7 & 18536 & 15888 \\ 
-  8 & 15466 & 12931 \\ 
-  9 & 13000 & 10817 \\ 
-  10 & 11001 & 9226 \\ 
-  11 & 9356 & 7988 \\ 
-  12 & 8052 & 7067 \\ 
-  13 & 6984 & 6365 \\ 
-  14 & 6041 & 5780 \\ 
-  15 & 5325 & 5325 \\ 
+1 & 109191 & 186300 \\ 
+  2 & 67699 & 83956 \\ 
+  3 & 47800 & 52270 \\ 
+  4 & 36169 & 36198 \\ 
+  5 & 28090 & 26570 \\ 
+  6 & 22702 & 20126 \\ 
+  7 & 18547 & 15896 \\ 
+  8 & 15475 & 12935 \\ 
+  9 & 13008 & 10821 \\ 
+  10 & 11008 & 9229 \\ 
+  11 & 9362 & 7991 \\ 
+  12 & 8057 & 7070 \\ 
+  13 & 6988 & 6368 \\ 
+  14 & 6044 & 5783 \\ 
+  15 & 5328 & 5328 \\ 
    \hline
 \end{tabular}
 \endgroup
@@ -456,6 +466,7 @@ n & Cumulative sum (without subgroups) & Cumulative sum (with subgroups) \\
 
 
 % LaTeX file for Chapter 03
+
 
 
 
@@ -604,6 +615,50 @@ The mean fraction of trimmed comparisons for binary outcomes is 0.19 and the med
 
 \chapter{Discussion and Outlook}
 
+\section{Meta Analysis}
+There are numerous methods to pool the estimates of multiple studies into one estimate, and two will be introduced here; fixed and random effects meta-analysis.
+First the fixed effect meta-analysis will be explained. For convenience, notatotion will be identical whenever possible for both methods. Note that both methods can be used for continuous or dichotomous outcomes. For more details about the methods, see chapter 11 and 12 in \citep{metaanalysis}
+
+\vspace{0mm}
+Let $y_{i}$ be the effect size estimate of the study $i$ and $v_{i}$ be the corresponding variance of the effect size estimate. Effect measures have to be identical for all studies. Furthermore, let $w_i$ be the inverse of the variance of the estimate from study $i$, $1/v_{i}$ and $n$ the total number of studies.
+
+\vspace{0mm}
+The pooled estimate of the fixed effects model is then simply the weighted average with the weights given by the inverses of the variances, $w_{i}$.
+
+\begin{align*}
+\Delta &= \frac{\sum_{i = 1}^n w_{i}y_{i}}{\sum_{i = 1}^n w_{i}}
+\end{align*}
+
+and the variance is the reciprocal of the sum of the weights,
+
+\begin{align*}
+\nu &= \frac{1}{\sum_{i = 1}^n w_{i}}
+\end{align*}
+
+\section{Reporting Bias Adjustment}
+One method to account for publication bias in meta-analysis is to apply the Trim and Fill adjustment method \citep{trimfill}. Its basic working principle is to mirror studies in a funnel plot that cause the funnel plot to be asymmetric and then to perform one of the meta-analyses as described in section {meta-analysis} with the mirrored studies. In the subsequent equations, the same terminology as for meta analyses will be used. 
+
+
+% \begin{align} \label{cox reg}
+% P(Y < y|\mathbf{x}) = 1 - exp(-exp(h(y) - (\mathbf{x})^\top\beta)
+% \end{align}
+% 
+% See \cite{hothorn} for further information. It specifies the instantaneous risk of an event at time t to be
+% 
+% \begin{align}
+% \lambda_{0}(t)exp((\mathbf{x})^\top\beta) \nonumber
+% \end{align}
+% 
+% The model is regarded as a semi parametric model since it includes the covariates in a linear fashion but leaves the baseline hazard $\lambda_{0}(t)$ unspecified. The factor $exp((\mathbf{x})^\top\beta)$ has the interpretation of a hazard ratio between the reference with $\mathbf{x} = 0$. The formal definition of the hazard is
+% 
+% \begin{align}
+% h(t) = \lim_{h \to 0} \frac{P(t < T < t + h| T > t)}{h}
+% \end{align}
+% 
+% 
+% \begin{align} \label{generalized linear model}
+% \mathbf{Y}{_{ij}}|U{_i},\epsilon{_{ij}} = (1,x{_i}^\top)\beta + U{_i} + \epsilon{_{ij}}
+% \end{align}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
