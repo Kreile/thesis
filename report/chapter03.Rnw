@@ -22,7 +22,7 @@ opts_chunk$set(
 library(knitr)
 opts_chunk$set(fig.path='figure/ch02_fig',
                echo=TRUE, message=FALSE,
-               fig.width=8.5, fig.height=3,
+               fig.width=8, fig.height=3.5,
                out.width='\\textwidth-3cm',
                message=FALSE, fig.align='center',
                background="gray98", tidy=FALSE, #tidy.opts=list(width.cutoff=60),
@@ -39,15 +39,20 @@ options(width=74)
 
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
 FILE = 'cochrane_2018-06-09.csv'
 PATH_DATA = file.path(PATH, 'data')
-PATH_CODE = file.path(PATH, 'code')
-PATH_RESULTS = file.path(PATH, 'results')
+PATH_CODE = file.path(PATH2, 'code')
+PATH_RESULTS = file.path(PATH2, 'results')
 PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
 
 file_results = "pb.RData"
 
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
+
+load(file.path(PATH_RESULTS, 'PubBias_results1.RData'))
+load(file.path(PATH_RESULTS, 'PubBias_results2.RData'))
+
 
 data = pb.readData(path = PATH_DATA, file = FILE)
 tmp = pb.clean(data)
@@ -63,103 +68,141 @@ require(xtable)
 
 \chapter{Results}
 
-One crucial assumption in meta analysis is that the availability and publication of studies does not depend on their effect. This is termed reporting bias in the scientific world. If reporting bias is present, the classical approaches to merge single study results in to an overall intervention effect may fail because the underlying studies are biased. There are tests that can be applied to find out if reporting bias is present in the meta analysis.
+One crucial assumption in meta analysis is that the availability and publication of studies does not depend on their effect and the variance of the effect. If this is not given, one often speaks of publication bias. In fact, there can also be other reasons for this (see discussion section). A more appropriate term for the phenomenon is small study effect. If small study effects are present in a meta-analysis, the classical approaches to merge single study results in to an overall intervention effect fails to provide an appropriate estimate of the treatment effect. 
 
 \vspace{0mm}
-For continuous outcomes, three tests are available: Eggers (based on linear regression), Thompson and Sharp (weighted linear regression) and Begg and Mazumdar (rank based) test. The following three figures show the distribution of p-values of the corresponding tests. Note that only meta analyses with more than 10 comparisons have been included. 
+To provide an overview over the issue, first it is shown how mean effect size decreases with increasing sample size of the comparisons in Figure \ref{effect.samplesize}. All effects are normalized by subtracting the mean effect size of the dataset and dividng through the standard deviation. Then, the mean of the absolute value for a given sample size is plotted against its sample size. Note that various types of outcome measures are included, such as mean difference and risk ratios, and are normalized with respect to all sample sizes.
+
+\begin{figure}
+<<echo=FALSE>>=
+data %>% filter(total1 + total2 > 5 & total1 + total2 < 500) %>% 
+  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  group_by(sample.size) %>% 
+  summarize(mean.effect = mean(scaled.effect, na.rm = T)) %>% 
+  ggplot(aes(x = sample.size, y = mean.effect)) + geom_point() + theme_bw() + xlab("sample size") + ylab("mean absolute normalized effect size")
+@
+\caption{Mean of the absolute of the normalized effect size plotted against the total sample size.}
+\label{effect.samplesize}
+\end{figure}
 
 \vspace{0mm}
-Since each histogram of p-values has 20 bins, the content of the bin with the smallest p-values is equal to the number of meta-analyses whose reporting bias test reports a p-value < 0.05. The fraction of those analyses in which we would reject the null-hypothesis based on the 5 \% threshold can therefore be assessed by eye, and would be for example for Eggers test somewhat less than one third of all analyses. 
+There are tests that can be applied to find out if reporting bias is present in the meta analysis. For the precise description, see the methods section. Application of the tests is only recommended if there are ten or more studies that can be used, so all meta-analyses with less than ten studies have been excluded.
+
+\vspace{0mm}
+There are modifications to make tests more appropriate in case of binary outcomes, therefore, the results of the tests are separated in continuous outcome test results and dichotomoized outcome results. In Figure \ref{bias.results.bin} the proportion of test results that led to rejection of the null hypothesis of no small study effect based on the 5 \% level are shown for dichotomous outcomes. The same is shown in Figure \ref{bias.results.cont} for continuous outcome measures.
+
+
+
+% # <<results = 'asis', Echo = FALSE>>=
+% # rejection.bin <- data.bin.ext %>% summarize(egger.rejection = mean(egger.test),
+% #                                             schwarzer.rejection = mean(schwarzer.test),
+% #                                             rucker.rejection = mean(rucker.test),
+% #                                             harbord.rejection = mean(harbord.test),
+% #                                             peter.rejection = mean(peter.test))
+% # print(xtable(rejection.bin), label = "bias.results", caption = "Cumulative number of groups with number of reproduction trials >= n", align = "llll", digits = 0), include.rownames = F, size = "footnotesize")
+% # @
 
 \begin{figure}
 <<echo=FALSE>>=
-data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
-  filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
-  filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
-  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-  mutate(n = n()) %>% filter(n > 9) %>% 
-  summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-                            method = "linreg")$p.val) %>% 
-  ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
-  theme_bw() + labs(title = "Eggers Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+bin.spread <- data.bin.ext %>% select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% gather(key = test.type)
+bin.spread$value <- ifelse(bin.spread$value == 1, "rejected", "accepted")
+bin.spread$value <- factor(bin.spread$value)
+bin.spread %>% ggplot(aes(x = test.type, fill = value)) + geom_bar() + coord_flip() + theme_bw()
 @
-\caption{Histogram of p-values for Eggers reporting bias test (linear regression based) for continuous outcome meta analysis.}
-\label{egger.cont}
-\end{figure}
-
-
-\begin{figure}
-<<echo=FALSE>>=
-data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
-  filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
-  filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
-  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-  mutate(n = n()) %>% filter(n > 9) %>% 
-  summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-                            method = "mm")$p.val) %>% 
-  ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
-  theme_bw() + labs(title = "Thomson Sharp Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
-@
-\caption{Histogram of p-values for Thompsom and Sharp reporting bias test (weighted linear regression based) for continuous outcome meta analysis.}
-\label{thomson.cont}
+\caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (dichotomous outcomes).}
+\label{bias.results.bin}
 \end{figure}
 
 \begin{figure}
 <<echo=FALSE>>=
-data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
-  filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
-  filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
-  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-  mutate(n = n()) %>% filter(n > 9) %>% 
-  summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-                            method = "rank")$p.val) %>% 
-  ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
-  theme_bw() + labs(title = "Begg and Mazumdar Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+cont.spread <- data.cont.ext %>% select(egger.test, begg.test, thomson.test) %>% gather(key = test.type)
+cont.spread$value <- ifelse(cont.spread$value == 1, "rejected", "accepted")
+cont.spread$value <- factor(cont.spread$value)
+cont.spread %>% ggplot(aes(x = test.type, fill = value)) + geom_bar() + coord_flip() + theme_bw()
 @
-\caption{Histogram of p-values for Begg and Mazumdar reporting bias test (rank based) for continuous outcome meta analysis.}
-\label{begg.cont}
+\caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (continuous outcomes).}
+\label{bias.results.cont}
 \end{figure}
 
+Furthermore, one can investigate how well the tests give the same results, i.e. classify the same study collections as having publication bias. This is shown in Table \ref{agreement.bin} and Table \ref{agreement.cont}, again separated for outcome types.
 
-For binary outcomes, Peters and Harbords reporting bias test have been chosen. Also here, only meta-analyses with more than 10 comparisons are included.
+<<results = 'asis', echo = FALSE>>=
+data.bin.ext <- data.bin.ext %>% mutate(egger.schwarzer = ifelse(egger.test == schwarzer.test, "agree", "disagree"),
+                                         egger.peter = ifelse(egger.test == peter.test, "agree", "disagree"),
+                                         egger.rucker = ifelse(egger.test == rucker.test, "agree", "disagree"),
+                                         egger.harbord = ifelse(egger.test == harbord.test, "agree", "disagree"),
+                                         schwarzer.peter = ifelse(schwarzer.test == peter.test, "agree", "disagree"),
+                                         schwarzer.rucker = ifelse(schwarzer.test == rucker.test, "agree", "disagree"),
+                                         schwarzer.harbord = ifelse(schwarzer.test == harbord.test, "agree", "disagree"),
+                                         rucker.peter = ifelse(rucker.test == peter.test, "agree", "disagree"),
+                                         rucker.harbord = ifelse(rucker.test == harbord.test, "agree", "disagree"),
+                                         harbord.peter = ifelse(harbord.test == peter.test, "agree", "disagree"))
+
+agreement.bin <- data.bin.ext %>% summarise(egger.schwarzer = sum(egger.schwarzer == "agree")/n(),
+                                        egger.peter = sum(egger.peter == "agree")/n(),
+                                        egger.rucker = sum(egger.rucker == "agree")/n(),
+                                        egger.harbord = sum(egger.harbord == "agree")/n(),
+                                        schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
+                                        schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
+                                        schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
+                                        rucker.peter = sum(rucker.peter == "agree")/n(),
+                                        harbord.peter = sum(harbord.peter == "agree")/n())
+
+correlation.bin <- data.bin.ext %>% summarise(egger.schwarzer = cor(pval.egger.bin, pval.schwarzer.bin),
+                                            egger.peter = cor(pval.egger.bin, pval.peter.bin),
+                                            egger.rucker = cor(pval.egger.bin, pval.rucker.bin),
+                                            egger.harbord = cor(pval.egger.bin, pval.harbord.bin),
+                                            schwarzer.peter = cor(pval.schwarzer.bin, pval.peter.bin),
+                                            schwarzer.rucker = cor(pval.schwarzer.bin, pval.rucker.bin),
+                                            schwarzer.harbord = cor(pval.schwarzer.bin, pval.harbord.bin),
+                                            rucker.peter = cor(pval.rucker.bin, pval.peter.bin),
+                                            harbord.peter = cor(pval.harbord.bin, pval.peter.bin))
+
+binary.tests.agreement <- rbind(agreement.bin, correlation.bin)
+rownames(binary.tests.agreement) <- c("Test Agreement","P-value Correlation")
+
+print(xtable(x = t(binary.tests.agreement), caption = "Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (dichotomous outcomes)", label = "agreement.bin",  align = "lll", digits = 2), include.rownames = T, size = "footnotesize")
+@
+
+
+<<results = 'asis', echo = FALSE>>=
+data.cont.ext <- data.cont.ext %>% mutate(thomson.egger = ifelse(thomson.test == egger.test, "agree", "disagree"),
+                                          thomson.begg = ifelse(thomson.test == begg.test, "agree", "disagree"),
+                                          egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"))
+
+agreement.cont <- data.cont.ext %>% summarise(thomson.egger = sum(thomson.egger == "agree")/n(),
+                                              thomson.begg = sum(thomson.begg == "agree")/n(),
+                                              egger.begg = sum(egger.begg == "agree")/n())
+
+correlation.cont <- data.cont.ext %>% summarise(thomson.egger = cor(pval.thomson.cont, pval.egger.cont),
+                                                thomson.begg = cor(pval.thomson.cont, pval.begg.cont),
+                                                egger.begg = cor(pval.egger.cont, pval.begg.cont))
+
+cont.tests.agreement <- rbind(agreement.cont, correlation.cont)
+rownames(cont.tests.agreement) <- c("Test Agreement","P-value Correlation")
+
+print(xtable(x = t(cont.tests.agreement), caption = "Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (continuous outcomes)", label = "agreement.cont",  align = "lll", digits = 2), include.rownames = T, size = "footnotesize")
+@
+
+\vspace{0mm}
+Test performance depends on the sample size, despite having restricted sample size to a minimum of 10 studies. The p-values of two tests are shown with respect to the sample size of the studies in Figure \ref{pvalues.samplesize.bin} for peters test based on dichotomous outcomes and in Figure \ref{pvalues.samplesize.cont} for thomson and sharp's test based on continuous outcomes. %(Suggests that 10 is likely too small)
 
 \begin{figure}
 <<echo=FALSE>>=
-data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
-  filter(events1 > 0 | events2 > 0) %>% 
-  filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
-  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-  mutate(n = n()) %>% filter(n > 9) %>% 
-  summarize(pval = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "peters")$p.val) %>% 
-  ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
-  theme_bw() + labs(title = "Peters Reporting Bias Test P-values for Binary Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+data.bin.ext %>% filter(n < 100)%>% ggplot(aes(y = pval.peter.bin, x = n)) + geom_point(alpha = 0.5) + theme_bw() + geom_smooth(method = "loess", se = F) 
 @
-\caption{Histogram of p-values for Peters reporting bias test (rank based) for continuous outcome meta analysis.}
-\label{peters.bin}
+\caption{P-values of peters test for small study effects and their corresponding sample size (dichotomous outcomes)}
+\label{pvalues.samplesize.bin}
 \end{figure}
-
 
 \begin{figure}
 <<echo=FALSE>>=
-data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
-  filter(events1 > 0 | events2 > 0) %>% 
-  filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
-  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-  mutate(n = n()) %>% filter(n > 9) %>% 
-  summarize(pval = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "score")$p.val) %>% 
-  ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
-  theme_bw() + labs(title = "Harbord Reporting Bias Test P-values for Binary Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+data.cont.ext %>% filter(n < 100) %>% ggplot(aes(y = pval.thomson.cont, x = n)) + geom_point(alpha = 0.5) + theme_bw() + geom_smooth(method = "loess", se = F) 
 @
-\caption{Histogram of p-values for Harbord reporting bias test (rank based) for continuous outcome meta analysis.}
-\label{harbord.bin}
+\caption{P-values of thomson and sharp's test for small study effects and their corresponding sample size (continuous outcomes)}
+\label{pvalues.samplesize.cont}
 \end{figure}
 
-
-
-
-Another less conventional way to look for publication bias is to see how many studies are ``reflected'' by the trim and fill method. As a first impression, a histogram with the fraction of trimmed of all comparisons is shown in figure \ref{trimfill.cont}. 
-
-\begin{figure}
 <<echo=FALSE>>=
 trimfill.cont <- data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 50) %>% 
   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
@@ -171,6 +214,23 @@ trimfill.cont <- data %>% filter(outcome.measure == "Mean Difference" | outcome.
 trimfill.cont.mean <- trimfill.cont %>% ungroup %>% summarise(mean = mean(trim)) %>% select(mean)
 trimfill.cont.median <- trimfill.cont %>% ungroup %>% summarise(median = median(trim)) %>% select(median)
 
+trimfill.bin <- data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% #filter(file.nr < 503) %>% 
+  filter(events1 > 0 | events2 > 0) %>% 
+  filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
+  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  mutate(n = n()) %>% filter(n > 9) %>% 
+  summarize(trim = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2))$k0 / n())
+
+trimfill.bin.mean <- trimfill.bin %>% ungroup %>% summarise(mean = mean(trim)) %>% select(mean)
+trimfill.bin.median <- trimfill.bin %>% ungroup %>% summarise(median = median(trim)) %>% select(median)
+@
+
+
+\vspace{0mm}
+One can use the proportion of added studies by the trim-and-fill method from the overall number of studies to further investigate the extent of small study effects. A histogram with those fractions is shown in Figure \ref{trimfill.cont} for continuous outcomes and \ref{trimfill.bin} for dichotomous outcomes. The mean fraction of trimmed comparisons for binary outcomes is \Sexpr{round(trimfill.bin.mean,2)} and the median \Sexpr{round(trimfill.bin.median,2)}. In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the relationship between fraction of added studies by trim-and-fill and the hypothesis test decisions of the small study effects tests is shown for continuous and dichotomous outcomes.
+
+\begin{figure}
+<<echo=FALSE>>=
 trimfill.cont %>% ggplot(aes(x = trim)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
   theme_bw() + labs(title = "Fraction of Trimmed Comparisons (continuous outcome)") + xlab("Fraction") + ylab("Frequency")
 @
@@ -183,16 +243,6 @@ The mean fraction of trimmed comparisons for continuous outcomes is \Sexpr{round
 The same is repeated for binary outcomes in figure \ref{trimfill.bin}. 
 \begin{figure}
 <<echo=FALSE>>=
-trimfill.bin <- data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% #filter(file.nr < 503) %>% 
-  filter(events1 > 0 | events2 > 0) %>% 
-  filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
-  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-  mutate(n = n()) %>% filter(n > 9) %>% 
-  summarize(trim = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2))$k0 / n())
-
-trimfill.bin.mean <- trimfill.bin %>% ungroup %>% summarise(mean = mean(trim)) %>% select(mean)
-trimfill.bin.median <- trimfill.bin %>% ungroup %>% summarise(median = median(trim)) %>% select(median)
-
 trimfill.bin %>% ggplot(aes(x = trim)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
   theme_bw() + labs(title = "Fraction of Trimmed Comparisons (binary outcome)") + xlab("Fraction") + ylab("Frequency")
 @
@@ -200,5 +250,136 @@ trimfill.bin %>% ggplot(aes(x = trim)) + geom_histogram(col = "gray15", fill = "
 \label{trimfill.bin}
 \end{figure}
 
-The mean fraction of trimmed comparisons for binary outcomes is \Sexpr{round(trimfill.bin.mean,2)} and the median \Sexpr{round(trimfill.bin.median,2)}.
+
+\begin{figure}
+<<echo=FALSE>>=
+cdplot(x = data.bin.ext$trim.bin, y = as.factor(ifelse(data.bin.ext$peter.test == 1, "yes", "no")), xlab = "Fraction of added studies", ylab = "Bias")
+@
+\caption{Fraction of added studies for small study effect correction by trim and fill and the corresponding small study effect test decision (based on 5\% significance level) of peters test and dichotomous outcomes}
+\label{trimfill.pvalues.bin}
+\end{figure}
+
+\begin{figure}
+<<echo=FALSE>>=
+cdplot(x = data.cont.ext$trim.cont, y = as.factor(ifelse(data.cont.ext$thomson.test == 1, "yes", "no")), xlab = "Fraction of added studies", ylab = "Bias")
+@
+\caption{Fraction of added studies for small study effect correction by trim and fill and the corresponding small study effect test decision (based on 5\% significance level) of thomson and sharp's test and continuous outcomes}
+\label{trimfill.pvalues.cont}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% 
+% For continuous outcomes, three tests are available: Eggers (based on linear regression), Thompson and Sharp (weighted linear regression) and Begg and Mazumdar (rank based) test. The following three figures show the distribution of p-values of the corresponding tests. Note that only meta analyses with more than 10 comparisons have been included. 
+% 
+% \vspace{0mm}
+% Since each histogram of p-values has 20 bins, the content of the bin with the smallest p-values is equal to the number of meta-analyses whose reporting bias test reports a p-value < 0.05. The fraction of those analyses in which we would reject the null-hypothesis based on the 5 \% threshold can therefore be assessed by eye, and would be for example for Eggers test somewhat less than one third of all analyses. 
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
+%   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
+%   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
+%   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+%   mutate(n = n()) %>% filter(n > 9) %>% 
+%   summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+%                             method = "linreg")$p.val) %>% 
+%   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+%   theme_bw() + labs(title = "Eggers Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+% @
+% \caption{Histogram of p-values for Eggers reporting bias test (linear regression based) for continuous outcome meta analysis.}
+% \label{egger.cont}
+% \end{figure}
+% 
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
+%   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
+%   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
+%   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+%   mutate(n = n()) %>% filter(n > 9) %>% 
+%   summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+%                             method = "mm")$p.val) %>% 
+%   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+%   theme_bw() + labs(title = "Thomson Sharp Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+% @
+% \caption{Histogram of p-values for Thompsom and Sharp reporting bias test (weighted linear regression based) for continuous outcome meta analysis.}
+% \label{thomson.cont}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
+%   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
+%   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
+%   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+%   mutate(n = n()) %>% filter(n > 9) %>% 
+%   summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+%                             method = "rank")$p.val) %>% 
+%   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+%   theme_bw() + labs(title = "Begg and Mazumdar Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+% @
+% \caption{Histogram of p-values for Begg and Mazumdar reporting bias test (rank based) for continuous outcome meta analysis.}
+% \label{begg.cont}
+% \end{figure}
+% 
+% 
+% For binary outcomes, Peters and Harbords reporting bias test have been chosen. Also here, only meta-analyses with more than 10 comparisons are included.
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
+%   filter(events1 > 0 | events2 > 0) %>% 
+%   filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
+%   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+%   mutate(n = n()) %>% filter(n > 9) %>% 
+%   summarize(pval = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "peters")$p.val) %>% 
+%   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+%   theme_bw() + labs(title = "Peters Reporting Bias Test P-values for Binary Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+% @
+% \caption{Histogram of p-values for Peters reporting bias test (rank based) for continuous outcome meta analysis.}
+% \label{peters.bin}
+% \end{figure}
+% 
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
+%   filter(events1 > 0 | events2 > 0) %>% 
+%   filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
+%   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+%   mutate(n = n()) %>% filter(n > 9) %>% 
+%   summarize(pval = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "score")$p.val) %>% 
+%   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+%   theme_bw() + labs(title = "Harbord Reporting Bias Test P-values for Binary Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+% @
+% \caption{Histogram of p-values for Harbord reporting bias test (rank based) for continuous outcome meta analysis.}
+% \label{harbord.bin}
+% \end{figure}
 

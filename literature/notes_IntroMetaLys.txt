@@ -1,0 +1,11 @@
+Pb Bias Tests only work if reasonable dispersion in sample size and enough studies are given -> No significance should not be taken as reassurance for no pbias
+
+Reasons for small study effects are not known, see Sterne et. al. 2001.
+
+Rosenbergs Fail Safe N = How many studies are needed to render the summary effect non-significant
+
+Plot Rosenbergs Fail Safe N and Trim and Fill K0 against each other? Or p-values of Pbtests?
+
+Generally, there is an Issue in Meta-Analysis: Random effects is preferred over fixed effects Meta-analysis, but it gives more weight to smaller studies.
+
+Bias correcting methods - plot corrected estimates against e.o. and look for similarity/dissimilarity

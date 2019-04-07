@@ -1,2 +1,7 @@
-\backcite {metaanalysis}{{13}{4.1}{section.4.1}}
-\backcite {trimfill}{{13}{4.2}{section.4.2}}
+\backcite {metaanalysis}{{15}{4.1}{section.4.1}}
+\backcite {tau.estimator}{{15}{4.1}{equation.4.1.2}}
+\backcite {begg.ties}{{16}{4.2}{equation.4.2.13}}
+\backcite {Egger}{{16}{4.2}{equation.4.2.13}}
+\backcite {thompson.sharp}{{17}{4.2}{equation.4.2.14}}
+\backcite {Harbord}{{17}{4.2}{equation.4.2.15}}
+\backcite {trimfill}{{17}{4.3}{section.4.3}}

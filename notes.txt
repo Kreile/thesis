@@ -1,0 +1,9 @@
+- Zusammenhang Fallzahl (sample size) - Effektgrösse. Plots? Underpowered studies überschätzen den Effekt
+
+- Cont vs. bin. tests Unterschiede 
+
+- Heterogeneity vs. Publication 
+
+- Publication Bias publikationen, litterature review
+
+- Publication date  - Publication bias? Weshalb nicht publikations-sample size mit publikations-Jahr vertauschen oder ergänzen? 

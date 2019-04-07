@@ -5,9 +5,10 @@
 
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
 FILE = 'cochrane_2018-06-09.csv'
 PATH_DATA = file.path(PATH, 'data')
-PATH_CODE = file.path(PATH, 'code')
+PATH_CODE = file.path(PATH2, 'code')
 PATH_RESULTS = file.path(PATH, 'results')
 PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
 
@@ -313,88 +314,16 @@ print(arrange(filter(data, file.nr == 21) %>%
           select(comparison.name, study.name), study.name))
 
 
+#Check out metabin and metabias function with one meta-analysis.
+ds <- data %>% filter(file.nr == 11) %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% 
+  filter(outcome.measure == "Odds Ratio" | outcome.measure == "Risk Ratio") %>% filter(events1 > 0 & events2 > 0) %>% 
+  mutate(counts = n()) %>% filter(counts == 18)
+print(ds %>% select(effect, events1, events2, study.name, outcome.name, counts), n = 200)
 
+meta.ds <- metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, data = ds, method = "Inverse")
+trimfill.ds <- trimfill(meta.ds)
+funnel(trimfill.ds)
 
-#Meta-analysis dataset creation: Pubias test p-values, Q-heterogeneity statistic, trimfill number of mirrored studies
-data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>%# filter(file.nr < 503) %>% 
-  filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
-  filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
-  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-  mutate(n = n()) %>% filter(n > 9) %>% 
-  summarize(doi = unique(doi),
-    pval.egger.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-                            method = "linreg")$p.val,
-            pval.thomsom.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-                            method = "mm")$p.val,
-            pval.begg.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-                            method = "rank")$p.val,
-            trim.cont = trimfill(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2))$k0 / n(),
-            Q.cont = metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2)$Q) 
+metabias(meta.ds, method = "peters")
+metabias(meta.ds, method = "peters")$statistic
 
-pb.bias.cont <- function(data){
-  metadat <- data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>%# filter(file.nr < 503) %>% 
-    filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
-    filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
-    group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-    mutate(n = n()) %>% filter(n > 9) %>% 
-    summarize(doi = unique(doi), n = n(),
-              pval.egger.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-                                         method = "linreg")$p.val,
-              pval.thomsom.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-                                           method = "mm")$p.val,
-              pval.begg.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-                                        method = "rank")$p.val,
-              trim.cont = trimfill(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2))$k0 / n(),
-              Q.cont = metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2)$Q) 
-  return(metadat)
-}
-
-
-data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
-  filter(events1 > 0 | events2 > 0) %>% 
-  filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
-  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-  mutate(n = n()) %>% filter(n > 9) %>% 
-  summarize(doi = unique(doi),
-    pval.peters.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "peters")$p.val,
-    pval.harbord.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "score")$p.val,
-    trim.bin = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2))$k0 / n(),
-    Q.bin = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR")$Q)
-
-
-pb.bias.bin <- function(data){
-  metadat <- data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
-    filter(events1 > 0 | events2 > 0) %>% 
-    filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
-    group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-    mutate(n = n()) %>% filter(n > 9) %>% 
-    summarize(doi = unique(doi), n = n(),
-              pval.peters.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "peters")$p.val,
-              pval.harbord.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "score")$p.val,
-              trim.bin = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2))$k0 / n(),
-              Q.bin = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR")$Q)
-  return(metadat)
-}            
-  
-
-
-
-
-
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  

@@ -9,9 +9,10 @@
 
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
 FILE = 'cochrane_2018-06-09.csv'
 PATH_DATA = file.path(PATH, 'data')
-PATH_CODE = file.path(PATH, 'code')
+PATH_CODE = file.path(PATH2, 'code')
 PATH_RESULTS = file.path(PATH, 'results')
 PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
 
