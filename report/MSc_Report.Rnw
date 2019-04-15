@@ -4,6 +4,7 @@
 
 \usepackage{verbatim}
 \usepackage{tikz}
+\usepackage{amssymb}
 \usetikzlibrary{trees}
 
 

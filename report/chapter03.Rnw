@@ -52,6 +52,8 @@ source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
 load(file.path(PATH_RESULTS, 'PubBias_results1.RData'))
 load(file.path(PATH_RESULTS, 'PubBias_results2.RData'))
+load(file.path(PATH_RESULTS, 'PubBias_results3.RData'))
+load(file.path(PATH_RESULTS, 'PubBias_results4.RData'))
 
 
 data = pb.readData(path = PATH_DATA, file = FILE)
@@ -68,10 +70,11 @@ require(xtable)
 
 \chapter{Results}
 
+\section{Small Study Effects}
 One crucial assumption in meta analysis is that the availability and publication of studies does not depend on their effect and the variance of the effect. If this is not given, one often speaks of publication bias. In fact, there can also be other reasons for this (see discussion section). A more appropriate term for the phenomenon is small study effect. If small study effects are present in a meta-analysis, the classical approaches to merge single study results in to an overall intervention effect fails to provide an appropriate estimate of the treatment effect. 
 
 \vspace{0mm}
-To provide an overview over the issue, first it is shown how mean effect size decreases with increasing sample size of the comparisons in Figure \ref{effect.samplesize}. All effects are normalized by subtracting the mean effect size of the dataset and dividng through the standard deviation. Then, the mean of the absolute value for a given sample size is plotted against its sample size. Note that various types of outcome measures are included, such as mean difference and risk ratios, and are normalized with respect to all sample sizes.
+To provide an overview over the issue, first it is shown how mean absolute effect size decreases with increasing sample size of the comparisons in Figure \ref{effect.samplesize}. The decrease is particularly substantive from very small trials ($n$ = 5) to medium sample size ($n$ = 100), afterwards the trend is less pronounced. With increasing sample size, there are fewer results, therefore, the variation between means increases. All effects are normalized by subtracting the mean effect size of the dataset and dividng through the standard deviation. Note that various types of outcome measures are included, such as mean difference and risk ratios, and are normalized with respect to all sample sizes.
 
 \begin{figure}
 <<echo=FALSE>>=
@@ -85,49 +88,21 @@ data %>% filter(total1 + total2 > 5 & total1 + total2 < 500) %>%
 \label{effect.samplesize}
 \end{figure}
 
-\vspace{0mm}
-There are tests that can be applied to find out if reporting bias is present in the meta analysis. For the precise description, see the methods section. Application of the tests is only recommended if there are ten or more studies that can be used, so all meta-analyses with less than ten studies have been excluded.
+\subsection{Small Study Effect Tests}
 
-\vspace{0mm}
-There are modifications to make tests more appropriate in case of binary outcomes, therefore, the results of the tests are separated in continuous outcome test results and dichotomoized outcome results. In Figure \ref{bias.results.bin} the proportion of test results that led to rejection of the null hypothesis of no small study effect based on the 5 \% level are shown for dichotomous outcomes. The same is shown in Figure \ref{bias.results.cont} for continuous outcome measures.
+<<echo=FALSE, warning=FALSE>>=
+n.bin <- dim(meta.bin)[1]
+rejection.bin <- meta.bin %>% summarize(egger.rejection = mean(egger.test),
+                                            schwarzer.rejection = mean(schwarzer.test),
+                                            rucker.rejection = mean(rucker.test),
+                                            harbord.rejection = mean(harbord.test),
+                                            peter.rejection = mean(peter.test))
 
+bin.spread <- meta.bin %>% select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% gather(key = test.type, value = "null.hypothesis")
+bin.spread$null.hypothesis <- ifelse(bin.spread$null.hypothesis == 1, "rejected", "not rejected")
+bin.spread$null.hypothesis <- factor(bin.spread$null.hypothesis)
 
-
-% # <<results = 'asis', Echo = FALSE>>=
-% # rejection.bin <- data.bin.ext %>% summarize(egger.rejection = mean(egger.test),
-% #                                             schwarzer.rejection = mean(schwarzer.test),
-% #                                             rucker.rejection = mean(rucker.test),
-% #                                             harbord.rejection = mean(harbord.test),
-% #                                             peter.rejection = mean(peter.test))
-% # print(xtable(rejection.bin), label = "bias.results", caption = "Cumulative number of groups with number of reproduction trials >= n", align = "llll", digits = 0), include.rownames = F, size = "footnotesize")
-% # @
-
-\begin{figure}
-<<echo=FALSE>>=
-bin.spread <- data.bin.ext %>% select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% gather(key = test.type)
-bin.spread$value <- ifelse(bin.spread$value == 1, "rejected", "accepted")
-bin.spread$value <- factor(bin.spread$value)
-bin.spread %>% ggplot(aes(x = test.type, fill = value)) + geom_bar() + coord_flip() + theme_bw()
-@
-\caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (dichotomous outcomes).}
-\label{bias.results.bin}
-\end{figure}
-
-\begin{figure}
-<<echo=FALSE>>=
-cont.spread <- data.cont.ext %>% select(egger.test, begg.test, thomson.test) %>% gather(key = test.type)
-cont.spread$value <- ifelse(cont.spread$value == 1, "rejected", "accepted")
-cont.spread$value <- factor(cont.spread$value)
-cont.spread %>% ggplot(aes(x = test.type, fill = value)) + geom_bar() + coord_flip() + theme_bw()
-@
-\caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (continuous outcomes).}
-\label{bias.results.cont}
-\end{figure}
-
-Furthermore, one can investigate how well the tests give the same results, i.e. classify the same study collections as having publication bias. This is shown in Table \ref{agreement.bin} and Table \ref{agreement.cont}, again separated for outcome types.
-
-<<results = 'asis', echo = FALSE>>=
-data.bin.ext <- data.bin.ext %>% mutate(egger.schwarzer = ifelse(egger.test == schwarzer.test, "agree", "disagree"),
+meta.bin <- meta.bin %>% mutate(egger.schwarzer = ifelse(egger.test == schwarzer.test, "agree", "disagree"),
                                          egger.peter = ifelse(egger.test == peter.test, "agree", "disagree"),
                                          egger.rucker = ifelse(egger.test == rucker.test, "agree", "disagree"),
                                          egger.harbord = ifelse(egger.test == harbord.test, "agree", "disagree"),
@@ -138,7 +113,7 @@ data.bin.ext <- data.bin.ext %>% mutate(egger.schwarzer = ifelse(egger.test == s
                                          rucker.harbord = ifelse(rucker.test == harbord.test, "agree", "disagree"),
                                          harbord.peter = ifelse(harbord.test == peter.test, "agree", "disagree"))
 
-agreement.bin <- data.bin.ext %>% summarise(egger.schwarzer = sum(egger.schwarzer == "agree")/n(),
+agreement.bin <- meta.bin %>% summarise(egger.schwarzer = sum(egger.schwarzer == "agree")/n(),
                                         egger.peter = sum(egger.peter == "agree")/n(),
                                         egger.rucker = sum(egger.rucker == "agree")/n(),
                                         egger.harbord = sum(egger.harbord == "agree")/n(),
@@ -148,7 +123,7 @@ agreement.bin <- data.bin.ext %>% summarise(egger.schwarzer = sum(egger.schwarze
                                         rucker.peter = sum(rucker.peter == "agree")/n(),
                                         harbord.peter = sum(harbord.peter == "agree")/n())
 
-correlation.bin <- data.bin.ext %>% summarise(egger.schwarzer = cor(pval.egger.bin, pval.schwarzer.bin),
+correlation.bin <- meta.bin %>% summarise(egger.schwarzer = cor(pval.egger.bin, pval.schwarzer.bin),
                                             egger.peter = cor(pval.egger.bin, pval.peter.bin),
                                             egger.rucker = cor(pval.egger.bin, pval.rucker.bin),
                                             egger.harbord = cor(pval.egger.bin, pval.harbord.bin),
@@ -161,35 +136,86 @@ correlation.bin <- data.bin.ext %>% summarise(egger.schwarzer = cor(pval.egger.b
 binary.tests.agreement <- rbind(agreement.bin, correlation.bin)
 rownames(binary.tests.agreement) <- c("Test Agreement","P-value Correlation")
 
-print(xtable(x = t(binary.tests.agreement), caption = "Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (dichotomous outcomes)", label = "agreement.bin",  align = "lll", digits = 2), include.rownames = T, size = "footnotesize")
-@
 
 
-<<results = 'asis', echo = FALSE>>=
-data.cont.ext <- data.cont.ext %>% mutate(thomson.egger = ifelse(thomson.test == egger.test, "agree", "disagree"),
+#Continuous outcomes:
+n.cont <- dim(meta.cont)[1]
+rejection.cont <- meta.cont %>% summarize(egger.rejection = mean(egger.test),
+                                              begg.rejection = mean(begg.test),
+                                              thomson.rejection = mean(thomson.test))
+
+cont.spread <- meta.cont %>% select(egger.test, begg.test, thomson.test) %>% gather(key = test.type, value = "null.hypothesis")
+cont.spread$null.hypothesis <- ifelse(cont.spread$null.hypothesis == 1, "rejected", "not rejected")
+cont.spread$null.hypothesis <- factor(cont.spread$null.hypothesis)
+
+meta.cont <- meta.cont %>% mutate(thomson.egger = ifelse(thomson.test == egger.test, "agree", "disagree"),
                                           thomson.begg = ifelse(thomson.test == begg.test, "agree", "disagree"),
                                           egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"))
 
-agreement.cont <- data.cont.ext %>% summarise(thomson.egger = sum(thomson.egger == "agree")/n(),
+agreement.cont <- meta.cont %>% summarise(thomson.egger = sum(thomson.egger == "agree")/n(),
                                               thomson.begg = sum(thomson.begg == "agree")/n(),
                                               egger.begg = sum(egger.begg == "agree")/n())
 
-correlation.cont <- data.cont.ext %>% summarise(thomson.egger = cor(pval.thomson.cont, pval.egger.cont),
+correlation.cont <- meta.cont %>% summarise(thomson.egger = cor(pval.thomson.cont, pval.egger.cont),
                                                 thomson.begg = cor(pval.thomson.cont, pval.begg.cont),
                                                 egger.begg = cor(pval.egger.cont, pval.begg.cont))
 
 cont.tests.agreement <- rbind(agreement.cont, correlation.cont)
 rownames(cont.tests.agreement) <- c("Test Agreement","P-value Correlation")
 
+#Trimfill missing studies fractions statistics:
+trimfill.cont.mean <- meta.cont %>% ungroup %>% summarise(mean = mean(missing.trim.cont)) %>% select(mean)
+trimfill.cont.median <- meta.cont %>% ungroup %>% summarise(median = median(missing.trim.cont)) %>% select(median)
+
+trimfill.bin.mean <- meta.bin %>% ungroup %>% summarise(mean = mean(missing.trim.bin)) %>% select(mean)
+trimfill.bin.median <- meta.bin %>% ungroup %>% summarise(median = median(missing.trim.bin)) %>% select(median)
+@
+
+
+
+There are tests that can be applied to find out if reporting bias is present in the meta analysis. For the precise description, see the methods section. Application of the tests is only recommended if there are ten or more studies \citep{cochrane.handbook} that can be used, so all meta-analyses with less than ten studies have been excluded.
+
+\vspace{0mm}
+There are modifications to make tests more appropriate in case of binary outcomes, therefore the results have been separated in continuous and dichotomous outcome test results. In Figure \ref{bias.results.cont} the proportion of test results that led to rejection of the null hypothesis of no small study effect based on the 5 \% level are shown for continuous outcomes. From \Sexpr{n.cont} meta-analyses with continouos outcomes, most meta-analyses with rejected null hypotheses have been found by the Thompson and Sharp test (\Sexpr{round(rejection.cont$thomson.rejection, 3)}), followed closely by Eggers test (\Sexpr{round(rejection.cont$egger.rejection, 3)}) and Begg and Mazumdar's test (\Sexpr{round(rejection.cont$begg.rejection, 3)}).
+The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measures ($n$ = \Sexpr{n.bin}). The test that rejects most null hypotheses is here Egger's test (\Sexpr{round(rejection.bin$egger.rejection, 3)}), followed by R\"ucker's test (\Sexpr{round(rejection.bin$rucker.rejection, 3)}), Harbord's test (\Sexpr{round(rejection.bin$harbord.rejection, 3)}), Peters test (\Sexpr{round(rejection.bin$peter.rejection, 3)}) and Schwarzer's test (\Sexpr{round(rejection.bin$schwarzer.rejection, 3)}). 
+
+
+\begin{figure}
+<<echo=FALSE>>=
+cont.spread %>% ggplot(aes(x = test.type, fill = null.hypothesis )) + geom_bar() + coord_flip() + theme_bw()
+@
+\caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (continuous outcomes).}
+\label{bias.results.cont}
+\end{figure}
+
+\begin{figure}
+<<echo=FALSE>>=
+
+bin.spread %>% ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + theme_bw()
+@
+\caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (dichotomous outcomes).}
+\label{bias.results.bin}
+\end{figure}
+
+
+The agreement of the tests, i.e. the proportion of meta-analyses where the rest results are equal between tests, is shown in Table \ref{agreement.bin} and Table \ref{agreement.cont}, again separated for outcome types. Agreement in tests for binary outcomes is better than continuous outcomes, with some variation between tests (binary outcomes: 83 to 91\%). Correlation varies more between tests, both for continuous and binary outcome tests.
+
+<<results = 'asis', echo = FALSE, warnings = FALSE>>=
+print(xtable(x = t(binary.tests.agreement), caption = "Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (dichotomous outcomes)", label = "agreement.bin",  align = "lll", digits = 2), include.rownames = T, size = "footnotesize")
+@
+
+
+<<results = 'asis', echo = FALSE, warnings = FALSE>>=
 print(xtable(x = t(cont.tests.agreement), caption = "Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (continuous outcomes)", label = "agreement.cont",  align = "lll", digits = 2), include.rownames = T, size = "footnotesize")
 @
 
 \vspace{0mm}
 Test performance depends on the sample size, despite having restricted sample size to a minimum of 10 studies. The p-values of two tests are shown with respect to the sample size of the studies in Figure \ref{pvalues.samplesize.bin} for peters test based on dichotomous outcomes and in Figure \ref{pvalues.samplesize.cont} for thomson and sharp's test based on continuous outcomes. %(Suggests that 10 is likely too small)
+A trend towards more significant p-values is visible for larger sample sizes.
 
 \begin{figure}
 <<echo=FALSE>>=
-data.bin.ext %>% filter(n < 100)%>% ggplot(aes(y = pval.peter.bin, x = n)) + geom_point(alpha = 0.5) + theme_bw() + geom_smooth(method = "loess", se = F) 
+meta.bin %>% filter(n < 100)%>% ggplot(aes(y = pval.peter.bin, x = n)) + geom_point(alpha = 0.5) + theme_bw() + geom_smooth(method = "loess", se = F) 
 @
 \caption{P-values of peters test for small study effects and their corresponding sample size (dichotomous outcomes)}
 \label{pvalues.samplesize.bin}
@@ -197,41 +223,19 @@ data.bin.ext %>% filter(n < 100)%>% ggplot(aes(y = pval.peter.bin, x = n)) + geo
 
 \begin{figure}
 <<echo=FALSE>>=
-data.cont.ext %>% filter(n < 100) %>% ggplot(aes(y = pval.thomson.cont, x = n)) + geom_point(alpha = 0.5) + theme_bw() + geom_smooth(method = "loess", se = F) 
+meta.cont %>% filter(n < 100) %>% ggplot(aes(y = pval.thomson.cont, x = n)) + geom_point(alpha = 0.5) + theme_bw() + geom_smooth(method = "loess", se = F) 
 @
 \caption{P-values of thomson and sharp's test for small study effects and their corresponding sample size (continuous outcomes)}
 \label{pvalues.samplesize.cont}
 \end{figure}
 
-<<echo=FALSE>>=
-trimfill.cont <- data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 50) %>% 
-  filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
-  filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
-  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-  mutate(n = n()) %>% filter(n > 9) %>% 
-  summarize(trim = trimfill(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2))$k0 / n()) 
-
-trimfill.cont.mean <- trimfill.cont %>% ungroup %>% summarise(mean = mean(trim)) %>% select(mean)
-trimfill.cont.median <- trimfill.cont %>% ungroup %>% summarise(median = median(trim)) %>% select(median)
-
-trimfill.bin <- data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% #filter(file.nr < 503) %>% 
-  filter(events1 > 0 | events2 > 0) %>% 
-  filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
-  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-  mutate(n = n()) %>% filter(n > 9) %>% 
-  summarize(trim = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2))$k0 / n())
-
-trimfill.bin.mean <- trimfill.bin %>% ungroup %>% summarise(mean = mean(trim)) %>% select(mean)
-trimfill.bin.median <- trimfill.bin %>% ungroup %>% summarise(median = median(trim)) %>% select(median)
-@
-
 
 \vspace{0mm}
-One can use the proportion of added studies by the trim-and-fill method from the overall number of studies to further investigate the extent of small study effects. A histogram with those fractions is shown in Figure \ref{trimfill.cont} for continuous outcomes and \ref{trimfill.bin} for dichotomous outcomes. The mean fraction of trimmed comparisons for binary outcomes is \Sexpr{round(trimfill.bin.mean,2)} and the median \Sexpr{round(trimfill.bin.median,2)}. In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the relationship between fraction of added studies by trim-and-fill and the hypothesis test decisions of the small study effects tests is shown for continuous and dichotomous outcomes.
+One can use the proportion of added studies by the trim-and-fill method from the overall number of studies to further investigate the extent of small study effects. The mean fraction of trimmed comparisons for binary outcomes is \Sexpr{round(trimfill.bin.mean,2)} and the median \Sexpr{round(trimfill.bin.median,2)}. A histogram with those fractions is shown in Figure \ref{trimfill.cont} for continuous outcomes and \ref{trimfill.bin} for dichotomous outcomes. In both cases, the method very commonly adds supposedly unpublished studies to the meta-analyses. In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the relationship between fraction of added studies by trim-and-fill and the hypothesis test decisions of the small study effects tests is shown for continuous and dichotomous outcomes. In the case of Peters test dor dichotomous outcomes, there is less agreement with the trim-and fill method than in the case of Thomson and Sharp's test for continuos outcomes in the sense that the fraction of meta-analyses with rejected null hypothesises increases more clearly when there are more studies added by trim-and-fill.
 
 \begin{figure}
 <<echo=FALSE>>=
-trimfill.cont %>% ggplot(aes(x = trim)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+meta.cont %>% ggplot(aes(x = missing.trim.cont)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
   theme_bw() + labs(title = "Fraction of Trimmed Comparisons (continuous outcome)") + xlab("Fraction") + ylab("Frequency")
 @
 \caption{Histogram of fractions of trimmed comparisons from meta analyses with continuous outcomes.}
@@ -243,7 +247,7 @@ The mean fraction of trimmed comparisons for continuous outcomes is \Sexpr{round
 The same is repeated for binary outcomes in figure \ref{trimfill.bin}. 
 \begin{figure}
 <<echo=FALSE>>=
-trimfill.bin %>% ggplot(aes(x = trim)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+meta.bin %>% ggplot(aes(x = missing.trim.bin)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
   theme_bw() + labs(title = "Fraction of Trimmed Comparisons (binary outcome)") + xlab("Fraction") + ylab("Frequency")
 @
 \caption{Histogram of fractions of trimmed comparisons from meta analyses with binary outcomes.}
@@ -253,21 +257,24 @@ trimfill.bin %>% ggplot(aes(x = trim)) + geom_histogram(col = "gray15", fill = "
 
 \begin{figure}
 <<echo=FALSE>>=
-cdplot(x = data.bin.ext$trim.bin, y = as.factor(ifelse(data.bin.ext$peter.test == 1, "yes", "no")), xlab = "Fraction of added studies", ylab = "Bias")
+cdplot(x = meta.bin$missing.trim.bin, y = as.factor(ifelse(meta.bin$peter.test == 1, "yes", "no")), xlab = "Fraction of added studies", ylab = "Bias")
 @
-\caption{Fraction of added studies for small study effect correction by trim and fill and the corresponding small study effect test decision (based on 5\% significance level) of peters test and dichotomous outcomes}
+\caption{Fraction of added studies for small study effect correction by trim and fill and the corresponding small study effect test decision (based on 5\% significance level) of Peters test and dichotomous outcomes}
 \label{trimfill.pvalues.bin}
 \end{figure}
 
 \begin{figure}
 <<echo=FALSE>>=
-cdplot(x = data.cont.ext$trim.cont, y = as.factor(ifelse(data.cont.ext$thomson.test == 1, "yes", "no")), xlab = "Fraction of added studies", ylab = "Bias")
+cdplot(x = meta.cont$missing.trim.cont, y = as.factor(ifelse(meta.cont$thomson.test == 1, "yes", "no")), xlab = "Fraction of added studies", ylab = "Bias")
 @
-\caption{Fraction of added studies for small study effect correction by trim and fill and the corresponding small study effect test decision (based on 5\% significance level) of thomson and sharp's test and continuous outcomes}
+\caption{Fraction of added studies for small study effect correction by trim and fill and the corresponding small study effect test decision (based on 5\% significance level) of Thomson and Sharp's test and continuous outcomes}
 \label{trimfill.pvalues.cont}
 \end{figure}
 
 
+\subsection{Small Study Effect Correction}
+
+Multiple methods are available to correct for the effects of small study effects in order to get an unbiased estimate. 
 
 
 
@@ -286,8 +293,14 @@ cdplot(x = data.cont.ext$trim.cont, y = as.factor(ifelse(data.cont.ext$thomson.t
 
 
 
-
-
+% # <<results = 'asis', Echo = FALSE>>=
+% # rejection.bin <- meta.bin %>% summarize(egger.rejection = mean(egger.test),
+% #                                             schwarzer.rejection = mean(schwarzer.test),
+% #                                             rucker.rejection = mean(rucker.test),
+% #                                             harbord.rejection = mean(harbord.test),
+% #                                             peter.rejection = mean(peter.test))
+% # print(xtable(rejection.bin), label = "bias.results", caption = "Cumulative number of groups with number of reproduction trials >= n", align = "llll", digits = 0), include.rownames = F, size = "footnotesize")
+% # @
 
 
 

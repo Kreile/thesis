@@ -1,5 +1,0 @@
-Notes from lecture of "Introduction to Meta Analysis":
-
--Meta Analysis ma be used especially to detect adverse events since they are rare
-
--Meta Analyses might as well be used to find out if further trials are needed. They can play a role in designing new research. For example, it might help to detect more sensible outcomes or more effective administration processes.

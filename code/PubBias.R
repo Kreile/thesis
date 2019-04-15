@@ -1,16 +1,19 @@
-rm(list = ls())
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
 PATH2 = file.path(PATH_HOME, 'PubBias')
 FILE = 'cochrane_2018-06-09.csv'
 PATH_DATA = file.path(PATH, 'data')
 PATH_CODE = file.path(PATH2, 'code')
-PATH_RESULTS = file.path(PATH, 'results')
+PATH_RESULTS = file.path(PATH2, 'results')
 PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
 
 file_results = "pb.RData"
 
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
+
+load(file.path(PATH_RESULTS, 'PubBias_results1.RData'))
+load(file.path(PATH_RESULTS, 'PubBias_results2.RData'))
+
 
 data = pb.readData(path = PATH_DATA, file = FILE)
 tmp = pb.clean(data)
@@ -21,86 +24,8 @@ require(biostatUZH)
 require(tidyverse)
 require(meta)
 require(xtable)
-library(car)
-
-####################################################################################################
-#Look for sample size effect on effect size
-####################################################################################################
-
-data %>% filter(total1 + total2 < 100 & total1 + total2 > 5) %>%
-  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
-  group_by(sample.size) %>% 
-  summarize(mean.scaled.effect = mean(scaled.effect, na.rm = T)) %>% 
-  ggplot(aes(x = sample.size, y = mean.scaled.effect)) + geom_point() + geom_smooth(method = "lm")
-
-data %>%  filter(total1 + total2 < 100 & total1 + total2 > 5) %>%
-  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
-  ggplot(aes(x = sample.size, y = scaled.effect)) + geom_point(alpha = 0.15, size = 0.5) + geom_smooth(method = "lm")
-
-data %>% filter(total1 + total2 > 5 & total1 + total2 < 300) %>% 
-  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
-  group_by(sample.size) %>% 
-  summarize(mean.effect = mean(scaled.effect, na.rm = T)) %>% 
-  ggplot(aes(x = sample.size, y = mean.effect)) + geom_point() + geom_smooth(method = "lm") + geom_smooth(method = "loess", color = "red")
-
-# Effect sizes scaled meta-analyses reviews.
-# data %>% group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-#   filter(n() > 2) %>% 
-#   mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>% 
-#   filter(sample.size < 500 & sample.size > 5) %>% 
-#   ggplot(aes(x = sample.size, y = scaled.effect)) + geom_point(alpha = 0.3, size = 0.1) + geom_smooth(method = "lm") #+ geom_smooth(method = "loess")
-# 
-# 
-# data %>% group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-#   filter(n() > 2) %>% 
-#   mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
-#   group_by(sample.size) %>% 
-#   summarize(mean.effect = mean(scaled.effect, na.rm = T)) %>% 
-#   filter(sample.size < 500) %>% 
-#   ggplot(aes(x = sample.size, y = mean.effect)) + geom_point() + geom_smooth(method = "lm")
 
 
-
-
-####################################################################################################
-#Meta-analysis dataset creation function (p-values, heterogeneity statistics, trim-fill number of trimmed studies).
-####################################################################################################
-
-pb.bias.cont <- function(data, min.study.number){
-  metadat <- data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>%# filter(file.nr < 503) %>% 
-    filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
-    filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
-    group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-    mutate(n = n()) %>% filter(n >= min.study.number) %>% 
-    summarize(doi = unique(doi), n = n(),
-              pval.egger.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-                                         method = "linreg")$p.val,
-              pval.thomson.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-                                           method = "mm")$p.val,
-              pval.begg.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-                                        method = "rank")$p.val,
-              trim.cont = trimfill(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2))$k0 / n(),
-              Q = metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2)$Q,
-              I2  = max(0, (Q - n + 1)/Q)) %>% 
-    ungroup() %>% select(-outcome.nr, -subgroup.nr)
-  return(metadat)
-}
-
-pb.bias.bin <- function(data, min.study.number){
-  metadat <- data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
-    filter(events1 > 0 | events2 > 0) %>% 
-    filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
-    group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-    mutate(n = n()) %>% filter(n >= min.study.number) %>% 
-    summarize(doi = unique(doi), n = n(),
-              pval.peter.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "peter")$p.val,
-              pval.harbord.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "score")$p.val,
-              trim.bin = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2))$k0 / n(),
-              Q = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR")$Q,
-              I2  = max(0, (Q - n + 1)/Q)) %>% 
-    ungroup() %>% select(-outcome.nr, -subgroup.nr)
-  return(metadat)
-}        
 
 pb.bias.cont.extended <- function(data, min.study.number, sig.level){
   metadat <- data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>%# filter(file.nr < 503) %>% 
@@ -109,23 +34,23 @@ pb.bias.cont.extended <- function(data, min.study.number, sig.level){
     group_by(file.nr, outcome.nr, subgroup.nr) %>% 
     mutate(n = n()) %>% filter(n >= min.study.number) %>% 
     summarize(doi = unique(doi), n = n(),
-              pval.egger.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+              pval.egger.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
                                          method = "linreg")$p.val,
               egger.test = ifelse(pval.egger.cont < sig.level, 1, 0),
-              pval.thomson.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+              pval.thomson.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
                                            method = "mm")$p.val,
               thomson.test = ifelse(pval.thomson.cont < sig.level, 1, 0),
-              pval.begg.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+              pval.begg.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
                                         method = "rank")$p.val,
               begg.test = ifelse(pval.begg.cont < sig.level, 1, 0),
-              stat.egger.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+              stat.egger.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
                                          method = "linreg")$statistic,
-              stat.thomson.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+              stat.thomson.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
                                            method = "mm")$statistic,
-              stat.begg.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+              stat.begg.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
                                         method = "rank")$statistic,
-              trim.cont = trimfill(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2))$k0 / n(),
-              Q = metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2)$Q,
+              trim.cont = trimfill(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name))$k0 / n(),
+              Q = metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name)$Q,
               I2  = max(0, (Q - n + 1)/Q)) %>% 
     ungroup() %>% select(-outcome.nr, -subgroup.nr)
   return(metadat)
@@ -139,75 +64,107 @@ pb.bias.bin.extended <- function(data, min.study.number, sig.level){
     group_by(file.nr, outcome.nr, subgroup.nr) %>% 
     mutate(n = n()) %>% filter(n >= min.study.number) %>% 
     summarize(doi = unique(doi), n = n(),
-              pval.egger.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "linreg")$p.val,
+              pval.egger.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), method = "linreg")$p.val,
               egger.test = ifelse(pval.egger.bin < sig.level, 1, 0),
-              pval.schwarzer.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "count")$p.val,
+              pval.schwarzer.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), method = "count")$p.val,
               schwarzer.test = ifelse(pval.schwarzer.bin < sig.level, 1, 0),
-              pval.peter.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "peter")$p.val,
+              pval.peter.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), method = "peter")$p.val,
               peter.test = ifelse(pval.peter.bin < sig.level, 1, 0),
-              pval.harbord.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "score")$p.val,
+              pval.harbord.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), method = "score")$p.val,
               harbord.test = ifelse(pval.harbord.bin < sig.level, 1, 0),
-              pval.rucker.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "ASD"), method = "mm")$p.val,
+              pval.rucker.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "ASD"), method = "mm")$p.val,
               rucker.test = ifelse(pval.rucker.bin < sig.level, 1, 0),
-              stat.egger.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "linreg")$statistic,
-              stat.schwarzer.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "count")$statistic,
-              stat.peter.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "peter")$statistic,
-              stat.harbord.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "score")$statistic,
-              stat.rucker.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "ASD"), method = "mm")$statistic,
-              trim.bin = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2))$k0 / n(),
-              Q = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR")$Q,
+              stat.egger.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), method = "linreg")$statistic,
+              stat.schwarzer.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), method = "count")$statistic,
+              stat.peter.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), method = "peter")$statistic,
+              stat.harbord.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), method = "score")$statistic,
+              stat.rucker.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "ASD"), method = "mm")$statistic,
+              trim.bin = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name))$k0 / n(),
+              Q = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR")$Q,
               I2  = max(0, (Q - n + 1)/Q)) %>% 
     ungroup() %>% select(-outcome.nr, -subgroup.nr)
   return(metadat)
 } 
 
-# data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
-#   filter(events1 > 0 | events2 > 0) %>% 
-#   filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
-#   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-#   mutate(n = n()) %>% filter(n > 9) %>% 
-#   summarize(doi = unique(doi),
-#     pval.peter.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "peter")$p.val,
-#     pval.harbord.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "score")$p.val,
-#     trim.bin = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2))$k0 / n(),
-#     Q.bin = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR")$Q,
-#     I2  = max(0, (Q - n + 1)/Q))
 
-# data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>%# filter(file.nr < 503) %>% 
-#   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
-#   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
-#   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-#   mutate(n = n()) %>% filter(n > 9) %>% 
-#   summarize(doi = unique(doi),
-#     pval.egger.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-#                             method = "linreg")$p.val,
-#             pval.thomson.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-#                             method = "mm")$p.val,
-#             pval.begg.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-#                             method = "rank")$p.val,
-#             trim.cont = trimfill(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2))$k0 / n(),
-#             Q.cont = metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2)$Q) 
-
-
-####################################################################################################
-#Investigation of similarity of tests and test results
-####################################################################################################
+pb.bias.cont.extended <- function(data, min.study.number, sig.level){
+  metadat <- data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>%# filter(file.nr < 503) %>% 
+    filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
+    filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
+    group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+    mutate(n = n()) %>% filter(n >= min.study.number) %>% 
+    summarize(doi = unique(doi), n = n(),
+              pval.egger.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
+                                         method = "linreg")$p.val,
+              egger.test = ifelse(pval.egger.cont < sig.level, 1, 0),
+              pval.thomson.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
+                                           method = "mm")$p.val,
+              thomson.test = ifelse(pval.thomson.cont < sig.level, 1, 0),
+              pval.begg.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
+                                        method = "rank")$p.val,
+              begg.test = ifelse(pval.begg.cont < sig.level, 1, 0),
+              stat.egger.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
+                                         method = "linreg")$statistic,
+              stat.thomson.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
+                                           method = "mm")$statistic,
+              stat.begg.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
+                                        method = "rank")$statistic,
+              trim.cont = trimfill(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name))$k0 / n(),
+              Q = metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name)$Q,
+              I2  = max(0, (Q - n + 1)/Q)) %>% 
+    ungroup() %>% select(-outcome.nr, -subgroup.nr)
+  return(metadat)
+}
 
 
-
-
-#Make dataset to store all those measures for easier comparison
-
-data.bin <- pb.bias.bin(data, 10)
-data.cont <- pb.bias.cont(data, 10)  
-
-data.bin.ext <- pb.bias.bin.extended(data, min.study.number = 10, sig.level = 0.05)
-max(data.bin.ext$stat.peter.bin)
-data.bin.ext <- data.bin.ext %>% filter(stat.peter.bin < 10000)
-data.cont.ext <- pb.bias.cont.extended(data, min.study.number = 10, sig.level = 0.05)
-
-save(data.bin.ext, file = "PubBias_results1.RData")
-save(data.cont.ext, file = "PubBias_results2.RData")
+meta.bin.complete <- function(data, min.study.number, sig.level){
+  metadat <- data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
+    filter(events1 > 0 | events2 > 0) %>% 
+    filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
+    group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+    mutate(n = n()) %>% filter(n >= min.study.number) %>% 
+    summarize(doi = unique(doi), n = n(),
+              OR.fixef.bin = 
+                exp(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$TE.fixed),
+              pval.fixef.bin = 
+                metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$pval.fixed,
+              OR.ranef.bin = 
+                exp(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$TE.random),
+              pval.fixef.bin = 
+                metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$pval.random,
+              OR.trimfill.bin = 
+                exp(trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR"))$TE),
+              pval.egger.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                        method = "linreg")$p.val,
+              egger.test = ifelse(pval.egger.bin < sig.level, 1, 0),
+              pval.schwarzer.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                            method = "count")$p.val,
+              schwarzer.test = ifelse(pval.schwarzer.bin < sig.level, 1, 0),
+              pval.peter.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                        method = "peter")$p.val,
+              peter.test = ifelse(pval.peter.bin < sig.level, 1, 0),
+              pval.harbord.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                          method = "score")$p.val,
+              harbord.test = ifelse(pval.harbord.bin < sig.level, 1, 0),
+              pval.rucker.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "ASD"), 
+                                         method = "mm")$p.val,
+              rucker.test = ifelse(pval.rucker.bin < sig.level, 1, 0),
+              stat.egger.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                        method = "linreg")$statistic,
+              stat.schwarzer.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                            method = "count")$statistic,
+              stat.peter.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                        method = "peter")$statistic,
+              stat.harbord.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                          method = "score")$statistic,
+              stat.rucker.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "ASD"), 
+                                         method = "mm")$statistic,
+              trim.bin = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name))$k0 / n(),
+              Q = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR")$Q,
+              I2  = max(0, (Q - n + 1)/Q)) %>% 
+    ungroup() %>% select(-outcome.nr, -subgroup.nr)
+  return(metadat)
+} 
 
 
 #Proportion of pbias according to 5% significance level:
@@ -218,7 +175,7 @@ rejection.bin <- data.bin.ext %>% summarize(egger.rejection = mean(egger.test),
                                             peter.rejection = mean(peter.test))
 rejection.bin <- rejection.bin %>% gather(key = test.type)
 rejection.bin %>% ggplot(aes(y = value, x = test.type)) + geom_col()
-bin.spread <- data.bin.ext %>% select(egger.test, schwarzer.test, harbord.test, peter.test) %>% gather(key = test.type)
+bin.spread <- data.bin.ext %>% select(egger.test, schwarzer.test, harbord.test, peter.test) %>% gather(key = test.type, value = "null.hypothesis")
 bin.spread$value <- ifelse(bin.spread$value == 1, "reject", "accept")
 bin.spread$value <- factor(bin.spread$value)
 bin.spread %>% ggplot(aes(x = test.type, fill = value)) + geom_bar() + coord_flip()
@@ -227,7 +184,7 @@ rejection.cont <- data.cont.ext %>% summarize(egger.rejection = mean(egger.test)
                                               begg.rejection = mean(begg.test),
                                               thomson.rejection = mean(thomson.test))
 
-cont.spread <- data.cont.ext %>% select(egger.test, begg.test, thomson.test) %>% gather(key = test.type)
+cont.spread <- data.cont.ext %>% select(egger.test, begg.test, thomson.test) %>% gather(key = test.type, value = "null.hypothesis")
 cont.spread$value <- ifelse(cont.spread$value == 1, "rejected", "accepted")
 cont.spread$value <- factor(cont.spread$value)
 cont.spread %>% ggplot(aes(x = test.type, fill = value)) + geom_bar() + coord_flip() + theme_bw()
@@ -294,30 +251,16 @@ rownames(cont.tests.agreement) <- c("Test Agreement","P-value Correlation")
 
 #Plots:
 #Trimfill proportion and test results:
-trimfill.cont <- data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 50) %>% 
-  filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
-  filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
-  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-  mutate(n = n()) %>% filter(n > 9) %>% 
-  summarize(trim = trimfill(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2))$k0 / n()) 
+trimfill.cont.mean <- data.cont.ext %>% ungroup %>% summarise(mean = mean(missing.trim.cont)) %>% select(mean)
+trimfill.cont.median <- data.cont.ext %>% ungroup %>% summarise(median = median(missing.trim.cont)) %>% select(median)
 
-trimfill.cont.mean <- trimfill.cont %>% ungroup %>% summarise(mean = mean(trim)) %>% select(mean)
-trimfill.cont.median <- trimfill.cont %>% ungroup %>% summarise(median = median(trim)) %>% select(median)
+trimfill.bin.mean <- data.bin.ext %>% ungroup %>% summarise(mean = mean(missing.trim.bin)) %>% select(mean)
+trimfill.bin.median <- data.bin.ext %>% ungroup %>% summarise(median = median(missing.trim.bin)) %>% select(median)
 
-trimfill.bin <- data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% #filter(file.nr < 503) %>% 
-  filter(events1 > 0 | events2 > 0) %>% 
-  filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
-  group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-  mutate(n = n()) %>% filter(n > 9) %>% 
-  summarize(trim = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2))$k0 / n())
-
-trimfill.bin.mean <- trimfill.bin %>% ungroup %>% summarise(mean = mean(trim)) %>% select(mean)
-trimfill.bin.median <- trimfill.bin %>% ungroup %>% summarise(median = median(trim)) %>% select(median)
-
-trimfill.bin %>% ggplot(aes(x = trim)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+data.bin.ext %>% ggplot(aes(x = missing.trim.bin)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
   theme_bw() + labs(title = "Fraction of Trimmed Comparisons (binary outcome)") + xlab("Fraction") + ylab("Frequency")
 
-trimfill.cont %>% ggplot(aes(x = trim)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+data.cont.ext %>% ggplot(aes(x = missing.trim.cont)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
   theme_bw() + labs(title = "Fraction of Trimmed Comparisons (continuous outcome)") + xlab("Fraction") + ylab("Frequency")
 
 
@@ -327,6 +270,213 @@ cdplot(x = data.bin.ext$trim.bin, y = as.factor(data.bin.ext$harbord.test))
 cdplot(x = data.bin.ext$trim.bin, y = as.factor(data.bin.ext$schwarzer.test))
 
 cdplot(x = data.cont.ext$trim.cont, y = as.factor(ifelse(data.cont.ext$thomson.test == 1, "yes", "no")), xlab = "Fraction of added studies", ylab = "Bias")
+
+
+####################################################################################################
+# Correction for small study effects
+####################################################################################################
+
+
+
+
+pb.corr.cont <- function(data, min.study.number){
+  metadat <- data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>%# filter(file.nr < 503) %>% 
+    filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
+    filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
+    group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+    mutate(n = n()) %>% filter(n >= min.study.number) %>% 
+    summarize(doi = unique(doi), n = n(),
+              # pval.egger.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
+              #                            method = "linreg")$p.val,
+              # pval.thomson.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
+              #                              method = "mm")$p.val,
+              # pval.begg.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
+              #                           method = "rank")$p.val,
+              # trim.cont = trimfill(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name))$k0 / n(),
+              Q = metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name)$Q,
+              I2  = max(0, (Q - n + 1)/Q)) %>% 
+    ungroup() %>% select(-outcome.nr, -subgroup.nr)
+  return(metadat)
+}
+
+pb.corr.bin <- function(data, min.study.number){
+  metadat <- data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio"| outcome.measure == "Risk Difference") %>% filter(file.nr != 3014) %>% 
+    filter(events1 > 0 | events2 > 0) %>% 
+    filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
+    group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+    mutate(n = n()) %>% filter(n >= min.study.number) %>% 
+    summarize(doi = unique(doi), n = n(),
+              LOR.fixef.bin = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$TE.fixed,
+              pval.fixef.bin = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$pval.fixed,
+              LOR.ranef.bin = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$TE.random,
+              pval.fixef.bin = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$pval.random,
+              trimfill.bin = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR"))$TE,
+              copas.which = which.min(abs(0.05 - copas(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR"))$pval.rsb
+                                          [copas(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR"))$pval.rsb > 0.05])),
+              copas.max.bin = copas(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR"))$TE[copas.which],
+              reg.bin = limitmeta(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR"))$TE,
+              Q = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$Q,
+              I2  = max(0, (Q - n + 1)/Q)) %>% 
+    ungroup() 
+  return(metadat)
+}  
+
+
+
+pb.corr.bin <- function(data, min.study.number){
+  metadat <- data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio" | outcome.measure == "") %>% filter(file.nr != 3014) %>% 
+    filter(events1 > 0 | events2 > 0) %>% 
+    filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
+    group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+    mutate(n = n()) %>% filter(n >= min.study.number) %>% 
+    summarize(doi = unique(doi), n = n(),
+              copas.which = which.min(abs(0.05 - copas(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR"))$pval.rsb
+                                          [copas(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR"))$pval.rsb > 0.05])),
+              copas.bin = copas(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR"))$TE[copas.which]) %>% 
+    ungroup() 
+  return(metadat)
+}  
+
+
+
+pb.corr.bin(data[c(1:1000),], 10)
+
+ds <- data %>% filter(file.nr == 11) %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% 
+  filter(outcome.measure == "Odds Ratio" | outcome.measure == "Risk Ratio") %>% filter(events1 > 0 & events2 > 0) %>% 
+  mutate(counts = n()) %>% filter(counts == 18)
+print(ds %>% select(effect, events1, events2, study.name, outcome.name, counts), n = 200)
+
+meta.ds <- metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, data = ds, studlab = study.name, sm = "OR")
+meta.ds
+
+
+
+# copas.ds <- copas(meta.ds)
+# 
+# pb.corr.bin(ds, 10)
+# 
+# copas.ds$pval.rsb
+# which.min(abs(0.05 - copas.ds$pval.rsb
+#               [copas.ds$pval.rsb > 0.05]))
+
+
+meta.bin.complete <- function(data, min.study.number, sig.level){
+  metadat <- data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
+    filter(events1 > 0 | events2 > 0) %>% 
+    filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
+    group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+    mutate(n = n()) %>% filter(n >= min.study.number) %>% 
+    mutate(study.year = ifelse(study.year < 2019, study.year, NA)) %>% 
+    mutate(study.year = ifelse(study.year > 1950, study.year, NA)) %>% 
+    summarize(doi = unique(doi), n = n(),
+              mean.samplesize = mean(total1 + total2, na.rm = T),
+              total.samplesize = sum(total1 + total2),
+              mean.publication.year = mean(study.year, na.rm = TRUE),
+              first.publication.year = min(study.year, na.rm = T),
+              OR.fixef.bin = 
+                exp(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$TE.fixed),
+              pval.fixef.bin = 
+                metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$pval.fixed,
+              sig.fixef.bin = ifelse(pval.fixef.bin > sig.level, 0, 1),
+              OR.ranef.bin = 
+                exp(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$TE.random),
+              pval.ranef.bin = 
+                metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR")$pval.random,
+              sig.ranef.bin = ifelse(pval.ranef.bin > sig.level, 0, 1),
+              OR.trimfill.fixef.bin = 
+                trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR"))$TE.fixed,
+              OR.trimfill.random.bin = 
+                trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR"))$TE.random,
+              OR.reg.random.bin = 
+                exp(limitmeta(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR"))$TE.adjust),
+              pval.egger.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                        method = "linreg")$p.val,
+              egger.test = ifelse(pval.egger.bin < sig.level, 1, 0),
+              pval.schwarzer.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                            method = "count")$p.val,
+              schwarzer.test = ifelse(pval.schwarzer.bin < sig.level, 1, 0),
+              pval.peter.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                        method = "peter")$p.val,
+              peter.test = ifelse(pval.peter.bin < sig.level, 1, 0),
+              pval.harbord.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                          method = "score")$p.val,
+              harbord.test = ifelse(pval.harbord.bin < sig.level, 1, 0),
+              pval.rucker.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "ASD"), 
+                                         method = "mm")$p.val,
+              rucker.test = ifelse(pval.rucker.bin < sig.level, 1, 0),
+              stat.egger.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                        method = "linreg")$statistic,
+              stat.schwarzer.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                            method = "count")$statistic,
+              stat.peter.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                        method = "peter")$statistic,
+              stat.harbord.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), 
+                                          method = "score")$statistic,
+              stat.rucker.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "ASD"), 
+                                         method = "mm")$statistic,
+              trim.bin = trimfill(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name))$k0 / n(),
+              Q = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR")$Q,
+              I2  = max(0, (Q - n + 1)/Q)) %>% 
+    ungroup() %>% select(-outcome.nr, -subgroup.nr)
+  return(metadat)
+} 
+
+
+meta.bin.complete <- meta.bin.complete(data, 10, 0.05)
+
+
+
+meta.bin.complete %>% 
+  filter(sig.fixef.bin == 1) %>% 
+  select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+  gather(key = "test.type", value = "null.hypothesis") %>% 
+  mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+  ggplot(aes(x = test.type, fill = null.hypothesis )) + geom_bar() + coord_flip() + theme_bw()
+
+meta.bin.complete %>% 
+  filter(sig.fixef.bin == 0) %>% 
+  select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+  gather(key = "test.type", value = "null.hypothesis") %>% 
+  mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+  ggplot(aes(x = test.type, fill = null.hypothesis )) + geom_bar() + coord_flip() + theme_bw()
+
+
+meta.bin.complete %>% 
+  filter(sig.ranef.bin == 1) %>% 
+  select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+  gather(key = "test.type", value = "null.hypothesis") %>% 
+  mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+  ggplot(aes(x = test.type, fill = null.hypothesis )) + geom_bar() + coord_flip() + theme_bw()
+
+meta.bin.complete %>% 
+  filter(sig.ranef.bin == 0) %>% 
+  select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+  gather(key = "test.type", value = "null.hypothesis") %>% 
+  mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+  ggplot(aes(x = test.type, fill = null.hypothesis )) + geom_bar() + coord_flip() + theme_bw()
+
+
+meta.bin.complete %>% filter(mean.publication.year < 2019 & mean.publication.year > 1960) %>% 
+  ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef.bin))) + geom_histogram()
+
+meta.bin.complete %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
+  ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef.bin))) + geom_density(na.rm = T, position = "fill")
+
+meta.bin.complete %>% filter(first.publication.year < 2013 & first.publication.year > 1990) %>% 
+  ggplot(aes(x = first.publication.year, fill = factor(sig.fixef.bin))) + geom_density(na.rm = T, position = "fill")
+
+meta.bin.complete %>% filter(first.publication.year < 2013 & first.publication.year > 1990) %>% 
+  ggplot(aes(x = first.publication.year, fill = factor(peter.test))) + geom_density(na.rm = T, position = "fill")
+
+meta.bin.complete %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
+  ggplot(aes(x = mean.publication.year, fill = factor(rucker.test))) + geom_density(na.rm = T, position = "fill")
+
+data %>% filter(study.year < 2019 & study.year > 1980) %>% group_by(study.year) %>% summarize(samplesize = mean(total1 + total2, na.rm = T)) %>% 
+  ggplot(aes(y = samplesize, x = study.year)) + geom_line()
+
+
+
+
 
 
 egger.schwarzer <- data.bin.ext %>% group_by(egger.schwarzer) %>% count() %>% ggplot(aes(x = egger.schwarzer, y = nn)) +
@@ -393,9 +543,9 @@ data.bin.ext %>% ggplot(aes(x = stat.harbord.bin, y = stat.egger.bin)) + geom_po
 #   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
 #   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
 #   mutate(n = n()) %>% filter(n > 9) %>% 
-#   summarize(pval.thomson.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+#   summarize(pval.thomson.cont = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name), 
 #                                          method = "mm")$p.val,
-#             Q = metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2)$Q, n = n(),
+#             Q = metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name)$Q, n = n(),
 #             I2  = max(0, (Q - n + 1)/Q)) %>% 
 #   ggplot(aes(x = I2, y = pval.thomson.cont)) + geom_point(alpha = 0.7) + theme_bw() + geom_smooth(method = "lm")
 # 
@@ -406,8 +556,8 @@ data.bin.ext %>% ggplot(aes(x = stat.harbord.bin, y = stat.egger.bin)) + geom_po
 #   filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
 #   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
 #   mutate(n = n()) %>% filter(n > 9) %>% 
-#   summarize(pval.peter.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "peter")$p.val,
-#             Q = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR")$Q, n = n(),
+#   summarize(pval.peter.bin = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR"), method = "peter")$p.val,
+#             Q = metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "OR")$Q, n = n(),
 #             I2  = max(0, (Q - n + 1)/Q)) %>%
 #   ggplot(aes(x = I2, y = pval.peter.bin)) + geom_point(alpha = 0.7) + theme_bw() + geom_smooth(method = "lm")
 

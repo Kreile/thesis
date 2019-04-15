@@ -8,61 +8,92 @@ opts_chunk$set(
 ) 
 @
 
-\chapter{Discussion and Outlook}
+\chapter{Methods}
 
-\section{Meta Analysis}
-There are numerous methods to pool the estimates of multiple studies into one estimate, and two will be introduced here; fixed and random effects meta-analysis.
-First the fixed effect meta-analysis will be explained. For convenience, notatotion will be identical whenever possible for both methods. Note that both methods can be used for continuous or dichotomous outcomes. For more details about the methods, see chapter 11 and 12 in \citet{metaanalysis}
-
+\section{Basic notation}
+The notation used here will be used throughout the chapter and exceptions will be noted. Let $i$ be the number of a study of a meta analysis with $n$ being the total number of studies. $y_{i}$ is then the effect size estimate (usually log odds ratio or mean difference) and $v_{i}$ the variance of the estimate of study $i$. $w_{i}$ is used for weights which are defined when necessary, and $\Delta$ usually denotes the summarized or pooled effect estimate of the meta-analysis, and $\eta$ the variance thereof.
 
 \vspace{0mm}
-Let $y_{i}$ be the effect size estimate of the study $i$ and $v_{i}$ be the corresponding variance of the effect size estimate. Effect measures have to be identical for all studies. Furthermore, let $w_i$ be the inverse of the variance of the estimate from study $i$, $1/v_{i}$ and $n$ the total number of studies.
+In the case of binary outcomes, let $e_{t}$ be the number of events and $n_{t}$ be the total number of patients in the treatment arm and $n_{c}$ and $e_{c}$ analogously for the control arm in a two-armed study $i$. 
+
+\section{Heterogeneity}
+In addition to sampling error, there can be additional, ``real'' variation between estimates of different studies, indicating real differences between the studies. This is called between study variation in contrast to within study variation (noise). 
 
 \vspace{0mm}
-The pooled estimate $\Delta_{f}$ of the fixed effects model is then simply the weighted average with the weights given by the inverses of the variances, $w_{i}$, given in \ref{weighted.mean}. The variance $\nu_{f}$ is the reciprocal of the sum of the weights as in \ref{reciproce.variance}.
+The $Q$ statistic is a weighted sum of squares that quantifies the deviation from the weighted mean of study effect estimates. Let $w_i$ be the inverse of the variance and $\Delta$ be a summarized effect estimate of your choice as for example a variance-weighted mean \ref{weighted.mean}. Then $Q$ can be calculated as in \ref{Q.heterogeneity}
 
 \begin{align}
-\Delta_{f} &= \frac{\sum_{i = 1}^n w_{i}y_{i}}{\sum_{i = 1}^n w_{i}} \label{weighted.mean} \\
-\nu_{f} &= \frac{1}{\sum_{i = 1}^n w_{i}} \label{reciproce.variance}
+\Delta &= \frac{\sum_{i = 1}^n w_{i}y_{i}}{\sum_{i = 1}^n w_{i}} \label{weighted.mean} \\
+Q &= \sum_{i = 1}^n w_{i}(y_{i} - \Delta)^2 \label{Q.heterogeneity}
 \end{align}
 
-The computation of random effects meta-analysis is more complicated. Random effects meta-analysis will give smaller studies with larger variance of their estimates more weight in the pooled estimate. The key principle is that the estimates are allowed to vary randomly around the true estimate $\Delta$, and additionally, the estimates are subject to noise or sampling error themselves. Thus a within - and between study variance has to be computed.
-Let $Q$ be the heterogeneity of study estimates as given in \ref{Q.heterogeneity}. The degrees of freedom $d$ are equal to $n-1$. $C$ is defined in \ref{C.definition}. The between study variance $\tau^2$ is then defined as in \ref{Tao.definition}. The definition follows \citet{tau.estimator}, but other methods are available such as maximum likelihood or restricted maximum likelihood estimators. 
+Because $Q$ is a standardized measure, it does not depend on the effect size, but only on the study number $n$. Under the assumption of equal effect sizes of all studies, the expected value of $Q$ is $n-1$, so the excess dispersion is just $Q - n + 1$.To test the assumption of equal effect sizes one uses that $Q$ follows a central Chi-squared distribution with $n -1$ degrees of freedom under the null hypothesis of equal effect sizes. $1 - F(Q)$ will provide the $p$-value for the significance test with $F$ being the cumulative distribution function of the Chi-squared distribution with the corresponding degrees of freedom.
+
+\vspace{0mm}
+Since $Q$ is a standardized metric, it gives no impression of the real dispersion of the effect sizes. For this purpose, $\tau^2$, the variance of true effects, can be calculated. $\tau^2$ is on the same scale as the effect size and reflects the absolute amount of dispersion. In practice, $\tau^2$ can be smaller than zero, then it is set to zero.
 
 \begin{align}
-Q &= \sum_{i = 1}^n w_{i}(y_{i} - \Delta_{f})^2 \label{Q.heterogeneity} \\
 C &= \sum_{i = 1}^n w_{i} - \frac{\sum_{i = 1}^n w_{i}^2}{\sum_{i = 1}^n w_{i}} \label{C.definition} \\
 \tau^2 &= \max(0, \frac{Q - d}{C}) \label{Tau.definition}
 \end{align}
 
-The variance of a study estimate $y_{i}$ of study $i$, $v_{i}^\star$ is then defined as in \ref{ranef.study.variance}, with $w_{i}^\star$ being the inverse of $v_{i}^\star$. It is used to calculate a new kind of weighted mean to obtain a pooled estimate $\Delta_{r}$ as in \ref{ranef.weighted.mean}. The variance of $\Delta_{r}$, $\nu_{r}$ is then the sum of the reciprocal variances (\ref{ranef.reciproce.variance}).
+The estimation method for $\tau^2$ is known as DerSimonian and Laird method, but others, such as restricted maximum likelihood can be used. Note that their estimate can differ substantially and consequently also the estimate of the pooled effect size estimate.
+
+\vspace{0mm}
+To estimate the proportion of real variance between effect estimates of the observed variance, the $I^2$ can be used. The calculation is given in \ref{I2.proportion}
+
+\begin{align}
+I^2 &= (Q - n + 1)/Q \label{I2.proportion}
+\end{align}
+
+There are ways to compute confidence intervals for $I^2$ and $\tau^2$ that are not shown (see \cite[122]{metaanalysis}).
+
+\section{Meta Analysis}
+There are numerous methods to pool the estimates of multiple studies into one estimate, and two will be introduced here; fixed and random effects meta-analysis.
+First the fixed effect meta-analysis will be explained. Note that both methods can be used for continuous or dichotomous outcomes. For more details about the methods, see chapter 11 and 12 in \citet{metaanalysis}
+
+
+\vspace{0mm}
+Let $w_i = 1/v_{i}$ be the inverse of the variance of the estimate from study $i$. The pooled estimate $\Delta_{f}$ of the fixed effects model is then the weighted average with the weights given by the inverses of the variances, $w_{i}$, given in \ref{weighted.mean}. The variance $\eta_{f}$ is the reciprocal of the sum of the weights as shown in \ref{reciproce.variance}.
+
+\begin{align}
+\Delta_{f} &= \frac{\sum_{i = 1}^n w_{i}y_{i}}{\sum_{i = 1}^n w_{i}} \label{weighted.mean} \\
+\eta_{f} &= \frac{1}{\sum_{i = 1}^n w_{i}} \label{reciproce.variance}
+\end{align}
+
+The computation of random effects meta-analysis is more complicated. Random effects meta-analysis will give smaller studies with larger variance more weight in the pooled estimate. Shortly, the idea is that the estimates are allowed to vary randomly around the true estimate $\Delta$, and additionally, the estimates are subject to noise or sampling error themselves. 
+
+\vspace{0mm}
+The variance of a study estimate $y_{i}$ of study $i$, $v_{i}^\star$ is defined as in \ref{ranef.study.variance}, with $w_{i}^\star$ being the inverse of $v_{i}^\star$. It is used to calculate a new weighted mean to obtain a pooled estimate $\Delta_{r}$ as in \ref{ranef.weighted.mean}. The variance of $\Delta_{r}$, $\eta_{r}$ is then the sum of the reciprocal variances (\ref{ranef.reciproce.variance}).
 
 \begin{align}
 v_{i}^\star &= v_{i} + \tau^2 \label{ranef.study.variance} \\
 \Delta_{r} &= \frac{\sum_{i = 1}^n w_{i}^\star y_{i}}{\sum_{i = 1}^n w_{i}^\star} \label{ranef.weighted.mean} \\
-\nu_{r} &= \frac{1}{\sum_{i = 1}^n w_{i}^\star} \label{ranef.reciproce.variance}
+\eta_{r} &= \frac{1}{\sum_{i = 1}^n w_{i}^\star} \label{ranef.reciproce.variance}
 \end{align}
 
-A p-value under the Null-hypothesis of $\Delta = 0$ can be obtained by calculating the $Z$-value (\ref{Z.value}) and the usual computation as in (\ref{p.value.calculation}), $\Phi$ being the cumulative distribution function of a standard normal distribution. 
+A p-value under the Null-hypothesis of $\Delta = 0$ can be obtained by calculating the $Z$-value (\ref{Zvalue}) and using the distribution function of a standard normal as shown in (\ref{p.value.calculation}), $\Phi$ being the distribution function of a standard normal distribution. 
 
 \begin{align}
-Z &= \frac{\Delta}{\sqrt{\nu}} \label{Z-value} \\
+Z &= \frac{\Delta}{\sqrt{\nu}} \label{Zvalue} \\
 p &= 2(1 - \Phi(|{Z}|) \label{p.value.calculation}
 \end{align}
 
-\section{Reporting Bias Test}
-Essentially, there are two kinds of tests for reporting bias, non-parametrical or rank-based tests or regression based tests. Five of them will be presented.
-First, tests for continuous outcome studies are described, and special modifications of those for binary outcomes will be introduced later.
+\section{Small Study Effects Tests}
+\subsection{Continuous Outcome Tests}
+% Essentially, there are two kinds of tests for reporting bias, non-parametrical or rank-based tests or regression based tests. 
+% First, tests for continuous outcome studies are described, and special modifications of those for binary outcomes will be introduced later.
 
-\vspace{0mm}
-Again, let $y_{i}$ be the effect size estimate and $v_{i}$ the variance estimate of study $i$. Then, the standardized effect size $y_{i}^\star$ is given in \ref{begg.stand.eff}. $\Delta_{f}$ is the pooled estimate for fixed effect estimate defined in \ref{weighted.mean}. Let $v_{i}^\star$ be the variance of $y_{i} - \Delta_{f}$ as defined in \ref{begg.stand.var}. 
+\subsubsection{Begg and Mazumdar: Rank Correlation Test}
+\citet{begg.ties} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
+A standardized effect size $y_{i}^\star$ can be computed as in \ref{begg.stand.eff}. $v_{i}^\star$ is the variance of $y_{i} - \Delta_{f}$ as defined in \ref{begg.stand.var}. $\Delta_{f}$ is the pooled estimate for fixed effect estimate defined in \ref{weighted.mean}. 
 
 \begin{align}
-v_{i}^\star &= v_{i} - 1/\sum_{i = 1}^n v_{i}^-1 \label{begg.stand.var} \\
-y_{i}^\star &= (y_{i} - \Delta_{f})/v_{i}^\star \label{begg.stand.eff}
+y_{i}^\star &= (y_{i} - \Delta_{f})/v_{i}^\star \label{begg.stand.eff} \\
+v_{i}^\star &= v_{i} - 1/\sum_{i = 1}^n v_{i}^-1 \label{begg.stand.var} 
 \end{align}
 
-Then, a rank correlation test based on Kendall's tau is used. The pairs of $y_{i}^\star$ and $v_{i}^\star$ that are ranked in the same order are enumerated. Let $u$ be the number of pairs ranked in the same order, and $l$ the number of pairs ranked in the opposite order (e.g. larger standardized effect size and smaller variance). Then the normalized test statistic $Z$ is given in \ref{begg.teststat}. $n$ is the number of studies.
+A rank correlation test based on Kendall's tau is then used. The pairs $(y_{i}^\star, v_{i}^\star)$ that are ranked in the same order are enumerated. Let $u$ be the number of pairs ranked in the same order, and $l$ the number of pairs ranked in the opposite order (e.g. larger standardized effect size and smaller variance). Then the normalized test statistic $Z$ is given in \ref{begg.teststat}. 
 
 \begin{align}
 Z &= (u - l)/\sqrt{n(n-1)(2n + 5)/18} \label{begg.teststat}
@@ -70,34 +101,203 @@ Z &= (u - l)/\sqrt{n(n-1)(2n + 5)/18} \label{begg.teststat}
 
 The changes in the case of ties are negligible \cite[410]{begg.ties}.
 
+\subsubsection{Egger's Test: Linear Regression Test}
+Alternatively, one can use Eggers test \citep{Egger} that is based on linear regression. Let $y_{i}^\star = y_{i}/\sqrt{v_{i}}$ and $x_{i} = 1/\sqrt{v_{i}}$. 
+Using $y_{i}^\star$ as dependent, and  $x_{i}$ as explanatory variable in linear regression, one obtains an intercept $\beta_{0}$ and a slope. 
+
 \vspace{0mm}
-Alternatively, one can use Eggers test \citep{Egger} that is based on simple linear regression. Let $y_{i}^\star = y_{i}/\sqrt{v_{i}}$, $x_{i} = 1/\sqrt{v_{i}}$. Furthermore, let $\hat{y_{i}} = \beta_{0} + \beta_{1}x_{i}$. Using linear regression, one obtains a least-squares estimate for $\beta_{0}$, and the null hypothesis $\beta_{0} = 0$ can be tested using that $\beta_{0} \sim t_{n-1}$, $n-1$ being the degrees of freedom of the t-distribution. The p-value for $\beta_{0} = 0$ (no reporting bias) is given in \ref{egger.pvalue}.
+If $\beta_{0} \ne 0$, the null hypothesis of no small study effect may be contested, using that $\beta_{0} \sim t_{n-1}$, $n-1$ being the degrees of freedom of the $t$-distribution. The p-value for $\beta_{0} = 0$ (no reporting bias) is then given by \ref{egger.pvalue}.
 
 \begin{align}
 p &= 2*(1 - t_{n-1}(\beta_{0}/se(\beta_{0}))) \label{egger.pvalue}
 \end{align}
 
-A method proposed in \citet{thompson.sharp} allows for between study heterogeneity. Let $\tau^2$ be equal to \ref{Tau.definition}. The effect size estimates are then assumed to be distributed as in \ref{t.sharp.regression}. Then, a weighted regression is carried out with weigths $1/v_{i}^\star$ as given in \ref{ranef.study.variance}. Analagous to Eggers test, $\beta_{0}$ is then tested with respect to the null hypothesis $\beta{0} = 0$.
+\subsubsection{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}
+A method proposed in \citet{thompson.sharp} allows for between study heterogeneity. Let $\tau^2$ be equal to \ref{Tau.definition}. The effect size estimates are then assumed to be distributed as in \ref{t.sharp.regression}. 
 
 \begin{align}
 y_{i} \sim N(\beta_{0} + \beta{1}x_{i}, v_{i} + \tau^2) \label{t.sharp.regression}
 \end{align}
 
-A rank based alternative to Peters test for binary outcomes is the Harbords test \citep{Harbord}. Let $e_{t}$ be the number of events in a two-armed study $i$ and $n_{t}$ be the total number of patients in the treatment arm and the same for $n_{c}$ and $e_{c}$ for the control arm. Then the score $r_{i}$ (the first derivative of the log-likelihood of a proportion with treatment effect equal 0) and its variance $v_{i}$ can be computed as shown in \ref{harbord.score} and \ref{harbord.variance}.
+Then, a weighted regression is carried out with weights $1/v_{i}^\star$ based on the inverse of the variance as in \ref{ranef.study.variance}. Analogous to Edger's test, $\beta_{0}$ is then tested with respect to the null hypothesis $\beta{0} = 0$.
+
+\subsection{Dichotomous Outcomes Tests}
+
+The issue with dichotomous outcomes is that effect size and variance of effect size are not independent. Consequently, the tests above will tend to reject the null-hypothesis too often, i.e. that they are not conservative enough. A number of solutions to this problem are existing in the literature.
+
+
+\subsubsection{Peters Test: Weighted Linear Regression Test}
+A modification of the weighted linear regression test that takes into account effect size and variance interdependence for dichotomous outcomes is proposed in \citet{Peters}.
+
+\vspace{0mm}
+Let $y_i$ be the log-odds ratio estimate \ref{log.odds.ratio} and $v_{i}$ its variance \ref{variance.log.odds.ratio}
+
+\begin{align}
+y_{i} &= \log(e_{t}*(n_{c} - e_{c})/e_{c}*(n_{t} - e_{t})) \label{log.odds.ratio}\\
+v_{i} &= 1/(e_{t}+(n_{t} - e_{t}) + 1/(e_{c}+(n_{c} - e_{c}) \label{variance.log.odds.ratio}
+\end{align}
+
+and $x_{i}$ be the total sample size $n_{t} + n_{c}$. Instead of taking the variance as explanatory or independent variable in regression as in Egger's Test, the inverse of the total sample size $x_{i}$ is used, and the variance $v_{i}$ is used as a weight. The subsequent test procedure is then identical to Egger's test. 
+
+\vspace{0mm}
+Peters test is a a small modification of Macaskill's test where the explanatory variable is the sample size instead of its inverse.
+
+
+\subsubsection{Harbord's Test: Score based Test}
+A rank based alternative to Peters test for binary outcomes is the Harbord's test \citep{Harbord}. The score $r_{i}$ (the first derivative of the log-likelihood of a proportion with treatment effect equal 0) and its variance $v_{i}$ can be computed as shown in \ref{harbord.score} and \ref{harbord.variance}.
 
 \begin{align}
 r_{i} &= e_{t} - (e_{t} - e_{c})(e_{t} + (n_{t} - e_{t}))/(n_{t} + n_{c}) \label{harbord.score} \\
 v_{i} &= \frac{(e_{t} + e_{c})(e_{t} + (n_{t} - e_{t}))(e_{c} + (n_{c} - e_{c}))((n_{t} - e_{t}) + (n_{c} - e_{c}))}{(n_{t} + n_{c})^2(n_{t} + n_{c} - 1)} \label{harbord.variance}
 \end{align}
 
-Similarly to Eggers or Peters Test, now a weighted linear regression can be performed on $r_{i}/v_{i}$ depending on the standard error $1/\sqrt{v_{i}}$ with the $1/v_{i}$ used as weigths. $r_{i}/v_{i}$ is also known as peto odds ratio. 
+Similarly to Egger's or Peters Test, now a weighted linear regression can be performed on $r_{i}/v_{i}$ with the standard error $1/\sqrt{v_{i}}$ as explanatory variable and $1/v_{i}$ as a weight. Note that $r_{i}/v_{i}$ is also known as peto odds ratio. 
 
-
-\section{Reporting Bias Adjustment}
-One method to account for reporting bias in meta-analysis is to apply the Trim and Fill adjustment method \citep{trimfill}. It is based on a funnel plot, on which the effect size estimates of studies are plotted against their standard error. If reporting bias is present, the estimate will shift in average towards higher or lower efffect sizes compared to the estimates of larger studies. Trim and Fill is a nonparametric approach.
+\subsubsection{Schwarzer's Test: Rank Correlation Test}
+\citet{Schwarzer} developed a test for the correlation between $e_{t} - \mathbb{E}(E_{t})$ and the variance of $E_{t}$, $E_{t}$ being a random variable from the non-central hypergeometric distribution with fixed log odds ratio. $\mathbb{E}(E_{t})$ and variance of $E_{t}$ are then estimated based on $e_{t}$.
 
 \vspace{0mm}
-The algorithm for the method tries to estimate the number of studies that are not available due to reporting bias, $k$. There are different estimators for $k$. First, $\Delta$ is estimated using a fixed or random effects model. Then, the $k$ effect size estimates with the smallest standard errors are trimmed, and $\Delta$ is estimated again. The procedure is repeated until $k$ is 0 and the funnel plot is symmetric. The total number of missing studies is then mirrored with respect to the final effect size estimate $\Delta$, and $\Delta$ and its standard error is then computed to obtain an unbiased estimate.
+The standardized cell count deviation $(e_{t} - \mathbb{E}(E_{t}))/\sqrt(v_{i})$ and the inverse of $v_{i}$ is then used in the way as before in Begg and Mazumdar's test.
+
+\subsubsection{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}
+The correlation between variance and effect size of dichotomous outcome measures can be abolished by the variance stabilizing transformation for binomial random variables. Let 
+
+\begin{align}
+y_{i} = \arcsin{e_{t}/n_{t}} - \arcsin{e_{c}/n_{c}}// 
+v_{i} = 1/4n_{t} + +/4n_{c}
+\end{align}
+
+Then one can for example apply Begg and Mazumdar's rank correlation test or Thompson and Sharp's test using the newly obtained variances. 
+
+
+\section{Small Study Effect Adjustment}
+\subsection{Trim and Fill}
+One method to account for reporting bias in meta-analysis is to apply the Trim and Fill adjustment method \citep{trimfill}. It is a nonparametric test based on a funnel plot, on which the effect size estimates of studies are plotted against their standard error. 
+%If reporting bias is present, the estimate will shift in average towards higher or lower efffect sizes compared to the estimates of larger studies
+
+\vspace{0mm}
+The algorithm for the method tries to estimate the number of studies $k$ that are not available due to reporting bias (different estimators are available for $k$). First, $\Delta$ is estimated using a fixed or random effects model. Then, the $k$ effect size estimates with the smallest standard errors are trimmed, and $\Delta$ is estimated again. The procedure is repeated until $k$ is 0 and the funnel plot is symmetric. The total number of missing studies is then mirrored with respect to the final effect size estimate $\Delta$, and $\Delta$ and its standard error is then computed to obtain an unbiased estimate.
+
+\subsection{Copas Selection Model}
+
+A method proposed in \cite{Copas1,Copas2,Copas3} assumes that there is a population of studies of which only a part has been published dependent on the variance and size of their estimated effects. Studies with small variance and large effect sizes are more likely to be published than studies with large variance and small effect sizes. Note that small effect size means here a treatment effect close to the control effect.
+
+Let $y_i$ be the effect size estimate of study $i$. Then 
+
+\begin{align}
+y_{i} \sim N(\mu_{i}, \sigma_{i}^2) \\
+\mu_{i} \sim N(\mu, \tau^2)
+\end{align}
+
+corresponding to a standard random effects model. $\mu$ is the overall mean effect, $\sigma_{i}^2$ the within study variance and $\tau^2$ the between study variance. This is the \textit{population model}.
+
+\vspace{0mm}
+The \textit{selection model} is defined as follows. Suppose a selection of studies with reported standard errors $s$ (likely different from $\sigma$). Only a proportion 
+
+\begin{align}
+P(\textrm{select}|s) &= \Phi(a + b/s) \label{copas.selection1}
+\end{align}
+
+of the selection will be published, with a defining the overall proportion of published studies and b (assumed to be positive) defining how fast this proportion increases with $s$ becoming smaller. \ref{copas.selection1} can be rewritten as 
+
+\begin{align}
+z = a + b/s + \delta \label{copas.selection2}
+\end{align}
+
+with $\delta \sim N(0,1)$. The study with standard error $s$ is only selected if $z$ is positive. Therefore, the larger $z$, the more likely the study is selected.
+Combining population and selection model for study $i$, we have 
+
+\begin{align}
+y_{i} = \mu_{i} + \sigma_{i}\epsilon_{i} \\
+\mu_{i} \sim N(\mu, \tau^2) \\
+z_{i} = a + b/s_{i} + \delta_{i}
+\end{align}
+
+where $(\epsilon_{i}, \delta_{i})$ are standard normal residuals and jointly normal with correlation $\rho = cor(y_{i}, z_{i})$. Every given study $i$ in the meta-analysis has $z_{i} > 0$. If $\rho$ is large and positive and $z_{i} > 0$, then the estimate of a study $i$ that is selected is likely to have positive $\epsilon_{i}$ and $\delta_{i}$. Thus, the true mean $\mu$ is likely to be overestimated. 
+
+\vspace{0mm}
+Let $u = a + b/s$, $\lambda(u) = \phi(u)/\Phi(u)$ ($\phi$ is the standard normal density function) and $\tilde{\rho} = \sigma/\sqrt(\tau^2 + \sigma^2) \rho$. The probability of a study being selected is
+
+\begin{align}
+P(\textrm{select}|s, y) = P(a,b,s,y) = \Phi(\frac{u + \tilde{\rho}((y - \mu)/\sqrt(\tau^2 + \sigma^2))}{\sqrt{1 - \tilde{\rho^2}}})
+\end{align}
+
+It can also be shown that the expected value 
+
+\begin{align}
+\mathbb{E}(y|s, select) = \mu + \rho\sigma\lambda(u) \label{copas.expectation}
+\end{align}
+
+which shows that the expected value for a study is larger for larger $\sigma$. 
+
+\vspace{0mm}
+One can compute a likelihood function based on the distribution of $y$ conditional on $z > 0$. The likelihood can be maximized for any given pair $a,b$ (can not be estimated since the number of missing studies is not known), and a maximum likelihood estimate $\hat{\mu}$ for the true mean $\mu$ can be obtained. One can then perform a sensitivity analysis. First, one looks how $\hat{\mu}$ changes for different values of $a,b$. One can then compare the fitted values in \ref{copas.expectation} with the real values. To test the fit of the model (while keeping all other parts unchanged), the model can be extended in the following way :
+
+\begin{align}
+y_{i} &= \mu_{i} + \beta s_{i} + \sigma_{i}\epsilon_{i}
+\end{align}
+
+If we accept $\beta = 0$, then we accept that the selection model has satisfactorily explained any relationship between $y$ and $s$. Only if the value is large enough, typically $p > 0.05$, one concludes that the selection model has explained the observed data. The p-value is obtained by a likelihood ratio test comparing the maximum of the likelihood with the $\beta$ term added and without it, and by a likelihood ratio test.
+
+\vspace{0mm}
+To find out if the null-hypothesis of, say, $\mu = 0$ can be rejected, another likelihood ratio test can be performed, this time with imputing $\mu = 0$ and comparing the two maximum likelihoods.
+
+\vspace{0mm}
+In practice, only a range of values for $a,b$ are reasonable. For those values, the quantities above can be calculated and illustrated. Values for $\mu$ that have p-values over a predefined significance threshold can be used for inference of the effect size. 
+
+\subsection{Adjustment by Regression}
+There are multiple ways to adjust for small study effects by regression. The general idea is to regress the effect size of a study with a variance of zero based on the given effects and variances. 
+
+\citet{limitmeta} use a random effects model together with shrinkage procedure to obtain an unbiased estimate. Similarly to what has been seen in Copas selection model, we let $y_{i}$ depend on the intercept $\beta_{0}$ and on its standard error $\sqrt{v_{i}}$ as in \ref{limitmeta.regression}.
+
+\begin{align}
+y_{i}& = \beta_{0} + \beta{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{s_{i} + \tau^2}), \stackrel{\textrm{iid}}{\sim} N(0,1)  \ref{limitmeta.regression}
+\end{align}
+
+$\beta{1}$ represents the bias introduced by small study effects, as can be seen when looking at \ref{limitmeta.infinitesample}
+
+\begin{align}
+\mathbb{E}((y_{i} - \beta_{})/\sqrt{v_{i}}) \rightarrow \beta_{1} \textrm{if} \sqrt{v_{i}} \rightarrow \infty \\
+\mathbb{E}(y_{i}) \rightarrow \beta_{0} + \beta_{1}\tau \textrm{if} \sqrt{v_{i}} \rightarrow 0 
+\end{align}
+
+After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen before e.g. in Thompson and Sharp's Test with weights also equal to Thompson and Sharp's Test.
+
+\vspace{0mm}
+To diminuish the random variation within studies, but keep the variation between studies, we change \ref{limitmeta.regression} to a scenario where each study has $M$-fold increased precision:
+
+\begin{align}
+y_{i} &= \beta_{0}^\star + \beta_{1}^\star(\sqrt{v_{i}/M + \tau^2}) + \epsilon_{i}(\sqrt{s_{i}/M + \tau^2}) \label{limitmeta.regression}
+\end{align}
+
+Letting $M \rightarrow \infty$, we obtain:
+
+\begin{align}
+y_{\infty,i} &= \beta_{0}^\star + \tau(\beta_{1}^\star + \epsilon_{i}),  \epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1) \label{limitmeta.regression.infinity}
+\end{align}
+
+Note that:
+
+\begin{align}
+y_{\infty,i} &= \beta_{0}^\star + \tau\beta_{1}^\star = \beta_{0}
+\end{align}
+
+$\beta_{0}$ is termed the limit meta analysis expectation. Now, the random errors from \ref{limitmeta.regression} are rewritten as:
+
+\begin{align}
+\epsilon_{i} &= \frac{y_{i} - \beta_{0}^\star}{\sqrt{v_{i} + \tau^2}} - \beta_{1}^\star
+\end{align}
+
+Assuming $\epsilon_{i}$ to be fixed, we can plug it into \ref{limitmeta.regression.infinity} and get 
+
+\begin{align}
+y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \beta_{0}^\star)
+\end{align}
+
+By estimating $\tau^2, v_{i}$ and  $\beta_{0}^\star$, we can use the formula to obtain a new study means, adjusted for small study effects and shrunken to a common mean. 
+
+
+
 
 
 

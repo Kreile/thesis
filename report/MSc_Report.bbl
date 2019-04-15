@@ -13,10 +13,21 @@ Borenstein, M., Hedges, L.~V., Higgins, J. P.~T., Rothstein, H.~R., and
 \newblock {\em Introduction to Meta-Analysis}.
 \newblock John Wiley \& Sons, Incorporated, Hoboken, UNKNOWN.
 
-\bibitem[DerSimonian and Laird, 1986]{tau.estimator}
-DerSimonian, R. and Laird, N. (1986).
-\newblock Meta-analysis in clinical trials.
-\newblock {\em Controlled Clinical Trials}, {\bf7},  177 -- 188.
+\bibitem[Copas and Shi, 2000]{Copas2}
+Copas, J. and Shi, J.~Q. (2000).
+\newblock {Meta-analysis, funnel plots and sensitivity analysis }.
+\newblock {\em Biostatistics}, {\bf1},  247--262.
+
+\bibitem[Copas and Malley, 2008]{Copas3}
+Copas, J.~B. and Malley, P.~F. (2008).
+\newblock A robust p-value for treatment effect in meta-analysis with
+  publication bias.
+\newblock {\em Statistics in Medicine}, {\bf27},  4267--4278.
+
+\bibitem[Copas and Shi, 2001]{Copas1}
+Copas, J.~B. and Shi, J.~Q. (2001).
+\newblock A sensitivity analysis for publication bias in systematic reviews.
+\newblock {\em Statistical Methods in Medical Research}, {\bf10},  251--265.
 
 \bibitem[Duval and Tweedie, 2000]{trimfill}
 Duval, S. and Tweedie, R. (2000).
@@ -34,6 +45,28 @@ Harbord, R.~M., Egger, M., and Sterne, J. A.~C. (2006).
 \newblock A modified test for small-study effects in meta-analyses of
   controlled trials with binary endpoints.
 \newblock {\em Statistics in Medicine}, {\bf25},  3443--3457.
+
+\bibitem[Higgins~JPT, 2011]{cochrane.handbook}
+Higgins~JPT, G.~S. (2011).
+\newblock {\em Cochrane Handbook for Systematic Reviews of Interventions}.
+\newblock The Cochrane Collaboration.
+
+\bibitem[Peters {\it et~al.}, 2006]{Peters}
+Peters, J., Sutton, A., R~Jones, D., Abrams, K., and Rushton, L. (2006).
+\newblock Comparison of two methods to detect publication bias in
+  meta-analysis.
+\newblock {\em JAMA : the journal of the American Medical Association},
+  {\bf295},  676--80.
+
+\bibitem[R{\"u}cker {\it et~al.}, 2011]{limitmeta}
+R{\"u}cker, G., Carpenter, J.~R., and Schwarzer, G. (2011).
+\newblock Detecting and adjusting for small-study effects in meta-analysis.
+\newblock {\em Biometrical Journal}, {\bf53},  351--368.
+
+\bibitem[Schwarzer {\it et~al.}, 2007]{Schwarzer}
+Schwarzer, G., Antes, G., and Schumacher, M. (2007).
+\newblock A test for publication bias in meta-analysis with sparse binary data.
+\newblock {\em Statistics in Medicine}, {\bf26},  721--733.
 
 \bibitem[Thompson and Sharp, 1999]{thompson.sharp}
 Thompson, S.~G. and Sharp, S.~J. (1999).

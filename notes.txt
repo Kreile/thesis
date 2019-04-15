@@ -7,3 +7,19 @@
 - Publication Bias publikationen, litterature review
 
 - Publication date  - Publication bias? Weshalb nicht publikations-sample size mit publikations-Jahr vertauschen oder ergänzen? 
+
+Comparisons:
+- Trimfill k0 and pbias tests
+- Pooled effect size and corrected pooled effect size difference vs. - ? (pbias test, added studies, heterogeneity, ..)
+- Significance of pooled effect sizes and ? (corrected pooled effect size significance, subgroup analysis pooled effect size, ..)
+- Significance of pbias tests with mean publication year.
+
+- Crossover trials given in dataset? 
+
+- Meta-analysis with survival outcomes?
+
+- How to deal with sparse data (binary outcomes)? e.g. metabin(incr = "TACC")
+Currently, e(t) = 0 and e(c) = 0 is used as exclusion criteria. If only one is 0,
+incr = 0.5 is used (default in metabin() function)
+
+- Correct meta.bin.complete outcome type differences

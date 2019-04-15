@@ -24,7 +24,7 @@ aliases = tmp[[2]]
 require(biostatUZH)
 require(tidyverse)
 require(meta)
-require(xtable)
+require(metasens)
 
 
 #Look at Migraine sympton relieve review
@@ -267,6 +267,14 @@ data %>% filter(file.nr < 5016) %>% group_by(file.nr, outcome.nr, comparison.nr,
   mutate(counts = n()) %>% filter(counts > 1) %>% mutate(scaled.effect = scale(effect), scaled.time = scale(study.year)) %>% 
   ggplot(aes(x = scaled.time, y = scaled.effect)) + geom_point(size = .005, alpha = 0.15) 
 
+data %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% 
+  filter(study.year > 1950 | study.year < 2019) %>% 
+  mutate(counts = n()) %>% filter(counts > 1) %>% 
+  filter(max(diff(study.year)) < 50) %>% 
+  mutate(abs.scaled.effect = abs(scale(effect)), scaled.time = scale(study.year)) %>% 
+  ggplot(aes(x = scaled.time, y = abs.scaled.effect)) + geom_point(size = .005, alpha = 0.15) + geom_smooth()
+
+
 #Pvalues over time
 temp.pval <- data %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>%
   distinct(study.year, .keep_all = T) %>% 
@@ -306,6 +314,23 @@ data %>% filter(!is.na(fishersz)) %>% group_by(file.nr, comparison.nr, outcome.n
   ggplot(aes(x = nn, y = trials)) + geom_line(col = "gray15") +
   theme_bw() + labs(title = "Trials Comparing the Same Subject per Review")
 
+#Look for sample size effect on effect size
+data %>% filter(total1 + total2 < 100 & total1 + total2 > 5) %>%
+  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  group_by(sample.size) %>% 
+  summarize(mean.scaled.effect = mean(scaled.effect, na.rm = T)) %>% 
+  ggplot(aes(x = sample.size, y = mean.scaled.effect)) + geom_point() + geom_smooth(method = "lm")
+
+data %>%  filter(total1 + total2 < 100 & total1 + total2 > 5) %>%
+  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  ggplot(aes(x = sample.size, y = scaled.effect)) + geom_point(alpha = 0.15, size = 0.5) + geom_smooth(method = "lm")
+
+data %>% filter(total1 + total2 > 5 & total1 + total2 < 300) %>% 
+  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  group_by(sample.size) %>% 
+  summarize(mean.effect = mean(scaled.effect, na.rm = T)) %>% 
+  ggplot(aes(x = sample.size, y = mean.effect)) + geom_point() + geom_smooth(method = "lm") + geom_smooth(method = "loess", color = "red")
+
 
 #Find a study with different comparisons:
 data %>% group_by(file.nr, study.name) %>% distinct(comparison.name) %>% count %>% ggplot(aes(x = n)) + geom_histogram()
@@ -315,6 +340,11 @@ print(arrange(filter(data, file.nr == 21) %>%
 
 
 #Check out metabin and metabias function with one meta-analysis.
+print(data %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% 
+  filter(outcome.measure == "Odds Ratio" | outcome.measure == "Risk Ratio") %>% filter(events1 > 0 & events2 > 0) %>% 
+  mutate(counts = n()) %>% filter(counts > 9) %>% ungroup() %>% distinct(file.nr) %>% select(file.nr), n = 200)
+
+
 ds <- data %>% filter(file.nr == 11) %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% 
   filter(outcome.measure == "Odds Ratio" | outcome.measure == "Risk Ratio") %>% filter(events1 > 0 & events2 > 0) %>% 
   mutate(counts = n()) %>% filter(counts == 18)
@@ -326,4 +356,7 @@ funnel(trimfill.ds)
 
 metabias(meta.ds, method = "peters")
 metabias(meta.ds, method = "peters")$statistic
+
+cp <- copas(meta.ds)
+limitmeta(meta.ds)
 
