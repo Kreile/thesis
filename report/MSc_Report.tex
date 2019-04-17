@@ -190,7 +190,7 @@ Each study provides data of (multiple) comparisons of clinical interventions.
 In Table \ref{barbiturate.row}, two comparisons from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, the comparison is further specified by the variables in the columns. One row of the dataset is one comparison.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sat Apr 13 14:58:52 2019
+% Tue Apr 16 13:54:44 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -280,7 +280,7 @@ The comparison type variable specifies what is compared, the outcome variable ho
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sat Apr 13 14:58:52 2019
+% Tue Apr 16 13:54:44 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -325,7 +325,7 @@ Having provided an overview over the dataset, now, some more specific informatio
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sat Apr 13 14:58:53 2019
+% Tue Apr 16 13:54:44 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -439,7 +439,7 @@ In Table \ref{repr.groups}, two different similarity criteria have been used. On
 Table \ref{repr.groups} shows the cumulative number of \textit{groups} of comparisons with equal or more than $n$ comparisons. Practically, this means that this number of meta analyses can be performed with each having at least $n$ comparisons.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sat Apr 13 14:58:58 2019
+% Tue Apr 16 13:54:49 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -489,6 +489,9 @@ n & Cumulative sum (without subgroups) & Cumulative sum (with subgroups) \\
 
 \chapter{Results}
 
+
+
+
 \section{Small Study Effects}
 One crucial assumption in meta analysis is that the availability and publication of studies does not depend on their effect and the variance of the effect. If this is not given, one often speaks of publication bias. In fact, there can also be other reasons for this (see discussion section). A more appropriate term for the phenomenon is small study effect. If small study effects are present in a meta-analysis, the classical approaches to merge single study results in to an overall intervention effect fails to provide an appropriate estimate of the treatment effect. 
 
@@ -499,7 +502,7 @@ To provide an overview over the issue, first it is shown how mean absolute effec
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-17-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-18-1} 
 
 }
 
@@ -510,6 +513,41 @@ To provide an overview over the issue, first it is shown how mean absolute effec
 \label{effect.samplesize}
 \end{figure}
 
+It is also possible to look how the amount of meta-analysis with significant pooled effect size estimates changes over time, e.g. mean publication year (of studies included in the meta-analysis). 0.05 is used here as the threshold for $p$-value significance and subsequent null-hypothesis rejection. To constrict random fluctuation in the proportion, only mean publication years with a certain amount of meta-analyses are shown ($n < 180$). The $p$-value of the fixed effects meta analysis model is used to decide about rejection of the null-hypothesis. As Figure \ref{treatment.effect.significance.overtime} shows, the proportion of meta-analyses with significant treatment effect estimates stays roughly constant over time. 
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-19-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Proportion of significant treatment effect estimates over time (mean publication year).}
+\label{effect.samplesize}
+\end{figure}
+
+A somewhat different question is how statistical power of studies changed over time. As an approximation, the total sample size of a study can be used. Figure \ref{median.samplesize.overtime} shows the median sample size of all studies of a given year. Again, to reduce the effects of distortion due to random fluctuation, only the medians for the years 1980 to 2017 are used ($n$ > 50,000).
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-20-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Median sample size over time (years).}
+\label{median.samplesize.overtime}
+\end{figure}
+
+
 \subsection{Small Study Effect Tests}
 
 
@@ -519,15 +557,15 @@ To provide an overview over the issue, first it is shown how mean absolute effec
 There are tests that can be applied to find out if reporting bias is present in the meta analysis. For the precise description, see the methods section. Application of the tests is only recommended if there are ten or more studies \citep{cochrane.handbook} that can be used, so all meta-analyses with less than ten studies have been excluded.
 
 \vspace{0mm}
-There are modifications to make tests more appropriate in case of binary outcomes, therefore the results have been separated in continuous and dichotomous outcome test results. In Figure \ref{bias.results.cont} the proportion of test results that led to rejection of the null hypothesis of no small study effect based on the 5 \% level are shown for continuous outcomes. From 2312 meta-analyses with continouos outcomes, most meta-analyses with rejected null hypotheses have been found by the Thompson and Sharp test (0.319), followed closely by Eggers test (0.309) and Begg and Mazumdar's test (0.131).
-The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measures ($n$ = 5717). The test that rejects most null hypotheses is here Egger's test (0.186), followed by R\"ucker's test (0.163), Harbord's test (0.144), Peters test (0.142) and Schwarzer's test (0.088). 
+There are modifications to make tests more appropriate in case of binary outcomes, therefore the results have been separated in continuous and dichotomous outcome test results. In Figure \ref{bias.results.cont} the proportion of test results that led to rejection of the null hypothesis of no small study effect based on the 5 \% level are shown for continuous outcomes ($n$ = 1383)
+The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measures ($n$ = 3350).
 
 
 \begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-19-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-22-1} 
 
 }
 
@@ -542,7 +580,7 @@ The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measu
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-20-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-23-1} 
 
 }
 
@@ -553,74 +591,7 @@ The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measu
 \label{bias.results.bin}
 \end{figure}
 
-
-The agreement of the tests, i.e. the proportion of meta-analyses where the rest results are equal between tests, is shown in Table \ref{agreement.bin} and Table \ref{agreement.cont}, again separated for outcome types. Agreement in tests for binary outcomes is better than continuous outcomes, with some variation between tests (binary outcomes: 83 to 91\%). Correlation varies more between tests, both for continuous and binary outcome tests.
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sat Apr 13 14:59:07 2019
-\begin{table}[ht]
-\centering
-\begingroup\footnotesize
-\begin{tabular}{lll}
-  \hline
- & Test Agreement & P-value Correlation \\ 
-  \hline
-egger.schwarzer & 0.83 & 0.38 \\ 
-  egger.peter & 0.84 & 0.44 \\ 
-  egger.rucker & 0.83 & 0.39 \\ 
-  egger.harbord & 0.91 & 0.75 \\ 
-  schwarzer.peter & 0.85 & 0.24 \\ 
-  schwarzer.rucker & 0.83 & 0.30 \\ 
-  schwarzer.harbord & 0.88 & 0.52 \\ 
-  rucker.peter & 0.89 & 0.66 \\ 
-  harbord.peter & 0.86 & 0.45 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (dichotomous outcomes)} 
-\label{agreement.bin}
-\end{table}
-
-
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sat Apr 13 14:59:07 2019
-\begin{table}[ht]
-\centering
-\begingroup\footnotesize
-\begin{tabular}{lll}
-  \hline
- & Test Agreement & P-value Correlation \\ 
-  \hline
-thomson.egger & 0.85 & 0.67 \\ 
-  thomson.begg & 0.75 & 0.45 \\ 
-  egger.begg & 0.75 & 0.38 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (continuous outcomes)} 
-\label{agreement.cont}
-\end{table}
-
-
-\vspace{0mm}
-Test performance depends on the sample size, despite having restricted sample size to a minimum of 10 studies. The p-values of two tests are shown with respect to the sample size of the studies in Figure \ref{pvalues.samplesize.bin} for peters test based on dichotomous outcomes and in Figure \ref{pvalues.samplesize.cont} for thomson and sharp's test based on continuous outcomes. %(Suggests that 10 is likely too small)
-A trend towards more significant p-values is visible for larger sample sizes.
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-23-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{P-values of peters test for small study effects and their corresponding sample size (dichotomous outcomes)}
-\label{pvalues.samplesize.bin}
-\end{figure}
+The same plots can be shown separately for meta-analyses with significant and non-significant pooled effect sizes. This is done in Figure \ref{bias.results.cont.sep} for continuous outcomes and \ref{bias.results.bin.sep} for binary outcomes.
 
 \begin{figure}
 \begin{knitrout}
@@ -633,13 +604,9 @@ A trend towards more significant p-values is visible for larger sample sizes.
 
 
 \end{knitrout}
-\caption{P-values of thomson and sharp's test for small study effects and their corresponding sample size (continuous outcomes)}
-\label{pvalues.samplesize.cont}
+\caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (continuous outcomes).}
+\label{bias.results.cont.sep}
 \end{figure}
-
-
-\vspace{0mm}
-One can use the proportion of added studies by the trim-and-fill method from the overall number of studies to further investigate the extent of small study effects. The mean fraction of trimmed comparisons for binary outcomes is 0.17 and the median 0.15. A histogram with those fractions is shown in Figure \ref{trimfill.cont} for continuous outcomes and \ref{trimfill.bin} for dichotomous outcomes. In both cases, the method very commonly adds supposedly unpublished studies to the meta-analyses. In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the relationship between fraction of added studies by trim-and-fill and the hypothesis test decisions of the small study effects tests is shown for continuous and dichotomous outcomes. In the case of Peters test dor dichotomous outcomes, there is less agreement with the trim-and fill method than in the case of Thomson and Sharp's test for continuos outcomes in the sense that the fraction of meta-analyses with rejected null hypothesises increases more clearly when there are more studies added by trim-and-fill.
 
 \begin{figure}
 \begin{knitrout}
@@ -652,13 +619,12 @@ One can use the proportion of added studies by the trim-and-fill method from the
 
 
 \end{knitrout}
-\caption{Histogram of fractions of trimmed comparisons from meta analyses with continuous outcomes.}
-\label{trimfill.cont}
+\caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (dichotomous outcomes).}
+\label{bias.results.bin.sep}
 \end{figure}
 
-The mean fraction of trimmed comparisons for continuous outcomes is 0.22 and the median 0.2.
+Furthermore one can look if the frequencies of tests that reject the null hypotheses change over time (mean publication year of the studies included in the meta analyses). The proportion of the test results are shown in Figure \ref{pub.bias.time.overtime}. The Figure suggests that the frequency of publication bias remains constant over time. The mean publication years have been restricted such that at least 180 meta-analyses are available per year such that random fluctuation is restricted to some extent. The significance threshold for the $p$-values used is 0.05, and the small study effect test used is Thomson's test (with the arcsine variance stabilizing transformation function used in the case of binary outcomes).
 
-The same is repeated for binary outcomes in figure \ref{trimfill.bin}. 
 \begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
@@ -670,16 +636,91 @@ The same is repeated for binary outcomes in figure \ref{trimfill.bin}.
 
 
 \end{knitrout}
-\caption{Histogram of fractions of trimmed comparisons from meta analyses with binary outcomes.}
-\label{trimfill.bin}
+\caption{Proportion of test results where the null hypothesis of no small study effect is rejected over time (mean publication.year).}
+\label{pub.bias.overtime}
 \end{figure}
 
+
+The agreement of the tests, i.e. the proportion of meta-analyses where the rest results are equal between tests, is shown in Table \ref{agreement.bin} and Table \ref{agreement.cont}, again separated for outcome types. Agreement in tests for binary outcomes is better than continuous outcomes, with some variation between tests (binary outcomes: 83 to 91\%). Correlation varies more between tests, both for continuous and binary outcome tests.
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Tue Apr 16 13:55:01 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{lll}
+  \hline
+ & Test Agreement & P-value Correlation \\ 
+  \hline
+egger.schwarzer & 0.88 & 0.38 \\ 
+  egger.peter & 0.89 & 0.52 \\ 
+  egger.rucker & 0.89 & 0.48 \\ 
+  egger.harbord & 0.94 & 0.76 \\ 
+  schwarzer.peter & 0.89 & 0.29 \\ 
+  schwarzer.rucker & 0.88 & 0.34 \\ 
+  schwarzer.harbord & 0.92 & 0.51 \\ 
+  rucker.peter & 0.92 & 0.67 \\ 
+  harbord.peter & 0.91 & 0.53 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (dichotomous outcomes)} 
+\label{agreement.bin}
+\end{table}
+
+
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Tue Apr 16 13:55:01 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{lll}
+  \hline
+ & Test Agreement & P-value Correlation \\ 
+  \hline
+thomson.egger & 0.89 & 0.69 \\ 
+  thomson.begg & 0.82 & 0.47 \\ 
+  egger.begg & 0.79 & 0.36 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (continuous outcomes)} 
+\label{agreement.cont}
+\end{table}
+
+
+\vspace{0mm}
+Test performance depends on the sample size, despite having restricted sample size to a minimum of 10 studies. The p-values of the Thompson and Sharp tests are shown with respect to the sample size of the meta-analysis in Figure \ref{pvalues.samplesize}. %(Suggests that 10 is likely too small)
+In the case of binary outcomes, the arcsine variance stabilizing function has been applied prior to use of Thompson and Sharp's test. A s trend towards more rejections for larger sample sizes can be seen.
 
 \begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-27-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-29-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{P-values of Thomson and Sharp's test for small study effects and their corresponding sample size.}
+\label{pvalues.samplesize}
+\end{figure}
+
+
+
+\vspace{0mm}
+One can use the proportion of added studies by the trim-and-fill method from the overall number of studies to further investigate the extent of small study effects. The mean fraction of trimmed comparisons for binary outcomes is 0.19 and the median 0.18. 
+% A histogram with those fractions is shown in Figure \ref{trimfill.cont} for continuous outcomes and \ref{trimfill.bin} for dichotomous outcomes. In both cases, the method very commonly adds supposedly unpublished studies to the meta-analyses. 
+In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the relationship between fraction of added studies by trim-and-fill and the hypothesis test decisions of the small study effects tests is shown for continuous and dichotomous outcomes. In the case of Peters test dor dichotomous outcomes, there is less agreement with the trim-and fill method than in the case of Thomson and Sharp's test for continuos outcomes in the sense that the fraction of meta-analyses with rejected null hypothesises increases more clearly when there are more studies added by trim-and-fill. 
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-30-1} 
 
 }
 
@@ -694,7 +735,7 @@ The same is repeated for binary outcomes in figure \ref{trimfill.bin}.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-28-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-31-1} 
 
 }
 
@@ -707,7 +748,6 @@ The same is repeated for binary outcomes in figure \ref{trimfill.bin}.
 
 
 \subsection{Small Study Effect Correction}
-
 Multiple methods are available to correct for the effects of small study effects in order to get an unbiased estimate. 
 
 
@@ -728,7 +768,7 @@ Multiple methods are available to correct for the effects of small study effects
 
 
 % # <<results = 'asis', Echo = FALSE>>=
-% # rejection.bin <- data.bin.ext %>% summarize(egger.rejection = mean(egger.test),
+% # rejection.bin <- meta.bin %>% summarize(egger.rejection = mean(egger.test),
 % #                                             schwarzer.rejection = mean(schwarzer.test),
 % #                                             rucker.rejection = mean(rucker.test),
 % #                                             harbord.rejection = mean(harbord.test),

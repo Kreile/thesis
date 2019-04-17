@@ -9,22 +9,22 @@
 \contentsline {subsection}{\numberline {2.0.1}Structure and Content}{3}{subsection.2.0.1}
 \contentsline {chapter}{\numberline {3}Results}{9}{chapter.3}
 \contentsline {section}{\numberline {3.1}Small Study Effects}{9}{section.3.1}
-\contentsline {subsection}{\numberline {3.1.1}Small Study Effect Tests}{9}{subsection.3.1.1}
-\contentsline {subsection}{\numberline {3.1.2}Small Study Effect Correction}{12}{subsection.3.1.2}
+\contentsline {subsection}{\numberline {3.1.1}Small Study Effect Tests}{10}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Small Study Effect Correction}{13}{subsection.3.1.2}
 \contentsline {chapter}{\numberline {4}Methods}{15}{chapter.4}
 \contentsline {section}{\numberline {4.1}Basic notation}{15}{section.4.1}
 \contentsline {section}{\numberline {4.2}Heterogeneity}{15}{section.4.2}
 \contentsline {section}{\numberline {4.3}Meta Analysis}{16}{section.4.3}
 \contentsline {section}{\numberline {4.4}Small Study Effects Tests}{17}{section.4.4}
 \contentsline {subsection}{\numberline {4.4.1}Continuous Outcome Tests}{17}{subsection.4.4.1}
-\contentsline {subsubsection}{Begg and Mazumdar: Rank Correlation Test}{17}{section*.25}
-\contentsline {subsubsection}{Egger's Test: Linear Regression Test}{17}{section*.26}
-\contentsline {subsubsection}{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{17}{section*.27}
+\contentsline {subsubsection}{Begg and Mazumdar: Rank Correlation Test}{17}{section*.27}
+\contentsline {subsubsection}{Egger's Test: Linear Regression Test}{17}{section*.28}
+\contentsline {subsubsection}{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{17}{section*.29}
 \contentsline {subsection}{\numberline {4.4.2}Dichotomous Outcomes Tests}{18}{subsection.4.4.2}
-\contentsline {subsubsection}{Peters Test: Weighted Linear Regression Test}{18}{section*.28}
-\contentsline {subsubsection}{Harbord's Test: Score based Test}{18}{section*.29}
-\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{18}{section*.30}
-\contentsline {subsubsection}{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{18}{section*.31}
+\contentsline {subsubsection}{Peters Test: Weighted Linear Regression Test}{18}{section*.30}
+\contentsline {subsubsection}{Harbord's Test: Score based Test}{18}{section*.31}
+\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{18}{section*.32}
+\contentsline {subsubsection}{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{18}{section*.33}
 \contentsline {section}{\numberline {4.5}Small Study Effect Adjustment}{19}{section.4.5}
 \contentsline {subsection}{\numberline {4.5.1}Trim and Fill}{19}{subsection.4.5.1}
 \contentsline {subsection}{\numberline {4.5.2}Copas Selection Model}{19}{subsection.4.5.2}
@@ -32,4 +32,4 @@
 \contentsline {chapter}{\numberline {5}Conclusions}{23}{chapter.5}
 \contentsline {chapter}{\numberline {A}Appendix}{25}{appendix.A}
 \vspace *{10mm}
-\contentsline {chapter}{\bfseries Bibliography}{27}{section*.32}
+\contentsline {chapter}{\bfseries Bibliography}{27}{section*.34}

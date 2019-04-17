@@ -9,12 +9,14 @@ PATH2 = file.path(PATH_HOME, 'PubBias')
 FILE = 'cochrane_2018-06-09.csv'
 PATH_DATA = file.path(PATH, 'data')
 PATH_CODE = file.path(PATH2, 'code')
-PATH_RESULTS = file.path(PATH, 'results')
+PATH_RESULTS = file.path(PATH2, 'results')
 PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
 
 file_results = "pb.RData"
 
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
+load(file.path(PATH_RESULTS, 'PubBias_results3.RData'))
+load(file.path(PATH_RESULTS, 'PubBias_results4.RData'))
 
 data = pb.readData(path = PATH_DATA, file = FILE)
 tmp = pb.clean(data)
@@ -274,7 +276,6 @@ data %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>%
   mutate(abs.scaled.effect = abs(scale(effect)), scaled.time = scale(study.year)) %>% 
   ggplot(aes(x = scaled.time, y = abs.scaled.effect)) + geom_point(size = .005, alpha = 0.15) + geom_smooth()
 
-
 #Pvalues over time
 temp.pval <- data %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>%
   distinct(study.year, .keep_all = T) %>% 
@@ -284,7 +285,8 @@ temp.pval <- data %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) 
 temp.pval %>% filter(time.rank < 10) %>% ggplot(aes(x = time.rank, y = pval)) + 
   geom_jitter(col = "gray15", size = 0.3, alpha = .25) + 
   theme_bw() + xlab("Time rank") + ylab("P-value") + labs(title = "P-values over (ranked) Time")
-
+########################################################################################################################################
+########################################################################################################################################
 # Cumulative number of total trials with
 data %>% filter(!is.na(fishersz)) %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
   ungroup %>% arrange(desc(n)) %>% mutate(trials = cumsum(n * nn)) %>% 
@@ -314,23 +316,74 @@ data %>% filter(!is.na(fishersz)) %>% group_by(file.nr, comparison.nr, outcome.n
   ggplot(aes(x = nn, y = trials)) + geom_line(col = "gray15") +
   theme_bw() + labs(title = "Trials Comparing the Same Subject per Review")
 
+########################################################################################################################################
+########################################################################################################################################
 #Look for sample size effect on effect size
-data %>% filter(total1 + total2 < 100 & total1 + total2 > 5) %>%
-  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
-  group_by(sample.size) %>% 
-  summarize(mean.scaled.effect = mean(scaled.effect, na.rm = T)) %>% 
-  ggplot(aes(x = sample.size, y = mean.scaled.effect)) + geom_point() + geom_smooth(method = "lm")
+########################################################################################################################################
+########################################################################################################################################
 
-data %>%  filter(total1 + total2 < 100 & total1 + total2 > 5) %>%
-  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
-  ggplot(aes(x = sample.size, y = scaled.effect)) + geom_point(alpha = 0.15, size = 0.5) + geom_smooth(method = "lm")
-
-data %>% filter(total1 + total2 > 5 & total1 + total2 < 300) %>% 
+data %>% filter(total1 + total2 > 15 & total1 + total2 < 500) %>% 
   mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
   group_by(sample.size) %>% 
   summarize(mean.effect = mean(scaled.effect, na.rm = T)) %>% 
-  ggplot(aes(x = sample.size, y = mean.effect)) + geom_point() + geom_smooth(method = "lm") + geom_smooth(method = "loess", color = "red")
+  ggplot(aes(x = sample.size, y = mean.effect)) + geom_point() + theme_bw() + xlab("sample size") + ylab("mean absolute normalized effect size")
 
+data %>% filter(total1 + total2 > 10 & total1 + total2 < 100) %>% 
+  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  group_by(sample.size) %>% 
+  summarize(median.effect = median(scaled.effect, na.rm = T)) %>% 
+  ggplot(aes(x = sample.size, y = median.effect)) + geom_point() + theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size")
+
+#Plot separately for outcome measures (median effect size)
+data %>% filter(total1 + total2 > 10 & total1 + total2 < 100) %>% 
+  filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio" | outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% 
+  group_by(outcome.measure) %>% 
+  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  group_by(sample.size, outcome.measure) %>% 
+  summarize(median.effect = median(scaled.effect, na.rm = T)) %>% 
+  ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure)) + geom_point() + facet_wrap(~outcome.measure) + 
+  theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size")
+
+#Plot separately for outcome measurres (mean effect size)
+data %>% filter(total1 + total2 > 10 & total1 + total2 < 100) %>% 
+  filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio" | outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% 
+  group_by(outcome.measure) %>% 
+  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  group_by(sample.size, outcome.measure) %>% 
+  summarize(mean.effect = mean(scaled.effect, na.rm = T)) %>% 
+  ggplot(aes(x = sample.size, y = mean.effect, group = outcome.measure)) + geom_point() + facet_wrap(~outcome.measure) + 
+  theme_bw() + xlab("sample size") + ylab("mean absolute normalized effect size") + geom_smooth(se = F)
+
+#Plot all data
+data %>% filter(total1 + total2 > 10 & total1 + total2 < 100) %>% 
+  filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio" | outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% 
+  group_by(outcome.measure) %>% 
+  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  ggplot(aes(x = sample.size, y = scaled.effect, group = outcome.measure)) + geom_point() + facet_wrap(~outcome.measure) + 
+  theme_bw() + xlab("sample size") + ylab("mean absolute normalized effect size") + geom_smooth(se = F)
+
+#All data histogramms
+data %>% filter(total1 + total2 > 10 & total1 + total2 < 100) %>% 
+  filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio" | outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% 
+  group_by(outcome.measure) %>% 
+  mutate(sample.size = total1 + total2, scaled.effect = scale(effect, center = T, scale = T)) %>%
+  ggplot(aes(x = scaled.effect, group = outcome.measure)) + geom_histogram() + facet_wrap(~outcome.measure) + 
+  theme_bw() + xlab("sample size") + ylab("mean absolute normalized effect size")
+
+#Find out more about the outliers of std.mean differences as seen in plot before (around 100 outliers, likely missspecifications from pooling effect sizes)
+data %>% filter(outcome.measure == "Std. Mean Difference") %>% 
+  mutate(seffect = as.vector(scale(effect, center = T, scale = T)), size = ifelse(total1 + total2 < 27, 1, 0)) %>% filter(seffect > 10) %>% 
+  ggplot(aes(x = seffect, fill = factor(size))) + geom_histogram()
+
+#Check Risk ratios
+data %>% filter(outcome.measure == "Risk Ratio") %>% 
+  mutate(seffect = as.vector(scale(effect, center = T, scale = T)), size = ifelse(total1 + total2 < 27, 1, 0)) %>% #filter(seffect > 10) %>% 
+  ggplot(aes(x = seffect, fill = factor(size))) + geom_histogram()
+
+########################################################################################################################################
+########################################################################################################################################
+########################################################################################################################################
+########################################################################################################################################
 
 #Find a study with different comparisons:
 data %>% group_by(file.nr, study.name) %>% distinct(comparison.name) %>% count %>% ggplot(aes(x = n)) + geom_histogram()
