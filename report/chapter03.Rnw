@@ -86,44 +86,88 @@ meta <- meta %>% mutate(sig.ranef = ifelse(!is.na(sig.ranef.bin), sig.ranef.bin,
 One crucial assumption in meta analysis is that the availability and publication of studies does not depend on their effect and the variance of the effect. If this is not given, one often speaks of publication bias. In fact, there can also be other reasons for this (see discussion section). A more appropriate term for the phenomenon is small study effect. If small study effects are present in a meta-analysis, the classical approaches to merge single study results in to an overall intervention effect fails to provide an appropriate estimate of the treatment effect. 
 
 \vspace{0mm}
-To provide an overview over the issue, first it is shown how mean absolute effect size decreases with increasing sample size of the comparisons in Figure \ref{effect.samplesize}. The decrease is particularly substantive from very small trials ($n$ = 5) to medium sample size ($n$ = 100), afterwards the trend is less pronounced. With increasing sample size, there are fewer results, therefore, the variation between means increases. All effects are normalized by subtracting the mean effect size of the dataset and dividng through the standard deviation. Note that various types of outcome measures are included, such as mean difference and risk ratios, and are normalized with respect to all sample sizes.
+To provide an overview over the issue, first it is shown how median absolute effect size decreases with increasing sample size of the comparisons in Figure \ref{effect.samplesize}. In some sense, this is the same idea as for a funnel plot, by depicting the size of effects relative to their variance. 
+
+\vspace{0mm}
+A clear trend of decrease of absolute effect size with increasing sample size (i.e. smaller variance) is visible. It is particularly substantive from very small trials ($n$ = 10) to medium sample size ($n$ = 100) and afterwards it evens off. With increasing sample size, there are fewer results, therefore, the variation between medians increases. All effects are normalized by subtracting the mean effect size of the dataset and dividing through the standard deviation. Note that various types of outcome measures are included, such as mean difference and risk ratios, and are normalized with respect to all effects.
 
 \begin{figure}
 <<echo=FALSE>>=
-data %>% filter(total1 + total2 > 5 & total1 + total2 < 500) %>% 
+data %>% filter(total1 + total2 > 10 & total1 + total2 < 200) %>% 
   mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
   group_by(sample.size) %>% 
-  summarize(mean.effect = mean(scaled.effect, na.rm = T)) %>% 
-  ggplot(aes(x = sample.size, y = mean.effect)) + geom_point() + theme_bw() + xlab("sample size") + ylab("mean absolute normalized effect size")
+  summarize(median.effect = median(scaled.effect, na.rm = T)) %>% 
+  ggplot(aes(x = sample.size, y = median.effect)) + geom_point() + theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size")
 @
-\caption{Mean of the absolute of the normalized effect size plotted against the total sample size.}
+\caption{Mean of the absolute value of the normalized effect size plotted against the total sample size.}
 \label{effect.samplesize}
 \end{figure}
 
-It is also possible to look how the amount of meta-analysis with significant pooled effect size estimates changes over time, e.g. mean publication year (of studies included in the meta-analysis). 0.05 is used here as the threshold for $p$-value significance and subsequent null-hypothesis rejection. To constrict random fluctuation in the proportion, only mean publication years with a certain amount of meta-analyses are shown ($n < 180$). The $p$-value of the fixed effects meta analysis model is used to decide about rejection of the null-hypothesis. As Figure \ref{treatment.effect.significance.overtime} shows, the proportion of meta-analyses with significant treatment effect estimates stays roughly constant over time. 
+The median absolute normalized effect size can be visualized for the different outcome measures separately. Then it is well visible in Figure \ref{effect.samplesize.separated} that the trend of effect size decrease holds in particualar for risk and odds ratios, while it is way more stable for mean differences and standardized mean differences. Instead of normalizing the effects (i.e. subtracting mean and dividing through the standard deviation) for all effect sizes, the effects are normalized with respect to the effects of the same outcome measures. 
+
 
 \begin{figure}
 <<echo=FALSE>>=
-meta %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
-  ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef), stat(count))) + geom_density(na.rm = T, position = "fill") + 
-  labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
+data %>% filter(total1 + total2 > 10 & total1 + total2 < 100) %>% 
+  filter(outcome.measure.new == "Risk Ratio" | outcome.measure.new == "Odds Ratio" | outcome.measure.new == "Mean Difference" |
+           outcome.measure.new == "Std. Mean Difference") %>% 
+  group_by(outcome.measure.new) %>% 
+  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  group_by(sample.size, outcome.measure.new) %>% 
+  summarize(median.effect = median(scaled.effect, na.rm = T)) %>% 
+  ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure.new)) + geom_point() + facet_wrap(~outcome.measure) + 
+  theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size")
 @
-\caption{Proportion of significant treatment effect estimates over time (mean publication year).}
-\label{effect.samplesize}
+\caption{Mean of the absolute value of the normalized effect size plotted against the total sample size, separated for outcome measures.}
+\label{effect.samplesize.separated}
 \end{figure}
 
-A somewhat different question is how statistical power of studies changed over time. As an approximation, the total sample size of a study can be used. Figure \ref{median.samplesize.overtime} shows the median sample size of all studies of a given year. Again, to reduce the effects of distortion due to random fluctuation, only the medians for the years 1980 to 2017 are used ($n$ > 50,000).
+A second way to analyse meta-analyses is a cumulative meta-analysis that should reveal shifts in treatment effect sizes over time. This can again be done for the entire dataset, i.e. for all effect estimates and their ordering in time. It is important to scale the effect estimates here with respect to the estimates of the replication studies that are about the same subject, have the same outcome measure, etc. Also, only effect estimates that can be compared to other estimates before are included, i.e. only study results with one or more replica are included. Time needs to be scaled and normalized in order to compare multiple time-trends in effect size to each other and gain insights in the overall trend. This is done in Figure \ref{effects.over.time}. In blue, the fit of a linear regression is depicted with grey 95 \% confidence intervals.
 
 \begin{figure}
 <<echo=FALSE>>=
-data %>% distinct(study.name, .keep_all = T) %>%  filter(study.year < 2018 & study.year > 1980) %>% group_by(study.year) %>% 
-  summarize(samplesize = median(total1 + total2, na.rm = T)) %>% 
-  ggplot(aes(y = samplesize, x = study.year)) + geom_line()
+data %>% filter(total1 + total2 > 10 & total1 + total2 < 100) %>% filter(!is.na(study.year)) %>% 
+  filter(outcome.measure.new == "Risk Ratio" | outcome.measure.new == "Odds Ratio" | outcome.measure.new == "Mean Difference" |
+           outcome.measure.new == "Std. Mean Difference") %>% 
+  group_by(outcome.measure.new, comparison.nr, outcome.nr, subgroup.nr) %>% count() %>% filter(n > 1) %>% 
+  mutate(scaled.effect = scale(effect), scaled.time = scale(study.year)) %>% 
+  ggplot(aes(x = scaled.time, y = scaled.effect)) + geom_point(size = .5, alpha = 0.2)  + 
+  geom_smooth(method = lm) + theme_bw() + 
+  labs(title = "Scaled and centered RR over time", subtitle = "Initial finding > 1") + ylab("Risk Ratio")  + ylab("Time")
 @
-\caption{Median sample size over time (years).}
-\label{median.samplesize.overtime}
+\caption{Mean of the absolute value of the normalized effect size plotted against the total sample size, separated for outcome measures.}
+\label{effect.samplesize.separated}
 \end{figure}
 
+
+% It is also possible to look how the amount of meta-analysis with significant pooled effect size estimates changes over time, e.g. mean publication year (of studies included in the meta-analysis). 0.05 is used here as the threshold for $p$-value significance and subsequent null-hypothesis rejection. To constrict random fluctuation in the proportion, only mean publication years with a certain amount of meta-analyses are shown ($n < 180$). The $p$-value of the fixed effects meta analysis model is used to decide about rejection of the null-hypothesis. As Figure \ref{treatment.effect.significance.overtime} shows, the proportion of meta-analyses with significant treatment effect estimates stays roughly constant over time. 
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% meta %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
+%   ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef), stat(count))) + geom_density(na.rm = T, position = "fill") + 
+%   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
+% @
+% \caption{Proportion of significant treatment effect estimates over time (mean publication year).}
+% \label{effect.samplesize}
+% \end{figure}
+% 
+% A different question is how statistical power of studies changed over time. As an approximation, the total sample size of a study can be used. Figure \ref{median.samplesize.overtime} shows the median sample size of all studies of a given year. Again, to reduce the effects of distortion due to random fluctuation, only the medians for the years 1980 to 2017 are used ($n$ > 50,000).
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% data %>% distinct(study.name, .keep_all = T) %>%  filter(study.year < 2018 & study.year > 1980) %>% group_by(study.year) %>% 
+%   summarize(samplesize = median(total1 + total2, na.rm = T)) %>% 
+%   ggplot(aes(y = samplesize, x = study.year)) + geom_line()
+% @
+% \caption{Median sample size over time (years).}
+% \label{median.samplesize.overtime}
+% \end{figure}
+
+
+\subsection{Meta-analyses}
+
+Meta-analyses can be applied on the dataset given that there are studies that have one or more replica (i.e. same comparison type, outcome type and subgroup type). 
 
 \subsection{Small Study Effect Tests}
 
@@ -305,56 +349,6 @@ trimfill.cont.median <- meta.cont %>% ungroup %>% summarise(median = median(miss
 
 trimfill.bin.mean <- meta.bin %>% ungroup %>% summarise(mean = mean(missing.trim.bin)) %>% select(mean)
 trimfill.bin.median <- meta.bin %>% ungroup %>% summarise(median = median(missing.trim.bin)) %>% select(median)
-
-
-
-# meta.bin %>% ggplot(aes(x = missing.trim.bin)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
-#   theme_bw() + labs(title = "Fraction of Trimmed Comparisons (binary outcome)") + xlab("Fraction") + ylab("Frequency")
-# 
-# meta.cont %>% ggplot(aes(x = missing.missing.trim.cont)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
-#   theme_bw() + labs(title = "Fraction of Trimmed Comparisons (continuous outcome)") + xlab("Fraction") + ylab("Frequency")
-# 
-# meta.bin %>% ggplot(aes(x = missing.trim.bin, fill = factor(peter.test))) + geom_density(na.rm = T, position = "fill")
-# 
-# meta.bin %>% ggplot(aes(x = missing.trim.bin, fill = factor(harbord.test))) + geom_density(na.rm = T, position = "fill")
-# 
-# meta.cont %>% ggplot(aes(x = missing.missing.trim.cont, fill = factor(thomson.test))) + geom_density(na.rm = T, position = "fill")
-# 
-# #Time trends in significance of tests
-# meta.bin %>% filter(mean.publication.year < 2019 & mean.publication.year > 1960) %>% 
-#   ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef.bin))) + geom_histogram()
-# 
-# meta.bin %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
-#   ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef.bin))) + geom_density(na.rm = T, position = "fill")
-# 
-# meta.bin %>% filter(first.publication.year < 2013 & first.publication.year > 1990) %>% 
-#   ggplot(aes(x = first.publication.year, fill = factor(sig.fixef.bin))) + geom_density(na.rm = T, position = "fill")
-# 
-# meta.bin %>% filter(first.publication.year < 2013 & first.publication.year > 1990) %>% 
-#   ggplot(aes(x = first.publication.year, fill = factor(peter.test))) + geom_density(na.rm = T, position = "fill")
-# 
-# meta.bin %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
-#   ggplot(aes(x = mean.publication.year, fill = factor(rucker.test))) + geom_density(na.rm = T, position = "fill")
-# 
-# 
-# meta.cont %>% filter(mean.publication.year < 2019 & mean.publication.year > 1960) %>% 
-#   ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef.cont))) + geom_histogram()
-# 
-# meta.cont %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
-#   ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef.cont))) + geom_density(na.rm = T, position = "fill")
-# 
-# meta.cont %>% filter(first.publication.year < 2013 & first.publication.year > 1990) %>% 
-#   ggplot(aes(x = first.publication.year, fill = factor(sig.fixef.cont))) + geom_density(na.rm = T, position = "fill")
-# 
-# meta.cont %>% filter(first.publication.year < 2013 & first.publication.year > 1990) %>% 
-#   ggplot(aes(x = first.publication.year, fill = factor(thomson.test))) + geom_density(na.rm = T, position = "fill")
-# 
-# meta.cont %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
-#   ggplot(aes(x = mean.publication.year, fill = factor(egger.test))) + geom_density(na.rm = T, position = "fill")
-# 
-# 
-# data %>% filter(study.year < 2019 & study.year > 1980) %>% group_by(study.year) %>% summarize(samplesize = mean(total1 + total2, na.rm = T)) %>% 
-#   ggplot(aes(y = samplesize, x = study.year)) + geom_line()
 
 @
 

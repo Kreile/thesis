@@ -1,6 +1,3 @@
-
-- Heterogeneity vs. Publication 
-
 - Publication Bias publikationen, litterature review
 
 - Publication date  - Publication bias? Weshalb nicht publikations-sample size mit publikations-Jahr vertauschen oder ergänzen? 
@@ -16,10 +13,6 @@ Comparisons:
 - How to deal with sparse data (binary outcomes)? e.g. metabin(incr = "TACC")
 Currently, e(t) = 0 and e(c) = 0 is used as exclusion criteria. If only one is 0,
 incr = 0.5 is used (default in metabin() function)
-
-- Correct meta.bin.complete outcome type differences
-
-- Design algorithm to attain reasonable bias corrected estimate (with limitmeta and copas)
 
 - How to handle between study heterogeneity? Some tests have been shown to work only well if heterogeneity is present? Automatic discrimination in test use for a more exact assessment of publication bias?
 
@@ -45,7 +38,8 @@ aber in file.nr 3480 comparison 5 outcome.nr 1 sind adverse effects.
 
 - doi from review to doi from studies to study characteristics
 
-- Sample size effects for different measures
+- There is the possibility that a study is once given as odds ratio, once as risk ratio..
 
-- Outcome.measur.new statt outcome.measure benutzen
-
+- Do a meta analysis part (i.e. analyze all studies with one or more replicas by meta-analysis methods)
+For this, extend the dataset with fishersz correlation and variance, p-values (and more?).
+Then compare significance of single trials with significance of meta analysis (plot overall fraction of significant trials against fraction of significant meta analyses).

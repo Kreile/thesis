@@ -2,7 +2,7 @@
 # PATH = file.path(PATH_HOME, 'thesis/code')
 # source(file.path(PATH, 'prepare.R'))
 
-
+rm(list = ls())
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
 PATH2 = file.path(PATH_HOME, 'PubBias')
@@ -15,18 +15,25 @@ PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
 file_results = "pb.RData"
 
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
-load(file.path(PATH_RESULTS, 'PubBias_results3.RData'))
-load(file.path(PATH_RESULTS, 'PubBias_results4.RData'))
+
 
 data = pb.readData(path = PATH_DATA, file = FILE)
 tmp = pb.clean(data)
 data = tmp[[1]]
 aliases = tmp[[2]]
 
+meta.b <-  pb.meta.binary(data, min.study.number = 10, sig.level = 0.05)
+meta.cont <- pb.meta.continuous(data, min.study.number = 10, sig.level = 0.05)
+
+meta <- pb.meta.merge(meta.binary = meta.bin, meta.continuous = meta.cont)
+
 require(biostatUZH)
 require(tidyverse)
 require(meta)
 require(metasens)
+require(gridExtra)
+require(xtable)
+
 
 
 #Look at Migraine sympton relieve review
