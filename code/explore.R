@@ -1,7 +1,6 @@
-# PATH_HOME = path.expand("~") # user home
-# PATH = file.path(PATH_HOME, 'thesis/code')
-# source(file.path(PATH, 'prepare.R'))
-
+################################################################################################################
+################################################################################################################
+#Import data
 rm(list = ls())
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
@@ -22,10 +21,25 @@ tmp = pb.clean(data)
 data = tmp[[1]]
 aliases = tmp[[2]]
 
-meta.b <-  pb.meta.binary(data, min.study.number = 10, sig.level = 0.05)
-meta.cont <- pb.meta.continuous(data, min.study.number = 10, sig.level = 0.05)
+file.bin <- "pb.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+  load(file.path(PATH_RESULTS, file.bin))
+} else { 
+  meta.bin <- meta.bin.complete(data, min.study.number = 10, sig.level = 0.05)
+  save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
+}
 
-meta <- pb.meta.merge(meta.binary = meta.bin, meta.continuous = meta.cont)
+file.cont <- "pb.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+  load(file.path(PATH_RESULTS, file.cont))
+} else { 
+  meta.cont <- meta.cont.complete(data, min.study.number = 10, sig.level = 0.05)
+  save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
+}
+
+
+
+meta <- pb.meta.merge(meta.bin, meta.cont)
 
 require(biostatUZH)
 require(tidyverse)
@@ -34,7 +48,8 @@ require(metasens)
 require(gridExtra)
 require(xtable)
 
-
+################################################################################################################
+################################################################################################################
 
 #Look at Migraine sympton relieve review
 arrange(filter(data, file.name=="MYdwnld_CD005220StatsDataOnly_Version2.csv") %>% 

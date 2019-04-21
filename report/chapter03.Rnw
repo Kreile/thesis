@@ -31,12 +31,7 @@ opts_chunk$set(fig.path='figure/ch02_fig',
 options(width=74)
 @
 
-<<echo=FALSE>>=
-# PATH_HOME = path.expand("~") # user home
-# PATH = file.path(PATH_HOME, 'thesis/code')
-# source(file.path(PATH, 'prepare.R'))
-
-
+<<echo=FALSE>>= 
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
 PATH2 = file.path(PATH_HOME, 'PubBias')
@@ -50,39 +45,76 @@ file_results = "pb.RData"
 
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
-load(file.path(PATH_RESULTS, 'PubBias_results1.RData'))
-load(file.path(PATH_RESULTS, 'PubBias_results2.RData'))
-load(file.path(PATH_RESULTS, 'PubBias_results3.RData'))
-load(file.path(PATH_RESULTS, 'PubBias_results4.RData'))
-
 
 data = pb.readData(path = PATH_DATA, file = FILE)
 tmp = pb.clean(data)
 data = tmp[[1]]
 aliases = tmp[[2]]
 
+file.bin <- "pb.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+  load(file.path(PATH_RESULTS, file.bin))
+} else { 
+  meta.bin <- meta.bin.complete(data, min.study.number = 10, sig.level = 0.05)
+  save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
+}
+
+file.cont <- "pb.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+  load(file.path(PATH_RESULTS, file.cont))
+} else { 
+  meta.cont <- meta.cont.complete(data, min.study.number = 10, sig.level = 0.05)
+  save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
+}
+
+meta <- pb.meta.merge(meta.bin, meta.cont)
+
+file.cont <- "mly.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+  load(file.path(PATH_RESULTS, file.cont))
+} else { 
+  data.cont <- mly.cont(data.ext, 0.05, min.study.number = 2)
+  save(data.cont, file =  file.path(PATH_RESULTS, file.cont))
+}
+
+file.bin <- "mly.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+  load(file.path(PATH_RESULTS, file.bin))
+} else { 
+  data.bin <- mly.bin(data.ext, 0.05, min.study.number = 2)
+  save(data.bin, file =  file.path(PATH_RESULTS, file.bin))
+}
+
+
+load(file.path(PATH_RESULTS, file = "mly.RData"))
+load(file.path(PATH_RESULTS, file = "data.processed.RData"))
+
 require(biostatUZH)
 require(tidyverse)
-require(gridExtra)
 require(meta)
+require(metasens)
+require(gridExtra)
 require(xtable)
 @
 
 
 \chapter{Results}
 
-<<echo=FALSE>>=
-meta <- bind_rows(meta.bin, meta.cont)
-meta <- meta %>% mutate(sig.ranef = ifelse(!is.na(sig.ranef.bin), sig.ranef.bin, sig.ranef.cont),
-                        thomson.test = ifelse(!is.na(thomson.test), thomson.test, rucker.test),
-                        sig.fixef = ifelse(!is.na(sig.fixef.bin), sig.fixef.bin, sig.fixef.cont),
-                        sig.reg.random = ifelse(!is.na(sig.reg.random.bin), sig.reg.random.bin, sig.reg.random.cont),
-                        missing.trim = ifelse(!is.na(missing.trim.bin), missing.trim.bin, missing.trim.cont),
-                        pval.thomson = ifelse(!is.na(pval.rucker.bin), pval.rucker.bin, pval.thomson.cont))
+\section{Meta-analysis}
+It is possible to analyse all studies with one or more replica by meta-analysis. There are different meta-analyses that can be applied. First, it is investigated how well the significance of a effect size estimate of a study replicates in significance of the pooled effect size estimate of a meta-analysis. First, the amount of significant study effect estimates is shown over time. The fraction of significant effect size estimates on the $p$-value threshold of $0.05$ is only shown for times where a reasonbly large number of effect estimates is available in order to reduce random fluctuation ($n > 800$). Shown are p-values for significance tests where the outcome measure of the study was either a risk ratio, odds ratio, mean difference and standardized mean difference. Additionally, only study years between 1970 and 2017 have been included and the sample size for each arm of the study had to $> 12$.
+
+\begin{figure}
+<<>>=
+data.ext %>% filter(!is.na(sig.type)) %>%  ggplot(aes(x = study.year, fill = factor(sig.type), stat(count))) + geom_density(na.rm = T, position = "fill") + 
+  labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))+ scale_x_continuous(limits = c(1970, 2017))
 @
+\caption{Mean of the absolute value of the normalized effect size plotted against the total sample size.}
+\label{study.significance.overtime}
+\end{figure}
 
 
-\section{Small Study Effects}
+
+\section{Small study effects}
 One crucial assumption in meta analysis is that the availability and publication of studies does not depend on their effect and the variance of the effect. If this is not given, one often speaks of publication bias. In fact, there can also be other reasons for this (see discussion section). A more appropriate term for the phenomenon is small study effect. If small study effects are present in a meta-analysis, the classical approaches to merge single study results in to an overall intervention effect fails to provide an appropriate estimate of the treatment effect. 
 
 \vspace{0mm}
@@ -350,11 +382,97 @@ trimfill.cont.median <- meta.cont %>% ungroup %>% summarise(median = median(miss
 trimfill.bin.mean <- meta.bin %>% ungroup %>% summarise(mean = mean(missing.trim.bin)) %>% select(mean)
 trimfill.bin.median <- meta.bin %>% ungroup %>% summarise(median = median(missing.trim.bin)) %>% select(median)
 
+########################################################################################################################################
+########################################################################################################################################
+
+change.ranef.bin <- meta.bin %>% ungroup() %>% select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
+  gather(key = "correction.method", value = "sig.change") %>% mutate(sig.change = factor(sig.change)) %>% group_by(sig.change, correction.method) %>% count()
+
+p.change.ranef.bin <- meta.bin %>% ungroup() %>% 
+  select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
+  gather(key = "correction.method", value = "sig.change") %>%  
+  mutate(sig.change = factor(sig.change)) %>% 
+  ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + ggtitle("Binary outcomes")+ 
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged.nonsig", "change.to.sig", "unchanged.sig", "change.to.nonsig")) +
+  annotate("text", x = change.ranef.bin[change.ranef.bin$sig.change == 3,]$correction.method, y = 300, 
+         label = paste(change.ranef.bin[change.ranef.bin$sig.change == 3,]$n, "changed to nonsig."), 
+         color = "white")
+
+change.ranef.cont <- meta.cont %>% ungroup() %>% select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
+  gather(key = "correction.method", value = "sig.change") %>% group_by(sig.change, correction.method) %>% count()
+
+p.change.ranef.cont <- meta.cont %>% ungroup() %>% 
+  select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
+  gather(key = "correction.method", value = "sig.change") %>%  
+  mutate(sig.change = factor(sig.change)) %>% 
+  ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + ggtitle("Continuous outcomes") +
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged.nonsig", "change.to.sig", "unchanged.sig", "change.to.nonsig")) +
+  annotate("text", x = change.ranef.cont[change.ranef.cont$sig.change == 3,]$correction.method, y = 200, 
+         label = paste(change.ranef.cont[change.ranef.cont$sig.change == 3,]$n, "changed to nonsig."), 
+         color = "white")
+
+change.ranef <- meta %>% ungroup() %>% select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
+  gather(key = "correction.method", value = "sig.change") %>% group_by(sig.change, correction.method) %>% count()
+
+p.ranef.change <- meta %>% ungroup() %>% 
+  select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
+  gather(key = "correction.method", value = "sig.change") %>%  
+  mutate(sig.change = factor(sig.change)) %>% 
+  ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged.nonsig", "change.to.sig", "unchanged.sig", "change.to.nonsig")) +
+  annotate("text", x = change.ranef[change.ranef$sig.change == 3,]$correction.method, y = 500, 
+         label = paste(change.ranef[change.ranef$sig.change == 3,]$n, "changed to nonsig."), 
+         color = "white")
+
+#Fixed effects meta-analysis significance
+change.fixef.bin <- meta.bin %>% ungroup() %>% select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+  gather(key = "correction.method", value = "sig.change") %>% group_by(sig.change, correction.method) %>% count()
+
+p.change.fixef.bin <- meta.bin %>% ungroup() %>% 
+  select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+  gather(key = "correction.method", value = "sig.change") %>%  
+  mutate(sig.change = factor(sig.change)) %>% 
+  ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + ggtitle("Binary outcomes")+  
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged.nonsig", "change.to.sig", "unchanged.sig", "change.to.nonsig")) +
+  annotate("text", x = change.fixef.bin[change.fixef.bin$sig.change == 3,]$correction.method, y = 200, 
+         label = paste(change.fixef.bin[change.fixef.bin$sig.change == 3,]$n, "changed to nonsig."), 
+         color = "white")
+
+change.fixef.cont <- meta.cont %>% ungroup() %>% select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+  gather(key = "correction.method", value = "sig.change") %>% group_by(sig.change, correction.method) %>% count()
+
+p.change.fixef.cont <- meta.cont %>% ungroup() %>% 
+  select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+  gather(key = "correction.method", value = "sig.change") %>%  
+  mutate(sig.change = factor(sig.change)) %>% 
+  ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + ggtitle("Continuous outcomes")+ 
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged.nonsig", "change.to.nonsig", "unchanged.sig", "change.to.sig")) +
+  annotate("text", x = change.fixef.cont[change.fixef.cont$sig.change == 3,]$correction.method, y = 300, 
+         label = paste(change.fixef.cont[change.fixef.cont$sig.change == 3,]$n, "changed to nonsig."), 
+         color = "white")
+
+change.fixef <- meta %>% ungroup() %>% select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+  gather(key = "correction.method", value = "sig.change") %>% group_by(sig.change, correction.method) %>% count()
+
+p.fixef.change <- meta %>% ungroup() %>% 
+  select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+  gather(key = "correction.method", value = "sig.change") %>%  
+  mutate(sig.change = factor(sig.change)) %>% 
+  ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged.nonsig", "change.to.nonsig", "unchanged.sig", "change.to.sig")) +
+  annotate("text", x = change.fixef[change.fixef$sig.change == 3,]$correction.method, y = 500, 
+         label = paste(change.fixef[change.fixef$sig.change == 3,]$n, "changed to nonsig."), 
+         color = "white")
+  
+########################################################################################################################################
+########################################################################################################################################
+
+p.missing.copas <- meta %>% ggplot(aes(x = missing.copas/n)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20)
+p.missing.trim <- meta %>% ggplot(aes(x = missing.trim)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20)
 @
 
-
-
-There are tests that can be applied to find out if reporting bias is present in the meta analysis. For the precise description, see the methods section. Application of the tests is only recommended if there are ten or more studies \citep{cochrane.handbook} that can be used, so all meta-analyses with less than ten studies have been excluded.
+\subsubsection{Small Study Effect Tests}
+There are tests that can be applied to find out if small study effects are present in the meta analysis. For the precise description, see the methods section. Application of the tests is only recommended if there are ten or more studies \citep{cochrane.handbook} that can be used, so all meta-analyses with less than ten studies have been excluded.
 
 \vspace{0mm}
 There are modifications to make tests more appropriate in case of binary outcomes, therefore the results have been separated in continuous and dichotomous outcome test results. In Figure \ref{bias.results.cont} the proportion of test results that led to rejection of the null hypothesis of no small study effect based on the 5 \% level are shown for continuous outcomes ($n$ = \Sexpr{n.cont})
@@ -463,17 +581,62 @@ meta.cont %>% filter(missing.trim.cont < 0.5) %>%
 
 
 \subsection{Small Study Effect Correction}
-Multiple methods are available to correct for the effects of small study effects in order to get an unbiased estimate. 
+Multiple methods are available to correct for the effects of small study effects in order to get an unbiased estimate. Three of them will be applied to the meta-analyses shown previously that have ten or more study results and are therefore eligible for testing for publication bias. 
+
+\vspace{0mm}
+The extent to what the results of the meta-analysis results are changed can be investigated. Because statistical significance is often used to decide if there is a treatment effect, a non-significant corrected effect size estimate can indicate that an observed treatment effect has been accepted because of small study effects. Therefore, the cases have been counted in which 
+\begin{enumerate}
+\item Significance or non-significance of pooled estimate of meta-analysis did not change after correction for small study effects.
+\item Significance of pooled estimate of meta-analysis did change to non-significance after correction for small study effects.
+\item Non-significance of pooled estimate of meta-analysis did change to significance after correction for small study effects.
+\end{enumerate}
+
+The results of this can be seen in Figure \ref{significance.change.fixed} for all three methods, comparing the significance of the corrected pooled effect size estimate with the significance of the pooled effect size estimate of the fixed effects meta-analysis. The same for significance of random effects meta-analysis is shown in Figure \ref{significance.change.random}. The significance threshold was chosen such that the $p$-value had to be $< 0.05$ for rejection of the null hypothesis of no treatment effect. The correction methods were trim-and-fill, copas selection model and regression with random effects and shrinkage of within-study-variance methods. More details to the applied correction methods and their application are in the methods section \ref{methods}. Notably, the correction methods has been applied to all meta-analyses, thus also for such that had no significant small study effect test result. 
 
 
+\begin{figure}
+<<echo=FALSE>>=
+plot(p.fixef.change)
+@
+\caption{Change in signficance of fixed effects meta-analysis pooled estimate after correction.}
+\label{significance.change.fixed}
+\end{figure}
 
+\begin{figure}
+<<echo=FALSE>>=
+plot(p.ranef.change)
+@
+\caption{Change in signficance of random effects meta-analysis pooled estimate after correction.}
+\label{significance.change.random}
+\end{figure}
 
+Since it has been previously seen in Figure \ref{test.results} that the results of small study effects vary considerably between continuous outcomes, the results in significance change from fixed effects meta-analysis can be seen separately in Figure \ref{significance.change.fixed.sep} for continuous and binary outcomes. The change in significance from random effects meta-analysis to significance of corrected estimate can be seen in Figure \ref{significance.change.fixed.sep}
 
+\begin{figure}
+<<echo=FALSE>>=
+grid.arrange(p.fixef.change.bin, p.fixef.change.cont, ncol = 2)
+@
+\caption{Change in signficance of fixed effects meta-analysis pooled estimate after correction, separated for continuous and binary outcomes.}
+\label{significance.change.fixed.sep}
+\end{figure}
 
+\begin{figure}
+<<echo=FALSE>>=
+grid.arrange(p.ranef.change.bin, p.ranef.change.cont, ncol = 2)
+@
+\caption{Change in signficance of random effects meta-analysis pooled estimate after correction, separated for continuous and binary outcomes.}
+\label{significance.change.random}
+\end{figure}
 
+Similarly, the number of missing studies per meta-analysis, i.e. those which have not been included because of small study effects, are estimated by the copas and trim-and-fill method and their empirical distribution is shown in histograms in Figure \ref{missing.studies.distribution}. For visualisation, the fraction of unpublished studies from the total fraction of available studies is shown.
 
-
-
+\begin{figure}
+<<echo=FALSE>>=
+grid.arrange(p.missing.copas, p.missing.trim, ncol = 1)
+@
+\caption{Fraction of missing studies estimated of the number of total studies included in the meta-analysis for copas selection and trim-and-fill method.}
+\label{missing.studies.distribution}
+\end{figure}
 
 
 

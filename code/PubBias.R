@@ -28,21 +28,36 @@ if (file.exists(file.path(PATH_RESULTS, file.bin))) {
 
 file.cont <- "pb.cont.RData"
 if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-  load(file.path(PATH_RESULTS, file.bin))
+  load(file.path(PATH_RESULTS, file.cont))
 } else { 
   meta.cont <- meta.cont.complete(data, min.study.number = 10, sig.level = 0.05)
-  save(meta.bin, file =  file.path(PATH_RESULTS, file.cont))
+  save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
 }
 
+meta.cont <- meta.cont %>% mutate(sig.change.ranef.reg = sig.change(sig.before = sig.ranef.cont, sig.after =  sig.reg.ranef.cont),
+                                            sig.change.ranef.copas = sig.change(sig.before = sig.ranef.cont, sig.after =  sig.copas.cont),
+                                            sig.change.ranef.trimfill = sig.change(sig.before = sig.ranef.cont, sig.after =  sig.trimfill.cont),
+                                            sig.change.fixef.reg = sig.change(sig.before = sig.fixef.cont, sig.after =  sig.reg.ranef.cont),
+                                            sig.change.fixef.copas = sig.change(sig.before = sig.fixef.cont, sig.after =  sig.copas.cont),
+                                            sig.change.fixef.trimfill = sig.change(sig.before = sig.fixef.cont, sig.after =  sig.trimfill.cont))
 
-save(meta.bin.complete(data[c(1:1000),], min.study.number = 10, sig.level = 0.05), file = file.path(PATH_RESULTS, file_fetch))
-load(file.path(PATH_RESULTS, file_fetch))
+meta.bin <- meta.bin %>% mutate(sig.copas.bin = ifelse(pval.copas.bin > 0.05, 0, 1),
+  sig.change.ranef.reg = sig.change(sig.before = sig.ranef.bin, sig.after =  sig.reg.ranef.bin), 
+                                                sig.change.ranef.copas = sig.change(sig.before = sig.ranef.bin, sig.after =  sig.copas.bin),
+                                                sig.change.ranef.trimfill = sig.change(sig.before = sig.ranef.bin, sig.after =  sig.trimfill.bin),
+                                                sig.change.fixef.reg = sig.change(sig.before = sig.fixef.bin, sig.after =  sig.reg.ranef.bin),
+                                                sig.change.fixef.copas = sig.change(sig.before = sig.fixef.bin, sig.after =  sig.copas.bin),
+                                                sig.change.fixef.trimfill = sig.change(sig.before = sig.fixef.bin, sig.after =  sig.trimfill.bin))
 
-pb.meta.binary(data[c(1:1000),], min.study.number = 10, sig.level = 0.05)
-pb.meta.continuous(data, min.study.number = 10, sig.level = 0.05)
 
-meta <- pb.meta.merge(meta.binary = meta.bin, meta.continuous = meta.cont)
-pb.meta.merge(meta.binary = meta.bin, meta.continous = meta.cont)
+save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
+
+file.bin = "pb.bin.RData"
+save(meta.bin, file =  file.path(PATH_RESULTS, file = "pb.bin.RData")
+
+     
+     
+meta <- pb.meta.merge(meta.bin, meta.cont)
 
 require(biostatUZH)
 require(tidyverse)
