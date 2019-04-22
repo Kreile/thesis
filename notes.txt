@@ -43,3 +43,7 @@ aber in file.nr 3480 comparison 5 outcome.nr 1 sind adverse effects.
 - Do a meta analysis part (i.e. analyze all studies with one or more replicas by meta-analysis methods)
 For this, extend the dataset with fishersz correlation and variance, p-values (and more?).
 Then compare significance of single trials with significance of meta analysis (plot overall fraction of significant trials against fraction of significant meta analyses).
+
+- Hartung Knapp is not always conservative compared to fixef (Cochrane MEthods 2016)
+
+-
