@@ -29,6 +29,11 @@ Copas, J.~B. and Shi, J.~Q. (2001).
 \newblock A sensitivity analysis for publication bias in systematic reviews.
 \newblock {\em Statistical Methods in Medical Research}, {\bf10},  251--265.
 
+\bibitem[DerSimonian and Laird, 1986]{tau.estimator}
+DerSimonian, R. and Laird, N. (1986).
+\newblock Meta-analysis in clinical trials.
+\newblock {\em Controlled Clinical Trials}, {\bf7},  177 -- 188.
+
 \bibitem[Duval and Tweedie, 2000]{trimfill}
 Duval, S. and Tweedie, R. (2000).
 \newblock Trim and fill: A simple funnel-plot?based method of testing and

@@ -190,7 +190,7 @@ Each study provides data of (multiple) comparisons of clinical interventions.
 In Table \ref{barbiturate.row}, two comparisons from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, the comparison is further specified by the variables in the columns. One row of the dataset is one comparison.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Apr 16 13:54:44 2019
+% Tue Apr 23 12:23:04 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -280,7 +280,7 @@ The comparison type variable specifies what is compared, the outcome variable ho
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Apr 16 13:54:44 2019
+% Tue Apr 23 12:23:04 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -325,7 +325,7 @@ Having provided an overview over the dataset, now, some more specific informatio
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Apr 16 13:54:44 2019
+% Tue Apr 23 12:23:04 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -439,7 +439,7 @@ In Table \ref{repr.groups}, two different similarity criteria have been used. On
 Table \ref{repr.groups} shows the cumulative number of \textit{groups} of comparisons with equal or more than $n$ comparisons. Practically, this means that this number of meta analyses can be performed with each having at least $n$ comparisons.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Apr 16 13:54:49 2019
+% Tue Apr 23 12:23:09 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -492,11 +492,8 @@ n & Cumulative sum (without subgroups) & Cumulative sum (with subgroups) \\
 
 
 
-\section{Small Study Effects}
-One crucial assumption in meta analysis is that the availability and publication of studies does not depend on their effect and the variance of the effect. If this is not given, one often speaks of publication bias. In fact, there can also be other reasons for this (see discussion section). A more appropriate term for the phenomenon is small study effect. If small study effects are present in a meta-analysis, the classical approaches to merge single study results in to an overall intervention effect fails to provide an appropriate estimate of the treatment effect. 
-
-\vspace{0mm}
-To provide an overview over the issue, first it is shown how mean absolute effect size decreases with increasing sample size of the comparisons in Figure \ref{effect.samplesize}. The decrease is particularly substantive from very small trials ($n$ = 5) to medium sample size ($n$ = 100), afterwards the trend is less pronounced. With increasing sample size, there are fewer results, therefore, the variation between means increases. All effects are normalized by subtracting the mean effect size of the dataset and dividng through the standard deviation. Note that various types of outcome measures are included, such as mean difference and risk ratios, and are normalized with respect to all sample sizes.
+\section{Meta-analysis}
+The data at hand is composed of over 400,000 comparisons with balanced sample size $n > 24$, which has been chosen as a threshold to assess the significance of treatment effect. The significance of the p-values of treatment effect estimates was calculated for all comparisons in the dataset with acceptable sample size and outcome measures as odds ratios, risk ratios, risk differences and mean and standardized mean differences. This led to somewhat more than 400,000 significance test results. Since most of the times, the study publication year is available, the fraction of significant treatment effects found is shown over time in Figure \ref{study.significance.overtime}.The $p$-value was chosen to be $0.05$  only times where a reasonbly large number of effect estimates is available is shown in order to reduce random fluctuation ($n > 800$). 
 
 \begin{figure}
 \begin{knitrout}
@@ -509,11 +506,17 @@ To provide an overview over the issue, first it is shown how mean absolute effec
 
 
 \end{knitrout}
-\caption{Mean of the absolute of the normalized effect size plotted against the total sample size.}
-\label{effect.samplesize}
+\caption{Mean of the absolute value of the normalized effect size plotted against the total sample size.}
+\label{study.significance.overtime}
 \end{figure}
 
-It is also possible to look how the amount of meta-analysis with significant pooled effect size estimates changes over time, e.g. mean publication year (of studies included in the meta-analysis). 0.05 is used here as the threshold for $p$-value significance and subsequent null-hypothesis rejection. To constrict random fluctuation in the proportion, only mean publication years with a certain amount of meta-analyses are shown ($n < 180$). The $p$-value of the fixed effects meta analysis model is used to decide about rejection of the null-hypothesis. As Figure \ref{treatment.effect.significance.overtime} shows, the proportion of meta-analyses with significant treatment effect estimates stays roughly constant over time. 
+It is possible to analyse all studies with one or more replica by meta-analysis. There are different meta-analys methods that can be applied. While fixed effects meta-analysis pools the estimates and their variance, random effects meta-analysis additionally estimates the between study variances and adds this variance to the pooled within-study variances when assessing the uncertainity of the pooled effect estimate. The Hartung and Knapp adjustment of p-values and confidence intervals for random effects meta-analysis is more conservative than random-effects meta-analysis and will yieild less significant results than the latter.
+
+\vspace{0mm}
+In the following, the study results are combined with the results of their corresponding meta-analysis. Thus, every study that has one or more replicate was analysed by meta-analysis. In the following, the significance of the study, the primary significance, is compared with the significance of the meta-analysis or secondary significance.
+
+\vspace{0mm}
+In Figure \ref{primary.secondary.significance}, the overall fraction of studies with significant and non-significant meta-analysis results is shown. The meta-analysis method used to pool the treatment effect estimates and assessing significance is indicated on the right hand side of the Figure. One can see the overall fraction of rejected null-hypotheses of no treatment effect.
 
 \begin{figure}
 \begin{knitrout}
@@ -526,11 +529,12 @@ It is also possible to look how the amount of meta-analysis with significant poo
 
 
 \end{knitrout}
-\caption{Proportion of significant treatment effect estimates over time (mean publication year).}
-\label{effect.samplesize}
+\caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis. The fractions have been calculated
+by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
+\label{primary.secondary.significance}
 \end{figure}
 
-A somewhat different question is how statistical power of studies changed over time. As an approximation, the total sample size of a study can be used. Figure \ref{median.samplesize.overtime} shows the median sample size of all studies of a given year. Again, to reduce the effects of distortion due to random fluctuation, only the medians for the years 1980 to 2017 are used ($n$ > 50,000).
+One can visualise the fraction of studies with significant treatment effect separately for studies with significant primary treatment effect, i.e. non-pooled effect, and non-significant primary treatment effect. This can be seen in Figure \ref{primary.secondary.significance.sep.sig}. One can see that primary significance and non-significance is often overruled when performing a meta-analysis.
 
 \begin{figure}
 \begin{knitrout}
@@ -543,29 +547,126 @@ A somewhat different question is how statistical power of studies changed over t
 
 
 \end{knitrout}
-\caption{Median sample size over time (years).}
-\label{median.samplesize.overtime}
+\caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis, separated by significance of study treatment effect estimate. The fractions have been calculated
+by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
+\label{primary.secondary.significance}
+\end{figure}
+
+The separation of studies can also be made based on the significance of heterogeneity between them when pooling them by means of a meta-analysis. Significant heterogeneity between studies corresponds to a rejection of the null-hypothesis that all the study treatment effect estimates share the same underlying distribution. The test used to assess heterogeneity was based on the between-study heterogeneity estimate $Q$ estimated as \citet{tau.estimator} suggested. This is shown in Figure \ref{primary.secondary.significance.sep.sig}.
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-21-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis, separated by significance of study treatment effect estimate. The fractions have been calculated
+by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
+\label{primary.secondary.significance.sep.sig}
 \end{figure}
 
 
-\subsection{Small Study Effect Tests}
-
-
-
-
-
-There are tests that can be applied to find out if reporting bias is present in the meta analysis. For the precise description, see the methods section. Application of the tests is only recommended if there are ten or more studies \citep{cochrane.handbook} that can be used, so all meta-analyses with less than ten studies have been excluded.
+\section{Small study effects}
+One crucial assumption in meta analysis is that the availability and publication of studies does not depend on their effect and the variance of the effect. If this is not given, one often speaks of publication bias. In fact, there can also be other reasons for this (see discussion section). A more appropriate term for the phenomenon is small study effect. If small study effects are present in a meta-analysis, the classical approaches to merge single study results in to an overall intervention effect fails to provide an appropriate estimate of the treatment effect. 
 
 \vspace{0mm}
-There are modifications to make tests more appropriate in case of binary outcomes, therefore the results have been separated in continuous and dichotomous outcome test results. In Figure \ref{bias.results.cont} the proportion of test results that led to rejection of the null hypothesis of no small study effect based on the 5 \% level are shown for continuous outcomes ($n$ = 1383)
-The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measures ($n$ = 3350).
+To provide an overview over the issue, first it is shown how median absolute effect size decreases with increasing sample size of the comparisons in Figure \ref{effect.samplesize}. In some sense, this is the same idea as for a funnel plot, by depicting the size of effects relative to their variance. 
 
+\vspace{0mm}
+A clear trend of decrease of absolute effect size with increasing sample size (i.e. smaller variance) is visible. It is particularly substantive from very small trials ($n$ = 10) to medium sample size ($n$ = 100) and afterwards it evens off. With increasing sample size, there are fewer results, therefore, the variation between medians increases. All effects are normalized by subtracting the mean effect size of the dataset and dividing through the standard deviation. Note that various types of outcome measures are included, such as mean difference and risk ratios, and are normalized with respect to all effects.
 
 \begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
 {\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-22-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Median of the absolute value of the normalized effect size plotted against the total sample size.}
+\label{effect.samplesize}
+\end{figure}
+
+The median absolute normalized effect size can be visualized for the different outcome measures separately. Then it is well visible in Figure \ref{effect.samplesize.separated} that the trend of effect size decrease holds in particualar for risk and odds ratios, while it is way more stable for mean differences and standardized mean differences. Instead of normalizing the effects (i.e. subtracting mean and dividing through the standard deviation) for all effect sizes, the effects are normalized with respect to the effects of the same outcome measures. 
+
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-23-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Median of the absolute value of the normalized effect size plotted against the total sample size, separated for outcome measures.}
+\label{effect.samplesize.separated}
+\end{figure}
+
+A second way to analyse meta-analyses is a cumulative meta-analysis that should reveal shifts in treatment effect sizes over time. This can again be done for the entire dataset, i.e. for all effect estimates and their ordering in time. It is important to scale the effect estimates here with respect to the estimates of the replication studies that are about the same subject, have the same outcome measure, etc. Also, only effect estimates that can be compared to other estimates before are included, i.e. only study results with one or more replica are included. Time needs to be scaled and normalized in order to compare multiple time-trends in effect size to each other and gain insights in the overall trend. This is done in Figure \ref{effects.overtime.separated}, separared for odds rati, risk ratio, and mean and standardized difference outcome measures. In order to reduce the spread over time of effect sizes, only studies between 1970 and 2019 were included, as well as studies with a minimal group size of 12 participants (each group).
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: Removed 9701 rows containing non-finite values (stat\_smooth).}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: Removed 9701 rows containing missing values (geom\_point).}}\end{kframe}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-24-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Absolute values of scaled effect sizes over scaled time, separated for outcome measures.}
+\label{effects.overtime.separated}
+\end{figure}
+
+
+% It is also possible to look how the amount of meta-analysis with significant pooled effect size estimates changes over time, e.g. mean publication year (of studies included in the meta-analysis). 0.05 is used here as the threshold for $p$-value significance and subsequent null-hypothesis rejection. To constrict random fluctuation in the proportion, only mean publication years with a certain amount of meta-analyses are shown ($n < 180$). The $p$-value of the fixed effects meta analysis model is used to decide about rejection of the null-hypothesis. As Figure \ref{treatment.effect.significance.overtime} shows, the proportion of meta-analyses with significant treatment effect estimates stays roughly constant over time. 
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% meta %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
+%   ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef), stat(count))) + geom_density(na.rm = T, position = "fill") + 
+%   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
+% @
+% \caption{Proportion of significant treatment effect estimates over time (mean publication year).}
+% \label{effect.samplesize}
+% \end{figure}
+% 
+
+
+
+\subsection{Small Study Effect Tests}
+
+
+
+There are tests that can be applied to find out if small study effects are present in the meta analysis. For the precise description, see the methods section. Application of the tests is only recommended if there are ten or more studies \citep{cochrane.handbook} that can be used, so all meta-analyses with less than ten studies have been excluded.
+
+\vspace{0mm}
+There are modifications to make tests more appropriate in case of binary outcomes, therefore the results have been separated in continuous and dichotomous outcome test results. In Figure \ref{bias.results.cont} the proportion of test results that led to rejection of the null hypothesis of no small study effect based on the 5 \% level are shown for continuous outcomes ($n$ = 1383)
+The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measures ($n$ = 3442).
+
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-26-1} 
 
 }
 
@@ -580,7 +681,7 @@ The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measu
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-23-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-27-1} 
 
 }
 
@@ -597,7 +698,7 @@ The same plots can be shown separately for meta-analyses with significant and no
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-24-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-28-1} 
 
 }
 
@@ -612,7 +713,7 @@ The same plots can be shown separately for meta-analyses with significant and no
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-25-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-29-1} 
 
 }
 
@@ -629,7 +730,7 @@ Furthermore one can look if the frequencies of tests that reject the null hypoth
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-26-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-30-1} 
 
 }
 
@@ -644,7 +745,7 @@ Furthermore one can look if the frequencies of tests that reject the null hypoth
 The agreement of the tests, i.e. the proportion of meta-analyses where the rest results are equal between tests, is shown in Table \ref{agreement.bin} and Table \ref{agreement.cont}, again separated for outcome types. Agreement in tests for binary outcomes is better than continuous outcomes, with some variation between tests (binary outcomes: 83 to 91\%). Correlation varies more between tests, both for continuous and binary outcome tests.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Apr 16 13:55:01 2019
+% Tue Apr 23 12:24:31 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -652,15 +753,15 @@ The agreement of the tests, i.e. the proportion of meta-analyses where the rest 
   \hline
  & Test Agreement & P-value Correlation \\ 
   \hline
-egger.schwarzer & 0.88 & 0.38 \\ 
-  egger.peter & 0.89 & 0.52 \\ 
-  egger.rucker & 0.89 & 0.48 \\ 
-  egger.harbord & 0.94 & 0.76 \\ 
+egger.schwarzer & 0.87 & 0.39 \\ 
+  egger.peter & 0.89 & 0.51 \\ 
+  egger.rucker & 0.88 & 0.48 \\ 
+  egger.harbord & 0.93 & 0.76 \\ 
   schwarzer.peter & 0.89 & 0.29 \\ 
   schwarzer.rucker & 0.88 & 0.34 \\ 
   schwarzer.harbord & 0.92 & 0.51 \\ 
   rucker.peter & 0.92 & 0.67 \\ 
-  harbord.peter & 0.91 & 0.53 \\ 
+  harbord.peter & 0.91 & 0.52 \\ 
    \hline
 \end{tabular}
 \endgroup
@@ -671,7 +772,7 @@ egger.schwarzer & 0.88 & 0.38 \\
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Apr 16 13:55:01 2019
+% Tue Apr 23 12:24:31 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -698,7 +799,7 @@ In the case of binary outcomes, the arcsine variance stabilizing function has be
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-29-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-33-1} 
 
 }
 
@@ -720,7 +821,7 @@ In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-30-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-34-1} 
 
 }
 
@@ -735,7 +836,7 @@ In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-31-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-35-1} 
 
 }
 
@@ -748,17 +849,97 @@ In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the
 
 
 \subsection{Small Study Effect Correction}
-Multiple methods are available to correct for the effects of small study effects in order to get an unbiased estimate. 
+Multiple methods are available to correct for the effects of small study effects in order to get an unbiased estimate. Three of them will be applied to the meta-analyses shown previously that have ten or more study results and are therefore eligible for testing for publication bias. 
+
+\vspace{0mm}
+The extent to what the results of the meta-analysis results are changed can be investigated. Because statistical significance is often used to decide if there is a treatment effect, a non-significant corrected effect size estimate can indicate that an observed treatment effect has been accepted because of small study effects. Therefore, the cases have been counted in which 
+\begin{enumerate}
+\item Significance or non-significance of pooled estimate of meta-analysis did not change after correction for small study effects.
+\item Significance of pooled estimate of meta-analysis did change to non-significance after correction for small study effects.
+\item Non-significance of pooled estimate of meta-analysis did change to significance after correction for small study effects.
+\end{enumerate}
+
+The results of this can be seen in Figure \ref{significance.change.fixed} for all three methods, comparing the significance of the corrected pooled effect size estimate with the significance of the pooled effect size estimate of the fixed effects meta-analysis. The same for significance of random effects meta-analysis is shown in Figure \ref{significance.change.random}. The significance threshold was chosen such that the $p$-value had to be $< 0.05$ for rejection of the null hypothesis of no treatment effect. The correction methods were trim-and-fill, copas selection model and regression with random effects and shrinkage of within-study-variance methods. More details to the applied correction methods and their application are in the methods section \ref{methods}. Notably, the correction methods has been applied to all meta-analyses, thus also for such that had no significant small study effect test result. 
+
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-36-1} 
+
+}
 
 
 
+\end{knitrout}
+\caption{Change in signficance of fixed effects meta-analysis pooled estimate after correction.}
+\label{significance.change.fixed}
+\end{figure}
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-37-1} 
+
+}
 
 
 
+\end{knitrout}
+\caption{Change in signficance of random effects meta-analysis pooled estimate after correction.}
+\label{significance.change.random}
+\end{figure}
+
+Since it has been previously seen in Figure \ref{test.results} that the results of small study effects vary considerably between continuous outcomes, the results in significance change from fixed effects meta-analysis can be seen separately in Figure \ref{significance.change.fixed.sep} for continuous and binary outcomes. The change in significance from random effects meta-analysis to significance of corrected estimate can be seen in Figure \ref{significance.change.fixed.sep}
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-38-1} 
+
+}
 
 
 
+\end{knitrout}
+\caption{Change in signficance of fixed effects meta-analysis pooled estimate after correction, separated for continuous and binary outcomes.}
+\label{significance.change.fixed.sep}
+\end{figure}
 
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-39-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Change in signficance of random effects meta-analysis pooled estimate after correction, separated for continuous and binary outcomes.}
+\label{significance.change.random}
+\end{figure}
+
+Similarly, the number of missing studies per meta-analysis, i.e. those which have not been included because of small study effects, are estimated by the copas and trim-and-fill method and their empirical distribution is shown in histograms in Figure \ref{missing.studies.distribution}. For visualisation, the fraction of unpublished studies from the total fraction of available studies is shown.
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-40-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Fraction of missing studies estimated of the number of total studies included in the meta-analysis for copas selection and trim-and-fill method.}
+\label{missing.studies.distribution}
+\end{figure}
 
 
 

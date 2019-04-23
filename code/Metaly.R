@@ -21,6 +21,15 @@ tmp = pb.clean(data)
 data = tmp[[1]]
 aliases = tmp[[2]]
 
+################################################################################################################
+################################################################################################################
+# Adding meta-analysis group ID (meta.id) and within group index (study.id)
+data <- data %>% mutate(meta.id = group_indices(., file.nr, comparison.nr, outcome.nr, subgroup.nr)) %>%
+  group_by(meta.id) %>% mutate(study.id = row_number())
+
+#data %>% select(file.nr, comparison.nr, outcome.nr, subgroup.nr, study.name, meta.id, study.id)
+
+
 
 ################################################################################################################
 ################################################################################################################
@@ -194,12 +203,12 @@ mly.fishersz <- function(data){
   
   #142850 have mean or std mean difference, 126620 can be used for calculations (92781 from 102315 md (have small ss or missing sds and effects))
   
-  data[!is.na(data$fishersz) & !is.na(data$fishersz.variance),] <- 
-    data[!is.na(data$fishersz) & !is.na(data$fishersz.variance),] %>% 
+  data[!is.na(data$fishersz) & !is.na(data$fishersz.variance),] <- data[!is.na(data$fishersz) & !is.na(data$fishersz.variance),] %>% 
     mutate(pval.fishersz = 2*(1-pnorm(abs(fishersz/fishersz.variance))))
-  data[!is.na(data$pval.type),] <- 
-    data[!is.na(data$pval.type),] %>% 
+  
+  data[!is.na(data$pval.type),] <- data[!is.na(data$pval.type),] %>% 
     mutate(sig.type = ifelse(pval.type < 0.05, 1, 0))
+  
   data[!is.na(data$pval.fishersz),] <- data[!is.na(data$pval.fishersz),] %>% 
     mutate(sig.fishersz = ifelse(pval.fishersz < 0.05, 1, 0))
   return(data)
@@ -214,11 +223,12 @@ mly.bin = function(data, sig.level, min.study.number) {
     filter(events1 > 0 | events2 > 0) %>% #comparisons mit events  = 0 ausschliessen
     filter(total1 - events1 > 0 | total2 - events2 > 0) %>% #comparisons mit events = total ausschliessen - vertraegt der alg. irgendwie nicht.
     filter(total1 > 12 & total2 > 12) %>% 
-    group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% #Die nachfolgenden Rechnungen werden jeweils fuer diese Gruppen gemacht.
+    group_by(meta.id) %>% #Die nachfolgenden Rechnungen werden jeweils fuer diese Gruppen gemacht.
     mutate(n = n()) %>% filter(n >= min.study.number) %>% #Nur meta-analysen mit mehr als 9 comparisons behalten
     mutate(study.year = ifelse(study.year < 2019, study.year, NA)) %>% 
     mutate(study.year = ifelse(study.year > 1920, study.year, NA)) %>% 
     summarize(doi = unique(doi),
+              meta.id = unique(meta.id),
               n = n(),
               #outcome.type = unique(outcome.type),
               comparison.name = unique(comparison.name),
@@ -254,13 +264,6 @@ mly.bin = function(data, sig.level, min.study.number) {
               sig.ranef.bin =  ifelse(pval.ranef.bin > sig.level, 0, 1),
               
               #Hartung Knapp Modification
-              lor.fixef.hkn.bin = #Pooled odds ratio estimate of fixed effects meta-analysis model
-                (metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR", hakn = T)$TE.fixed),
-              se.lor.fixef.hkn.bin = #Pooled odds ratio estimate of fixed effects meta-analysis model
-                (metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR", hakn = T)$seTE.fixed),
-              pval.fixef.hkn.bin = #P-value
-                metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR", hakn = T)$pval.fixed,
-              sig.fixef.hkn.bin = ifelse(pval.fixef.hkn.bin > sig.level, 0, 1), #If significant
               lor.ranef.hkn.bin = #Pooled odds ratio estimate of random effects meta-analysis model
                 (metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm= "OR", hakn = T)$TE.random),
               se.lor.ranef.hkn.bin = #Pooled odds ratio estimate of random effects meta-analysis model
@@ -296,11 +299,12 @@ mly.cont = function(data, sig.level, min.study.number) {
     filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
     filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
     filter(total1 > 12 & total2 > 12) %>% 
-    group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% #Die nachfolgenden Rechnungen werden jeweils fuer diese Gruppen gemacht.
+    group_by(meta.id) %>% #Die nachfolgenden Rechnungen werden jeweils fuer diese Gruppen gemacht.
     mutate(n = n()) %>% filter(n >= min.study.number) %>% #Nur meta-analysen mit mehr als 9 comparisons behalten
     mutate(study.year = ifelse(study.year < 2019, study.year, NA)) %>% 
     mutate(study.year = ifelse(study.year > 1920, study.year, NA)) %>% 
     summarize(doi = unique(doi),
+              meta.id = unique(meta.id),
               #outcome.type = unique(outcome.type),
               comparison.name = unique(comparison.name),
               outcome.name = unique(outcome.name),
@@ -337,13 +341,6 @@ mly.cont = function(data, sig.level, min.study.number) {
               sig.ranef.cont = ifelse(pval.ranef.cont > sig.level, 0, 1),
               
               #Hartung Knapp Method
-              est.fixef.hkn.cont = 
-                metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name, hakn = T)$TE.fixed,
-              se.fixef.hkn.cont = 
-                metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name, hakn = T)$seTE.fixed,
-              pval.fixef.hkn.cont = 
-                metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name, hakn = T)$pval.fixed,
-              sig.fixef.hkn.cont = ifelse(pval.fixef.hkn.cont > sig.level, 0, 1),
               est.ranef.hkn.cont = 
                 metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name, hakn = T)$TE.random,
               se.ranef.hkn.cont = 
