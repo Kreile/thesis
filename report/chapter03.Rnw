@@ -22,7 +22,7 @@ opts_chunk$set(
 library(knitr)
 opts_chunk$set(fig.path='figure/ch02_fig',
                echo=TRUE, message=FALSE,
-               fig.width=8, fig.height=3.7,
+               fig.width=8.1, fig.height=3.7,
                out.width='\\textwidth-3cm',
                message=FALSE, fig.align='center',
                background="gray98", tidy=FALSE, #tidy.opts=list(width.cutoff=60),
@@ -111,7 +111,7 @@ data.mly <- data.mly %>% filter(total1 > 11 & total2 > 11) #Now 282550
 
                    
 
-sig.meta.c <- data.mly %>% select(sig.fixef, sig.ranef, sig.ranef.hkn) %>% 
+sig.meta.c <- data.mly %>% select(sig.type, sig.fixef, sig.ranef, sig.ranef.hkn) %>% 
   gather(key = "meta.analysis.method", value = "sig.meta.analysis") %>% mutate(sig.meta.analysis = factor(sig.meta.analysis))
 
 sig.meta.count.c <- sig.meta.c %>% 

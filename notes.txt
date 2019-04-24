@@ -42,8 +42,64 @@ aber in file.nr 3480 comparison 5 outcome.nr 1 sind adverse effects.
 
 - Do a meta analysis part (i.e. analyze all studies with one or more replicas by meta-analysis methods)
 For this, extend the dataset with fishersz correlation and variance, p-values (and more?).
-Then compare significance of single trials with significance of meta analysis (plot overall fraction of significant trials against fraction of significant meta analyses).
+Then compare significance of single trials with significance of meta analysis 
+
+
+- plot overall fraction of significant trials against fraction of significant meta analyses
 
 - Hartung Knapp is not always conservative compared to fixef (Cochrane MEthods 2016)
 
--
+- Different validation - face validation
+
+
+
+Present:
+- Significance correction of single trials and meta-analyses.
+
+- Sample size effect on effect size.
+
+
+
+Questions:
+- Discrimination methods using meta-analyses, publication bias tests and correction methods? (F.ex. discriminate by significant heterogeneity or pbias test?)
+
+- Empirical vs. theoretical probability comparison of significance of replication trials.
+Time order? Which predicitve distribution (plug-in, etc. )?
+
+- Fishers z correlation use
+
+- Cumulative meta-analysis plots use?
+
+- Subgroup analysis
+
+- Wiki. Terminology, codes, projects.. How to organize.
+oadoi() did not work..
+
+
+
+data -original
+data.rev - datensatz für review
+
+data.mly - Kennwerte
+
+
+cache gitignore
+
+plot png convert
+
+effekt skala anpassen
+
+median samplesize
+
+web crawler - data mining:
+
+pb.crawl stichproben.
+primary outcome beschreibung Regelmässigkeiten
+
+- Resultat/introduction/Methoden aufteilen
+
+- Datensatz chapter überarbeiten.
+
+
+
+
