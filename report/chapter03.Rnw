@@ -22,7 +22,7 @@ opts_chunk$set(
 library(knitr)
 opts_chunk$set(fig.path='figure/ch02_fig',
                echo=TRUE, message=FALSE,
-               fig.width=8.1, fig.height=3.7,
+               fig.width=8.1, fig.height=3.4,
                out.width='\\textwidth-3cm',
                message=FALSE, fig.align='center',
                background="gray98", tidy=FALSE, #tidy.opts=list(width.cutoff=60),
@@ -183,7 +183,7 @@ nonsig.meta.Q <- sig.meta.Q %>% filter(sig.Q == 0) %>%  ggplot(aes(x = meta.anal
 
 
 \section{Meta-analysis}
-The data at hand is composed of over 400,000 comparisons with balanced sample size $n > 24$, which has been chosen as a threshold to assess the significance of treatment effect. The significance of the p-values of treatment effect estimates was calculated for all comparisons in the dataset with acceptable sample size and outcome measures as odds ratios, risk ratios, risk differences and mean and standardized mean differences. This led to somewhat more than 400,000 significance test results. Since most of the times, the study publication year is available, the fraction of significant treatment effects found is shown over time in Figure \ref{study.significance.overtime}.The $p$-value was chosen to be $0.05$  only times where a reasonbly large number of effect estimates is available is shown in order to reduce random fluctuation ($n > 800$). 
+The data at hand is composed of over 400,000 comparisons with balanced sample size $n > 24$, which has been chosen as a threshold to assess the significance of treatment effect. The significance of the p-values of treatment effect estimates was calculated for all comparisons in the dataset with acceptable sample size and outcome measures as odds ratios, risk ratios, risk differences and mean and standardized mean differences. This led to somewhat more than 400,000 significance test results. Since most of the times, the study publication year is available, the fraction of significant treatment effects found is shown over time in Figure \ref{study.significance.overtime}.The $p$-value was chosen to be 0.05  only times where a reasonbly large number of effect estimates is available is shown in order to reduce random fluctuation ($n$ > 800). 
 
 \begin{figure}
 <<echo=FALSE, warning=FALSE>>=
@@ -260,6 +260,8 @@ The median absolute normalized effect size can be visualized for the different o
 
 \begin{figure}
 <<echo=FALSE>>=
+levels(data$outcome.measure.new) <- c("Mean Difference", "Std. Mean Difference", "Odds Ratio", "Risk Ratio")
+
 data %>% filter(total1 + total2 > 10 & total1 + total2 < 100) %>% 
   filter(outcome.measure.new == "Risk Ratio" | outcome.measure.new == "Odds Ratio" | outcome.measure.new == "Mean Difference" |
            outcome.measure.new == "Std. Mean Difference") %>% 
@@ -267,28 +269,28 @@ data %>% filter(total1 + total2 > 10 & total1 + total2 < 100) %>%
   mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
   group_by(sample.size, outcome.measure.new) %>% 
   summarize(median.effect = median(scaled.effect, na.rm = T)) %>% 
-  ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure.new)) + geom_point() + facet_wrap(~outcome.measure.new) + 
+  ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure.new)) + geom_point() + facet_wrap(~outcome.measure.new, scales = "free") + 
   theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size")
 @
 \caption{Median of the absolute value of the normalized effect size plotted against the total sample size, separated for outcome measures.}
 \label{effect.samplesize.separated}
 \end{figure}
 
-A second way to analyse meta-analyses is a cumulative meta-analysis that should reveal shifts in treatment effect sizes over time. This can again be done for the entire dataset, i.e. for all effect estimates and their ordering in time. It is important to scale the effect estimates here with respect to the estimates of the replication studies that are about the same subject, have the same outcome measure, etc. Also, only effect estimates that can be compared to other estimates before are included, i.e. only study results with one or more replica are included. Time needs to be scaled and normalized in order to compare multiple time-trends in effect size to each other and gain insights in the overall trend. This is done in Figure \ref{effects.overtime.separated}, separared for odds rati, risk ratio, and mean and standardized difference outcome measures. In order to reduce the spread over time of effect sizes, only studies between 1970 and 2019 were included, as well as studies with a minimal group size of 12 participants (each group).
-
-\begin{figure}
-<<echo=FALSE>>=
-data.ext %>% filter(outcome.measure.new == "Mean Difference" | outcome.measure.new == "Std. Mean Difference" | 
-                outcome.measure.new == "Risk Ratio" | outcome.measure.new == "Odds Ratio") %>% 
-  filter(total1 > 11 & total2 > 11) %>% filter(!is.na(study.year) & study.year > 1970 & study.year < 2019) %>% 
-  group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 1) %>% 
-  mutate(scaled.effect = abs(scale(effect)), scaled.time = scale(study.year)) %>% 
-  ggplot(aes(x = scaled.time, y = scaled.effect)) + geom_point(size = .5, alpha = 0.2)  + facet_wrap(~outcome.measure.new) +
-  geom_smooth() + theme_bw() +  ylab("absolute scaled effect")  + ylab("scaled time")
-@
-\caption{Absolute values of scaled effect sizes over scaled time, separated for outcome measures.}
-\label{effects.overtime.separated}
-\end{figure}
+% A second way to analyse meta-analyses is a cumulative meta-analysis that should reveal shifts in treatment effect sizes over time. This can again be done for the entire dataset, i.e. for all effect estimates and their ordering in time. It is important to scale the effect estimates here with respect to the estimates of the replication studies that are about the same subject, have the same outcome measure, etc. Also, only effect estimates that can be compared to other estimates before are included, i.e. only study results with one or more replica are included. Time needs to be scaled and normalized in order to compare multiple time-trends in effect size to each other and gain insights in the overall trend. This is done in Figure \ref{effects.overtime.separated}, separared for odds rati, risk ratio, and mean and standardized difference outcome measures. In order to reduce the spread over time of effect sizes, only studies between 1970 and 2019 were included, as well as studies with a minimal group size of 12 participants (each group).
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% data.ext %>% filter(outcome.measure.new == "Mean Difference" | outcome.measure.new == "Std. Mean Difference" | 
+%                 outcome.measure.new == "Risk Ratio" | outcome.measure.new == "Odds Ratio") %>% 
+%   filter(total1 > 11 & total2 > 11) %>% filter(!is.na(study.year) & study.year > 1970 & study.year < 2019) %>% 
+%   group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 1) %>% 
+%   mutate(scaled.effect = abs(scale(effect)), scaled.time = scale(study.year)) %>% 
+%   ggplot(aes(x = scaled.time, y = scaled.effect)) + geom_point(size = .5, alpha = 0.2)  + facet_wrap(~outcome.measure.new) +
+%   geom_smooth() + theme_bw() +  ylab("absolute scaled effect")  + ylab("scaled time")
+% @
+% \caption{Absolute values of scaled effect sizes over scaled time, separated for outcome measures.}
+% \label{effects.overtime.separated}
+% \end{figure}
 
 
 % It is also possible to look how the amount of meta-analysis with significant pooled effect size estimates changes over time, e.g. mean publication year (of studies included in the meta-analysis). 0.05 is used here as the threshold for $p$-value significance and subsequent null-hypothesis rejection. To constrict random fluctuation in the proportion, only mean publication years with a certain amount of meta-analyses are shown ($n < 180$). The $p$-value of the fixed effects meta analysis model is used to decide about rejection of the null-hypothesis. As Figure \ref{treatment.effect.significance.overtime} shows, the proportion of meta-analyses with significant treatment effect estimates stays roughly constant over time. 
@@ -643,7 +645,7 @@ print(xtable(x = t(cont.tests.agreement), caption = "Proportion of tests that ag
 
 \vspace{0mm}
 Test performance depends on the sample size, despite having restricted sample size to a minimum of 10 studies. The p-values of the Thompson and Sharp tests are shown with respect to the sample size of the meta-analysis in Figure \ref{pvalues.samplesize}. %(Suggests that 10 is likely too small)
-In the case of binary outcomes, the arcsine variance stabilizing function has been applied prior to use of Thompson and Sharp's test. A s trend towards more rejections for larger sample sizes can be seen.
+In the case of binary outcomes, the arcsine variance stabilizing function has been applied prior to use of Thompson and Sharp's test. A trend towards more rejections for larger sample sizes can be seen.
 
 \begin{figure}
 <<echo=FALSE, warning=FALSE>>=
@@ -695,7 +697,7 @@ The extent to what the results of the meta-analysis results are changed can be i
 \item Non-significance of pooled estimate of meta-analysis did change to significance after correction for small study effects.
 \end{enumerate}
 
-The results of this can be seen in Figure \ref{significance.change.fixed} for all three methods, comparing the significance of the corrected pooled effect size estimate with the significance of the pooled effect size estimate of the fixed effects meta-analysis. The same for significance of random effects meta-analysis is shown in Figure \ref{significance.change.random}. The significance threshold was chosen such that the $p$-value had to be $< 0.05$ for rejection of the null hypothesis of no treatment effect. The correction methods were trim-and-fill, copas selection model and regression with random effects and shrinkage of within-study-variance methods. More details to the applied correction methods and their application are in the methods section \ref{methods}. Notably, the correction methods has been applied to all meta-analyses, thus also for such that had no significant small study effect test result. 
+The results of this can be seen in Figure \ref{significance.change.fixed} for all three methods, comparing the significance of the corrected pooled effect size estimate with the significance of the pooled effect size estimate of the fixed effects meta-analysis. The same for significance of random effects meta-analysis is shown in Figure \ref{significance.change.random}. The significance threshold was chosen such that the $p$-value had to be < 0.05 for rejection of the null hypothesis of no treatment effect. The correction methods were trim-and-fill, copas selection model and regression with random effects and shrinkage of within-study-variance methods. More details to the applied correction methods and their application are in the methods section \ref{methods}. Notably, the correction methods has been applied to all meta-analyses, thus also for such that had no significant small study effect test result. 
 
 
 \begin{figure}

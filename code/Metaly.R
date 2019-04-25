@@ -218,7 +218,8 @@ data.ext <- mly.fishersz(data)
 save(data.ext, file = file.path(PATH_RESULTS, "data.processed.RData"))
 
 mly.bin = function(data, sig.level, min.study.number) {
-  meta.bin <- data %>% filter(outcome.measure.new == "Risk Ratio" | outcome.measure.new == "Odds Ratio" | outcome.measure.new == "Risk Difference") %>%  
+  meta.bin <- data %>% filter(outcome.measure.new == "Risk Ratio" | outcome.measure.new == "Odds Ratio" | outcome.measure.new == "Risk Difference"
+                              | outcome.measure.new == "Peto Odds Ratio") %>%  
     filter(file.nr != 3014) %>% #file.nr 3014 gibt eine seltsame Fehlermeldung, muss ausgeschlossen werden
     filter(events1 > 0 | events2 > 0) %>% #comparisons mit events  = 0 ausschliessen
     filter(total1 - events1 > 0 | total2 - events2 > 0) %>% #comparisons mit events = total ausschliessen - vertraegt der alg. irgendwie nicht.
@@ -394,3 +395,146 @@ save(mly, file =  file.path(PATH_RESULTS, "mly.RData"))
 
 print(data.ext %>% group_by(file.nr, comparison.nr, outcome.name, subgroup.nr) %>% distinct(outcome.type), n = 400)
 print(data.ext %>% filter(file.nr == 2 & outcome.name == "Resuturing of wound - up to 3 months" & subgroup.nr == 1) %>% select(outcome.measure, events1, events2, total1, total2))
+
+
+
+
+
+
+
+
+#Tests
+tmp <- data.ext %>% filter(outcome.measure.new == "Odds Ratio") %>% select(study.name, events1, total1, events2, total2, log.OR, se.log.OR, pval.type, effect, se)
+dd <- tmp[40:45,]
+
+mt <- metabin(event.e = events1, event.c = events2, n.e = total1, n.c = total2, studlab = study.name, data = dd, sm = "OR")
+
+print(mt)
+data.frame(mt$TE, mt$seTE)
+dd %>% select(study.name, std.m.d, se.std.m.d, effect, se)
+
+log(dd$effect)
+
+
+
+tmp <- data.ext %>% filter(outcome.measure.new == "Mean Difference") %>% select(study.name, mean1, sd1, total1, mean2, sd2, total2, std.m.d, se.std.m.d, pval.type, effect, se)
+dd <- tmp[40:45,]
+
+mt <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name, data = dd, sm = "SMD", method.smd = "Cohen")
+
+print(mt)
+data.frame(mt$TE, mt$seTE, mt$pval)
+dd %>% select(study.name, std.m.d, se.std.m.d, effect, se, pval.type)
+?metacont
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+data.ext %>% ggplot(aes(x = study.year)) + geom_histogram(binwidth = 1) + scale_x_continuous(limits = c(1980, 2020))
+
+data.ext %>% filter(!is.na(sig.type)) %>%  ggplot(aes(x = study.year, fill = factor(sig.type), stat(count))) + geom_density(na.rm = T, position = "fill") + 
+  labs(fill = "Significance of treatment effect") + scale_fill_discrete(labels= c("No", "Yes"))+ scale_x_continuous(limits = c(1970, 2017))
+
+###############################################################################################################################################
+###############################################################################################################################################
+#Merge comparisons with meta-analysis result:
+mly.tomerge <- mly %>% select(meta.id, sig.Q, n.sig.type, n.sig.fishersz, sig.fixef, sig.ranef, sig.ranef.hkn)
+
+data.mly <- merge(x = data.ext, y = mly.tomerge, by = c("meta.id")) #ideally, 278626 comparisons ( = sum(mly$n)), 
+# but 300831 (18261 have smaller sample size than mly, but same meta.id)
+
+data.mly <- data.mly %>% filter(total1 > 11 & total2 > 11) #Now 282550
+
+
+
+sig.meta.c <- data.mly %>% select(sig.fixef, sig.ranef, sig.ranef.hkn, sig.type) %>% 
+  gather(key = "meta.analysis.method", value = "sig.meta.analysis") %>% mutate(sig.meta.analysis = factor(sig.meta.analysis))
+
+sig.meta.count.c <- sig.meta.c %>% 
+  group_by(sig.meta.analysis, meta.analysis.method) %>% count()
+
+sig.meta.c %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
+  geom_bar() + coord_flip() +
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("meta.nonsig", "meta.sig")) +
+  annotate("text", x = sig.meta.count.c[sig.meta.count.c$sig.meta.analysis == 0,]$meta.analysis.method, y = 100000, 
+           label = paste(sig.meta.count.c[sig.meta.count.c$sig.meta.analysis == 0,]$n, "nonsig."), 
+           color = "white")
+
+
+#Change in significance after meta-analysis, separated by significant effect size estimate
+sig.meta <- data.mly %>% 
+  select(meta.id, study.id, sig.fixef, sig.ranef, sig.ranef.hkn) %>% 
+  gather(key = "meta.analysis.method", value = "sig.meta.analysis", sig.fixef:sig.ranef.hkn) %>% mutate(sig.meta.analysis = factor(sig.meta.analysis))
+
+# duplicate.studies <- data.mly %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr, study.name) %>% 
+#   count() %>% filter(n > 1) #Merging is not possible for these since studies bear multiple results, but are not distinguishable and are multiplied while merging.
+
+sig.meta.plot <- merge(y = select(data.ext, meta.id, study.id, sig.type), 
+                       x = sig.meta, by = c("meta.id", "study.id")) %>% 
+  mutate(sig.type = factor(sig.type))
+
+sig.meta.count <- sig.meta.plot %>% 
+  group_by(sig.meta.analysis, meta.analysis.method, sig.type) %>% count()
+
+sig.meta.plot %>% filter(sig.type == 1) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
+  geom_bar() + coord_flip() + ggtitle("Significant studies") +
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("meta.nonsig", "meta.sig")) +
+  annotate("text", x = sig.meta.count[which(sig.meta.count$sig.type == 1)[1:3],]$meta.analysis.method, y = 20000, 
+           label = paste(sig.meta.count[which(sig.meta.count$sig.type == 1)[1:3],]$n, "changed to nonsig."), 
+           color = "white")
+
+sig.meta.plot %>% filter(sig.type == 0) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
+  geom_bar() + coord_flip() + ggtitle("Non-significant studies") +
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("meta.nonsig", "meta.sig")) +
+  annotate("text", x = sig.meta.count[which(sig.meta.count$sig.type == 0)[4:6],]$meta.analysis.method, y = 20000, 
+           label = paste(sig.meta.count[which(sig.meta.count$sig.type == 0)[4:6],]$n, "changed to sig."), 
+           color = "white")
+
+
+#Change in significance after meta-analysis, separated by significant heterogeneity
+sig.meta.Q <- data.mly %>% 
+  select(meta.id, sig.Q, sig.fixef, sig.ranef, sig.ranef.hkn) %>% 
+  gather(key = "meta.analysis.method", value = "sig.meta.analysis", sig.fixef:sig.ranef.hkn) %>% 
+  mutate(sig.meta.analysis = factor(sig.meta.analysis))
+
+
+sig.meta.count.Q <- sig.meta.Q %>% 
+  group_by(sig.meta.analysis, meta.analysis.method, sig.Q) %>% count()
+
+sig.meta.Q %>% filter(sig.Q == 1) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
+  geom_bar() + coord_flip() + ggtitle("Significant heterogeneity Q studies") +
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("meta.nonsig", "meta.sig")) +
+  annotate("text", x = sig.meta.count.Q[which(sig.meta.count.Q$sig.Q == 1)[1:3],]$meta.analysis.method, y = 20000, 
+           label = paste(sig.meta.count.Q[which(sig.meta.count.Q$sig.Q == 1)[1:3],]$n, "changed to nonsig."), 
+           color = "white")
+
+sig.meta.Q %>% filter(sig.Q == 0) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
+  geom_bar() + coord_flip() + ggtitle("Non-significant heterogeneity Q studies") +
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("meta.nonsig", "meta.sig")) +
+  annotate("text", x = sig.meta.count.Q[which(sig.meta.count.Q$sig.Q == 0)[1:3],]$meta.analysis.method, y = 100000, 
+           label = paste(sig.meta.count.Q[which(sig.meta.count.Q$sig.Q == 0)[1:3],]$n, "changed to nonsig."), 
+           color = "white")
+
+
+
+
+

@@ -179,58 +179,57 @@ The reviews are arguably of good quality, since the authors are following elabor
 
 
 
-
-
 \chapter{The Cochrane Dataset} 
 
 \subsection{Structure and Content}
-The dataset consists of 5016 systematic reviews from the Cochrane Library with 52995 studies.
-Each study provides data of (multiple) comparisons of clinical interventions. 
-% It can not be ruled out that some comparisons are retrospective, e.g. from observational studies. 
-In Table \ref{barbiturate.row}, two comparisons from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, the comparison is further specified by the variables in the columns. One row of the dataset is one comparison.
+The dataset consists of 5016 systematic reviews from the Cochrane Library with 52995 studies and 463820 results. A result compares clinical or medical interventions or treatments. Each study provides (multiple) results of clinical interventions. 
+
+In Table \ref{barbiturate.row}, two results from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, the result is further specified by the variables in the columns. The comparison variable specifies what treatments or interventions are compared, the outcome variable how it is compared, and the subgroup variable (not given in table) indicates if the result belongs to a certain subgroup. Here, the result is of a binary outcome, so the events in the barbiturate treatment group and the total number of participants are given in columns ``Events'' and ``Total'' and the number of events in the control group ``Events\_c'' and participants ``Total\_c''. Events denotes here number of deaths at the end of follow up.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Apr 23 14:00:16 2019
+% Thu Apr 25 14:26:47 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
 \begin{tabular}{lllrrrr}
   \hline
-Study & Comparison\_type & Outcome & Events & Total & Events\_c & Total\_c \\ 
+Study & Comparison & Outcome & Events & Total & Events\_c & Total\_c \\ 
   \hline
-Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up & 11.00 & 41.00 & 11.00 & 41.00 \\ 
-  Ward 1985 & Barbiturate vs no barbiturate & Death at the end of follow-up & 14.00 & 27.00 & 13.00 & 26.00 \\ 
+Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up & 11 & 41 & 11 & 41 \\ 
+  Ward 1985 & Barbiturate vs no barbiturate & Death at the end of follow-up & 14 & 27 & 13 & 26 \\ 
    \hline
 \end{tabular}
 \endgroup
-\caption{Example of two comparisons as given in the dataset. Events denotes the count of events in the treatment group while Events c the count of events in the group compared to. Further descriptive variables have been ommitted} 
+\caption{Example of two results as given in the dataset. Events denotes the count of events in the treatment group while Events c the count of events in the group compared to. Further descriptive variables have been ommitted} 
 \label{barbiturate.row}
 \end{table}
 
 
-A complete listing of the variables is given in Table \ref{variable}. They can roughly be separated into variables that specify the review in which the comparison is contained and variables that specify the comparison itself (separated by a horizontal line in Table \ref{variable}).
+A complete listing of the variables of a result is given in Table \ref{variable}. They can roughly be separated into variables that specify the review in which the result is contained and variables that specify the result itself (separated by a horizontal line in Table \ref{variable}).
 
 \begin{table}[ht]
   \begin{center}
     \begin{tabular}{l l}
       \textbf{Variable} & \textbf{Description}\\
       \hline
-      \textbf{file.nr} & The number of the file from which the review data has been . \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
+      \textbf{file.nr} & The number of the file from which the review data has been \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
       \textbf{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
       \textbf{file.index} & Internal index of the file in the Cochrane library.\\
       \textbf{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
       %\multicolumn{2}{c}{textbf{Study level variables}}\\ 
       \hline
-      \textbf{comparison.name/.nr} & Specification of the interventions compared in the study  \\ and a unique number for the comparison\\
-      \textbf{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ and a unique number for the outcome\\
-      \textbf{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ unique number for the subgroup\\
-      \textbf{study.name} & Name of the study to which the comparison belongs\\
+      \textbf{study.name} & Name of the study to which the result belongs\\
       \textbf{study.year} & Year in which the study was published\\
+      \hline
+      \textbf{comparison.name/.nr} & Specification of the interventions compared in the study  \\ &and a unique number for the comparison\\
+      \textbf{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome\\
+      \textbf{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ &unique number for the subgroup\\
       \textbf{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
       \textbf{effect} & Measure of the effect given in the quantity denoted by \\ &``outcome measure''.\\
-      \textbf{events1/events2} & The counts of patients with an outcome \textit{if}\\ & measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
+      \textbf{se} & Standard error of the measure of the effect,\\
+      \textbf{events1/events2} & The counts of patients with an outcome \textit{if}\\ &measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
       \textbf{total1/total2} & Number of patients in groups.\\
-      \textbf{mean1/mean2)} & Mean of patient measurements \textit{if} outcome is continuous.\\
+      \textbf{mean1/mean2} & Mean of patient measurements \textit{if} outcome is continuous.\\
       \textbf{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
     \end{tabular}
   \caption{Dataset variable names and descriptions  \label{variable}}
@@ -238,9 +237,7 @@ A complete listing of the variables is given in Table \ref{variable}. They can r
   \end{center}
 \end{table}
 
-The structure of a review is shown in Figure \ref{review}. 
-% Comparisons of a review can consecutively be subdivided into different comparison types, different outcome measures and different subgroups. 
-The comparison type variable specifies what is compared, the outcome variable how it is compared, and the subgroup variable indicates if the comparison belongs to a certain subgroup. If desired, Figure \ref{review} can be compared to Table \ref{barbiturates} where an exemplary review is listed.
+Results are part of studies that are again part of a (systematic) review. This structure of a review is shown in Figure \ref{review}. 
 
 \begin{figure}
 \tikzstyle{every node}=[draw=black,thick,anchor=west]
@@ -251,36 +248,33 @@ The comparison type variable specifies what is compared, the outcome variable ho
   growth parent anchor=east, % added code
   parent anchor=east]
   \node {Review} [edge from parent fork right]
-    child { node {Comparison type 2}
+    child { node {Comparison 2}
       child { node {Outcome 2}}
       child { node {Outcome 1}
         child { node {Subgroup 2}}
-        child { node {Subgroup 1}}}
+        child { node {Subgroup 1}
+          child  { node {Result 2}}
+          child  { node {Result 1}}
+          }}
     }
     child [missing] {}		
-    child { node {Comparison type 1  }};
+    child { node {Comparison 1  }};
 \end{tikzpicture}
 \caption{Structure of a hypothetical review with two different comparisons\label{review.structure}}
 \label{review.structure}
 \end{figure}
 
+\vspace{0mm}
+The structure of a review will now be outlined based on an example of the dataset. Lets consider the previously mentioned barbiturate and head injury review. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates''. Since there are arguments for and against use of barbiturates, the authors of the review did a comprehensive literature search and collected all available study findings.
 
+\vspace{0mm}
+The review comprises five studies in total. Three of them compared barbiturate to placebo, one compared barbiturate to Mannitol and one Pentobarbital to Thiopental, which would be the comparison to speak in the previously introduced notion. The studies have different outcomes, for example, death or death and severe disability at follow up. One study split up outcomes for patients with and without haematoma, which would be subgroups.
 
-% \vspace{0mm}
-% Lets consider the previously mentioned barbiturate and head injury review. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates''. The medical background is that one knew that barbiturates could cause relief in intra-cranial pressure, but also reduce cerebral blood flow. Because one effect is thought to be beneficial for persons with severe head injuries while the other isn't, the authors of the review wanted to find out if there is a net benefit of barbiturates.
-% 
-% \vspace{0mm}
-% The review comprises five studies in total. Three of them compared barbiturate to placebo, one compared barbiturate to Mannitol and one Pentobarbital to Thiopental, which would be the comparison/research subject to speak in the previously introduced notions. 
-% 
-% \vspace{0mm}
-% All the studies convey multiple information to the review. As an example, that could be death or death \textit{and} severe disability at follow up as an outcome. Again, the study can be further split up in different subgroups, here for example in a group with - and without haematoma. 
-% 
-% \vspace{0mm}
-% The complete listing of outcomes is in table \ref{barbiturates}. The table also gives an illustration of the variety of data that can be included in a review. We have for example continuous and binary outcome data, that again is divided into a variety of different things that have been measured. Often, additionally to the main study result, also adverse effects are for example included which are in this case separate outcomes and possibly subgroups.
-
+\vspace{0mm}
+The complete listing of outcomes is in table \ref{barbiturates}. The table also gives an illustration of the variety of data that can be included in a review. We have for example continuous (mean body temperature) and binary outcome data (death). Additionally to primary and secondary outcomes, often also dropouts and adverse effects are included in a review.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Apr 23 14:00:16 2019
+% Thu Apr 25 14:26:47 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -309,33 +303,28 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
    \hline
 \end{tabular}
 \endgroup
-\caption{Barbiturate and head injury review. In the columns, study names, comparison types and outcome measure of the comparisons are given} 
+\caption{Barbiturate and head injury review. In the columns, study names, comparison and outcome measure of the results are given} 
 \label{barbiturates}
 \end{table}
 
 
-% The research subject or outcome type can possibly already be well defined in the general review question. Conversely, research subject or comparison has to be further specified in outcome and subgroup categories. As may have been implied, the terminology does not rely to a hundred percent on strict functional definitions.
-
-
-It is important to not confuse comparisons with studies. A study can contribute multiple comparisons to a systematic review. Also, despite a comparison has variables concerning event counts and means, it can only have one of the two, either means (if the outcome measure is continuous) or event counts (for binary outcomes).
+It is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
 
 \vspace{0mm}
-Having provided an overview over the dataset, now, some more specific information is provided. The dataset consists of 463820 comparisons and has 26 variables that specify the comparisons. Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years.
-
-
+Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years. In the case of continuous outcomes, the cases have been counted were effect sizes and standard errors of effect sizes are not available. This means that neither mean values of groups nor mean differences are given, or that neither standard deviation nor standard error is given for a result. Study years before 1920 and after 2019 have been counted as missing, as well as sample sizes below zero.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Apr 23 14:00:17 2019
+% Thu Apr 25 14:26:47 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
 \begin{tabular}{lr}
   \hline
   \hline
-Missing mean values & 1287 \\ 
-  Missing standard deviations & 999 \\ 
-  Missing effects & 158 \\ 
-  Missing study year & 27234 \\ 
+Missing mean values and mean differences & 984 \\ 
+  Missing standard deviations and standard errors & 1300 \\ 
+  Missing sample sizes & 12173 \\ 
+  Missing study year & 44649 \\ 
    \hline
 \end{tabular}
 \endgroup
@@ -344,123 +333,75 @@ Missing mean values & 1287 \\
 \end{table}
 
 
-
-More properties of the reviews, the studies and the comparisons in the dataset will be provided on the following pages. The publication dates of the studies included in the dataset are shown in Figure \ref{study.years}. Most studies were published after 2000.
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-8-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Frequencies of study publication years in the dataset. 44655 were excluded due to likely wrong indications}
-\label{study.years}
-\end{figure}
-
-Figure \ref{study.outcomes} provides the frequencies of outcome types of the comparisons. Note that the abundance of mean differences and standardized mean differences can also give an impression of the proportion of continuous outcome comparisons vs. binary outcome comparisons in the dataset.
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-9-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Frequencies of some outcome measures for the effects in the dataset. 5593 measures with other outcome measures are excluded}
-\label{study.outcomes}
-\end{figure}
-
-It is also possible to look at the properties of the reviews. One question could be how many studies or comparisons that a review comprises. The former is shown in Figure \ref{studies.per.review} and the latter in Figure \ref{comparisons.per.review}. It can be seen that while almost 400 reviews consist of one study only, there are more than 150 with equal or more than 30 distinct studies. A similar variance between reviews can also be observed when looking at the number of comparisons.
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-10-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Empirical distribution of number of studies per review}
-\label{studies.per.review}
-\end{figure}
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-11-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Empirical distribution of number of comparisons per review}
-\label{comparisons.per.review}
-\end{figure}
-
-A question not to be mistaken with the previous would be how many comparison \textit{types} there are per review. This gives an additional impression of the scope of a review. Analogously to the previous figures, the empirical distribution of comparison types is depicted in Figure \ref{subjects.per.review}.
-
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-12-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Empirical distribution of number of different comparison types per review}
-\label{subjects.per.review}
-\end{figure}
-
-% At the end, a main goal of the thesis is to analyze reviews with respect to reporting bias in meta analyses. 
-For comparisons to be suitable for usage in meta-analysis, they have to be somewhat identical (same comparison type, outcome measure and possibly subgroup). For an analysis of reporting bias, again a certain number of studies is required in order for reporting bias to be detectable by the methods. One question would therefore be: How many groups of identical comparisons of a certain size are given in the dataset? This depends on which degree of similarity between comparisons is considered to be sufficient.
+The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = 1982). The median of the publication years is 2003, the mean 2006.13 and the quartiles are 1996 and 2008. Only a handful ($n$ = 18) have been published in 2018, none in 2019. No information is available concerning unpublished results and studies.
 
 \vspace{0mm}
-In Table \ref{repr.groups}, two different similarity criteria have been used. One is based on the same comparison type and outcome measure, the other includes additionally subgroup affiliation of comparisons, i.e. only comparisons in the same subgroups are considered to be similar enough.
-
-\vspace{0mm}
-Table \ref{repr.groups} shows the cumulative number of \textit{groups} of comparisons with equal or more than $n$ comparisons. Practically, this means that this number of meta analyses can be performed with each having at least $n$ comparisons.
+The results of a study are summarised in a result by a effect measure. This effect measure varies, depending on whether data is continuous, binary or time-to-event. The most abundant effect measures used are summarised in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 30 \% of outcomes in the dataset are continuous and the being some sort of discrete or binary outcomes, most often binary (> 65\%).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Apr 23 14:00:22 2019
+% Thu Apr 25 14:26:47 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
 \begin{tabular}{lll}
   \hline
-n & Cumulative sum (without subgroups) & Cumulative sum (with subgroups) \\ 
+Outcome measure & n & Percentage \\ 
   \hline
-1 & 109191 & 186300 \\ 
-  2 & 67699 & 83956 \\ 
-  3 & 47800 & 52270 \\ 
-  4 & 36169 & 36198 \\ 
-  5 & 28090 & 26570 \\ 
-  6 & 22702 & 20126 \\ 
-  7 & 18547 & 15896 \\ 
-  8 & 15475 & 12935 \\ 
-  9 & 13008 & 10821 \\ 
-  10 & 11008 & 9229 \\ 
-  11 & 9362 & 7991 \\ 
-  12 & 8057 & 7070 \\ 
-  13 & 6988 & 6368 \\ 
-  14 & 6044 & 5783 \\ 
+Risk Ratio & 232583 & 50.1\% \\ 
+  Mean Difference & 102315 & 22.1\% \\ 
+  Odds Ratio & 49372 & 10.6\% \\ 
+  Std. Mean Difference & 40535 & 8.7\% \\ 
+  Peto Odds Ratio & 19122 & 4.1\% \\ 
+  Hazard Ratio & 6566 & 1.4\% \\ 
+  Risk Difference & 6234 & 1.3\% \\ 
+  Rate Ratio & 2283 & 0.5\% \\ 
+  other & 4810 & 1\% \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Frequencies of outcome measures among results. n denotes the total number 
+             of results with the outcome measure and percentage the percentage of the outcome measure,} 
+\label{outcome.measure.frequencies}
+\end{table}
+
+
+
+The sample sizes amongst results vary to some extent. There are 5\% of treatment group sample sizes that are smaller tha 8, the 5\% quantile. The first quartile is 22, the median 48, the mean 302.03 and the third quartile 119. The large difference between median and mean is caused by very large groups with over 2,000,000 participants. Analogously, the quantiles of the total sample size are: 5\% quantile = 15, first quartile = 44, median = 94 and third quartile = 229. The mean is 617.81.
+
+\vspace{0mm}
+The mean and median number of results per review are 12.42 and 7. There are 417 reviews with five or fewer results, and the quartiles are 16 and 102. Similarly, the number of reviews with a maximum of two studies included is 836, the mean study number is 12.42, the median 7 and the interquartile range 4 and 15. The discrepancy between mean and median is again due to large reviews with a high number of studies and results, most extreme in \citet{largest.review} which is a systematic review about antibiotic prophylaxisfor preventing infection after cesarean section, with 95 studies and 1497 results in total. 
+
+\vspace{0mm}
+For results to be suitable for usage in meta-analysis, they have to be identical with respect to comparison and outcome. More speicifically, the studies in the dataset that have the same comparison, outcome and subgroup can be pooled in a meta-analysis since their research subject and experimental setup can be considered sufficiently homogeneous. %Another approach that is not made here is to analyze all subgroups together, which is possible if enough studies are given.
+\vspace{0mm}
+The amount of studies that can be pooled for meta-analyses is of special interest in this masters thesis. Thus, the dataset is divided in groups whith identical experimental setup. The size of the group denotes how many results are included in a group.
+
+\vspace{0mm}
+Table \ref{repr.groups} shows the number of \textit{groups} of groups with equal or more than $n$ results. Practically, this means that a given number of meta analyses can be performed with each having at least $n$ results.
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Thu Apr 25 14:26:47 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{lll}
+  \hline
+n & Number of groups & Cumulative sum of groups \\ 
+  \hline
+1 & 102344 & 186300 \\ 
+  2 & 31686 & 83956 \\ 
+  3 & 16072 & 52270 \\ 
+  4 & 9628 & 36198 \\ 
+  5 & 6444 & 26570 \\ 
+  6 & 4230 & 20126 \\ 
+  7 & 2961 & 15896 \\ 
+  8 & 2114 & 12935 \\ 
+  9 & 1592 & 10821 \\ 
+  10 & 1238 & 9229 \\ 
+  11 & 921 & 7991 \\ 
+  12 & 702 & 7070 \\ 
+  13 & 585 & 6368 \\ 
+  14 & 455 & 5783 \\ 
   15 & 5328 & 5328 \\ 
    \hline
 \end{tabular}
@@ -493,13 +434,13 @@ n & Cumulative sum (without subgroups) & Cumulative sum (with subgroups) \\
 
 
 \section{Meta-analysis}
-The data at hand is composed of over 400,000 comparisons with balanced sample size $n > 24$, which has been chosen as a threshold to assess the significance of treatment effect. The significance of the p-values of treatment effect estimates was calculated for all comparisons in the dataset with acceptable sample size and outcome measures as odds ratios, risk ratios, risk differences and mean and standardized mean differences. This led to somewhat more than 400,000 significance test results. Since most of the times, the study publication year is available, the fraction of significant treatment effects found is shown over time in Figure \ref{study.significance.overtime}.The $p$-value was chosen to be $0.05$  only times where a reasonbly large number of effect estimates is available is shown in order to reduce random fluctuation ($n > 800$). 
+The data at hand is composed of over 400,000 comparisons with balanced sample size $n > 24$, which has been chosen as a threshold to assess the significance of treatment effect. The significance of the p-values of treatment effect estimates was calculated for all comparisons in the dataset with acceptable sample size and outcome measures as odds ratios, risk ratios, risk differences and mean and standardized mean differences. This led to somewhat more than 400,000 significance test results. Since most of the times, the study publication year is available, the fraction of significant treatment effects found is shown over time in Figure \ref{study.significance.overtime}.The $p$-value was chosen to be 0.05  only times where a reasonbly large number of effect estimates is available is shown in order to reduce random fluctuation ($n$ > 800). 
 
 \begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-18-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-13-1} 
 
 }
 
@@ -522,7 +463,7 @@ In Figure \ref{primary.secondary.significance}, the overall fraction of studies 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-19-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-14-1} 
 
 }
 
@@ -540,7 +481,7 @@ One can visualise the fraction of studies with significant treatment effect sepa
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-20-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-15-1} 
 
 }
 
@@ -558,7 +499,7 @@ The separation of studies can also be made based on the significance of heteroge
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-21-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-16-1} 
 
 }
 
@@ -584,7 +525,7 @@ A clear trend of decrease of absolute effect size with increasing sample size (i
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-22-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-17-1} 
 
 }
 
@@ -602,7 +543,7 @@ The median absolute normalized effect size can be visualized for the different o
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-23-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-18-1} 
 
 }
 
@@ -613,27 +554,21 @@ The median absolute normalized effect size can be visualized for the different o
 \label{effect.samplesize.separated}
 \end{figure}
 
-A second way to analyse meta-analyses is a cumulative meta-analysis that should reveal shifts in treatment effect sizes over time. This can again be done for the entire dataset, i.e. for all effect estimates and their ordering in time. It is important to scale the effect estimates here with respect to the estimates of the replication studies that are about the same subject, have the same outcome measure, etc. Also, only effect estimates that can be compared to other estimates before are included, i.e. only study results with one or more replica are included. Time needs to be scaled and normalized in order to compare multiple time-trends in effect size to each other and gain insights in the overall trend. This is done in Figure \ref{effects.overtime.separated}, separared for odds rati, risk ratio, and mean and standardized difference outcome measures. In order to reduce the spread over time of effect sizes, only studies between 1970 and 2019 were included, as well as studies with a minimal group size of 12 participants (each group).
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning: Removed 9701 rows containing non-finite values (stat\_smooth).}}
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning: Removed 9701 rows containing missing values (geom\_point).}}\end{kframe}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-24-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Absolute values of scaled effect sizes over scaled time, separated for outcome measures.}
-\label{effects.overtime.separated}
-\end{figure}
+% A second way to analyse meta-analyses is a cumulative meta-analysis that should reveal shifts in treatment effect sizes over time. This can again be done for the entire dataset, i.e. for all effect estimates and their ordering in time. It is important to scale the effect estimates here with respect to the estimates of the replication studies that are about the same subject, have the same outcome measure, etc. Also, only effect estimates that can be compared to other estimates before are included, i.e. only study results with one or more replica are included. Time needs to be scaled and normalized in order to compare multiple time-trends in effect size to each other and gain insights in the overall trend. This is done in Figure \ref{effects.overtime.separated}, separared for odds rati, risk ratio, and mean and standardized difference outcome measures. In order to reduce the spread over time of effect sizes, only studies between 1970 and 2019 were included, as well as studies with a minimal group size of 12 participants (each group).
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% data.ext %>% filter(outcome.measure.new == "Mean Difference" | outcome.measure.new == "Std. Mean Difference" | 
+%                 outcome.measure.new == "Risk Ratio" | outcome.measure.new == "Odds Ratio") %>% 
+%   filter(total1 > 11 & total2 > 11) %>% filter(!is.na(study.year) & study.year > 1970 & study.year < 2019) %>% 
+%   group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 1) %>% 
+%   mutate(scaled.effect = abs(scale(effect)), scaled.time = scale(study.year)) %>% 
+%   ggplot(aes(x = scaled.time, y = scaled.effect)) + geom_point(size = .5, alpha = 0.2)  + facet_wrap(~outcome.measure.new) +
+%   geom_smooth() + theme_bw() +  ylab("absolute scaled effect")  + ylab("scaled time")
+% @
+% \caption{Absolute values of scaled effect sizes over scaled time, separated for outcome measures.}
+% \label{effects.overtime.separated}
+% \end{figure}
 
 
 % It is also possible to look how the amount of meta-analysis with significant pooled effect size estimates changes over time, e.g. mean publication year (of studies included in the meta-analysis). 0.05 is used here as the threshold for $p$-value significance and subsequent null-hypothesis rejection. To constrict random fluctuation in the proportion, only mean publication years with a certain amount of meta-analyses are shown ($n < 180$). The $p$-value of the fixed effects meta analysis model is used to decide about rejection of the null-hypothesis. As Figure \ref{treatment.effect.significance.overtime} shows, the proportion of meta-analyses with significant treatment effect estimates stays roughly constant over time. 
@@ -666,7 +601,7 @@ The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measu
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-26-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-20-1} 
 
 }
 
@@ -681,7 +616,7 @@ The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measu
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-27-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-21-1} 
 
 }
 
@@ -698,7 +633,7 @@ The same plots can be shown separately for meta-analyses with significant and no
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-28-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-22-1} 
 
 }
 
@@ -713,7 +648,7 @@ The same plots can be shown separately for meta-analyses with significant and no
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-29-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-23-1} 
 
 }
 
@@ -730,7 +665,7 @@ Furthermore one can look if the frequencies of tests that reject the null hypoth
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-30-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-24-1} 
 
 }
 
@@ -745,7 +680,7 @@ Furthermore one can look if the frequencies of tests that reject the null hypoth
 The agreement of the tests, i.e. the proportion of meta-analyses where the rest results are equal between tests, is shown in Table \ref{agreement.bin} and Table \ref{agreement.cont}, again separated for outcome types. Agreement in tests for binary outcomes is better than continuous outcomes, with some variation between tests (binary outcomes: 83 to 91\%). Correlation varies more between tests, both for continuous and binary outcome tests.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Apr 23 14:01:43 2019
+% Thu Apr 25 14:27:29 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -772,7 +707,7 @@ egger.schwarzer & 0.87 & 0.39 \\
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Apr 23 14:01:43 2019
+% Thu Apr 25 14:27:29 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -793,13 +728,13 @@ thomson.egger & 0.89 & 0.69 \\
 
 \vspace{0mm}
 Test performance depends on the sample size, despite having restricted sample size to a minimum of 10 studies. The p-values of the Thompson and Sharp tests are shown with respect to the sample size of the meta-analysis in Figure \ref{pvalues.samplesize}. %(Suggests that 10 is likely too small)
-In the case of binary outcomes, the arcsine variance stabilizing function has been applied prior to use of Thompson and Sharp's test. A s trend towards more rejections for larger sample sizes can be seen.
+In the case of binary outcomes, the arcsine variance stabilizing function has been applied prior to use of Thompson and Sharp's test. A trend towards more rejections for larger sample sizes can be seen.
 
 \begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-33-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-27-1} 
 
 }
 
@@ -821,7 +756,7 @@ In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-34-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-28-1} 
 
 }
 
@@ -836,7 +771,7 @@ In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-35-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-29-1} 
 
 }
 
@@ -859,14 +794,14 @@ The extent to what the results of the meta-analysis results are changed can be i
 \item Non-significance of pooled estimate of meta-analysis did change to significance after correction for small study effects.
 \end{enumerate}
 
-The results of this can be seen in Figure \ref{significance.change.fixed} for all three methods, comparing the significance of the corrected pooled effect size estimate with the significance of the pooled effect size estimate of the fixed effects meta-analysis. The same for significance of random effects meta-analysis is shown in Figure \ref{significance.change.random}. The significance threshold was chosen such that the $p$-value had to be $< 0.05$ for rejection of the null hypothesis of no treatment effect. The correction methods were trim-and-fill, copas selection model and regression with random effects and shrinkage of within-study-variance methods. More details to the applied correction methods and their application are in the methods section \ref{methods}. Notably, the correction methods has been applied to all meta-analyses, thus also for such that had no significant small study effect test result. 
+The results of this can be seen in Figure \ref{significance.change.fixed} for all three methods, comparing the significance of the corrected pooled effect size estimate with the significance of the pooled effect size estimate of the fixed effects meta-analysis. The same for significance of random effects meta-analysis is shown in Figure \ref{significance.change.random}. The significance threshold was chosen such that the $p$-value had to be < 0.05 for rejection of the null hypothesis of no treatment effect. The correction methods were trim-and-fill, copas selection model and regression with random effects and shrinkage of within-study-variance methods. More details to the applied correction methods and their application are in the methods section \ref{methods}. Notably, the correction methods has been applied to all meta-analyses, thus also for such that had no significant small study effect test result. 
 
 
 \begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-36-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-30-1} 
 
 }
 
@@ -881,7 +816,7 @@ The results of this can be seen in Figure \ref{significance.change.fixed} for al
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-37-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-31-1} 
 
 }
 
@@ -898,7 +833,7 @@ Since it has been previously seen in Figure \ref{test.results} that the results 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-38-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-32-1} 
 
 }
 
@@ -913,7 +848,7 @@ Since it has been previously seen in Figure \ref{test.results} that the results 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-39-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-33-1} 
 
 }
 
@@ -930,7 +865,7 @@ Similarly, the number of missing studies per meta-analysis, i.e. those which hav
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-40-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-34-1} 
 
 }
 

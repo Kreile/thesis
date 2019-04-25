@@ -1,37 +1,5 @@
 % LaTeX file for Chapter 02
 
-
-<<echo=FALSE>>=
-# PATH_HOME = path.expand("~") # user home
-# PATH = file.path(PATH_HOME, 'thesis/code')
-# source(file.path(PATH, 'prepare.R'))
-
-
-PATH_HOME = path.expand("~") # user home
-PATH = file.path(PATH_HOME, 'Data/PubBias')
-PATH2 = file.path(PATH_HOME, 'PubBias')
-FILE = 'cochrane_2018-06-09.csv'
-PATH_DATA = file.path(PATH, 'data')
-PATH_CODE = file.path(PATH2, 'code')
-PATH_RESULTS = file.path(PATH, 'results')
-PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
-
-file_results = "pb.RData"
-
-source(file.path(PATH_CODE, 'PubBias_functions.R'))
-
-data = pb.readData(path = PATH_DATA, file = FILE)
-tmp = pb.clean(data)
-data = tmp[[1]]
-aliases = tmp[[2]]
-
-require(biostatUZH)
-require(tidyverse)
-require(meta)
-require(xtable)
-@
-
-
 <<echo=FALSE>>=
 library(knitr)
 opts_chunk$set(
@@ -54,48 +22,215 @@ opts_chunk$set(fig.path='figure/ch02_fig',
 options(width=74)
 @
 
+<<echo = FALSE>>=
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
+FILE = 'cochrane_2018-06-09.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH2, 'code')
+PATH_RESULTS = file.path(PATH2, 'results')
+PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+
+file_results = "pb.RData"
+
+source(file.path(PATH_CODE, 'PubBias_functions.R'))
+
+
+data = pb.readData(path = PATH_DATA, file = FILE)
+tmp = pb.clean(data)
+data = tmp[[1]]
+aliases = tmp[[2]]
+
+file.bin <- "pb.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+  load(file.path(PATH_RESULTS, file.bin))
+} else { 
+  meta.bin <- meta.bin.complete(data, min.study.number = 10, sig.level = 0.05)
+  save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
+}
+
+file.cont <- "pb.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+  load(file.path(PATH_RESULTS, file.cont))
+} else { 
+  meta.cont <- meta.cont.complete(data, min.study.number = 10, sig.level = 0.05)
+  save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
+}
+
+meta <- pb.meta.merge(meta.bin, meta.cont)
+
+file.cont <- "mly.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+  load(file.path(PATH_RESULTS, file.cont))
+} else { 
+  data.cont <- mly.cont(data.ext, 0.05, min.study.number = 2)
+  save(data.cont, file =  file.path(PATH_RESULTS, file.cont))
+}
+
+file.bin <- "mly.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+  load(file.path(PATH_RESULTS, file.bin))
+} else { 
+  data.bin <- mly.bin(data.ext, 0.05, min.study.number = 2)
+  save(data.bin, file =  file.path(PATH_RESULTS, file.bin))
+}
+
+
+load(file.path(PATH_RESULTS, file = "mly.RData"))
+load(file.path(PATH_RESULTS, file = "data.processed.RData"))
+
+require(biostatUZH)
+require(tidyverse)
+require(meta)
+require(metasens)
+require(gridExtra)
+require(xtable)
+
+###################################################################################################################
+###################################################################################################################
+
+#Barbiturate Examples
+barbi1 <- arrange(filter(data, file.nr == 21) %>% 
+          select(Study = study.name, Comparison = comparison.name, Outcome = outcome.name, 
+                 Events = events1, Total = total1, Events_c = events2, Total_c = total2) %>% 
+            slice(c(1,3)), Study) 
+barbi2 <- arrange(filter(data, file.nr == 21) %>% 
+          select(Study = study.name, Comparison = comparison.name,Outcome = outcome.name), Study)
+barbi2[barbi2$Study == "P\303\251rez-B\303\241rcena 2008", 1] = "Perez-Barcena 2008"
+
+#Missing values
+cont.out <- data %>% filter(outcome.measure.new == "Mean Difference" | outcome.measure.new == "Std. Mean Difference" | 
+                                 outcome.measure.new == "Hedges' G") 
+
+missing.mean <- which(is.na(cont.out$mean1) | is.na(cont.out$mean2))
+missing.effect <- which(is.na(cont.out$effect))
+missing.means <- intersect(missing.mean, missing.effect) #Cont. results that have neither complete means nor an effect
+wrong.effect <- which(cont.out$mean1 == 0 & cont.out$mean2 == 0 & cont.out$effect == 0) #Cont.results that have only zeros
+missing.effects <- length(c(missing.means, wrong.effect))
+
+missing.sd <- which(is.na(cont.out$sd1) | is.na(cont.out$sd2))
+missing.se <- which(is.na(cont.out$se))
+missing.sds <- intersect(missing.se, missing.sd) #Cont. results that have neither complete means nor an effect
+wrong.sds <- which(cont.out$sd1 == 0 & cont.out$sd2 == 0 & cont.out$se == 0) #Cont.results that have only zeros
+missing.sds <- length(c(missing.sds, wrong.sds))
+
+missing.ss <- which(is.na(data$total1) | is.na(data$total2))
+wrong.ss <- which(data$total1 <= 0 | data$total2 <= 0)
+missing.ssize <- length(c(missing.ss, wrong.ss))
+
+missing.year <- sum(is.na(data$study.year)) + length(c(which(data$study.year < 1920), which(data$study.year > 2019)))
+
+missing.table <- rbind("Missing mean values and mean differences" = missing.effects,
+                         "Missing standard deviations and standard errors" = missing.sds,
+                         "Missing sample sizes" = missing.ssize,
+                         "Missing study year" = missing.year)
+
+#Mean and median number of different outcome types of reviews
+mean.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>%
+  ungroup() %>% group_by(file.nr) %>%
+  count() %>% ungroup %>% summarise(mean = mean(n))
+
+median.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>%
+  ungroup() %>% group_by(file.nr) %>%
+  count() %>% ungroup %>% summarise(mean = median(n))
+
+#Study.year quantiles:
+data.ext <- data.ext %>% mutate(study.year = ifelse(study.year > 1920, study.year, NA))
+publication.year.range <- c(quantile(data.ext$study.year, 0.05, na.rm = T), quantile(data.ext$study.year, 0.25, na.rm = T), 
+                            quantile(data.ext$study.year, 0.5, na.rm = T), quantile(data.ext$study.year, 0.75, na.rm = T),
+                            round(mean(data.ext$study.year, na.rm = T), 2))
+
+#Outcome.measure frequency table:
+outcome.measure.frequencies <- rbind(data %>% group_by(outcome.measure.new) %>% count() %>% 
+                                       arrange(desc(n)) %>% ungroup() %>% filter(row_number() < 9),
+                                     data %>% group_by(outcome.measure.new) %>% count() %>% arrange(desc(n)) %>% 
+                                       ungroup() %>% filter(row_number() > 8) %>% 
+                                       summarise(outcome.measure.new = "other", n = sum(n)))
+
+outcome.measure.frequencies <- outcome.measure.frequencies %>% mutate(percentage = round(n/sum(n),3)*100)
+names(outcome.measure.frequencies) <- c("Outcome measure", "n", "Percentage")
+outcome.measure.frequencies$Percentage <- paste(outcome.measure.frequencies$Percentage, "%", sep = "")
+
+#Total and group size quantiles:
+data.ext <- data.ext %>% ungroup() %>%  mutate(total.n = total1 + total2)
+samplesize.range <- c(quantile(data.ext$total.n, 0.05, na.rm = T), quantile(data.ext$total.n, 0.25, na.rm = T), 
+                            quantile(data.ext$total.n, 0.5, na.rm = T), quantile(data.ext$total.n, 0.75, na.rm = T),
+                            round(mean(data.ext$total.n, na.rm = T), 2))
+treatment.group.size.range <- c(quantile(data.ext$total1, 0.05, na.rm = T), quantile(data.ext$total1, 0.25, na.rm = T), 
+                      quantile(data.ext$total1, 0.5, na.rm = T), quantile(data.ext$total1, 0.75, na.rm = T),
+                      round(mean(data.ext$total1, na.rm = T), 2))
+
+#Frequencies of results:
+comp.freq <- data %>% group_by(file.nr) %>% summarise(n = n())
+comp.range <- c(length(which(comp.freq$n < 6)), quantile(comp.freq$n, 0.25, na.rm = T), 
+                      quantile(comp.freq$n, 0.5, na.rm = T), quantile(comp.freq$n, 0.75, na.rm = T),
+                      round(mean(comp.freq$n, na.rm = T), 2))
+
+#Frequencies of studies:
+study.freq <- data %>% group_by(file.nr) %>% distinct(study.name) %>% count()
+study.range <- c(length(which(study.freq$n < 3)), quantile(study.freq$n, 0.25, na.rm = T), 
+                      quantile(study.freq$n, 0.5, na.rm = T), quantile(study.freq$n, 0.75, na.rm = T),
+                      round(mean(study.freq$n, na.rm = T), 2))
+
+#Pooling studies
+cum.repr.trials.subg <- data %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
+  filter(n < 15) %>%
+  full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+               filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>% 
+  ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
+# cum.repr.trials.nosub <- data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+#   filter(n < 15) %>%
+#   full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+#                filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>% 
+#   ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
+
+# cum.repr.trials <- cbind(cum.repr.trials.nosub, cum.repr.trials.subg)[,c(1,3,6)]
+
+colnames(cum.repr.trials.subg)  <- c("n","Number of groups", "Cumulative sum of groups")
+@
+
 
 
 
 \chapter{The Cochrane Dataset} 
 
 \subsection{Structure and Content}
-The dataset consists of \Sexpr{length(unique(data$file.nr))} systematic reviews from the Cochrane Library with \Sexpr{length(unique(data$study.name))} studies.
-Each study provides data of (multiple) comparisons of clinical interventions. 
-% It can not be ruled out that some comparisons are retrospective, e.g. from observational studies. 
-In Table \ref{barbiturate.row}, two comparisons from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, the comparison is further specified by the variables in the columns. One row of the dataset is one comparison.
+The dataset consists of \Sexpr{length(unique(data$file.nr))} systematic reviews from the Cochrane Library with \Sexpr{length(unique(data$study.name))} studies and \Sexpr{dim(data)[1]} results. A result compares clinical or medical interventions or treatments. Each study provides (multiple) results of clinical interventions. 
+
+In Table \ref{barbiturate.row}, two results from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, the result is further specified by the variables in the columns. The comparison variable specifies what treatments or interventions are compared, the outcome variable how it is compared, and the subgroup variable (not given in table) indicates if the result belongs to a certain subgroup. Here, the result is of a binary outcome, so the events in the barbiturate treatment group and the total number of participants are given in columns ``Events'' and ``Total'' and the number of events in the control group ``Events\_c'' and participants ``Total\_c''. Events denotes here number of deaths at the end of follow up.
 
 <<echo=FALSE, results = 'asis'>>=
-tp1 <- arrange(filter(data, file.nr == 21) %>% 
-          select(Study = study.name, Comparison_type = comparison.name, Outcome = outcome.name, 
-                 Events = events1, Total = total1, Events_c = events2, Total_c = total2) %>% 
-            slice(c(1,3)), Study)
-print(xtable(tp1, label = "barbiturate.row", caption = "Example of two comparisons as given in the dataset. Events denotes the count of events in the treatment group while Events c the count of events in the group compared to. Further descriptive variables have been ommitted"), include.rownames = F, size = "scriptsize")
+print(xtable(barbi1, label = "barbiturate.row", digits = 0,
+             caption = "Example of two results as given in the dataset. Events denotes the count of events in the treatment group while Events c the count of events in the group compared to. Further descriptive variables have been ommitted"), 
+      include.rownames = F, size = "scriptsize")
 @
 
-A complete listing of the variables is given in Table \ref{variable}. They can roughly be separated into variables that specify the review in which the comparison is contained and variables that specify the comparison itself (separated by a horizontal line in Table \ref{variable}).
+A complete listing of the variables of a result is given in Table \ref{variable}. They can roughly be separated into variables that specify the review in which the result is contained and variables that specify the result itself (separated by a horizontal line in Table \ref{variable}).
 
 \begin{table}[ht]
   \begin{center}
     \begin{tabular}{l l}
       \textbf{Variable} & \textbf{Description}\\
       \hline
-      \textbf{file.nr} & The number of the file from which the review data has been . \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
+      \textbf{file.nr} & The number of the file from which the review data has been \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
       \textbf{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
       \textbf{file.index} & Internal index of the file in the Cochrane library.\\
       \textbf{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
       %\multicolumn{2}{c}{textbf{Study level variables}}\\ 
       \hline
-      \textbf{comparison.name/.nr} & Specification of the interventions compared in the study  \\ and a unique number for the comparison\\
-      \textbf{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ and a unique number for the outcome\\
-      \textbf{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ unique number for the subgroup\\
-      \textbf{study.name} & Name of the study to which the comparison belongs\\
+      \textbf{study.name} & Name of the study to which the result belongs\\
       \textbf{study.year} & Year in which the study was published\\
+      \hline
+      \textbf{comparison.name/.nr} & Specification of the interventions compared in the study  \\ &and a unique number for the comparison\\
+      \textbf{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome\\
+      \textbf{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ &unique number for the subgroup\\
       \textbf{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
       \textbf{effect} & Measure of the effect given in the quantity denoted by \\ &``outcome measure''.\\
-      \textbf{events1/events2} & The counts of patients with an outcome \textit{if}\\ & measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
+      \textbf{se} & Standard error of the measure of the effect,\\
+      \textbf{events1/events2} & The counts of patients with an outcome \textit{if}\\ &measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
       \textbf{total1/total2} & Number of patients in groups.\\
-      \textbf{mean1/mean2)} & Mean of patient measurements \textit{if} outcome is continuous.\\
+      \textbf{mean1/mean2} & Mean of patient measurements \textit{if} outcome is continuous.\\
       \textbf{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
     \end{tabular}
   \caption{Dataset variable names and descriptions  \label{variable}}
@@ -103,9 +238,7 @@ A complete listing of the variables is given in Table \ref{variable}. They can r
   \end{center}
 \end{table}
 
-The structure of a review is shown in Figure \ref{review}. 
-% Comparisons of a review can consecutively be subdivided into different comparison types, different outcome measures and different subgroups. 
-The comparison type variable specifies what is compared, the outcome variable how it is compared, and the subgroup variable indicates if the comparison belongs to a certain subgroup. If desired, Figure \ref{review} can be compared to Table \ref{barbiturates} where an exemplary review is listed.
+Results are part of studies that are again part of a (systematic) review. This structure of a review is shown in Figure \ref{review}. 
 
 \begin{figure}
 \tikzstyle{every node}=[draw=black,thick,anchor=west]
@@ -116,208 +249,74 @@ The comparison type variable specifies what is compared, the outcome variable ho
   growth parent anchor=east, % added code
   parent anchor=east]
   \node {Review} [edge from parent fork right]
-    child { node {Comparison type 2}
+    child { node {Comparison 2}
       child { node {Outcome 2}}
       child { node {Outcome 1}
         child { node {Subgroup 2}}
-        child { node {Subgroup 1}}}
+        child { node {Subgroup 1}
+          child  { node {Result 2}}
+          child  { node {Result 1}}
+          }}
     }
     child [missing] {}		
-    child { node {Comparison type 1  }};
+    child { node {Comparison 1  }};
 \end{tikzpicture}
 \caption{Structure of a hypothetical review with two different comparisons\label{review.structure}}
 \label{review.structure}
 \end{figure}
 
-
-
-% \vspace{0mm}
-% Lets consider the previously mentioned barbiturate and head injury review. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates''. The medical background is that one knew that barbiturates could cause relief in intra-cranial pressure, but also reduce cerebral blood flow. Because one effect is thought to be beneficial for persons with severe head injuries while the other isn't, the authors of the review wanted to find out if there is a net benefit of barbiturates.
-% 
-% \vspace{0mm}
-% The review comprises five studies in total. Three of them compared barbiturate to placebo, one compared barbiturate to Mannitol and one Pentobarbital to Thiopental, which would be the comparison/research subject to speak in the previously introduced notions. 
-% 
-% \vspace{0mm}
-% All the studies convey multiple information to the review. As an example, that could be death or death \textit{and} severe disability at follow up as an outcome. Again, the study can be further split up in different subgroups, here for example in a group with - and without haematoma. 
-% 
-% \vspace{0mm}
-% The complete listing of outcomes is in table \ref{barbiturates}. The table also gives an illustration of the variety of data that can be included in a review. We have for example continuous and binary outcome data, that again is divided into a variety of different things that have been measured. Often, additionally to the main study result, also adverse effects are for example included which are in this case separate outcomes and possibly subgroups.
-
-
-<<echo=FALSE, results='asis'>>=
-tp1 <- arrange(filter(data, file.nr == 21) %>% 
-          select(Study = study.name, Comparison = comparison.name,Outcome = outcome.name), Study)
-tp1[tp1$Study == "P\303\251rez-B\303\241rcena 2008", 1] = "Perez-Barcena 2008"
-print(xtable(tp1, label = "barbiturates", caption = "Barbiturate and head injury review. In the columns, study names, comparison types and outcome measure of the comparisons are given"), include.rownames = F, size = "footnotesize")
-@
-
-% The research subject or outcome type can possibly already be well defined in the general review question. Conversely, research subject or comparison has to be further specified in outcome and subgroup categories. As may have been implied, the terminology does not rely to a hundred percent on strict functional definitions.
-
-
-It is important to not confuse comparisons with studies. A study can contribute multiple comparisons to a systematic review. Also, despite a comparison has variables concerning event counts and means, it can only have one of the two, either means (if the outcome measure is continuous) or event counts (for binary outcomes).
+\vspace{0mm}
+The structure of a review will now be outlined based on an example of the dataset. Lets consider the previously mentioned barbiturate and head injury review. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates''. Since there are arguments for and against use of barbiturates, the authors of the review did a comprehensive literature search and collected all available study findings.
 
 \vspace{0mm}
-Having provided an overview over the dataset, now, some more specific information is provided. The dataset consists of \Sexpr{dim(data)[1]} comparisons and has \Sexpr{dim(data)[2]} variables that specify the comparisons. Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years.
+The review comprises five studies in total. Three of them compared barbiturate to placebo, one compared barbiturate to Mannitol and one Pentobarbital to Thiopental, which would be the comparison to speak in the previously introduced notion. The studies have different outcomes, for example, death or death and severe disability at follow up. One study split up outcomes for patients with and without haematoma, which would be subgroups.
 
-<<echo=FALSE>>=
-missing.mean <- data %>% filter(!is.na(sd1) & sd1 > 0) %>% filter(!is.na(sd2) & sd2 > 0) %>% 
-  summarise(total = length(sd1), na  = sum(is.na(mean1) | is.na(mean1))) %>% select(na)
-
-missing.sd <- data %>% filter(!is.na(mean1) & !is.na(mean2)) %>% filter(mean1 != 0 & mean2 != 0) %>%
-  summarise(total = length(mean1), na.sd  = sum(is.na(sd1) | is.na(sd1)), null.sd = length(sd1[sd1 <= 0 | sd2 <= 0])) %>% 
-  mutate(miss = na.sd + null.sd) %>% select(miss)
-
-missing.ssize <- data %>% summarize(total = length(total1), null.ss = length(total1[total1 <= 0 | total2 <= 0])) %>% 
-  select(null.ss)
-
-missing.effect <- sum(is.na(data$effect))
-
-missing.year <- sum(is.na(data$study.year)) + length(data$study.year[data$study.year == 0])
-
-# missing.outcome <- sum(is.na(data$effect))
-
-# null.events <- data %>% filter(is.na(mean1) | mean1 == 0) %>% filter(is.na(mean2) | mean2 == 0) %>% 
-#   filter(is.na(sd1) | sd1 <= 0) %>% filter(is.na(sd2) | sd2 <= 0) %>% 
-#   summarise(null.ev = length(total1[events1 <= 0 & events2 <= 0]), total = length(events1)) %>% 
-#   mutate(f = null.ev/total) %>% select(f)
-# 
-# null.events.single <- data %>% filter(is.na(mean1) | mean1 == 0) %>% filter(is.na(mean2) | mean2 == 0) %>% 
-#   filter(is.na(sd1) | sd1 <= 0) %>% filter(is.na(sd2) | sd2 <= 0) %>% 
-#   summarise(null.ev = length(total1[events1 <= 0 | events2 <= 0]), total = length(events1)) %>% 
-#   mutate(f = null.ev/total) %>% select(f)
-# 
-# missing.events <- data %>% filter(is.na(mean1) | mean1 == 0) %>% filter(is.na(mean2) | mean2 == 0) %>% 
-#   filter(is.na(sd1) | sd1 <= 0) %>% filter(is.na(sd2) | sd2 <= 0) %>% 
-#   summarise(na.ev = sum(is.na(events1) | is.na(events2)), total = length(events1)) %>% 
-#   mutate(f = na.ev/total) %>% select(f)
-@
+\vspace{0mm}
+The complete listing of outcomes is in table \ref{barbiturates}. The table also gives an illustration of the variety of data that can be included in a review. We have for example continuous (mean body temperature) and binary outcome data (death). Additionally to primary and secondary outcomes, often also dropouts and adverse effects are included in a review.
 
 <<echo=FALSE, results='asis'>>=
-  missing.table <- rbind("Missing mean values" = missing.mean[1,1],
-                         "Missing standard deviations" = missing.sd[1,1],
-                         "Missing sample sizes" = missing.ssize[1,2],
-                         "Missing effects" = missing.effect,
-                         "Missing study year" = missing.year)
+print(xtable(barbi2, label = "barbiturates", caption = "Barbiturate and head injury review. In the columns, study names, comparison and outcome measure of the results are given"), include.rownames = F, size = "footnotesize")
+@
 
+It is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
+
+\vspace{0mm}
+Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years. In the case of continuous outcomes, the cases have been counted were effect sizes and standard errors of effect sizes are not available. This means that neither mean values of groups nor mean differences are given, or that neither standard deviation nor standard error is given for a result. Study years before 1920 and after 2019 have been counted as missing, as well as sample sizes below zero.
+
+<<echo=FALSE, results='asis'>>=
 print(xtable(missing.table, label = "missing", caption = "Number of missing variables and measurements in the dataset", align = "lr"), include.colnames = F,
       size = "footnotesize", digits = 0)
 @
 
-
-More properties of the reviews, the studies and the comparisons in the dataset will be provided on the following pages. The publication dates of the studies included in the dataset are shown in Figure \ref{study.years}. Most studies were published after 2000.
-
-\begin{figure}
-<<echo=FALSE>>=
-data %>% filter(study.year < 2019 & study.year > 1920) %>% ggplot(aes(x = study.year)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
-  theme_bw() + xlab("Year") + ylab("Study frequency")
-@
-\caption{Frequencies of study publication years in the dataset. 44655 were excluded due to likely wrong indications}
-\label{study.years}
-\end{figure}
-
-Figure \ref{study.outcomes} provides the frequencies of outcome types of the comparisons. Note that the abundance of mean differences and standardized mean differences can also give an impression of the proportion of continuous outcome comparisons vs. binary outcome comparisons in the dataset.
-
-\begin{figure}
-<<echo=FALSE>>=
-data %>% group_by(outcome.measure.new) %>% count() %>% arrange(desc(n)) %>% ungroup() %>% filter(row_number() < 9) %>% 
-  ggplot(aes(x = outcome.measure.new, y = n)) +
-  geom_col(col = "gray15", fill = "dodgerblue") +
-  theme_bw() + ylab("Comparison frequency") + xlab("Outcome measure")
-@
-\caption{Frequencies of some outcome measures for the effects in the dataset. 5593 measures with other outcome measures are excluded}
-\label{study.outcomes}
-\end{figure}
-
-It is also possible to look at the properties of the reviews. One question could be how many studies or comparisons that a review comprises. The former is shown in Figure \ref{studies.per.review} and the latter in Figure \ref{comparisons.per.review}. It can be seen that while almost 400 reviews consist of one study only, there are more than 150 with equal or more than 30 distinct studies. A similar variance between reviews can also be observed when looking at the number of comparisons.
-
-\begin{figure}
-<<echo=FALSE>>=
-data %>% group_by(file.nr) %>% distinct(study.name) %>% count() %>%
-  filter(n < 50) %>%
-  full_join( data %>% group_by(file.nr) %>% distinct(study.name) %>% count %>%
-               filter(n > 49) %>% mutate(n = 50)) %>%
-  group_by(n) %>% count() %>%
-  ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
-  theme_bw() + xlab("Study number") + ylab("Reviews Frequency")
-@
-\caption{Empirical distribution of number of studies per review}
-\label{studies.per.review}
-\end{figure}
-
-\begin{figure}
-<<echo=FALSE>>=
-data %>% group_by(file.nr) %>% count() %>%
-  filter(n < 50) %>%
-  full_join( data %>% group_by(file.nr) %>% distinct(comparison.name) %>% count %>%
-               filter(n > 49) %>% mutate(n = 50)) %>%
-  group_by(n) %>% count() %>%
-  ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
-  theme_bw() +  xlab("Comparisons") + ylab("Review Frequency")
-# mean.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
-#   ungroup() %>% group_by(file.nr) %>% 
-#   count() %>% ungroup %>% summarise(mean = mean(n))
-# 
-# median.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
-#   ungroup() %>% group_by(file.nr) %>% 
-#   count() %>% ungroup %>% summarise(mean = median(n))
-@
-\caption{Empirical distribution of number of comparisons per review}
-\label{comparisons.per.review}
-\end{figure}
-
-A question not to be mistaken with the previous would be how many comparison \textit{types} there are per review. This gives an additional impression of the scope of a review. Analogously to the previous figures, the empirical distribution of comparison types is depicted in Figure \ref{subjects.per.review}.
-
-
-\begin{figure}
-<<echo=FALSE>>=
-data %>% group_by(file.nr) %>% distinct(comparison.name) %>% count() %>%
-  filter(n < 15) %>%
-  full_join( data %>% group_by(file.nr) %>% distinct(comparison.name) %>% count %>%
-               filter(n > 14) %>% mutate(n = 15)) %>%
-  group_by(n) %>% count() %>%
-  ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
-  theme_bw() +  xlab("Comparison type number") + ylab("Review frequency")
-
-
-mean.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
-  ungroup() %>% group_by(file.nr) %>% 
-  count() %>% ungroup %>% summarise(mean = mean(n))
-
-median.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>% 
-  ungroup() %>% group_by(file.nr) %>% 
-  count() %>% ungroup %>% summarise(mean = median(n))
-@
-\caption{Empirical distribution of number of different comparison types per review}
-\label{subjects.per.review}
-\end{figure}
-
-% At the end, a main goal of the thesis is to analyze reviews with respect to reporting bias in meta analyses. 
-For comparisons to be suitable for usage in meta-analysis, they have to be somewhat identical (same comparison type, outcome measure and possibly subgroup). For an analysis of reporting bias, again a certain number of studies is required in order for reporting bias to be detectable by the methods. One question would therefore be: How many groups of identical comparisons of a certain size are given in the dataset? This depends on which degree of similarity between comparisons is considered to be sufficient.
+The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = \Sexpr{publication.year.range[1]}). The median of the publication years is \Sexpr{publication.year.range[3]}, the mean \Sexpr{publication.year.range[5]} and the quartiles are \Sexpr{publication.year.range[2]} and \Sexpr{publication.year.range[4]}. Only a handful ($n$ = 18) have been published in 2018, none in 2019. No information is available concerning unpublished results and studies.
 
 \vspace{0mm}
-In Table \ref{repr.groups}, two different similarity criteria have been used. One is based on the same comparison type and outcome measure, the other includes additionally subgroup affiliation of comparisons, i.e. only comparisons in the same subgroups are considered to be similar enough.
-
-\vspace{0mm}
-Table \ref{repr.groups} shows the cumulative number of \textit{groups} of comparisons with equal or more than $n$ comparisons. Practically, this means that this number of meta analyses can be performed with each having at least $n$ comparisons.
+The results of a study are summarised in a result by a effect measure. This effect measure varies, depending on whether data is continuous, binary or time-to-event. The most abundant effect measures used are summarised in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 30 \% of outcomes in the dataset are continuous and the being some sort of discrete or binary outcomes, most often binary (> 65\%).
 
 <<echo=FALSE, results='asis'>>=
-cum.repr.trials.nosub <- data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
-  filter(n < 15) %>%
-  full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
-               filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>% 
-  ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
+print(xtable(outcome.measure.frequencies, label = "outcome.measure.frequencies", 
+             caption = "Frequencies of outcome measures among results. n denotes the total number 
+             of results with the outcome measure and percentage the percentage of the outcome measure,", 
+             align = "llll", digits = 1), include.rownames = F, size = "footnotesize")
+@
 
-cum.repr.trials.subg <- data %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
-  filter(n < 15) %>%
-  full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
-               filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>% 
-  ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
 
-cum.repr.trials <- cbind(cum.repr.trials.nosub, cum.repr.trials.subg)[,c(1,3,6)]
+The sample sizes amongst results vary to some extent. There are 5\% of treatment group sample sizes that are smaller tha \Sexpr{treatment.group.size.range[1]}, the 5\% quantile. The first quartile is \Sexpr{treatment.group.size.range[2]}, the median \Sexpr{treatment.group.size.range[3]}, the mean \Sexpr{treatment.group.size.range[5]} and the third quartile \Sexpr{treatment.group.size.range[4]}. The large difference between median and mean is caused by very large groups with over 2,000,000 participants. Analogously, the quantiles of the total sample size are: 5\% quantile = \Sexpr{samplesize.range[1]}, first quartile = \Sexpr{samplesize.range[2]}, median = \Sexpr{samplesize.range[3]} and third quartile = \Sexpr{samplesize.range[4]}. The mean is \Sexpr{samplesize.range[5]}.
 
-colnames(cum.repr.trials)  <- c("n", "Cumulative sum (without subgroups)", "Cumulative sum (with subgroups)")
+\vspace{0mm}
+The mean and median number of results per review are \Sexpr{study.range[5]} and \Sexpr{study.range[3]}. There are \Sexpr{comp.range[1]} reviews with five or fewer results, and the quartiles are \Sexpr{comp.range[2]} and \Sexpr{comp.range[4]}. Similarly, the number of reviews with a maximum of two studies included is \Sexpr{study.range[1]}, the mean study number is \Sexpr{study.range[5]}, the median \Sexpr{study.range[3]} and the interquartile range \Sexpr{study.range[2]} and \Sexpr{study.range[4]}. The discrepancy between mean and median is again due to large reviews with a high number of studies and results, most extreme in \citet{largest.review} which is a systematic review about antibiotic prophylaxisfor preventing infection after cesarean section, with 95 studies and 1497 results in total. 
 
-print(xtable(cum.repr.trials, label = "repr.groups", caption = "Cumulative number of groups with number of reproduction trials >= n", align = "llll", digits = 0), include.rownames = F, size = "footnotesize")
+\vspace{0mm}
+For results to be suitable for usage in meta-analysis, they have to be identical with respect to comparison and outcome. More speicifically, the studies in the dataset that have the same comparison, outcome and subgroup can be pooled in a meta-analysis since their research subject and experimental setup can be considered sufficiently homogeneous. %Another approach that is not made here is to analyze all subgroups together, which is possible if enough studies are given.
+\vspace{0mm}
+The amount of studies that can be pooled for meta-analyses is of special interest in this masters thesis. Thus, the dataset is divided in groups whith identical experimental setup. The size of the group denotes how many results are included in a group.
+
+\vspace{0mm}
+Table \ref{repr.groups} shows the number of \textit{groups} of groups with equal or more than $n$ results. Practically, this means that a given number of meta analyses can be performed with each having at least $n$ results.
+
+<<echo=FALSE, results='asis'>>=
+
+print(xtable(cum.repr.trials.subg, label = "repr.groups", caption = "Cumulative number of groups with number of reproduction trials >= n", align = "llll", digits = 0), include.rownames = F, size = "footnotesize")
 @
 
 
