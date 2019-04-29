@@ -72,24 +72,11 @@ Time order? Which predicitve distribution (plug-in, etc. )?
 
 - Subgroup analysis
 
-- Wiki. Terminology, codes, projects.. How to organize.
-oadoi() did not work..
-
-
-
-data -original
-data.rev - datensatz für review
-
-data.mly - Kennwerte
+- In general: Expectation of the masters thesis: Explore properties of the results with respect to properties of the dataset? Or also with respect to each other?
+It is clear that the findings of simulation studies etc. can be incorporated into the discussion and can help..
 
 
 cache gitignore
-
-plot png convert
-
-effekt skala anpassen
-
-median samplesize
 
 web crawler - data mining:
 
@@ -100,6 +87,4 @@ primary outcome beschreibung Regelmässigkeiten
 
 - Datensatz chapter überarbeiten.
 
-
-
-
+- Look for Cochrane Review Overviews

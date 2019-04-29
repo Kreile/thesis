@@ -78,7 +78,12 @@
 %% Start with slides here: put them between `\begin{frame}` and `\end{frame}`
 
 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in UseMethod("{}mutate\_"{}): no applicable method for 'mutate\_' applied to an object of class "{}function"{}}}\end{kframe}
+\end{knitrout}
 
 
 \begin{frame}{Cochrane Library}
@@ -91,11 +96,11 @@ Reviews are peer-reviewed and prepared after guidelines.
 
 
 \begin{frame}{Cochrane Library Dataset}
-% length(unique(data$file.nr)) systematic reviews with studies published until 2018.
-% 
-% length(unique(data$study.name)) studies.
-% 
-% dim(data)[1] study results.
+5016 systematic reviews with studies published until 2018.
+
+52995 studies.
+
+463820 study results.
 \end{frame}
 
 
@@ -134,7 +139,7 @@ Reviews are peer-reviewed and prepared after guidelines.
 \begin{frame}{Review Example}
 \vspace{-5mm}
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Apr 25 15:41:11 2019
+% Sun Apr 28 12:26:53 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -162,9 +167,9 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
 \end{table}
 
 
-\vspace{-4mm}
+\vspace{-6mm}
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Apr 25 15:41:11 2019
+% Sun Apr 28 12:26:53 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -183,8 +188,8 @@ Bohn 1989 & Barbiturate vs .. & Death at .. & 11 & 41 & 11 & 41 \\
 \end{frame}
 
 
-\begin{frame}{Pooling studies}
-Studies of the same outcome, comparison and subgroup can be pooled by meta analyis.
+\begin{frame}{Pooling studies - Meta-analysis}
+Possible if results have same outcome, comparison and subgroup.
 
 Evidence synthesis - more reliable results.
 
@@ -196,9 +201,163 @@ Selection of studies with treatment effects.
 
 Stronger selection for smaller studies - small study effect.
 
-Distort findings of meta-analyses.
+Leads to biased results of meta-analysis.
 \end{frame}
 
+\begin{frame}{Publication Bias Tests}
+Test for funnel plot asymmetry:
+
+\vspace{-1cm}
+\begin{figure}[fragile]
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-4-1} 
+
+\end{knitrout}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Publication Bias Tests}
+Critical: Number of studies in meta-analysis must be large (>10).
+
+Various tests for meta-analyses with continuous and binary outcomes:
+
+Regression based: Egger's, Peter's or Thompson and Sharp's test
+
+Rank based: Begg and Mazumdar's Test
+\end{frame}
+
+\begin{frame}{Publication Bias in Cochrane Library}
+Publication bias tests applied for any meta analysis with n > 10
+
+\vspace{-1.7cm}
+\begin{figure}[fragile]
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-5-1} 
+
+\end{knitrout}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Publication Bias}
+Publication bias variation for time and sample size
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-6-1} 
+
+\end{knitrout}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Publication Bias Adjustment}
+Three approaches:
+
+Trim-and-fill: Non-parametric
+
+Copas: Selection modelling, estimation by sensitivity analysis
+
+Regression: Estimation of a treatment effect with infinite sample size
+\end{frame}
+
+\begin{frame}{Correction of significance}
+% Treatment effect significance change:
+
+%\vspace{-1.2cm}
+\begin{figure}[fragile]
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} 
+
+\end{knitrout}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Corrected Significance for Biased Meta-Analyses}
+% Significance change for meta-analysis with signficant small study effect:
+
+%\vspace{-1.2cm}
+\begin{figure}[fragile]
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-8-1} 
+
+\end{knitrout}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Corrected Significance for Unbiased Meta-Analyses}
+% Significance change for meta-analysis with non-signficant small study effect:
+
+%\vspace{-1.2cm}
+\begin{figure}[fragile]
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-9-1} 
+
+\end{knitrout}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Significance of different Estimates}
+Significance of random, fixed effects and adjusted meta-analyses:
+
+%\vspace{-1.2cm}
+\begin{figure}[fragile]
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
+
+\end{knitrout}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Significance separated for biased and unbiased meta-analyses}
+% Significance of random, fixed effects and adjusted meta-analyses:
+
+%\vspace{-1.7cm}
+\begin{figure}[fragile]
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
+
+\end{knitrout}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Significance after meta-analysis}
+
+%\vspace{-1.7cm}
+\begin{figure}[fragile]
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-12-1} 
+
+\end{knitrout}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Significance after meta-analysis}
+
+%pace{-1.7cm}
+\begin{figure}[fragile]
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-13-1} 
+
+\end{knitrout}
+\end{figure}
+\end{frame}
 
 
 \begin{frame}{References}

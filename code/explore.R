@@ -221,27 +221,6 @@ data %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>%
   theme_bw() + labs(title = "Number of groups with number of reproduction trials >= n") + xlab("n") + ylab("Number of groups")
 
 
-
-#Tasks:
-#Heterogeneity of outcomes (outcome.nr), possibly in relation with the total number of studies (study name)
-data %>% group_by(file.nr) %>% distinct(outcome.name) %>% count() %>% 
-  filter(n < 50) %>% 
-  full_join( data %>% group_by(file.nr) %>% distinct(outcome.name) %>% count %>% 
-               filter(n > 49) %>% mutate(n = 50)) %>% 
-  ggplot(aes(x = n)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 50) +
-  theme_bw() + labs(title = "Histogram of Research Subjects per Review") + xlab("Research subject number per review")
-
-
-#Frequencies of outcomes used
-data %>% group_by(outcome.measure) %>% 
-  count %>% arrange(desc(n))
-
-#Entries per review
-data %>% group_by(file.nr) %>% count
-
-data %>% group_by(file.nr) %>% count %>%  ggplot(aes(x = n)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
-  theme_bw() + labs(title = "Entries per Review")
-
 #Frequencies of unique combinations of review, compared research subject and outcome measure 
 # -> Frequencies of trials analyzing the same subject in a review (with the same outcome)
 data %>% group_by(file.nr, outcome.nr, comparison.nr) %>% count %>% group_by(n) %>% count 
@@ -299,14 +278,13 @@ data %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>%
   ggplot(aes(x = scaled.time, y = abs.scaled.effect)) + geom_point(size = .005, alpha = 0.15) + geom_smooth()
 
 #Pvalues over time
-temp.pval <- data %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>%
+temp.pval <- data.ext %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>%
   distinct(study.year, .keep_all = T) %>% 
-  mutate(counts = n()) %>% filter(counts > 1) %>% mutate(time.rank = rank(study.year)) %>% 
-  mutate(pval = 2*(1-pnorm(abs(fishersz), mean = 0, sd = sqrt(variance))))  
+  mutate(counts = n()) %>% filter(counts > 1) %>% mutate(time.rank = rank(study.year))
 
-temp.pval %>% filter(time.rank < 10) %>% ggplot(aes(x = time.rank, y = pval)) + 
+temp.pval %>% filter(time.rank < 10) %>% ggplot(aes(x = time.rank, y = pval.type)) + 
   geom_jitter(col = "gray15", size = 0.3, alpha = .25) + 
-  theme_bw() + xlab("Time rank") + ylab("P-value") + labs(title = "P-values over (ranked) Time")
+  theme_bw() + xlab("Time rank") + ylab("P-value") + labs(title = "P-values over (ranked) Time") +geom_smooth(method = "lm")
 ########################################################################################################################################
 ########################################################################################################################################
 # Cumulative number of total trials with
@@ -435,3 +413,13 @@ metabias(meta.ds, method = "peters")$statistic
 cp <- copas(meta.ds)
 limitmeta(meta.ds)
 
+
+
+# #Tasks:
+# #Heterogeneity of outcomes (outcome.nr), possibly in relation with the total number of studies (study name)
+# data %>% group_by(file.nr) %>% distinct(outcome.name) %>% count() %>% 
+# 	filter(n < 50) %>% 
+# 	full_join( data %>% group_by(file.nr) %>% distinct(outcome.name) %>% count %>% 
+# 						 	filter(n > 49) %>% mutate(n = 50)) %>% 
+# 	ggplot(aes(x = n)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 50) +
+# 	theme_bw() + labs(title = "Histogram of Research Subjects per Review") + xlab("Research subject number per review")

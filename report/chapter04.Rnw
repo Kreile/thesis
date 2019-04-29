@@ -80,6 +80,8 @@ p &= 2(1 - \Phi(|{Z}|) \label{p.value.calculation}
 \end{align}
 
 \section{Small Study Effects Tests}
+One crucial assumption in meta analysis is that the availability and publication of studies does not depend on their effect and the variance of the effect. If this is not given, one often speaks of publication bias. In fact, there can also be other reasons for this (see discussion section). A more appropriate term for the phenomenon is small study effect. If small study effects are present in a meta-analysis, the classical approaches to merge single study results in to an overall intervention effect fails to provide an appropriate estimate of the treatment effect. 
+
 \subsection{Continuous Outcome Tests}
 % Essentially, there are two kinds of tests for reporting bias, non-parametrical or rank-based tests or regression based tests. 
 % First, tests for continuous outcome studies are described, and special modifications of those for binary outcomes will be introduced later.
