@@ -32,7 +32,8 @@
 \contentsline {subsection}{\numberline {4.5.1}Trim and Fill}{23}{subsection.4.5.1}
 \contentsline {subsection}{\numberline {4.5.2}Copas Selection Model}{23}{subsection.4.5.2}
 \contentsline {subsection}{\numberline {4.5.3}Adjustment by Regression}{25}{subsection.4.5.3}
-\contentsline {chapter}{\numberline {5}Conclusions}{27}{chapter.5}
+\contentsline {chapter}{\numberline {5}Discussion}{27}{chapter.5}
+\contentsline {section}{\numberline {5.1}Meta-analyses}{27}{section.5.1}
 \contentsline {chapter}{\numberline {A}Appendix}{29}{appendix.A}
 \vspace *{10mm}
 \contentsline {chapter}{\bfseries Bibliography}{31}{section*.35}

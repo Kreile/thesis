@@ -27,7 +27,7 @@
 %% Start with slides here: put them between `\begin{frame}` and `\end{frame}`
 
 
-<<echo=FALSE, warning = FALSE, warnings = FALSE, message = FALSE>>= 
+<<echo=FALSE, warning = FALSE, warnings = FALSE, message = FALSE, cache = FALSE>>= 
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
 PATH2 = file.path(PATH_HOME, 'PubBias')
@@ -112,6 +112,9 @@ require(metasens)
 require(gridExtra)
 require(xtable)
 
+data.ext <- data.ext %>% mutate(study.year = ifelse(study.year < 2019, study.year, NA)) %>% 
+    mutate(study.year = ifelse(study.year > 1920, study.year, NA))
+
 ###################################################################################################################
 ###################################################################################################################
 
@@ -123,36 +126,42 @@ barbi1 <- arrange(filter(data, file.nr == 21) %>%
 barbi1 <- barbi1 %>% mutate(Comparison = "Barbiturate vs ..", Outcome = "Death at ..")
 
 barbi2 <- arrange(filter(data, file.nr == 21) %>%
-          select(Study = study.name, Comparison = comparison.name,Outcome = outcome.name), Study) %>% group_by(Comparison) %>% distinct(Outcome, .keep_all = T)
+          select(Study = study.name, Comparison = comparison.name,Outcome = outcome.name,
+                 Events = events1, Total = total1, Events_c = events2, Total_c = total2), Study) %>% group_by(Comparison) %>% distinct(Outcome, .keep_all = T)
 barbi2[barbi2$Study == "P\303\251rez-B\303\241rcena 2008", 1] = "Perez-Barcena 2008"
-# 
-# #Missing values
-# cont.out <- data %>% filter(outcome.measure.new == "Mean Difference" | outcome.measure.new == "Std. Mean Difference" | 
-#                                  outcome.measure.new == "Hedges' G") 
-# 
-# missing.mean <- which(is.na(cont.out$mean1) | is.na(cont.out$mean2))
-# missing.effect <- which(is.na(cont.out$effect))
-# missing.means <- intersect(missing.mean, missing.effect) #Cont. results that have neither complete means nor an effect
-# wrong.effect <- which(cont.out$mean1 == 0 & cont.out$mean2 == 0 & cont.out$effect == 0) #Cont.results that have only zeros
-# missing.effects <- length(c(missing.means, wrong.effect))
-# 
-# missing.sd <- which(is.na(cont.out$sd1) | is.na(cont.out$sd2))
-# missing.se <- which(is.na(cont.out$se))
-# missing.sds <- intersect(missing.se, missing.sd) #Cont. results that have neither complete means nor an effect
-# wrong.sds <- which(cont.out$sd1 == 0 & cont.out$sd2 == 0 & cont.out$se == 0) #Cont.results that have only zeros
-# missing.sds <- length(c(missing.sds, wrong.sds))
-# 
-# missing.ss <- which(is.na(data$total1) | is.na(data$total2))
-# wrong.ss <- which(data$total1 <= 0 | data$total2 <= 0)
-# missing.ssize <- length(c(missing.ss, wrong.ss))
-# 
-# missing.year <- sum(is.na(data$study.year)) + length(c(which(data$study.year < 1920), which(data$study.year > 2019)))
-# 
-# missing.table <- rbind("Missing mean values and mean differences" = missing.effects,
-#                          "Missing standard deviations and standard errors" = missing.sds,
-#                          "Missing sample sizes" = missing.ssize,
-#                          "Missing study year" = missing.year)
-# 
+
+barbi2$Comparison <- strtrim(barbi2$Comparison, 19)
+barbi2$Outcome <- strtrim(barbi2$Outcome, 19)
+
+#Missing values
+cont.out <- data %>% filter(outcome.measure.new == "Mean Difference" | outcome.measure.new == "Std. Mean Difference" |
+                                 outcome.measure.new == "Hedges' G")
+
+missing.mean <- which(is.na(cont.out$mean1) | is.na(cont.out$mean2))
+missing.effect <- which(is.na(cont.out$effect))
+missing.means <- intersect(missing.mean, missing.effect) #Cont. results that have neither complete means nor an effect
+wrong.effect <- which(cont.out$mean1 == 0 & cont.out$mean2 == 0 & cont.out$effect == 0) #Cont.results that have only zeros
+missing.effects <- length(c(missing.means, wrong.effect))
+
+missing.sd <- which(is.na(cont.out$sd1) | is.na(cont.out$sd2))
+missing.se <- which(is.na(cont.out$se))
+missing.sds <- intersect(missing.se, missing.sd) #Cont. results that have neither complete means nor an effect
+wrong.sds <- which(cont.out$sd1 == 0 & cont.out$sd2 == 0 & cont.out$se == 0) #Cont.results that have only zeros
+missing.sds <- length(c(missing.sds, wrong.sds))
+
+missing.ss <- which(is.na(data$total1) | is.na(data$total2))
+wrong.ss <- which(data$total1 <= 0 | data$total2 <= 0)
+missing.ssize <- length(c(missing.ss, wrong.ss))
+
+missing.year <- sum(is.na(data$study.year)) + length(c(which(data$study.year < 1920), which(data$study.year > 2019)))
+
+missing.table <- rbind("Missing mean values and mean differences" = missing.effects,
+                         "Missing standard deviations and standard errors" = missing.sds,
+                         "Missing sample sizes" = missing.ssize,
+                         "Missing study year" = missing.year)
+
+
+# ????????
 # #Mean and median number of different outcome types of reviews
 # mean.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>%
 #   ungroup() %>% group_by(file.nr) %>%
@@ -162,59 +171,49 @@ barbi2[barbi2$Study == "P\303\251rez-B\303\241rcena 2008", 1] = "Perez-Barcena 2
 #   ungroup() %>% group_by(file.nr) %>%
 #   count() %>% ungroup %>% summarise(mean = median(n))
 # 
-# #Study.year quantiles:
-# data.ext <- data.ext %>% mutate(study.year = ifelse(study.year > 1920, study.year, NA))
-# publication.year.range <- c(quantile(data.ext$study.year, 0.05, na.rm = T), quantile(data.ext$study.year, 0.25, na.rm = T), 
-#                             quantile(data.ext$study.year, 0.5, na.rm = T), quantile(data.ext$study.year, 0.75, na.rm = T),
-#                             round(mean(data.ext$study.year, na.rm = T), 2))
-# 
 # #Outcome.measure frequency table:
 # outcome.measure.frequencies <- rbind(data %>% group_by(outcome.measure.new) %>% count() %>% 
 #                                        arrange(desc(n)) %>% ungroup() %>% filter(row_number() < 9),
 #                                      data %>% group_by(outcome.measure.new) %>% count() %>% arrange(desc(n)) %>% 
 #                                        ungroup() %>% filter(row_number() > 8) %>% 
 #                                        summarise(outcome.measure.new = "other", n = sum(n)))
-# 
-# outcome.measure.frequencies <- outcome.measure.frequencies %>% mutate(percentage = round(n/sum(n),3)*100)
-# names(outcome.measure.frequencies) <- c("Outcome measure", "n", "Percentage")
-# outcome.measure.frequencies$Percentage <- paste(outcome.measure.frequencies$Percentage, "%", sep = "")
-# 
-# #Total and group size quantiles:
-# data.ext <- data.ext %>% ungroup() %>%  mutate(total.n = total1 + total2)
-# samplesize.range <- c(quantile(data.ext$total.n, 0.05, na.rm = T), quantile(data.ext$total.n, 0.25, na.rm = T), 
-#                             quantile(data.ext$total.n, 0.5, na.rm = T), quantile(data.ext$total.n, 0.75, na.rm = T),
-#                             round(mean(data.ext$total.n, na.rm = T), 2))
-# treatment.group.size.range <- c(quantile(data.ext$total1, 0.05, na.rm = T), quantile(data.ext$total1, 0.25, na.rm = T), 
-#                       quantile(data.ext$total1, 0.5, na.rm = T), quantile(data.ext$total1, 0.75, na.rm = T),
-#                       round(mean(data.ext$total1, na.rm = T), 2))
-# 
-# #Frequencies of results:
-# comp.freq <- data %>% group_by(file.nr) %>% summarise(n = n())
-# comp.range <- c(length(which(comp.freq$n < 6)), quantile(comp.freq$n, 0.25, na.rm = T), 
-#                       quantile(comp.freq$n, 0.5, na.rm = T), quantile(comp.freq$n, 0.75, na.rm = T),
-#                       round(mean(comp.freq$n, na.rm = T), 2))
-# 
-# #Frequencies of studies:
-# study.freq <- data %>% group_by(file.nr) %>% distinct(study.name) %>% count()
-# study.range <- c(length(which(study.freq$n < 3)), quantile(study.freq$n, 0.25, na.rm = T), 
-#                       quantile(study.freq$n, 0.5, na.rm = T), quantile(study.freq$n, 0.75, na.rm = T),
-#                       round(mean(study.freq$n, na.rm = T), 2))
-# 
-# #Pooling studies
-# cum.repr.trials.subg <- data %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
+
+#Review level
+study.rev <- data %>% group_by(file.nr) %>% distinct(study.name) %>% count() %>% ungroup() %>% 
+	summarise(lower = quantile(n, 0.05), median = quantile(n, 0.5), mean = mean(n), upper = quantile(n, 0.95))
+comparison.rev <- data %>% group_by(file.nr) %>% distinct(comparison.name) %>% count() %>% ungroup() %>% 
+	summarise(lower = quantile(n, 0.05), median = quantile(n, 0.5), mean = mean(n), upper = quantile(n, 0.95))
+meta.rev <- data.ext %>% group_by(file.nr) %>% distinct(meta.id) %>% count() %>% ungroup() %>% 
+	summarise(lower = quantile(n, 0.05), median = quantile(n, 0.5), mean = mean(n), upper = quantile(n, 0.95))
+
+#Global level
+study.years <- data.ext %>% group_by(file.nr) %>% distinct(study.name, .keep_all = T) %>% ungroup() %>% 
+	summarise(lower = quantile(study.year, 0.05, na.rm = T), median = quantile(study.year, 0.5, na.rm = T),
+						mean = mean(study.year, na.rm = T), upper = quantile(study.year, 0.95, na.rm = T))
+sample.size <- data.ext %>% group_by(file.nr) %>% distinct(study.name, .keep_all = T) %>% ungroup() %>% 
+	mutate(samplesize = total1 + total2) %>% 
+	summarise(lower = quantile(samplesize, 0.05, na.rm = T), median = quantile(samplesize, 0.5, na.rm = T),
+						mean = mean(samplesize, na.rm = T), upper = quantile(samplesize, 0.95, na.rm = T))
+
+dataset.properties <- rbind(study.rev, comparison.rev, meta.rev, study.years, sample.size)
+rownames(dataset.properties) <- c("Study number", "Comparison number", "Group number", "Study years", "Study sample size")
+colnames(dataset.properties) <- c("5% quantile", "median", "mean", "95% quantile")
+
+#Pooling studies
+cum.repr.trials.subg <- data %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
+  filter(n < 10) %>%
+  full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+               filter(n > 9) %>% ungroup %>% summarise(n = 10, nn = sum(nn))) %>%
+  ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
+# cum.repr.trials.nosub <- data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
 #   filter(n < 15) %>%
 #   full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
-#                filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>% 
+#                filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>%
 #   ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
-# # cum.repr.trials.nosub <- data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
-# #   filter(n < 15) %>%
-# #   full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
-# #                filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>% 
-# #   ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
-# 
-# # cum.repr.trials <- cbind(cum.repr.trials.nosub, cum.repr.trials.subg)[,c(1,3,6)]
-# 
-# colnames(cum.repr.trials.subg)  <- c("n","Number of groups", "Cumulative sum of groups")
+
+# cum.repr.trials <- cbind(cum.repr.trials.nosub, cum.repr.trials.subg)[,c(1,3,6)]
+
+colnames(cum.repr.trials.subg)  <- c("n","Number of groups", "Cumulative sum of groups")
 
 
 ###################################################################################################################
@@ -263,212 +262,21 @@ p.cont <- meta.cont %>% ungroup() %>%
 
 #Significance change after adjustment plot:
 change.fixef <- meta %>% ungroup() %>% select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-  gather(key = "correction.method", value = "sig.change") %>% group_by(sig.change, correction.method) %>% count()
+  gather(key = "correction.method", value = "sig.change") %>% 
+	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
+	group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
+	mutate(n = n/sum(n))
 
 p.fixef.change <- meta %>% ungroup() %>% 
   select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
   gather(key = "correction.method", value = "sig.change") %>%  
-  mutate(sig.change = factor(sig.change)) %>% 
+  mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
-  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged.nonsig", "change.to.nonsig", "unchanged.sig", "change.to.sig")) +
+  theme_bw() + xlab(label = NULL) + guides(fill=guide_legend(title=NULL)) +
+	scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
   annotate("text", x = change.fixef[change.fixef$sig.change == 3,]$correction.method, y = 1500, 
-         label = paste(change.fixef[change.fixef$sig.change == 3,]$n, "changed to nonsig."), 
+         label = paste(round(change.fixef[change.fixef$sig.change == 3,]$n*100,2), "% changed to nonsig."), 
          color = "white")
-
-# Significance after correction plots, separated for meta-analyses with significant publication bias test.
-change.fixef.bias <- meta %>% 
-  select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-  gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
-  filter(thomson.test == 1) %>% group_by(sig.change, correction.method) %>% count()
-
-p.change.fixef.bias <- meta %>% 
-  select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-  gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
-  filter(thomson.test == 0) %>% 
-	mutate(sig.change = factor(sig.change)) %>% 
-  ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
-  ggtitle("Meta analysis with non-significant small study effect (peters")+ 
-  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged.nonsig", "change.to.sig", "unchanged.sig", "change.to.nonsig")) +
-  annotate("text", x = change.fixef.bias[change.fixef.bias$sig.change == 3,]$correction.method, y = 100, 
-           label = paste(change.fixef.bias[change.fixef.bias$sig.change == 3,]$n, "changed to nonsig."), 
-           color = "white")
-
-change.fixef.unbias <- meta %>% 
-  select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-  gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
-  filter(thomson.test == 0) %>% group_by(sig.change, correction.method) %>% count()
-
-p.change.fixef.unbias <- meta %>% 
-  select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-  gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
-  filter(thomson.test == 1) %>% 
-	mutate(sig.change = factor(sig.change)) %>% 
-  ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
-  ggtitle("Meta analysis with significant small study effect (peters")+ 
-  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged.nonsig", "change.to.sig", "unchanged.sig", "change.to.nonsig")) +
-  annotate("text", x = change.fixef.bias[change.fixef.bias$sig.change == 3,]$correction.method, y = 900, 
-           label = paste(change.fixef.bias[change.fixef.bias$sig.change == 3,]$n, "changed to nonsig."), 
-           color = "white")
-
-#Publication bias over time and for different sample size:
-pbias.time <- meta %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
-  ggplot(aes(x = mean.publication.year, fill = factor(thomson.test), stat(count))) + geom_density(na.rm = T, position = "fill") + 
-  guides(fill=guide_legend(title=NULL)) + theme(legend.position = "top") + xlab(label = NULL) +
-	scale_fill_discrete(labels= c("Significant", "Not significant"))
-
-pbias.ss <- meta %>% filter(n < 40) %>% ggplot(aes(x = n, fill = factor(thomson.test), stat(count))) + 
-  geom_density(position = "fill") + guides(fill=guide_legend(title=NULL)) + xlab(label = NULL) + 
-	theme(legend.position = "top") + 
-	scale_fill_discrete(labels= c("Significant", "Not significant"))
-
-
-#Significance proportion plots (before and after correction):
-significance <- meta %>% ungroup() %>% 
-  select(thomson.test, sig.ranef, sig.fixef, sig.trimfill, sig.reg.ranef, sig.copas) %>% 
-  gather(key = "estimation.method", value = "significance", sig.ranef:sig.copas)  %>% #filter(thomson.test == 1) %>% 
-  group_by(significance, estimation.method) %>% count()
-
-p.significance <- meta %>% ungroup() %>% 
-  select(thomson.test, sig.ranef, sig.fixef, sig.trimfill, sig.reg.ranef, sig.copas) %>% 
-  gather(key = "estimation.method", value = "significance", sig.ranef:sig.copas) %>% #filter(thomson.test == 1) %>% 
-  ggplot(aes(x = estimation.method, fill = factor(significance))) + geom_bar() + coord_flip() + theme(legend.position = "top") +
-	guides(fill=guide_legend(title=NULL)) + 
-  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("Significant", "Non-significant"))+
-  annotate("text", x = significance[significance$significance == 1,]$estimation.method, y = 1500, 
-           label = paste(significance[significance$significance == 1,]$n, "significant"), 
-           color = "white")
-
-significance <- meta %>% ungroup() %>% 
-  select(thomson.test, sig.ranef, sig.fixef, sig.trimfill, sig.reg.ranef, sig.copas) %>% 
-  gather(key = "estimation.method", value = "significance", sig.ranef:sig.copas) %>% filter(thomson.test == 1) %>% 
-  group_by(significance, estimation.method) %>% count()
-
-p.significance.bias <- meta %>% ungroup() %>% 
-  select(thomson.test, sig.ranef, sig.fixef, sig.trimfill, sig.reg.ranef, sig.copas) %>% 
-  gather(key = "estimation.method", value = "significance", sig.ranef:sig.copas) %>% filter(thomson.test == 1) %>% 
-  ggplot(aes(x = estimation.method, fill = factor(significance))) + geom_bar() + coord_flip() + theme(legend.position = "top") +
-	guides(fill=guide_legend(title=NULL)) + xlab(label = NULL) + scale_fill_discrete(labels= c("Significant", "Non-significant")) +
-	ggtitle("Meta analysis with significant small study effect") +
-  annotate("text", x = significance[significance$significance == 1,]$estimation.method, y = 250, 
-           label = paste(significance[significance$significance == 1,]$n, "significant"), 
-           color = "white")
-
-significance <- meta %>% ungroup() %>% 
-  select(thomson.test, sig.ranef, sig.fixef, sig.trimfill, sig.reg.ranef, sig.copas) %>% 
-  gather(key = "estimation.method", value = "significance", sig.ranef:sig.copas) %>% filter(thomson.test == 0) %>% 
-  group_by(significance, estimation.method) %>% count()
-
-p.significance.unbias <- meta %>% ungroup() %>% 
-  select(thomson.test, sig.ranef, sig.fixef, sig.trimfill, sig.reg.ranef, sig.copas) %>% 
-  gather(key = "estimation.method", value = "significance", sig.ranef:sig.copas) %>% filter(thomson.test == 0) %>% 
-  ggplot(aes(x = estimation.method, fill = factor(significance))) + geom_bar() + coord_flip() + theme(legend.position = "top") +
-	guides(fill=guide_legend(title=NULL)) + 
-  xlab(label = NULL) + scale_fill_discrete(labels= c("Significant", "Non-significant")) +
-	ggtitle("Meta analysis with non-significant small study effect") + 
-  annotate("text", x = significance[significance$significance == 1,]$estimation.method, y = 1500, 
-           label = paste(significance[significance$significance == 1,]$n, "significant"), 
-           color = "white")
-
-#Significance after adjustment separated by significant publication bias tests
-change.fixef.bias <- meta %>% 
-  select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-  gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
-  filter(thomson.test == 1) %>% group_by(sig.change, correction.method) %>% count()
-
-
-p.change.fixef.bias <- meta %>% 
-  select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-  gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
-  filter(thomson.test == 1) %>% mutate(sig.change = factor(sig.change)) %>% 
-  ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
-  ggtitle("Meta analysis with significant small study effect")+ 
-  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged.nonsig", "change.to.sig", "unchanged.sig", "change.to.nonsig")) +
-  annotate("text", x = change.fixef.bias[change.fixef.bias$sig.change == 3,]$correction.method, y = 100, 
-           label = paste(change.fixef.bias[change.fixef.bias$sig.change == 3,]$n, "changed to nonsig."), 
-           color = "white")
-
-change.fixef.unbias <- meta %>% 
-  select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-  gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
-  filter(thomson.test == 0) %>% group_by(sig.change, correction.method) %>% count()
-
-
-p.change.fixef.unbias <- meta %>% 
-  select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-  gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
-  filter(thomson.test == 0) %>%   mutate(sig.change = factor(sig.change)) %>% 
-  ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
-  ggtitle("Meta analysis with non-significant small study effect")+ 
-  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged.nonsig", "change.to.sig", "unchanged.sig", "change.to.nonsig")) +
-  annotate("text", x = change.fixef.bias[change.fixef.bias$sig.change == 3,]$correction.method, y = 900, 
-           label = paste(change.fixef.bias[change.fixef.bias$sig.change == 3,]$n, "changed to nonsig."), 
-           color = "white")
-
-###################################################################################################################
-###################################################################################################################
-# Results
-###################################################################################################################
-###################################################################################################################
-
-#Merge comparisons with meta-analysis result:
-mly.tomerge <- mly %>% select(meta.id, sig.Q, n.sig.type, n.sig.fishersz, sig.fixef, sig.ranef, sig.ranef.hkn)
-
-data.mly <- merge(x = data.ext, y = mly.tomerge, by = c("meta.id")) #ideally, 278626 comparisons ( = sum(mly$n)), 
-# but 300831 (18261 have smaller sample size than mly, but same meta.id)
-
-data.mly <- data.mly %>% filter(total1 > 11 & total2 > 11) #Now 282550
-
-                   
-
-sig.meta.c <- data.mly %>% select(sig.type, sig.fixef, sig.ranef, sig.ranef.hkn) %>% 
-  gather(key = "meta.analysis.method", value = "sig.meta.analysis") %>% mutate(sig.meta.analysis = factor(sig.meta.analysis))
-
-sig.meta.count.c <- sig.meta.c %>% 
-  group_by(sig.meta.analysis, meta.analysis.method) %>% count()
-
-sig.meta.c <- sig.meta.c %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
-  geom_bar() + coord_flip() +
-  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("meta.nonsig", "meta.sig")) +
-  annotate("text", x = sig.meta.count.c[sig.meta.count.c$sig.meta.analysis == 0,]$meta.analysis.method, y = 100000, 
-           label = paste(sig.meta.count.c[sig.meta.count.c$sig.meta.analysis == 0,]$n, "nonsig."), 
-           color = "white")
-
-
-#Change in significance after meta-analysis, separated by significant effect size estimate
-sig.meta <- data.mly %>% 
-  select(meta.id, study.id, sig.fixef, sig.ranef, sig.ranef.hkn) %>% 
-  gather(key = "meta.analysis.method", value = "sig.meta.analysis", sig.fixef:sig.ranef.hkn) %>% mutate(sig.meta.analysis = factor(sig.meta.analysis))
-
-# duplicate.studies <- data.mly %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr, study.name) %>% 
-#   count() %>% filter(n > 1) #Merging is not possible for these since studies bear multiple results, but are not distinguishable and are multiplied while merging.
-
-sig.meta.plot <- merge(y = select(data.ext, meta.id, study.id, sig.type), 
-                       x = sig.meta, by = c("meta.id", "study.id")) %>% 
-  mutate(sig.type = factor(sig.type))
-
-sig.meta.count <- sig.meta.plot %>% 
-  group_by(sig.meta.analysis, meta.analysis.method, sig.type) %>% count()
-
-sig.meta.plot1 <- sig.meta.plot %>% filter(sig.type == 1) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
-  geom_bar() + coord_flip() + ggtitle("Significant results") + theme(legend.position = "top") +
-	guides(fill=guide_legend(title=NULL)) + 
-  xlab(label = NULL) + scale_fill_discrete(labels= c("Significant", "Non-significant")) +
-  annotate("text", x = sig.meta.count[which(sig.meta.count$sig.type == 1)[1:3],]$meta.analysis.method, y = 30000, 
-           label = paste(sig.meta.count[which(sig.meta.count$sig.type == 1)[1:3],]$n, "changed to nonsig."), 
-           color = "white")
-
-nonsig.meta.plot <- sig.meta.plot %>% filter(sig.type == 0) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
-  geom_bar() + coord_flip() + ggtitle("Non-significant results") + theme(legend.position = "top") +
-	guides(fill=guide_legend(title=NULL)) + 
-  xlab(label = NULL) + scale_fill_discrete(labels= c("Significant", "Non-significant")) +
-  annotate("text", x = sig.meta.count[which(sig.meta.count$sig.type == 0)[4:6],]$meta.analysis.method, y = 100000, 
-           label = paste(sig.meta.count[which(sig.meta.count$sig.type == 0)[4:6],]$n, "changed to sig."), 
-           color = "white")
-
-
-p.secondary.over.meansig <- mly %>% filter(NA.sig.type != 0) %>% ggplot(aes(x = mean.sig.type, fill = factor(sig.ranef), stat(count))) + 
-  geom_density(na.rm = T, position = "fill") + 
-  labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
 
 @
 
@@ -476,32 +284,32 @@ p.secondary.over.meansig <- mly %>% filter(NA.sig.type != 0) %>% ggplot(aes(x = 
 \begin{frame}{Cochrane Library}
 Database of high-quality, systematic reviews in clinical science.
 
-Currently $\sim$ 8,000 reviews, prepared by independet groups. 
+Currently $\sim$ 8,000 reviews, prepared by independent groups. 
 
 Reviews are peer-reviewed and prepared after guidelines.
 \end{frame}
 
 
 \begin{frame}{Cochrane Library Dataset}
-\Sexpr{length(unique(data$file.nr))} systematic reviews with studies published until 2018.
+\Sexpr{format(length(unique(data$file.nr)), big.mark=",")} systematic reviews with studies published until 2018.
 
-\Sexpr{length(unique(data$study.name))} studies.
+\Sexpr{format(length(unique(data$study.name)), big.mark=",")} studies.
 
-\Sexpr{dim(data)[1]} study results.
+\Sexpr{format(dim(data)[1], big.mark=",")} study results.
 \end{frame}
 
 
-\begin{frame}{Dataset structure}
+\begin{frame}{Dataset Structure}
 
 \begin{figure}
 \tikzstyle{every node}=[draw=black,thick,anchor=west,scale=.65]
 \tikzstyle{selected}=[draw=red,fill=red!30]
 \tikzstyle{optional}=[dashed,fill=gray!50]
 \begin{tikzpicture}
-[grow = right, anchor = west, 
+[grow = right, anchor = west,
   growth parent anchor=east, % added code
   parent anchor=east, level distance=.5cm,
-  sibling distance=2em, level 1/.style={sibling distance=2em}, level 2/.style={sibling distance=2em}, 
+  sibling distance=2em, level 1/.style={sibling distance=2em}, level 2/.style={sibling distance=2em},
   level 3/.style={sibling distance=2em}, level 4/.style={sibling distance=1.2em}]
   \node {Review} [edge from parent fork right]
     child { node {Comparison 2}
@@ -514,7 +322,7 @@ Reviews are peer-reviewed and prepared after guidelines.
           child  { node {Result 1}}
           }}
     }
-    child [missing] {}		
+    child [missing] {}
     child { node {Comparison 1  }};
 \end{tikzpicture}
 %\caption{Structure of a hypothetical review with two different comparisons\label{review.structure}}
@@ -523,49 +331,102 @@ Reviews are peer-reviewed and prepared after guidelines.
 
 \end{frame}
 
-\begin{frame}{Review Example}
+
+\begin{frame}{Dataset Structure}
+\begin{itemize}
+\item Comparison: What is compared, e.g. treatment vs. control
+\item Outcome: How it is compared
+\item Subgroup: Subgroup affiliation
+\item Meta-Analysis Group: Results from same comparison, outcome and subgroup
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Review Example: binary outcome}
+Barbiturate efficacy in head injury
 \vspace{-5mm}
 <<echo = FALSE, results = 'asis'>>=
-print(xtable(barbi2, label = "barbiturates"), include.rownames = F, size = "tiny")
+print(xtable(barbi2, label = "barbiturates", digits = 0), include.rownames = F, size = "tiny")
 @
 
-\vspace{-6mm}
-<<echo = FALSE, results = 'asis'>>=
-print(xtable(barbi1, label = "barbiturate.row", digits = 0), 
-      include.rownames = F, size = "tiny")
+% \vspace{-6mm}
+% echo = FALSE, results = 'asis'>>=
+% print(xtable(barbi1, label = "barbiturate.row", digits = 0),
+%       include.rownames = F, size = "tiny")
+% @
+
+\end{frame}
+
+\begin{frame}{Dataset Properties}
+Missing data:
+<<echo=FALSE, results = 'asis'>>=
+print(xtable(missing.table, align = "lr"), include.rownames = T, include.colnames = F)
 @
 \end{frame}
 
 
-\begin{frame}{Pooling studies - Meta-analysis}
-Possible if results have same outcome, comparison and subgroup.
-
-Evidence synthesis - more reliable results.
-
-Different methods - f.ex. random or fixed effects meta-analysis.
+\begin{frame}{Dataset Properties}
+Review and study properties:
+<<echo=FALSE, results = 'asis'>>=
+print(xtable(dataset.properties, digits = 0, align = "lrrrr"), include.rownames = T, size = "footnotesize", hline = c(0,1,1,4))
+@
 \end{frame}
 
-\begin{frame}{Publication bias}
-Selection of studies with treatment effects.
 
-Stronger selection for smaller studies - small study effect.
+\begin{frame}{Pooling Studies - Meta-Analysis}
+Multiple results in a meta-analysis group can be pooled:
 
-Leads to biased results of meta-analysis.
+<<echo=FALSE, results = 'asis'>>=
+print(xtable(cum.repr.trials.subg, label = "repr.groups", align = "lrrr", digits = 0), include.rownames = F, size = "footnotesize")
+@
+
+
+\end{frame}
+
+\begin{frame}{Meta-analysis}
+Benefits:
+\begin{itemize}
+\item Summary of evidence (e.g. of a treatment)
+\item More reliable evidence (?)
+\end{itemize}
+
+Assumptions:
+\begin{itemize}
+\item Identical study settings (can be relaxed)
+\item Random sample of studies
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Small Study Effects}
+``The tendency for the smaller studies to show larger treatment effects'' \citep{Sterne}
+\end{frame}
+
+\begin{frame}{Small Study Effects}
+Causes:
+\begin{itemize}
+\item Selective publication of studies with large effects
+\item Bias in smaller studies
+\item Systematical differences in study settings
+\item \ldots
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Publication Bias Tests}
 Test for funnel plot asymmetry:
 
-\vspace{-1cm}
-\begin{figure}[fragile]
-<<echo=FALSE, fig.height = 3, fig.width = 4 >>=
+\vspace{-1.7cm}
+\begin{figure}
+<<echo=FALSE, fig.height = 4>>=
+par(las = 1, mfrow = c(1,2))
+
 funnel(meta.example)
+radial(meta.example)
 @
 \end{figure}
 \end{frame}
 
 \begin{frame}{Publication Bias Tests}
-Critical: Number of studies in meta-analysis must be large (>10).
+Critical: Number of studies in meta-analysis must be large ($\geq$ 10).
 
 Various tests for meta-analyses with continuous and binary outcomes:
 
@@ -573,121 +434,45 @@ Regression based: Egger's, Peter's or Thompson and Sharp's test
 
 Rank based: Begg and Mazumdar's Test
 \end{frame}
-
-\begin{frame}{Publication Bias in Cochrane Library}
-Publication bias tests applied for any meta analysis with n > 10
-
-\vspace{-1.7cm}
-\begin{figure}[fragile]
-<<echo=FALSE, fig.height = 3.1, fig.width = 6.5 >>=
-grid.arrange(p.bin, p.cont, ncol = 2)
-@
-\end{figure}
-\end{frame}
-
-\begin{frame}{Publication Bias}
-Publication bias variation for time and sample size
-\begin{figure}
-<<echo=FALSE, fig.height = 3.1, fig.width = 6.5 >>=
-grid.arrange(pbias.time, pbias.ss, ncol = 2)
-# pbias.time
-@
-\end{figure}
-\end{frame}
-
-
-
-\begin{frame}{Publication Bias Adjustment}
-Three approaches:
-
-Trim-and-fill: Non-parametric
-
-Copas: Selection modelling, estimation by sensitivity analysis
-
-Regression: Estimation of a treatment effect with infinite sample size
-\end{frame}
-
-\begin{frame}{Correction of significance}
-% Treatment effect significance change:
-
-%\vspace{-1.2cm}
-\begin{figure}[fragile]
-<<echo=FALSE, fig.height = 2.7, fig.width = 6.5, warning = FALSE>>=
-plot(p.fixef.change)
-@
-\end{figure}
-\end{frame}
-
-\begin{frame}{Corrected Significance for Biased Meta-Analyses}
-% Significance change for meta-analysis with signficant small study effect:
-
-%\vspace{-1.2cm}
-\begin{figure}[fragile]
-<<echo=FALSE, fig.height = 2.7, fig.width = 6.5, warning = FALSE>>=
-plot(p.change.fixef.bias)
-@
-\end{figure}
-
-\end{frame}
+% 
+% \begin{frame}{Publication Bias in the Cochrane Library}
+% Publication bias tests applied for any meta analysis with n > 10
+% 
+% \vspace{-1.7cm}
+% \begin{figure}[fragile]
+% <<echo=FALSE, fig.height = 3.1, fig.width = 6.5 >>=
+% grid.arrange(p.bin, p.cont, ncol = 2)
+% @
+% \end{figure}
+% \end{frame}
+% 
+% \begin{frame}{Publication Bias}
+% 
+% \begin{figure}
+% <<echo=FALSE, fig.height = 3.2, fig.width = 6.5 >>=
+% grid.arrange(pbias.time, pbias.ss, ncol = 2)
+% @
+% \end{figure}
+% \end{frame}
+% 
+% 
+% 
+% \begin{frame}{Publication Bias Adjustment}
+% Three approaches:
+% 
+% Trim-and-fill: Non-parametric
+% 
+% Copas: Selection modelling, estimation by sensitivity analysis
+% 
+% Regression: Estimation of a treatment effect with infinite sample size
+% \end{frame}
 
 
-\begin{frame}{Corrected Significance for Unbiased Meta-Analyses}
-% Significance change for meta-analysis with non-signficant small study effect:
-
-%\vspace{-1.2cm}
-\begin{figure}[fragile]
-<<echo=FALSE, fig.height = 2.7, fig.width = 6.5, warning = FALSE>>=
-plot(p.change.fixef.unbias)
-@
-\end{figure}
-
-\end{frame}
 
 
-\begin{frame}{Significance of different Estimates}
-Significance of random, fixed effects and adjusted meta-analyses:
-
-%\vspace{-1.2cm}
-\begin{figure}[fragile]
-<<echo=FALSE, fig.height = 2.7, fig.width = 6.5, warning = FALSE>>=
-plot(p.significance)
-@
-\end{figure}
-
-\end{frame}
 
 
-\begin{frame}{Significance separated for biased and unbiased meta-analyses}
-% Significance of random, fixed effects and adjusted meta-analyses:
 
-%\vspace{-1.7cm}
-\begin{figure}[fragile]
-<<echo=FALSE, fig.height = 3.6, fig.width = 6.7, warning = FALSE>>=
-grid.arrange(p.significance.bias, p.significance.unbias, ncol = 2)
-@
-\end{figure}
-\end{frame}
-
-
-\begin{frame}{Significance after meta-analysis}
-
-%\vspace{-1.7cm}
-\begin{figure}[fragile]
-<<echo=FALSE, fig.height = 3.6, fig.width = 6.7, warning = FALSE>>=
-grid.arrange(sig.meta.plot1, nonsig.meta.plot, ncol = 2)
-@
-\end{figure}
-\end{frame}
-
-\begin{frame}{Significance after meta-analysis}
-
-%pace{-1.7cm}
-\begin{figure}[fragile]
-<<echo=FALSE, fig.height = 2.1, fig.width = 4, warning = FALSE>>=
-plot(p.secondary.over.meansig)
-@
-\end{figure}
-\end{frame}
 
 
 \begin{frame}{References}

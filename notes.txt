@@ -1,90 +1,56 @@
-- Publication Bias publikationen, litterature review
-
-- Publication date  - Publication bias? Weshalb nicht publikations-sample size mit publikations-Jahr vertauschen oder ergänzen? 
+- Publication Bias Publikationen, literature review
 
 Comparisons:
 - Pooled effect size and corrected pooled effect size difference vs. - ? (pbias test, added studies, heterogeneity, ..)
 - Significance of pooled effect sizes and ? (corrected pooled effect size significance, subgroup analysis pooled effect size, ..)
 
-- Crossover trials given in dataset? 
-
-- Meta-analysis with survival outcomes?
-
 - How to deal with sparse data (binary outcomes)? e.g. metabin(incr = "TACC")
 Currently, e(t) = 0 and e(c) = 0 is used as exclusion criteria. If only one is 0,
 incr = 0.5 is used (default in metabin() function)
-
-- How to handle between study heterogeneity? Some tests have been shown to work only well if heterogeneity is present? Automatic discrimination in test use for a more exact assessment of publication bias?
-
-- How to proceed with trim and fill? Has been shown multiple times to be more conservative than other methods
-
-- General approach: How to use dataset - also like a simulation dataset, to exploit properties of tests and methods? Because the properties found very likely will reflect future properties, and there could be some benefit from knowledge of such benefits.
-Also, is restriction to publication bias necessary?
 
 - Use bland altmann plots to compare p-values of pbias tests.
 
 - Replace correlation btw. p-values with Rsquared.
 
-- Ist outcome nr 1 das primary outcome?
-Daten wurden mit Reviews verglichen - outcome.nr 1 ist oft das primary outcome.
-Primary outcome ist outcome.nr 1: file.nr 21, 33, 130
-Primary outcome ist outcome.nr 1: file.nr 4050
-Primary outcome ist outcome.nr 1,2,3,4: file.nr 3465
-Primary outcome ist outcome.nr 1,2, ..~8: file.nr 4450
-Primary outcome ist outcome.nr 1,2, ..9: file.nr 440
-Primary outcome ist outcome.nr 1,2: file.nr 3480, 1040
-aber in file.nr 3480 comparison 5 outcome.nr 1 sind adverse effects.
-
-
-- doi from review to doi from studies to study characteristics
-
 - There is the possibility that a study is once given as odds ratio, once as risk ratio..
-
-- Do a meta analysis part (i.e. analyze all studies with one or more replicas by meta-analysis methods)
-For this, extend the dataset with fishersz correlation and variance, p-values (and more?).
-Then compare significance of single trials with significance of meta analysis 
-
-
-- plot overall fraction of significant trials against fraction of significant meta analyses
 
 - Hartung Knapp is not always conservative compared to fixef (Cochrane MEthods 2016)
 
 - Different validation - face validation
 
-
-
-Present:
-- Significance correction of single trials and meta-analyses.
-
-- Sample size effect on effect size.
-
-
-
-Questions:
-- Discrimination methods using meta-analyses, publication bias tests and correction methods? (F.ex. discriminate by significant heterogeneity or pbias test?)
-
-- Empirical vs. theoretical probability comparison of significance of replication trials.
-Time order? Which predicitve distribution (plug-in, etc. )?
-
-- Fishers z correlation use
-
-- Cumulative meta-analysis plots use?
-
-- Subgroup analysis
+- Subgroup analysis? 
 
 - In general: Expectation of the masters thesis: Explore properties of the results with respect to properties of the dataset? Or also with respect to each other?
 It is clear that the findings of simulation studies etc. can be incorporated into the discussion and can help..
 
-
-cache gitignore
-
-web crawler - data mining:
-
-pb.crawl stichproben.
-primary outcome beschreibung Regelmässigkeiten
+- cache gitignore
 
 - Resultat/introduction/Methoden aufteilen
 
-- Datensatz chapter überarbeiten.
-
 - Look for Cochrane Review Overviews
+
+- OR said to be more sensitive to false positive pbias - read again..
+
+- Extend pb.meta function to peto odds ratios
+
+- Prozentzahlen bei Meta-analysis plots einführen.
+
+- Dissemination bias also used as term for meta-analysis
+
+- Replace z-test p-values of continuous tests with t-test p-values
+
+
+
+
+Questions:
+
+-OR or RR?
+- Meta-analysis with survival outcomes?
+- Discrimination methods using meta-analyses, publication bias tests and correction methods? (F.ex. discriminate by significant heterogeneity or pbias test?) How to handle between study heterogeneity? Some tests have been shown to work only well if heterogeneity is present? Automatic discrimination in test use for a more exact assessment of publication bias?
+
+
+
+
+
+- General approach: How to use dataset - also like a simulation dataset, to exploit properties of tests and methods? Because the properties found very likely will reflect future properties, and there could be some benefit from knowledge of such benefits.
+Also, is restriction to publication bias necessary?

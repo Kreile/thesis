@@ -16,10 +16,73 @@ file_results = "pb.RData"
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
 
-data = pb.readData(path = PATH_DATA, file = FILE)
-tmp = pb.clean(data)
-data = tmp[[1]]
-aliases = tmp[[2]]
+# data = pb.readData(path = PATH_DATA, file = FILE)
+# tmp = pb.clean(data)
+# data = tmp[[1]]
+# aliases = tmp[[2]]
+
+file.dat <- "data.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+  load(file.path(PATH_RESULTS, file.dat))
+} else {
+  data = pb.readData(path = PATH_DATA, file = FILE)
+  tmp = pb.clean(data)
+  data = tmp[[1]]
+  aliases = tmp[[2]]
+  save(data, file =  file.path(PATH_RESULTS, file.dat))
+}
+
+
+file.bin <- "pb.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+  load(file.path(PATH_RESULTS, file.bin))
+} else {
+  meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.05, sm = "OR")
+  save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
+}
+
+file.cont <- "pb.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+  load(file.path(PATH_RESULTS, file.cont))
+} else {
+  meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.05)
+  save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
+}
+
+file.meta <- "meta.RData"
+if (file.exists(file.path(PATH_RESULTS, file.meta))) {
+  load(file.path(PATH_RESULTS, file.meta))
+} else {
+  meta <- pb.meta.merge(meta.bin, meta.cont)
+  save(meta, file =  file.path(PATH_RESULTS, file.meta))
+}
+
+
+file.cont <- "mly.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+  load(file.path(PATH_RESULTS, file.cont))
+} else {
+  data.cont <- mly.cont(data.ext, 0.05, min.study.number = 2)
+  save(data.cont, file =  file.path(PATH_RESULTS, file.cont))
+}
+
+file.bin <- "mly.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+  load(file.path(PATH_RESULTS, file.bin))
+} else {
+  data.bin <- mly.bin(data.ext, 0.05, min.study.number = 2)
+  save(data.bin, file =  file.path(PATH_RESULTS, file.bin))
+}
+
+
+load(file.path(PATH_RESULTS, file = "mly.RData"))
+load(file.path(PATH_RESULTS, file = "data.processed.RData"))
+
+require(biostatUZH)
+require(tidyverse)
+require(meta)
+require(metasens)
+require(gridExtra)
 
 ################################################################################################################
 ################################################################################################################

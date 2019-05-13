@@ -78,43 +78,38 @@
 %% Start with slides here: put them between `\begin{frame}` and `\end{frame}`
 
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in UseMethod("{}mutate\_"{}): no applicable method for 'mutate\_' applied to an object of class "{}function"{}}}\end{kframe}
-\end{knitrout}
 
 
 \begin{frame}{Cochrane Library}
 Database of high-quality, systematic reviews in clinical science.
 
-Currently $\sim$ 8,000 reviews, prepared by independet groups. 
+Currently $\sim$ 8,000 reviews, prepared by independent groups. 
 
 Reviews are peer-reviewed and prepared after guidelines.
 \end{frame}
 
 
 \begin{frame}{Cochrane Library Dataset}
-5016 systematic reviews with studies published until 2018.
+5,016 systematic reviews with studies published until 2018.
 
-52995 studies.
+52,995 studies.
 
-463820 study results.
+463,820 study results.
 \end{frame}
 
 
-\begin{frame}{Dataset structure}
+\begin{frame}{Dataset Structure}
 
 \begin{figure}
 \tikzstyle{every node}=[draw=black,thick,anchor=west,scale=.65]
 \tikzstyle{selected}=[draw=red,fill=red!30]
 \tikzstyle{optional}=[dashed,fill=gray!50]
 \begin{tikzpicture}
-[grow = right, anchor = west, 
+[grow = right, anchor = west,
   growth parent anchor=east, % added code
   parent anchor=east, level distance=.5cm,
-  sibling distance=2em, level 1/.style={sibling distance=2em}, level 2/.style={sibling distance=2em}, 
+  sibling distance=2em, level 1/.style={sibling distance=2em}, level 2/.style={sibling distance=2em},
   level 3/.style={sibling distance=2em}, level 4/.style={sibling distance=1.2em}]
   \node {Review} [edge from parent fork right]
     child { node {Comparison 2}
@@ -127,7 +122,7 @@ Reviews are peer-reviewed and prepared after guidelines.
           child  { node {Result 1}}
           }}
     }
-    child [missing] {}		
+    child [missing] {}
     child { node {Comparison 1  }};
 \end{tikzpicture}
 %\caption{Structure of a hypothetical review with two different comparisons\label{review.structure}}
@@ -136,40 +131,21 @@ Reviews are peer-reviewed and prepared after guidelines.
 
 \end{frame}
 
-\begin{frame}{Review Example}
+
+\begin{frame}{Dataset Structure}
+\begin{itemize}
+\item Comparison: What is compared, e.g. treatment vs. control
+\item Outcome: How it is compared
+\item Subgroup: Subgroup affiliation
+\item Meta-Analysis Group: Results from same comparison, outcome and subgroup
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Review Example: binary outcome}
+Barbiturate efficacy in head injury
 \vspace{-5mm}
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Apr 28 12:26:53 2019
-\begin{table}[ht]
-\centering
-\begingroup\tiny
-\begin{tabular}{lll}
-  \hline
-Study & Comparison & Outcome \\ 
-  \hline
-Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\ 
-  Bohn 1989 & Barbiturate vs no barbiturate & Death or severe disability at the end of follow-up \\ 
-  Eisenberg 1988 & Barbiturate vs no barbiturate & Uncontrolled ICP during treatment \\ 
-  Eisenberg 1988 & Barbiturate vs no barbiturate & Hypotension during treatment \\ 
-  Perez-Barcena 2008 & Pentobarbital vs Thiopental & Death at the end of follow-up (6 months) \\ 
-  Perez-Barcena 2008 & Pentobarbital vs Thiopental & Death or severe disability at the end of follow-up (6 months) \\ 
-  Perez-Barcena 2008 & Pentobarbital vs Thiopental & Uncontrolled ICP during treatment \\ 
-  Perez-Barcena 2008 & Pentobarbital vs Thiopental & Hypotension during treatment \\ 
-  Schwartz 1984 & Barbiturate vs Mannitol & Death at the end of follow-up (1 year) \\ 
-  Schwartz 1984 & Barbiturate vs Mannitol & Uncontrolled ICP during treatment \\ 
-  Ward 1985 & Barbiturate vs no barbiturate & Mean ICP during treatment \\ 
-  Ward 1985 & Barbiturate vs no barbiturate & Mean arterial pressure during treatment \\ 
-  Ward 1985 & Barbiturate vs no barbiturate & Mean body temperature during treatment \\ 
-   \hline
-\end{tabular}
-\endgroup
-\label{barbiturates}
-\end{table}
-
-
-\vspace{-6mm}
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Apr 28 12:26:53 2019
+% Sun May 12 21:11:51 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -177,71 +153,144 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
   \hline
 Study & Comparison & Outcome & Events & Total & Events\_c & Total\_c \\ 
   \hline
-Bohn 1989 & Barbiturate vs .. & Death at .. & 11 & 41 & 11 & 41 \\ 
-  Ward 1985 & Barbiturate vs .. & Death at .. & 14 & 27 & 13 & 26 \\ 
+Bohn 1989 & Barbiturate vs no b & Death at the end of & 11 & 41 & 11 & 41 \\ 
+  Bohn 1989 & Barbiturate vs no b & Death or severe dis & 18 & 41 & 13 & 41 \\ 
+  Eisenberg 1988 & Barbiturate vs no b & Uncontrolled ICP du & 25 & 37 & 30 & 36 \\ 
+  Eisenberg 1988 & Barbiturate vs no b & Hypotension during  & 23 & 37 & 18 & 36 \\ 
+  Perez-Barcena 2008 & Pentobarbital vs Th & Death at the end of & 16 & 21 & 9 & 21 \\ 
+  Perez-Barcena 2008 & Pentobarbital vs Th & Death or severe dis & 17 & 21 & 13 & 21 \\ 
+  Perez-Barcena 2008 & Pentobarbital vs Th & Uncontrolled ICP du & 18 & 22 & 11 & 22 \\ 
+  Perez-Barcena 2008 & Pentobarbital vs Th & Hypotension during  & 20 & 22 & 21 & 22 \\ 
+  Schwartz 1984 & Barbiturate vs Mann & Death at the end of & 6 & 15 & 7 & 14 \\ 
+  Schwartz 1984 & Barbiturate vs Mann & Uncontrolled ICP du & 19 & 28 & 12 & 31 \\ 
+  Ward 1985 & Barbiturate vs no b & Mean ICP during tre & 0 & 27 & 0 & 26 \\ 
+  Ward 1985 & Barbiturate vs no b & Mean arterial press & 0 & 27 & 0 & 26 \\ 
+  Ward 1985 & Barbiturate vs no b & Mean body temperatu & 0 & 27 & 0 & 26 \\ 
    \hline
 \end{tabular}
 \endgroup
-\label{barbiturate.row}
+\label{barbiturates}
+\end{table}
+
+
+% \vspace{-6mm}
+% echo = FALSE, results = 'asis'>>=
+% print(xtable(barbi1, label = "barbiturate.row", digits = 0),
+%       include.rownames = F, size = "tiny")
+% @
+
+\end{frame}
+
+\begin{frame}{Dataset Properties}
+Missing data:
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Sun May 12 21:11:51 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{lr}
+  \hline
+  \hline
+Missing mean values and mean differences & 984 \\ 
+  Missing standard deviations and standard errors & 1300 \\ 
+  Missing sample sizes & 12173 \\ 
+  Missing study year & 44649 \\ 
+   \hline
+\end{tabular}
 \end{table}
 
 \end{frame}
 
 
-\begin{frame}{Pooling studies - Meta-analysis}
-Possible if results have same outcome, comparison and subgroup.
+\begin{frame}{Dataset Properties}
+Review and study properties:
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Sun May 12 21:11:51 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{lrrrr}
+  & 5\% quantile & median & mean & 95\% quantile \\ 
+  \hline
+Study number & 1 & 7 & 12 & 40 \\ 
+   \hline
+\hline
+Comparison number & 1 & 2 & 4 & 12 \\ 
+  Group number & 2 & 19 & 37 & 132 \\ 
+  Study years & 1981 & 2002 & 2000 & 2013 \\ 
+   \hline
+Study sample size & 13 & 78 & 750 & 890 \\ 
+  \end{tabular}
+\endgroup
+\end{table}
 
-Evidence synthesis - more reliable results.
-
-Different methods - f.ex. random or fixed effects meta-analysis.
 \end{frame}
 
-\begin{frame}{Publication bias}
-Selection of studies with treatment effects.
 
-Stronger selection for smaller studies - small study effect.
+\begin{frame}{Pooling Studies - Meta-Analysis}
+Multiple results in a meta-analysis group can be pooled:
 
-Leads to biased results of meta-analysis.
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Sun May 12 21:11:51 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{rrr}
+  \hline
+n & Number of groups & Cumulative sum of groups \\ 
+  \hline
+1 & 102344 & 188079 \\ 
+  2 & 31686 & 85735 \\ 
+  3 & 16072 & 54049 \\ 
+  4 & 9628 & 37977 \\ 
+  5 & 6444 & 28349 \\ 
+  6 & 4230 & 21905 \\ 
+  7 & 2961 & 17675 \\ 
+  8 & 2114 & 14714 \\ 
+  9 & 1592 & 12600 \\ 
+  10 & 11008 & 11008 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\label{repr.groups}
+\end{table}
+
+
+
+\end{frame}
+
+\begin{frame}{Meta-analysis}
+Benefits:
+\begin{itemize}
+\item Summary of evidence (e.g. of a treatment)
+\item More reliable evidence (?)
+\end{itemize}
+
+Assumptions:
+\begin{itemize}
+\item Identical study settings (can be relaxed)
+\item Random sample of studies
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Small Study Effects}
+``The tendency for the smaller studies to show larger treatment effects'' \citep{Sterne}
+\end{frame}
+
+\begin{frame}{Small Study Effects}
+Causes:
+\begin{itemize}
+\item Selective publication of studies with large effects
+\item Bias in smaller studies
+\item Systematical differences in study settings
+\item \ldots
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Publication Bias Tests}
 Test for funnel plot asymmetry:
 
 \vspace{-1cm}
-\begin{figure}[fragile]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-4-1} 
-
-\end{knitrout}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Publication Bias Tests}
-Critical: Number of studies in meta-analysis must be large (>10).
-
-Various tests for meta-analyses with continuous and binary outcomes:
-
-Regression based: Egger's, Peter's or Thompson and Sharp's test
-
-Rank based: Begg and Mazumdar's Test
-\end{frame}
-
-\begin{frame}{Publication Bias in Cochrane Library}
-Publication bias tests applied for any meta analysis with n > 10
-
-\vspace{-1.7cm}
-\begin{figure}[fragile]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-5-1} 
-
-\end{knitrout}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Publication Bias}
-Publication bias variation for time and sample size
 \begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
@@ -251,113 +300,54 @@ Publication bias variation for time and sample size
 \end{figure}
 \end{frame}
 
+\begin{frame}{Publication Bias Tests}
+Critical: Number of studies in meta-analysis must be large ($\geq$ 10).
 
+Various tests for meta-analyses with continuous and binary outcomes:
 
-\begin{frame}{Publication Bias Adjustment}
-Three approaches:
+Regression based: Egger's, Peter's or Thompson and Sharp's test
 
-Trim-and-fill: Non-parametric
-
-Copas: Selection modelling, estimation by sensitivity analysis
-
-Regression: Estimation of a treatment effect with infinite sample size
+Rank based: Begg and Mazumdar's Test
 \end{frame}
-
-\begin{frame}{Correction of significance}
-% Treatment effect significance change:
-
-%\vspace{-1.2cm}
-\begin{figure}[fragile]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} 
-
-\end{knitrout}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Corrected Significance for Biased Meta-Analyses}
-% Significance change for meta-analysis with signficant small study effect:
-
-%\vspace{-1.2cm}
-\begin{figure}[fragile]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-8-1} 
-
-\end{knitrout}
-\end{figure}
-
-\end{frame}
-
-
-\begin{frame}{Corrected Significance for Unbiased Meta-Analyses}
-% Significance change for meta-analysis with non-signficant small study effect:
-
-%\vspace{-1.2cm}
-\begin{figure}[fragile]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-9-1} 
-
-\end{knitrout}
-\end{figure}
-
-\end{frame}
+% 
+% \begin{frame}{Publication Bias in the Cochrane Library}
+% Publication bias tests applied for any meta analysis with n > 10
+% 
+% \vspace{-1.7cm}
+% \begin{figure}[fragile]
+% <<echo=FALSE, fig.height = 3.1, fig.width = 6.5 >>=
+% grid.arrange(p.bin, p.cont, ncol = 2)
+% @
+% \end{figure}
+% \end{frame}
+% 
+% \begin{frame}{Publication Bias}
+% 
+% \begin{figure}
+% <<echo=FALSE, fig.height = 3.2, fig.width = 6.5 >>=
+% grid.arrange(pbias.time, pbias.ss, ncol = 2)
+% @
+% \end{figure}
+% \end{frame}
+% 
+% 
+% 
+% \begin{frame}{Publication Bias Adjustment}
+% Three approaches:
+% 
+% Trim-and-fill: Non-parametric
+% 
+% Copas: Selection modelling, estimation by sensitivity analysis
+% 
+% Regression: Estimation of a treatment effect with infinite sample size
+% \end{frame}
 
 
-\begin{frame}{Significance of different Estimates}
-Significance of random, fixed effects and adjusted meta-analyses:
-
-%\vspace{-1.2cm}
-\begin{figure}[fragile]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
-
-\end{knitrout}
-\end{figure}
-
-\end{frame}
 
 
-\begin{frame}{Significance separated for biased and unbiased meta-analyses}
-% Significance of random, fixed effects and adjusted meta-analyses:
-
-%\vspace{-1.7cm}
-\begin{figure}[fragile]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
-
-\end{knitrout}
-\end{figure}
-\end{frame}
 
 
-\begin{frame}{Significance after meta-analysis}
 
-%\vspace{-1.7cm}
-\begin{figure}[fragile]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-12-1} 
-
-\end{knitrout}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Significance after meta-analysis}
-
-%pace{-1.7cm}
-\begin{figure}[fragile]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-13-1} 
-
-\end{knitrout}
-\end{figure}
-\end{frame}
 
 
 \begin{frame}{References}

@@ -1,0 +1,441 @@
+---
+title: "Treatment Effect Reduction after Adjustment"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+rm(list = ls())
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
+FILE = 'cochrane_2018-06-09.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH2, 'code')
+PATH_RESULTS = file.path(PATH2, 'results')
+PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+
+file_results = "pb.RData"
+
+source(file.path(PATH_CODE, 'PubBias_functions.R'))
+
+
+# data = pb.readData(path = PATH_DATA, file = FILE)
+# tmp = pb.clean(data)
+# data = tmp[[1]]
+# aliases = tmp[[2]]
+
+file.dat <- "data.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+  load(file.path(PATH_RESULTS, file.dat))
+} else {
+  data = pb.readData(path = PATH_DATA, file = FILE)
+  tmp = pb.clean(data)
+  data = tmp[[1]]
+  aliases = tmp[[2]]
+  save(data, file =  file.path(PATH_RESULTS, file.dat))
+}
+
+load(file.path(PATH_RESULTS, file = "mly.RData"))
+load(file.path(PATH_RESULTS, file = "data.processed.RData"))
+
+file.bin <- "pb.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+  load(file.path(PATH_RESULTS, file.bin))
+} else {
+  meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.05)
+  save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
+}
+
+file.cont <- "pb.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+  load(file.path(PATH_RESULTS, file.cont))
+} else {
+  meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.05)
+  save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
+}
+
+file.meta <- "meta.RData"
+if (file.exists(file.path(PATH_RESULTS, file.meta))) {
+  load(file.path(PATH_RESULTS, file.meta))
+} else {
+  meta <- pb.meta.merge(meta.bin, meta.cont)
+  save(meta, file =  file.path(PATH_RESULTS, file.meta))
+}
+
+
+file.cont <- "mly.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+  load(file.path(PATH_RESULTS, file.cont))
+} else {
+  data.cont <- mly.cont(data.ext, 0.05, min.study.number = 2)
+  save(data.cont, file =  file.path(PATH_RESULTS, file.cont))
+}
+
+file.bin <- "mly.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+  load(file.path(PATH_RESULTS, file.bin))
+} else {
+  data.bin <- mly.bin(data.ext, 0.05, min.study.number = 2)
+  save(data.bin, file =  file.path(PATH_RESULTS, file.bin))
+}
+
+
+
+
+require(biostatUZH)
+require(tidyverse)
+require(meta)
+require(metasens)
+require(gridExtra)
+
+metac.bin <- meta.bin %>% filter(n.sig.type.cont > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac.cont <- meta.cont %>% filter(n.sig.type.cont > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+# metac <- meta %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+```
+
+The relative change of treatment effect after adjustment for small study effects is investigated in this document. Three adjustment methods are applied: Trim and fill, copas selection model and the regression model. The estimates of this methods are compared to fixed effects and random effects meta-analysis estimates. 
+
+The relative change of treatment effect after adjustment is defined as: 
+
+$1 - |{\frac{\theta_{C}}{\theta_{M}}}|$ 
+
+were $\theta_{M}$ is the estimate of the meta-analysis and $\theta_{C}$ is the estimate of the adjustment method and $||$ denotes the absolute value. 
+
+The number can be interpreted as the fraction by which the original treatment effect is reduced after adjustment. If the number is positive, the treatment estimate has been reduced by the adjustment method. If the relative change is negative, then the adjusted treatment effect estimate is larger than the estimate of the meta-analysis
+
+##Trim-and-fill
+
+First, the number of treatment effects that are smaller or larger than the treatment effects are counted:
+
+```{r, echo = FALSE, message=FALSE}
+#Summaries:
+metac.bin %>% mutate(xx = 1 - abs(logest.trimfill.fixef.bin/log(est.fixef.bin))) %>% filter(xx > 0) %>% ungroup() %>% 
+  summarise(biased = sum(peter.test), larger.meta.effects = n())
+
+metac.bin %>% mutate(xx = 1 - abs(logest.trimfill.fixef.bin/log(est.fixef.bin))) %>% filter(xx < 0) %>% ungroup() %>% 
+  summarise(biased = sum(peter.test), smaller.meta.effects = n())
+
+metac.bin %>% mutate(xx = 1 - abs(logest.trimfill.fixef.bin/log(est.ranef.bin))) %>% filter(xx < 0) %>% ungroup() %>% 
+  summarise(biased = sum(peter.test), smaller.meta.effects.random = n())
+```
+
+The empirical distribution of relative effect changes are shown in the following plots. Different ranges and different plots are shown for random and fixed effects meta-analysis and continuous and binary outcomes. Additionally, the fraction of meta-analyses with significant peters publication bias test (binary outcomes) and eggers test (continuous outcomes) is color-coded within the histogramms. 
+
+###Binary Outcomes
+
+```{r, echo = FALSE, fig.height=3, message=FALSE}
+metac.bin %>% mutate(xx = 1 - abs(logest.trimfill.fixef.bin/log(est.fixef.bin))) %>% filter(xx > 0) %>% 
+  ggplot(aes(x = xx, fill = factor(peter.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Trimfill")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.trimfill.fixef.bin/log(est.fixef.bin))) %>% filter(xx > -1) %>% 
+  ggplot(aes(x = xx, fill = factor(peter.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Trimfill")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.trimfill.fixef.bin/log(est.ranef.bin))) %>% filter(xx > 0) %>% 
+  ggplot(aes(x = xx, fill = factor(peter.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Trimfill")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.trimfill.fixef.bin/log(est.ranef.bin))) %>% filter(xx > -1) %>% 
+  ggplot(aes(x = xx, fill = factor(peter.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Trimfill")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.trimfill.fixef.bin/log(est.fixef.bin))) %>% 
+  ggplot(aes(x = xx)) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Trimfill")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.trimfill.fixef.bin/log(est.ranef.bin))) %>% 
+  ggplot(aes(x = xx)) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Trimfill")
+```
+
+The absolute values of the treatment effect estimates can be plotted against each other. This is shown, again for different meta-analysis methods.
+
+```{r, echo = FALSE, fig.height=3, message=FALSE}
+metac.bin %>% ggplot(aes(x = abs(log(est.fixef.bin)), y = abs(logest.trimfill.fixef.bin))) + geom_point() + 
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  xlab("Fixed effects estimate") + ylab("Trimfill estimate") + ggtitle("Fixed effects to Trimfill")
+
+metac.bin %>% ggplot(aes(x = abs(log(est.ranef.bin)), y = abs(logest.trimfill.fixef.bin))) + geom_point() + 
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  xlab("Random effects estimate") + ylab("Trimfill estimate") + ggtitle("Random effects to Trimfill")
+
+```
+
+```{r, echo = FALSE, fig.height=3, message=FALSE}
+#Scatterplots of test-statistics:
+metac.bin %>% ggplot(aes(x = zval.fixef.bin, y = logest.trimfill.fixef.bin/se.logest.trimfill.fixef.bin)) + geom_point() +
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  ggtitle("Fixed effects and trimfill test statistics") + ylab("Trimfill statistic") + xlab("Fixed effects statistic")
+
+metac.bin %>% ggplot(aes(x = zval.ranef.bin, y = logest.trimfill.fixef.bin/se.logest.trimfill.fixef.bin)) + geom_point() +
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  ggtitle("Random effects and trimfill test statistics") + ylab("Trimfill statistic") + xlab("Random effects statistic")
+```
+
+
+###Continuous Outcomes
+
+```{r}
+metac.cont %>% mutate(xx = 1 - abs(est.trimfill.fixef.cont/est.fixef.cont)) %>% filter(xx > 0) %>% ungroup() %>% 
+  summarise(biased = sum(egger.test), larger.meta.effects = n())
+
+metac.cont %>% mutate(xx = 1 - abs(est.trimfill.fixef.cont/est.fixef.cont)) %>% filter(xx < 0) %>% ungroup() %>% 
+  summarise(biased = sum(egger.test), smaller.meta.effects = n())
+
+metac.cont %>% mutate(xx = 1 - abs(est.trimfill.fixef.cont/est.ranef.cont)) %>% filter(xx < 0) %>% ungroup() %>% 
+  summarise(biased = sum(egger.test), smaller.meta.effects.random = n())
+```
+
+
+```{r, echo = FALSE, fig.height=3, message=FALSE}
+#Histogramms of changes +- 100%
+metac.cont %>% mutate(xx = 1 - abs(est.trimfill.fixef.cont/est.fixef.cont)) %>% filter(xx > 0) %>% 
+  ggplot(aes(x = xx, fill = factor(egger.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Trimfill")
+
+metac.cont %>% mutate(xx = 1 - abs(est.trimfill.fixef.cont/est.fixef.cont)) %>% filter(xx > -1) %>% 
+  ggplot(aes(x = xx, fill = factor(egger.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Trimfill")
+
+metac.cont %>% mutate(xx = 1 - abs(est.trimfill.fixef.cont/est.ranef.cont)) %>% filter(xx > 0) %>% 
+  ggplot(aes(x = xx, fill = factor(egger.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Trimfill")
+
+metac.cont %>% mutate(xx = 1 - abs(est.trimfill.fixef.cont/est.ranef.cont)) %>% filter(xx > -1) %>% 
+  ggplot(aes(x = xx, fill = factor(egger.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Trimfill")
+
+metac.cont %>% mutate(xx = 1 - abs(est.trimfill.fixef.cont/est.fixef.cont)) %>% 
+  ggplot(aes(x = xx)) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Trimfill")
+
+metac.cont %>% mutate(xx = 1 - abs(est.trimfill.fixef.cont/est.ranef.cont)) %>% 
+  ggplot(aes(x = xx)) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Trimfill")
+```
+
+The absolute values of the treatment effect estimates can be plotted against each other. This is shown, again for different meta-analysis methods.
+
+```{r, echo = FALSE, fig.height=3, message=FALSE}
+#Scatterplots of meta-analysis and corrected estimates
+metac.cont %>% ggplot(aes(x = abs(est.fixef.cont), y = abs(est.trimfill.fixef.cont))) + geom_point() + 
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  xlab("Fixed effects estimate") + ylab("Trimfill estimate") + ggtitle("Fixed effects to Trimfill")
+
+metac.cont %>% ggplot(aes(x = abs(est.ranef.cont), y = abs(est.trimfill.fixef.cont))) + geom_point() + 
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  xlab("Random effects estimate") + ylab("Trimfill estimate") + ggtitle("Random effects to Trimfill")
+
+#Scatterplots of test-statistics:
+meta.cont %>% ggplot(aes(x = abs(zval.fixef.cont), y = abs(est.trimfill.fixef.cont/se.est.trimfill.fixef.cont))) + geom_point() +
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  ggtitle("Fixed effects and trimfill test statistics") + ylab("Trimfill statistic") + xlab("Fixed effects statistic")
+
+meta.cont %>% ggplot(aes(x = abs(zval.ranef.cont), y = abs(est.trimfill.fixef.cont/se.est.trimfill.fixef.cont))) + geom_point() +
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  ggtitle("Random effects and trimfill test statistics") + ylab("Trimfill statistic") + xlab("Random effects statistic")
+```
+
+
+
+##Copas Method
+
+The structure of the example of trim-and-fill is maintained:
+
+###Binary Outcomes:
+```{r, echo = FALSE, fig.height=3, message=FALSE, warning=FALSE}
+#Summaries
+metac.bin %>% mutate(xx = 1 - abs(logest.copas.bin/log(est.fixef.bin))) %>% filter(xx > 0) %>% ungroup() %>% 
+  summarise(biased = sum(peter.test), larger.meta.effects = n())
+
+metac.bin %>% mutate(xx = 1 - abs(logest.copas.bin/log(est.fixef.bin))) %>% filter(xx < 0) %>% ungroup() %>% 
+  summarise(biased = sum(peter.test), smaller.meta.effects = n())
+
+metac.bin %>% mutate(xx = 1 - abs(logest.copas.bin/log(est.ranef.bin))) %>% filter(xx < 0) %>% ungroup() %>% 
+  summarise(biased = sum(peter.test), smaller.meta.effects.random = n())
+
+#Histogramms of changes +- 100%
+metac.bin %>% mutate(xx = 1 - abs(logest.copas.bin/log(est.fixef.bin))) %>% filter(xx > 0) %>% 
+  ggplot(aes(x = xx, fill = factor(peter.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Copas")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.copas.bin/log(est.fixef.bin))) %>% filter(xx > -1) %>% 
+  ggplot(aes(x = xx, fill = factor(peter.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Copas")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.copas.bin/log(est.ranef.bin))) %>% filter(xx > 0) %>% 
+  ggplot(aes(x = xx, fill = factor(peter.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Copas")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.copas.bin/log(est.ranef.bin))) %>% filter(xx > -1) %>% 
+  ggplot(aes(x = xx, fill = factor(peter.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Copas")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.copas.bin/log(est.fixef.bin))) %>% 
+  ggplot(aes(x = xx)) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Copas")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.copas.bin/log(est.ranef.bin))) %>% 
+  ggplot(aes(x = xx)) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Copas")
+
+#Scatterplots of meta-analysis and corrected estimates
+metac.bin %>% ggplot(aes(x = abs(log(est.fixef.bin)), y = abs(logest.copas.bin))) + geom_point() + 
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  xlab("Fixed effects estimate") + ylab("Copas estimate") + ggtitle("Fixed effects to Copas")
+
+metac.bin %>% ggplot(aes(x = abs(log(est.ranef.bin)), y = abs(logest.copas.bin))) + geom_point() + 
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  xlab("Random effects estimate") + ylab("Copas estimate") + ggtitle("Random effects to Copas")
+
+#Scatterplots of test-statistics:
+metac.bin %>% ggplot(aes(x = abs(zval.fixef.bin), y = abs(logest.copas.bin/se.logest.copas.bin))) + geom_point() +
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  ggtitle("Fixed effects and copas test statistics") + ylab("copas statistic") + xlab("Fixed effects statistic")
+
+metac.bin %>% ggplot(aes(x = abs(zval.ranef.bin), y = abs(logest.copas.bin/se.logest.copas.bin))) + geom_point() +
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  ggtitle("Random effects and copas test statistics") + ylab("copas statistic") + xlab("Random effects statistic")
+```
+
+
+###Continuous Outcomes:
+```{r, echo = FALSE, fig.height=3, message=FALSE, warning=FALSE}
+#Summaries:
+metac.cont %>% mutate(xx = 1 - abs(est.copas.cont/est.fixef.cont)) %>% filter(xx > 0) %>% ungroup() %>% 
+  summarise(biased = sum(egger.test), larger.meta.effects = n())
+
+metac.cont %>% mutate(xx = 1 - abs(est.copas.cont/est.fixef.cont)) %>% filter(xx < 0) %>% ungroup() %>% 
+  summarise(biased = sum(egger.test), smaller.meta.effects = n())
+
+metac.cont %>% mutate(xx = 1 - abs(est.copas.cont/est.ranef.cont)) %>% filter(xx < 0) %>% ungroup() %>% 
+  summarise(biased = sum(egger.test), smaller.meta.effects.random = n())
+
+#Histogramms of changes +- 100%
+metac.cont %>% mutate(xx = 1 - abs(est.copas.cont/est.fixef.cont)) %>% filter(xx > 0) %>% 
+  ggplot(aes(x = xx, fill = factor(egger.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to copas")
+
+metac.cont %>% mutate(xx = 1 - abs(est.copas.cont/est.fixef.cont)) %>% filter(xx > -1) %>% 
+  ggplot(aes(x = xx, fill = factor(egger.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to copas")
+
+metac.cont %>% mutate(xx = 1 - abs(est.copas.cont/est.ranef.cont)) %>% filter(xx > 0) %>% 
+  ggplot(aes(x = xx, fill = factor(egger.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to copas")
+
+metac.cont %>% mutate(xx = 1 - abs(est.copas.cont/est.ranef.cont)) %>% filter(xx > -1) %>% 
+  ggplot(aes(x = xx, fill = factor(egger.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to copas")
+
+metac.cont %>% mutate(xx = 1 - abs(est.copas.cont/est.fixef.cont)) %>% 
+  ggplot(aes(x = xx)) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to copas")
+
+metac.cont %>% mutate(xx = 1 - abs(est.copas.cont/est.ranef.cont)) %>% 
+  ggplot(aes(x = xx)) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to copas")
+
+#Scatterplots of meta-analysis and corrected estimates
+metac.cont %>% ggplot(aes(x = abs(est.fixef.cont), y = abs(est.copas.cont))) + geom_point() + 
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  xlab("Fixed effects estimate") + ylab("copas estimate") + ggtitle("Fixed effects to copas")
+
+metac.cont %>% ggplot(aes(x = abs(est.ranef.cont), y = abs(est.copas.cont))) + geom_point() + 
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  xlab("Random effects estimate") + ylab("copas estimate") + ggtitle("Random effects to copas")
+
+#Scatterplots of test-statistics:
+metac.cont %>% ggplot(aes(x = abs(zval.fixef.cont), y = abs(est.copas.cont/se.est.copas.cont))) + geom_point() +
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  ggtitle("Fixed effects and copas test statistics") + ylab("copas statistic") + xlab("Fixed effects statistic")
+
+metac.cont %>% ggplot(aes(x = abs(zval.ranef.cont), y = abs(est.copas.cont/se.est.copas.cont))) + geom_point() +
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  ggtitle("Random effects and copas test statistics") + ylab("copas statistic") + xlab("Random effects statistic")
+```
+
+
+##Regression
+
+###Binary Outcomes:
+```{r, echo = FALSE, fig.height=3, message=FALSE}
+#Summaries
+metac.bin %>% mutate(xx = 1 - abs(logest.reg.ranef.bin/log(est.fixef.bin))) %>% filter(xx > 0) %>% ungroup() %>% 
+  summarise(biased = sum(peter.test), larger.meta.effects = n())
+
+metac.bin %>% mutate(xx = 1 - abs(logest.reg.ranef.bin/log(est.fixef.bin))) %>% filter(xx < 0) %>% ungroup() %>% 
+  summarise(biased = sum(peter.test), smaller.meta.effects = n())
+
+metac.bin %>% mutate(xx = 1 - abs(logest.reg.ranef.bin/log(est.ranef.bin))) %>% filter(xx < 0) %>% ungroup() %>% 
+  summarise(biased = sum(peter.test), smaller.meta.effects.random = n())
+
+#Histogramms of changes +- 100%
+metac.bin %>% mutate(xx = 1 - abs(logest.reg.ranef.bin/log(est.fixef.bin))) %>% filter(xx > 0) %>% 
+  ggplot(aes(x = xx, fill = factor(peter.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Regression")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.reg.ranef.bin/log(est.fixef.bin))) %>% filter(xx > -1) %>% 
+  ggplot(aes(x = xx, fill = factor(peter.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Regression")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.reg.ranef.bin/log(est.ranef.bin))) %>% filter(xx > 0) %>% 
+  ggplot(aes(x = xx, fill = factor(peter.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Regression")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.reg.ranef.bin/log(est.ranef.bin))) %>% filter(xx > -1) %>% 
+  ggplot(aes(x = xx, fill = factor(peter.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Regression")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.reg.ranef.bin/log(est.fixef.bin))) %>% 
+  ggplot(aes(x = xx)) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Regression")
+
+metac.bin %>% mutate(xx = 1 - abs(logest.reg.ranef.bin/log(est.ranef.bin))) %>% 
+  ggplot(aes(x = xx)) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Regression")
+
+#Scatterplots of meta-analysis and corrected estimates
+metac.bin %>% ggplot(aes(x = abs(log(est.fixef.bin)), y = abs(logest.reg.ranef.bin))) + geom_point() + 
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  xlab("Fixed effects estimate") + ylab("Regression estimate") + ggtitle("Fixed effects to Regression")
+
+metac.bin %>% ggplot(aes(x = abs(log(est.ranef.bin)), y = abs(logest.reg.ranef.bin))) + geom_point() + 
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  xlab("Random effects estimate") + ylab("Regression estimate") + ggtitle("Random effects to Regression")
+
+#Scatterplots of test-statistics:
+metac.bin %>% ggplot(aes(x = abs(zval.fixef.bin), y = abs(logest.reg.ranef.bin/se.logest.reg.ranef.bin))) + geom_point() +
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  ggtitle("Fixed effects and reg.ranef test statistics") + ylab("reg.ranef statistic") + xlab("Fixed effects statistic")
+
+metac.bin %>% ggplot(aes(x = abs(zval.ranef.bin), y = abs(logest.reg.ranef.bin/se.logest.reg.ranef.bin))) + geom_point() +
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  ggtitle("Random effects and reg.ranef test statistics") + ylab("reg.ranef statistic") + xlab("Random effects statistic")
+```
+
+###Continuous Outcomes:
+```{r echo = FALSE, fig.height=3, message=FALSE}
+#Summaries:
+metac.cont %>% mutate(xx = 1 - abs(est.reg.ranef.cont/est.fixef.cont)) %>% filter(xx > 0) %>% ungroup() %>% 
+  summarise(biased = sum(egger.test), larger.meta.effects = n())
+
+metac.cont %>% mutate(xx = 1 - abs(est.reg.ranef.cont/est.fixef.cont)) %>% filter(xx < 0) %>% ungroup() %>% 
+  summarise(biased = sum(egger.test), smaller.meta.effects = n())
+
+metac.cont %>% mutate(xx = 1 - abs(est.reg.ranef.cont/est.ranef.cont)) %>% filter(xx < 0) %>% ungroup() %>% 
+  summarise(biased = sum(egger.test), smaller.meta.effects.random = n())
+
+#Histogramms of changes +- 100%
+metac.cont %>% mutate(xx = 1 - abs(est.reg.ranef.cont/est.fixef.cont)) %>% filter(xx > 0) %>% 
+  ggplot(aes(x = xx, fill = factor(egger.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Regression")
+
+metac.cont %>% mutate(xx = 1 - abs(est.reg.ranef.cont/est.fixef.cont)) %>% filter(xx > -1) %>% 
+  ggplot(aes(x = xx, fill = factor(egger.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Regression")
+
+metac.cont %>% mutate(xx = 1 - abs(est.reg.ranef.cont/est.ranef.cont)) %>% filter(xx > 0) %>% 
+  ggplot(aes(x = xx, fill = factor(egger.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Regression")
+
+metac.cont %>% mutate(xx = 1 - abs(est.reg.ranef.cont/est.ranef.cont)) %>% filter(xx > -1) %>% 
+  ggplot(aes(x = xx, fill = factor(egger.test))) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Regression")
+
+metac.cont %>% mutate(xx = 1 - abs(est.reg.ranef.cont/est.fixef.cont)) %>% 
+  ggplot(aes(x = xx)) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Fixed effects to Regression")
+
+metac.cont %>% mutate(xx = 1 - abs(est.reg.ranef.cont/est.ranef.cont)) %>% 
+  ggplot(aes(x = xx)) + geom_histogram() + xlab("Fraction of Meta-analysis estimate") + ggtitle("Random effects to Regression")
+
+#Scatterplots of meta-analysis and corrected estimates
+metac.cont %>% ggplot(aes(x = abs(est.fixef.cont), y = abs(est.reg.ranef.cont))) + geom_point() + 
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  xlab("Fixed effects estimate") + ylab("Regression estimate") + ggtitle("Fixed effects to Regression")
+
+metac.cont %>% ggplot(aes(x = abs(est.ranef.cont), y = abs(est.reg.ranef.cont))) + geom_point() + 
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  xlab("Random effects estimate") + ylab("Regression estimate") + ggtitle("Random effects to Regression")
+
+#Scatterplots of test-statistics:
+metac.cont %>% ggplot(aes(x = abs(zval.fixef.cont), y = abs(est.reg.ranef.cont/se.est.reg.ranef.cont))) + geom_point() +
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  ggtitle("Fixed effects and reg.ranef test statistics") + ylab("reg.ranef statistic") + xlab("Fixed effects statistic")
+
+metac.cont %>% ggplot(aes(x = abs(zval.ranef.cont), y = abs(est.reg.ranef.cont/se.est.reg.ranef.cont))) + geom_point() +
+  geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm") + 
+  ggtitle("Random effects and reg.ranef test statistics") + ylab("reg.ranef statistic") + xlab("Random effects statistic")
+```
+

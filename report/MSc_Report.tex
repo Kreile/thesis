@@ -175,12 +175,10 @@ The reviews are arguably of good quality, since the authors are following elabor
 
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in UseMethod("{}mutate\_"{}): no applicable method for 'mutate\_' applied to an object of class "{}function"{}}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in pb.meta.merge(meta.bin, meta.cont): could not find function "{}pb.meta.merge"{}}}\end{kframe}
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Joining, by = c("{}n"{}, "{}nn"{})}}\end{kframe}
 \end{knitrout}
 
 
@@ -252,7 +250,7 @@ The dataset consists of 5016 systematic reviews from the Cochrane Library with 5
 In Table \ref{barbiturate.row}, two results from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, the result is further specified by the variables in the columns. The comparison variable specifies what treatments or interventions are compared, the outcome variable how it is compared, and the subgroup variable (not given in table) indicates if the result belongs to a certain subgroup. Here, the result is of a binary outcome, so the events in the barbiturate treatment group and the total number of participants are given in columns ``Events'' and ``Total'' and the number of events in the control group ``Events\_c'' and participants ``Total\_c''. Events denotes here number of deaths at the end of follow up.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Apr 29 12:57:33 2019
+% Sun May 12 15:22:08 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -339,7 +337,7 @@ The review comprises five studies in total. Three of them compared barbiturate t
 The complete listing of outcomes is in table \ref{barbiturates}. The table also gives an illustration of the variety of data that can be included in a review. We have for example continuous (mean body temperature) and binary outcome data (death). Additionally to primary and secondary outcomes, often also dropouts and adverse effects are included in a review.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Apr 29 12:57:33 2019
+% Sun May 12 15:22:08 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -379,7 +377,7 @@ It is important not to confuse results with studies. A study can contribute mult
 Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years. In the case of continuous outcomes, the cases have been counted were effect sizes and standard errors of effect sizes are not available. This means that neither mean values of groups nor mean differences are given, or that neither standard deviation nor standard error is given for a result. Study years before 1920 and after 2019 have been counted as missing, as well as sample sizes below zero.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Apr 29 12:57:33 2019
+% Sun May 12 15:22:08 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -404,7 +402,7 @@ The studies that are included in the reviews and have been published are most of
 The results of a study are summarised in a result by a effect measure. This effect measure varies, depending on whether data is continuous, binary or time-to-event. The most abundant effect measures used are summarised in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 30 \% of outcomes in the dataset are continuous and the being some sort of discrete or binary outcomes, most often binary (> 65\%).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Apr 29 12:57:33 2019
+% Sun May 12 15:22:08 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -445,7 +443,7 @@ The amount of studies that can be pooled for meta-analyses is of special interes
 Table \ref{repr.groups} shows the number of \textit{groups} of groups with equal or more than $n$ results. Practically, this means that a given number of meta analyses can be performed with each having at least $n$ results.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Apr 29 12:57:33 2019
+% Sun May 12 15:22:08 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -503,10 +501,10 @@ The data at hand is composed of over 400,000 results with balanced sample size $
 
 %Significance over time? Chunck 1
 
-It is possible to analyse all results that are not unique in their comparison, outcome and subgroup in the dataset by meta-analysis. So each study that has been repeated with respect to experimental setup is included. There are different meta-analys methods that can be applied, here, fixed-effects meta-analysis, random-effects meta-analysis and random-effects meta-analysis using the Hartung-Knapp method are used.
+The results that can be pooled are analysed by fixed-effects meta-analysis, random-effects meta-analysis and random-effects meta-analysis with Hartung-Knapp method.
 
 \vspace{0mm}
-In the following, the results are combined with the results of their corresponding meta-analysis if possible (i.e. if studies were not unique in the dataset with respect to their experimental setup). The significant of the treatment effect in a single result is then compared to the significance of the pooled treatment effect. 
+In the following, the results are combined with the results of their corresponding meta-analysis if possible (i.e. if studies were not unique in the dataset with respect to their experimental setup). The significance of the treatment effect (primary significance) in a single result is then compared to the significance of the pooled treatment effect (secondary significance). 
 In Figure \ref{primary.secondary.significance}, the overall fraction of studies with significant and non-significant meta-analysis results is shown. The meta-analysis method used to pool the treatment effect estimates and assessing significance is indicated on the right hand side of the Figure. The colors indicate the overall fraction of rejected or accepted null-hypotheses of no treatment effect.
 
 \begin{figure}
@@ -525,7 +523,10 @@ by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects m
 \label{primary.secondary.significance}
 \end{figure}
 
-One can visualise the fraction of studies with significant treatment effect separately for studies with significant primary treatment effect, and non-significant primary treatment effect, as done in Figure \ref{primary.secondary.significance.sep.sig}. It can be seen that primary significance and non-significance is often overruled when performing a meta-analysis.
+What has been found is that even the meta-analysis that for all meta-analysis methods, the amount of secondary significance is higher than the amount of primary significance. Thus more primarily non-significant results can be attached to a secondarily significant result than vice-versa.
+
+\vspace{0mm}
+To illustrate this, the fraction of studies with significant primary treatment effect and primary non-significant treatment effect can be plotted separately (Figure \ref{primary.secondary.significance.sep.sig}). 
 
 \begin{figure}
 \begin{knitrout}
@@ -542,6 +543,9 @@ One can visualise the fraction of studies with significant treatment effect sepa
 by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
 \label{primary.secondary.significance}
 \end{figure}
+
+It can be seen that the extent of overlap between primary and secondary significance varies between meta-analysis. A considerable amount of both primary significant and primary non-significant results are overruled by meta-analysis hypothesis tests. 
+
 
 The amount of significant heterogeneity in the results used by the meta-analyses is 53350 and corresponds to 81.5936377\% of the total number of meta-analyses.
 
@@ -667,7 +671,7 @@ Furthermore one can look if the frequencies of tests that reject the null hypoth
 The agreement of the tests, i.e. the proportion of meta-analyses where the rest results are equal between tests, is shown in Table \ref{agreement.bin} and Table \ref{agreement.cont}, again separated for outcome types. Agreement in tests for binary outcomes is better than continuous outcomes, with some variation between tests (binary outcomes: 83 to 91\%). Correlation varies more between tests, both for continuous and binary outcome tests.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Apr 29 12:58:07 2019
+% Tue May  7 13:05:39 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -694,7 +698,7 @@ egger.schwarzer & 0.87 & 0.39 \\
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Apr 29 12:58:07 2019
+% Tue May  7 13:05:39 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1451,7 +1455,48 @@ By estimating $\tau^2, v_{i}$ and  $\beta_{0}^\star$, we can use the formula to 
 % LaTeX file for Chapter 05
 
 
-\chapter{Conclusions}
+\chapter{Discussion}
+
+It is tempting to claim to have a perspective that spans the entire clinical research when looking at the cochrane dataset. Several points can be made to argue in this favor (see chapter 2 CITE for details).
+
+\begin{itemize}
+\item Size: Over 52,000 studies, 20,000 comparisons and 47 millions study participants. A vast diversity of topics and studies that stem from different institutions and researchers and have been conducted in different countries.
+\item Quality: An organization of field and analysis experts controls quality of both studies and methods.
+\end{itemize}
+
+The dataset is certainly unique with respect to this features. The effort of the Cochrane Organization in reprocession, classification and integration of studies in a larger scientific framework is unmatched, not only in clinical science, but in empirical science in general CITE?CITE. Regardless whether it is representative of the field of clinical research, it thus provides an exceptional perspective, not only on clinical science, but on empirical science in general.
+
+\vspace{0mm}
+Concerning the generalizability of results of this thesis on clinical science, there are important caveats. First of all, intrinisically, the Cochrane Organization focuses on established research of public interest. By definition, it can not comprise the full diversity of the field, and especially where research and evidence is new, sparse and not established, it is almost certainly not included. The aim of Cochrane is to concentrate scientifical knowledge, thus it can not incorporate studies that are unique in their research subjects and are on the ``periphery'' of science. 
+
+\vspace{0mm}
+It is said in the Cochrane Handbook that Cochrane Field groups orchestrate the efforts of their groups and set emphasis on certain research. It is thus clear, that the Cochrane Library only comprises a selective fraction of clinical research. 
+
+\vspace{0mm}
+Although Cochrane strives to include unpublished study results, it almost certainly provides a selective view by including more published studies. Apart from language issues, publication bias might be the largest source of bias. This leads us to the main topic of this masters thesis: small study effects and publication bias in the Cochrane Library. Thus, the research question of this thesis is in fact connected to the question of how representative the Cochrane Library is for clinical research. The answer to this question is insofar important, as that the issues treated in this thesis have to be addressed to the Cochrane Organization or to clinical science in general. This distinction is very important and will be encountered throughout the next pages. 
+
+%The conclusions to which one comes with regard to this question directly influence the meaning of the results. 
+% If one decides that the results can not be representative for clinical science, the results mainly concern the work of the Cochrane organization. If one decides that the results do at least partially hold for clinical science and science in general, the interpretation of the results change also.
+
+
+\section{Meta-analyses}
+If one investigates the success of a treatment, the first way of doing so is to investigate to what extent the treatment effect estimate differs from no treatment effect. This is usually done by a hypothesis test, where the null hypothesis of no treatment effect is rejected if the p-value of the treatment effect estimate is above a given threshold. One decides in this case in favor of the treatment. 
+
+\vspace{0mm}
+The aim of a meta-analysis is to re-calculate the treatment effect based on multiple results. The treatment effects are pooled and the pooled treatment effect estimate can then again be tested based on the null-hypothesis. Although not commonly accepted, this may be a stronger argument for the success of treatment, because meta-analysis can capture consistency among treatment effect estimates among different studies and will result in rejection of a null hypothesis if consistency is given. It is thus in line with the empirical principle that experimental findings should be validated based on their reproducibility. Consequently, a meta-analysis may provide a significant treatment effect estimate, even if the single results do not.
+
+\vspace{0mm}
+It was the aim of the first section CITE of the results part to compare significance of the treatment effect of single studies with the significance of the pooled effect. So the question to be answered was: How does significance in single studies relate to significance when all evidence is included? The first kind of significance has been termed primary significance and the second, secondary significance. One can imagine 3 scenarios: 
+\begin{itemize}
+\item A primary significant study belongs to a group which, overall, can not reject the null-hypothesis of no treatment effect in meta-analysis. The study result is then overruled by the result of the meta-analysis (if one is to accept that meta-analysis is a more stringent rule for decision about treatment effects).
+\item The opposite: A non-significant primary study belongs to a group which has a significant pooled treatment effect estimate. The study failed to find evidence for a ``true'' effect.
+\item Primary and secondary significance remain unchanged after meta-analysis.
+\end{itemize}
+
+The amount of overlap between primary and secondary significance was moderate, as it had to be expected based on the methodology of meta-analysis. The vast amount of non-significant primary results that contribute in the end to a significant secondary meta-analysis result is compelling. This links to the topic of the masters thesis of small study effects and publication bias. One ad-hoc interpretation of publication bias is that results that are not significant are less likely to be published (arguably because they show no treatment effect). 
+
+\vspace{0mm}
+If one is to prefer, or accept meta-analysis as a way to assess treatment effect evidence, the result provides a strong argument for publication of non-significant results, because they can contribute to evidence for treatment effects in meta-analysis (in a Cochrane review). Significant treatment effects that are found may find their into clinical practice and potentially benefit there patients and consumers. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -8,4 +8,45 @@ opts_chunk$set(
 ) 
 @
 
-\chapter{Conclusions}
+\chapter{Discussion}
+
+It is tempting to claim to have a perspective that spans the entire clinical research when looking at the cochrane dataset. Several points can be made to argue in this favor (see chapter 2 CITE for details).
+
+\begin{itemize}
+\item Size: Over 52,000 studies, 20,000 comparisons and 47 millions study participants. A vast diversity of topics and studies that stem from different institutions and researchers and have been conducted in different countries.
+\item Quality: An organization of field and analysis experts controls quality of both studies and methods.
+\end{itemize}
+
+The dataset is certainly unique with respect to this features. The effort of the Cochrane Organization in reprocession, classification and integration of studies in a larger scientific framework is unmatched, not only in clinical science, but in empirical science in general CITE?CITE. Regardless whether it is representative of the field of clinical research, it thus provides an exceptional perspective, not only on clinical science, but on empirical science in general.
+
+\vspace{0mm}
+Concerning the generalizability of results of this thesis on clinical science, there are important caveats. First of all, intrinisically, the Cochrane Organization focuses on established research of public interest. By definition, it can not comprise the full diversity of the field, and especially where research and evidence is new, sparse and not established, it is almost certainly not included. The aim of Cochrane is to concentrate scientifical knowledge, thus it can not incorporate studies that are unique in their research subjects and are on the ``periphery'' of science. 
+
+\vspace{0mm}
+It is said in the Cochrane Handbook that Cochrane Field groups orchestrate the efforts of their groups and set emphasis on certain research. It is thus clear, that the Cochrane Library only comprises a selective fraction of clinical research. 
+
+\vspace{0mm}
+Although Cochrane strives to include unpublished study results, it almost certainly provides a selective view by including more published studies. Apart from language issues, publication bias might be the largest source of bias. This leads us to the main topic of this masters thesis: small study effects and publication bias in the Cochrane Library. Thus, the research question of this thesis is in fact connected to the question of how representative the Cochrane Library is for clinical research. The answer to this question is insofar important, as that the issues treated in this thesis have to be addressed to the Cochrane Organization or to clinical science in general. This distinction is very important and will be encountered throughout the next pages. 
+
+%The conclusions to which one comes with regard to this question directly influence the meaning of the results. 
+% If one decides that the results can not be representative for clinical science, the results mainly concern the work of the Cochrane organization. If one decides that the results do at least partially hold for clinical science and science in general, the interpretation of the results change also.
+
+
+\section{Meta-analyses}
+If one investigates the success of a treatment, the first way of doing so is to investigate to what extent the treatment effect estimate differs from no treatment effect. This is usually done by a hypothesis test, where the null hypothesis of no treatment effect is rejected if the p-value of the treatment effect estimate is above a given threshold. One decides in this case in favor of the treatment. 
+
+\vspace{0mm}
+The aim of a meta-analysis is to re-calculate the treatment effect based on multiple results. The treatment effects are pooled and the pooled treatment effect estimate can then again be tested based on the null-hypothesis. Although not commonly accepted, this may be a stronger argument for the success of treatment, because meta-analysis can capture consistency among treatment effect estimates among different studies and will result in rejection of a null hypothesis if consistency is given. It is thus in line with the empirical principle that experimental findings should be validated based on their reproducibility. Consequently, a meta-analysis may provide a significant treatment effect estimate, even if the single results do not.
+
+\vspace{0mm}
+It was the aim of the first section CITE of the results part to compare significance of the treatment effect of single studies with the significance of the pooled effect. So the question to be answered was: How does significance in single studies relate to significance when all evidence is included? The first kind of significance has been termed primary significance and the second, secondary significance. One can imagine 3 scenarios: 
+\begin{itemize}
+\item A primary significant study belongs to a group which, overall, can not reject the null-hypothesis of no treatment effect in meta-analysis. The study result is then overruled by the result of the meta-analysis (if one is to accept that meta-analysis is a more stringent rule for decision about treatment effects).
+\item The opposite: A non-significant primary study belongs to a group which has a significant pooled treatment effect estimate. The study failed to find evidence for a ``true'' effect.
+\item Primary and secondary significance remain unchanged after meta-analysis.
+\end{itemize}
+
+The amount of overlap between primary and secondary significance was moderate, as it had to be expected based on the methodology of meta-analysis. The vast amount of non-significant primary results that contribute in the end to a significant secondary meta-analysis result is compelling. This links to the topic of the masters thesis of small study effects and publication bias. One ad-hoc interpretation of publication bias is that results that are not significant are less likely to be published (arguably because they show no treatment effect). 
+
+\vspace{0mm}
+If one is to prefer, or accept meta-analysis as a way to assess treatment effect evidence, the result provides a strong argument for publication of non-significant results, because they can contribute to evidence for treatment effects in meta-analysis (in a Cochrane review). Significant treatment effects that are found may find their into clinical practice and potentially benefit there patients and consumers. 

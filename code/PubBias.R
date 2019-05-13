@@ -13,15 +13,27 @@ file_results = "pb.RData"
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
 
-data = pb.readData(path = PATH_DATA, file = FILE)
-tmp = pb.clean(data)
-data = tmp[[1]]
-aliases = tmp[[2]]
+# data = pb.readData(path = PATH_DATA, file = FILE)
+# tmp = pb.clean(data)
+# data = tmp[[1]]
+# aliases = tmp[[2]]
+
+file.dat <- "data.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+  load(file.path(PATH_RESULTS, file.dat))
+} else {
+  data = pb.readData(path = PATH_DATA, file = FILE)
+  tmp = pb.clean(data)
+  data = tmp[[1]]
+  aliases = tmp[[2]]
+  save(data, file =  file.path(PATH_RESULTS, file.dat))
+}
+
 
 file.bin <- "pb.bin.RData"
 if (file.exists(file.path(PATH_RESULTS, file.bin))) {
   load(file.path(PATH_RESULTS, file.bin))
-} else { 
+} else {
   meta.bin <- meta.bin.complete(data, min.study.number = 10, sig.level = 0.05)
   save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
 }
@@ -29,31 +41,68 @@ if (file.exists(file.path(PATH_RESULTS, file.bin))) {
 file.cont <- "pb.cont.RData"
 if (file.exists(file.path(PATH_RESULTS, file.cont))) {
   load(file.path(PATH_RESULTS, file.cont))
-} else { 
+} else {
   meta.cont <- meta.cont.complete(data, min.study.number = 10, sig.level = 0.05)
   save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
 }
 
-meta.cont <- meta.cont %>% mutate(sig.change.ranef.reg = sig.change(sig.before = sig.ranef.cont, sig.after =  sig.reg.ranef.cont),
-                                            sig.change.ranef.copas = sig.change(sig.before = sig.ranef.cont, sig.after =  sig.copas.cont),
-                                            sig.change.ranef.trimfill = sig.change(sig.before = sig.ranef.cont, sig.after =  sig.trimfill.cont),
-                                            sig.change.fixef.reg = sig.change(sig.before = sig.fixef.cont, sig.after =  sig.reg.ranef.cont),
-                                            sig.change.fixef.copas = sig.change(sig.before = sig.fixef.cont, sig.after =  sig.copas.cont),
-                                            sig.change.fixef.trimfill = sig.change(sig.before = sig.fixef.cont, sig.after =  sig.trimfill.cont))
+file.meta <- "meta.RData"
+if (file.exists(file.path(PATH_RESULTS, file.meta))) {
+  load(file.path(PATH_RESULTS, file.meta))
+} else {
+  meta <- pb.meta.merge(meta.bin, meta.cont)
+  save(meta, file =  file.path(PATH_RESULTS, file.meta))
+}
 
-meta.bin <- meta.bin %>% mutate(sig.copas.bin = ifelse(pval.copas.bin > 0.05, 0, 1),
-  sig.change.ranef.reg = sig.change(sig.before = sig.ranef.bin, sig.after =  sig.reg.ranef.bin), 
-                                                sig.change.ranef.copas = sig.change(sig.before = sig.ranef.bin, sig.after =  sig.copas.bin),
-                                                sig.change.ranef.trimfill = sig.change(sig.before = sig.ranef.bin, sig.after =  sig.trimfill.bin),
-                                                sig.change.fixef.reg = sig.change(sig.before = sig.fixef.bin, sig.after =  sig.reg.ranef.bin),
-                                                sig.change.fixef.copas = sig.change(sig.before = sig.fixef.bin, sig.after =  sig.copas.bin),
-                                                sig.change.fixef.trimfill = sig.change(sig.before = sig.fixef.bin, sig.after =  sig.trimfill.bin))
+# meta <- pb.meta.merge(meta.bin, meta.cont)
+
+file.cont <- "mly.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+  load(file.path(PATH_RESULTS, file.cont))
+} else {
+  data.cont <- mly.cont(data.ext, 0.05, min.study.number = 2)
+  save(data.cont, file =  file.path(PATH_RESULTS, file.cont))
+}
+
+file.bin <- "mly.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+  load(file.path(PATH_RESULTS, file.bin))
+} else {
+  data.bin <- mly.bin(data.ext, 0.05, min.study.number = 2)
+  save(data.bin, file =  file.path(PATH_RESULTS, file.bin))
+}
 
 
-save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
+load(file.path(PATH_RESULTS, file = "mly.RData"))
+load(file.path(PATH_RESULTS, file = "data.processed.RData"))
 
-file.bin = "pb.bin.RData"
-save(meta.bin, file =  file.path(PATH_RESULTS, file = "pb.bin.RData")
+require(biostatUZH)
+require(tidyverse)
+require(meta)
+require(metasens)
+require(gridExtra)
+require(xtable)
+
+# meta.cont <- meta.cont %>% mutate(sig.change.ranef.reg = sig.change(sig.before = sig.ranef.cont, sig.after =  sig.reg.ranef.cont),
+#                                             sig.change.ranef.copas = sig.change(sig.before = sig.ranef.cont, sig.after =  sig.copas.cont),
+#                                             sig.change.ranef.trimfill = sig.change(sig.before = sig.ranef.cont, sig.after =  sig.trimfill.cont),
+#                                             sig.change.fixef.reg = sig.change(sig.before = sig.fixef.cont, sig.after =  sig.reg.ranef.cont),
+#                                             sig.change.fixef.copas = sig.change(sig.before = sig.fixef.cont, sig.after =  sig.copas.cont),
+#                                             sig.change.fixef.trimfill = sig.change(sig.before = sig.fixef.cont, sig.after =  sig.trimfill.cont))
+# 
+# meta.bin <- meta.bin %>% mutate(sig.copas.bin = ifelse(pval.copas.bin > 0.05, 0, 1),
+#   sig.change.ranef.reg = sig.change(sig.before = sig.ranef.bin, sig.after =  sig.reg.ranef.bin), 
+#                                                 sig.change.ranef.copas = sig.change(sig.before = sig.ranef.bin, sig.after =  sig.copas.bin),
+#                                                 sig.change.ranef.trimfill = sig.change(sig.before = sig.ranef.bin, sig.after =  sig.trimfill.bin),
+#                                                 sig.change.fixef.reg = sig.change(sig.before = sig.fixef.bin, sig.after =  sig.reg.ranef.bin),
+#                                                 sig.change.fixef.copas = sig.change(sig.before = sig.fixef.bin, sig.after =  sig.copas.bin),
+#                                                 sig.change.fixef.trimfill = sig.change(sig.before = sig.fixef.bin, sig.after =  sig.trimfill.bin))
+
+
+# save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
+# 
+# file.bin = "pb.bin.RData"
+# save(meta.bin, file =  file.path(PATH_RESULTS, file = "pb.bin.RData"))
 
      
      
@@ -70,6 +119,12 @@ require(xtable)
 
 ########################################################################################################################################
 ########################################################################################################################################
+#Significance of pbbias based on variance of total ss:
+meta %>% filter(var.samplesize < 60000) %>% ggplot(aes(stat(count), x = var.samplesize, fill = factor(thomson.test))) + 
+  geom_density(position = "fill")
+
+
+
 ## Publication test results: Binary.
 test.bin <- meta.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
                                                           schwarzer.test = mean(schwarzer.test),
