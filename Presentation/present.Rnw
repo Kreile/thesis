@@ -1,33 +1,26 @@
 \documentclass[english]{beamer}
-
 %% The most common packages are already included in:
 \usetheme{biostat}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\usepackage{amsmath,amsfonts,tikz}
+\usepackage{amsmath,amsfonts,tikz, amssymb}
 \usetikzlibrary{trees}
 
 %% Header data: (adjust to your needs:
 \def\uzhunit{Biostatistics}             %% if (not) needed comment/uncomment
 %\def\uzhunitext{STA480}
 
-\title{Publication Bias in the Cochrane Library of Systematic Reviews}
+\title{Publication Bias in Meta-Analysis}%[Publication Bias]
 %% Optional Argument in [Brackets]: Short Title for Footline
 
 %% The following are all optional, simply comment them
-%\subtitle{Subtitle (optional)}
+%\subtitle{Publication Bias in the Cochrane Libary}
 %\institute{Biostatistics Journal Club}  %% optional
 \author{Giuachin Kreiliger}
 %\date{\today}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\begin{document}
-\maketitle
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%% Start with slides here: put them between `\begin{frame}` and `\end{frame}`
-
-
-<<echo=FALSE, warning = FALSE, warnings = FALSE, message = FALSE, cache = FALSE>>= 
+<<include = FALSE>>= 
+library(knitr)
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
 PATH2 = file.path(PATH_HOME, 'PubBias')
@@ -41,12 +34,6 @@ file_results = "pb.RData"
 
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
-
-# data = pb.readData(path = PATH_DATA, file = FILE)
-# tmp = pb.clean(data)
-# data = tmp[[1]]
-# aliases = tmp[[2]]
-
 file.dat <- "data.RData"
 if (file.exists(file.path(PATH_RESULTS, file.dat))) {
   load(file.path(PATH_RESULTS, file.dat))
@@ -59,64 +46,21 @@ if (file.exists(file.path(PATH_RESULTS, file.dat))) {
 }
 
 
-file.bin <- "pb.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-  load(file.path(PATH_RESULTS, file.bin))
-} else {
-  meta.bin <- meta.bin.complete(data, min.study.number = 10, sig.level = 0.05)
-  save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-file.cont <- "pb.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-  load(file.path(PATH_RESULTS, file.cont))
-} else {
-  meta.cont <- meta.cont.complete(data, min.study.number = 10, sig.level = 0.05)
-  save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.meta <- "meta.RData"
-if (file.exists(file.path(PATH_RESULTS, file.meta))) {
-  load(file.path(PATH_RESULTS, file.meta))
-} else {
-  meta <- pb.meta.merge(meta.bin, meta.cont)
-  save(meta, file =  file.path(PATH_RESULTS, file.meta))
-}
-
-# meta <- pb.meta.merge(meta.bin, meta.cont)
-
-file.cont <- "mly.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-  load(file.path(PATH_RESULTS, file.cont))
-} else {
-  data.cont <- mly.cont(data.ext, 0.05, min.study.number = 2)
-  save(data.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.bin <- "mly.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-  load(file.path(PATH_RESULTS, file.bin))
-} else {
-  data.bin <- mly.bin(data.ext, 0.05, min.study.number = 2)
-  save(data.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-
-load(file.path(PATH_RESULTS, file = "mly.RData"))
 load(file.path(PATH_RESULTS, file = "data.processed.RData"))
 
-require(biostatUZH)
 require(tidyverse)
 require(meta)
-require(metasens)
-require(gridExtra)
 require(xtable)
 
+#Meta-analysis example
 data.ext <- data.ext %>% mutate(study.year = ifelse(study.year < 2019, study.year, NA)) %>% 
     mutate(study.year = ifelse(study.year > 1920, study.year, NA))
-
-###################################################################################################################
-###################################################################################################################
+biased.rev <- data.ext %>% filter(meta.id == 122943)
+unbiased.rev <- data.ext %>% filter(meta.id == 181863)
+meta.example <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, 
+												 studlab = study.name, data = biased.rev)
+meta.nexample <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, 
+												 studlab = study.name, data = unbiased.rev)
 
 #Barbiturate Examples
 barbi1 <- arrange(filter(data, file.nr == 21) %>%
@@ -160,24 +104,7 @@ missing.table <- rbind("Missing mean values and mean differences" = missing.effe
                          "Missing sample sizes" = missing.ssize,
                          "Missing study year" = missing.year)
 
-
-# ????????
-# #Mean and median number of different outcome types of reviews
-# mean.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>%
-#   ungroup() %>% group_by(file.nr) %>%
-#   count() %>% ungroup %>% summarise(mean = mean(n))
-# 
-# median.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>%
-#   ungroup() %>% group_by(file.nr) %>%
-#   count() %>% ungroup %>% summarise(mean = median(n))
-# 
-# #Outcome.measure frequency table:
-# outcome.measure.frequencies <- rbind(data %>% group_by(outcome.measure.new) %>% count() %>% 
-#                                        arrange(desc(n)) %>% ungroup() %>% filter(row_number() < 9),
-#                                      data %>% group_by(outcome.measure.new) %>% count() %>% arrange(desc(n)) %>% 
-#                                        ungroup() %>% filter(row_number() > 8) %>% 
-#                                        summarise(outcome.measure.new = "other", n = sum(n)))
-
+#Dataset properties:
 #Review level
 study.rev <- data %>% group_by(file.nr) %>% distinct(study.name) %>% count() %>% ungroup() %>% 
 	summarise(lower = quantile(n, 0.05), median = quantile(n, 0.5), mean = mean(n), upper = quantile(n, 0.95))
@@ -205,81 +132,112 @@ cum.repr.trials.subg <- data %>% group_by(file.nr, comparison.nr, outcome.nr, su
   full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
                filter(n > 9) %>% ungroup %>% summarise(n = 10, nn = sum(nn))) %>%
   ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
-# cum.repr.trials.nosub <- data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
-#   filter(n < 15) %>%
-#   full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
-#                filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>%
-#   ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
-
-# cum.repr.trials <- cbind(cum.repr.trials.nosub, cum.repr.trials.subg)[,c(1,3,6)]
 
 colnames(cum.repr.trials.subg)  <- c("n","Number of groups", "Cumulative sum of groups")
 
+#Loading meta-analysis results:
+file.bin <- "pb.bin.RData"
+load(file.path(PATH_RESULTS, file.bin))
 
-###################################################################################################################
-###################################################################################################################
-#Meta-analyses
-###################################################################################################################
-###################################################################################################################
+file.cont <- "pb.cont.RData"
+load(file.path(PATH_RESULTS, file.cont))
 
-#Funnel plot example:
-biased.rev <- data %>% filter(file.nr == 76 & comparison.nr == 2 & outcome.nr == 2 & subgroup.nr == 4)
-meta.example <- metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, 
-												studlab = study.name, sm= "OR", data = biased.rev)
+file.meta <- "meta.RData"
+load(file.path(PATH_RESULTS, file.meta))
 
-#Publication Bias test plots:
-test.bin <- meta.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
-                                                 schwarzer.test = mean(schwarzer.test),
-                                                 rucker.test = mean(rucker.test),
-                                                 harbord.test = mean(harbord.test),
-                                                 peter.test = mean(peter.test))
+library(gridExtra)
+
+
+#Meta filtering: 
+metac.bin <- meta.bin %>% filter(n.sig.type.bin > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac.cont <- meta.cont %>% filter(n.sig.type.cont > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac <- meta %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+
+#Significant proportion
+test.bin <- metac.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+                                                          schwarzer.test = mean(schwarzer.test),
+                                                          rucker.test = mean(rucker.test),
+                                                          harbord.test = mean(harbord.test),
+                                                          peter.test = mean(peter.test))
 test.bin <- test.bin %>% gather(key = "test.type", value = "mean")
-p.bin <- meta.bin %>% filter(sig.fixef.bin == 1) %>% ungroup() %>% 
+
+p.bin <- metac.bin %>% ungroup() %>% 
   select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
   gather(key = "test.type", value = "null.hypothesis") %>%  
   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
   theme_bw() + xlab(label = NULL) + ggtitle("Binary Outcomes") + theme(legend.position = "top") +
   guides(fill=guide_legend(title=NULL))+
-  annotate("text", x = test.bin$test.type, y = 1000, 
+  annotate("text", x = test.bin$test.type, y = 500, 
            label = paste(round(test.bin$mean, 2)*100, "% rejected"), 
            color = "white")
 
-test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
-                                                   begg.test = mean(begg.test),
-                                                   thomson.test = mean(thomson.test))
+test.cont <- metac.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+                                                            begg.test = mean(begg.test),
+                                                            thomson.test = mean(thomson.test))
+
 test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
-p.cont <- meta.cont %>% ungroup() %>% 
+
+p.cont <- metac.cont %>% ungroup() %>% 
   select(egger.test, thomson.test, begg.test) %>% 
   gather(key = "test.type", value = "null.hypothesis") %>% 
   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
   theme_bw() + xlab(label = NULL) + ggtitle("Continuous Outcomes") + theme(legend.position = "top") +
 	guides(fill=guide_legend(title=NULL))+
-  annotate("text", x = test.cont$test.type, y = 750, 
+  annotate("text", x = test.cont$test.type, y = 150, 
            label = paste(round(test.cont$mean, 2)*100, "% rejected"), 
            color = "white")
 
-#Significance change after adjustment plot:
-change.fixef <- meta %>% ungroup() %>% select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-  gather(key = "correction.method", value = "sig.change") %>% 
-	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
-	group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
-	mutate(n = n/sum(n))
+dat_text <- data.frame(
+  label = paste(c(sum(metac.cont$begg.test), sum(metac.cont$egger.test), sum(metac.cont$thomson.test)), "> 0.05"),
+  test.type   = c("pval.begg.cont", "pval.egger.cont", "pval.thomson.cont"))
 
-p.fixef.change <- meta %>% ungroup() %>% 
-  select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-  gather(key = "correction.method", value = "sig.change") %>%  
-  mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
-  ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
-  theme_bw() + xlab(label = NULL) + guides(fill=guide_legend(title=NULL)) +
-	scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
-  annotate("text", x = change.fixef[change.fixef$sig.change == 3,]$correction.method, y = 1500, 
-         label = paste(round(change.fixef[change.fixef$sig.change == 3,]$n*100,2), "% changed to nonsig."), 
-         color = "white")
+
+p.dist.cont <- metac.cont %>% ungroup() %>% 
+  select(pval.egger.cont, pval.thomson.cont, pval.begg.cont) %>% 
+  gather(key = "test.type", value = "p.value") %>% 
+  ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + facet_wrap(~test.type) + 
+	geom_text(data = dat_text, mapping = aes(x = -Inf, y = -Inf, label = label), hjust   = -1,
+  vjust   = -4, color = "white")
+
+dat_text <- data.frame(
+  label = paste(c(sum(metac.bin$egger.test), sum(metac.bin$harbord.test), sum(metac.bin$peter.test), 
+  										sum(metac.bin$rucker.test), sum(metac.bin$schwarzer.test)), "> 0.05"),
+  test.type   = c("pval.egger.bin", "pval.harbord.bin", "pval.peter.bin", "pval.rucker.bin", "pval.schwarzer.bin"))
+
+p.dist.bin <- metac.bin %>% ungroup() %>% 
+  select(pval.egger.bin, pval.harbord.bin, pval.peter.bin, pval.rucker.bin, pval.schwarzer.bin) %>% 
+  gather(key = "test.type", value = "p.value") %>% 
+  ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + facet_wrap(~test.type) + 
+	geom_text(data = dat_text, mapping = aes(x = -Inf, y = -Inf, label = label), hjust   = -0.65,
+  vjust   = -4, color = "white")
+
+#Test agreement
+agree.bin <- meta.bin %>% mutate(n.sig = peter.test + rucker.test + egger.test + harbord.test + schwarzer.test) %>% 
+  group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
+  ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Binary Outcomes")
+
+agree.cont <- meta.cont %>% mutate(n.sig = egger.test + thomson.test + begg.test) %>% 
+  group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
+  ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
+
+#Adjustment example plots regression:
+reg.1 <- qplot(x = biased.rev$se, y = biased.rev$effect, xlim = c(0, 1.2)) + geom_point() + 
+	stat_smooth(method="lm", fullrange=TRUE, se = F) + coord_flip() + theme_bw() +
+	ylab("Std. Mean Difference") + xlab("Standard error")
+
+reg.2 <- qplot(x = unbiased.rev$se, y = unbiased.rev$effect, xlim = c(0, 6.5)) + geom_point() + 
+	stat_smooth(method="lm", fullrange=TRUE, se = F) + coord_flip() + theme_bw() +
+	ylab("Std. Mean Difference") + xlab("Standard error")
 
 @
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{document}
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 \begin{frame}{Cochrane Library}
 Database of high-quality, systematic reviews in clinical science.
@@ -323,12 +281,11 @@ Reviews are peer-reviewed and prepared after guidelines.
           }}
     }
     child [missing] {}
-    child { node {Comparison 1  }};
+    child { node {Comparison 1}};
 \end{tikzpicture}
 %\caption{Structure of a hypothetical review with two different comparisons\label{review.structure}}
 \label{review.structure}
 \end{figure}
-
 \end{frame}
 
 
@@ -341,22 +298,17 @@ Reviews are peer-reviewed and prepared after guidelines.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Review Example: binary outcome}
-Barbiturate efficacy in head injury
+
+\begin{frame}[fragile]{Review Example: binary outcome}
+Barbiturate efficacy for head injury treatment
 \vspace{-5mm}
 <<echo = FALSE, results = 'asis'>>=
 print(xtable(barbi2, label = "barbiturates", digits = 0), include.rownames = F, size = "tiny")
 @
-
-% \vspace{-6mm}
-% echo = FALSE, results = 'asis'>>=
-% print(xtable(barbi1, label = "barbiturate.row", digits = 0),
-%       include.rownames = F, size = "tiny")
-% @
-
 \end{frame}
 
-\begin{frame}{Dataset Properties}
+
+\begin{frame}[fragile]{Dataset Properties}
 Missing data:
 <<echo=FALSE, results = 'asis'>>=
 print(xtable(missing.table, align = "lr"), include.rownames = T, include.colnames = F)
@@ -364,7 +316,7 @@ print(xtable(missing.table, align = "lr"), include.rownames = T, include.colname
 \end{frame}
 
 
-\begin{frame}{Dataset Properties}
+\begin{frame}[fragile]{Dataset Properties}
 Review and study properties:
 <<echo=FALSE, results = 'asis'>>=
 print(xtable(dataset.properties, digits = 0, align = "lrrrr"), include.rownames = T, size = "footnotesize", hline = c(0,1,1,4))
@@ -372,14 +324,11 @@ print(xtable(dataset.properties, digits = 0, align = "lrrrr"), include.rownames 
 \end{frame}
 
 
-\begin{frame}{Pooling Studies - Meta-Analysis}
+\begin{frame}[fragile]{Pooling Studies - Meta-Analysis}
 Multiple results in a meta-analysis group can be pooled:
-
 <<echo=FALSE, results = 'asis'>>=
 print(xtable(cum.repr.trials.subg, label = "repr.groups", align = "lrrr", digits = 0), include.rownames = F, size = "footnotesize")
 @
-
-
 \end{frame}
 
 \begin{frame}{Meta-analysis}
@@ -394,12 +343,13 @@ Assumptions:
 \item Identical study settings (can be relaxed)
 \item Random sample of studies
 \end{itemize}
-
 \end{frame}
+
 
 \begin{frame}{Small Study Effects}
 ``The tendency for the smaller studies to show larger treatment effects'' \citep{Sterne}
 \end{frame}
+
 
 \begin{frame}{Small Study Effects}
 Causes:
@@ -411,66 +361,229 @@ Causes:
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Publication Bias Tests}
-Test for funnel plot asymmetry:
 
-\vspace{-1.7cm}
-\begin{figure}
-<<echo=FALSE, fig.height = 4>>=
-par(las = 1, mfrow = c(1,2))
+\begin{frame}{Small Study Effect Tests}
+Tests applicable if:
+\begin{itemize}
+\item $n$ large
+\item variation in the estimated variances of effects \\(here: $\frac{\sigma_{\textrm{max}}}{\sigma_{\textrm{min}}} > 4$)
+\end{itemize}
+Adjustments required if variance is dependent on effect size (e.g. log odds ratios)
+\end{frame}
 
+
+\begin{frame}[fragile]{Small Study Effect Tests}
+Funnel plots (continuous outcome examples):
+
+\vspace{-1.2cm}
+
+<<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+par(las = 1, mfrow = c(1, 2))
 funnel(meta.example)
-radial(meta.example)
+funnel(meta.nexample)
 @
-\end{figure}
+
 \end{frame}
 
-\begin{frame}{Publication Bias Tests}
-Critical: Number of studies in meta-analysis must be large ($\geq$ 10).
 
-Various tests for meta-analyses with continuous and binary outcomes:
+\begin{frame}[fragile]{Regression based Tests}
+Radial plots (continuous outcome examples):
 
-Regression based: Egger's, Peter's or Thompson and Sharp's test
+\vspace{-1.2cm}
 
-Rank based: Begg and Mazumdar's Test
+<<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+par(las = 1, mfrow = c(1,2))
+radial(meta.example, comb.fixed = F)
+radial(meta.nexample, comb.fixed = F)
+@
+
 \end{frame}
+
+
+\begin{frame}{Regression based Tests}
+Continuous outcomes tests:
+
+$i$ being the $i$th study in a meta-analysis:
+
+Let $y_{i} = \textrm{effect}_{i}/\textrm{se}_{i}$ and $x_{i} = 1/\textrm{se}_{i}$
+\begin{itemize}
+\item \citet{Egger} : \\ $y_{i} \sim N(\beta_{0} + \beta_{1}x_{i}, v_{i})$
+\item \citet{thompson.sharp} : \\ $y_{i} \sim N(\beta_{0} + \beta_{1}x_{i}, v_{i} + \tau^2)$
+\end{itemize}
+%Test for non-zero intercept $\beta_{0}$
+\end{frame}
+
+\begin{frame}[fragile]{Egger's Tests}
+
+\vspace{-6cm}
+
+<<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+par(las = 1, mfrow = c(1,2))
+metabias(meta.example, plotit = TRUE, method.bias = "linreg")
+metabias(meta.nexample, plotit = TRUE, method.bias = "linreg")
+@
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Thompson and Sharp's Tests}
+
+\vspace{-6.5cm}
+
+<<message = FALSE, echo=FALSE, warning = FALSE, fig.height= 4>>=
+par(las = 1, mfrow = c(1,2))
+metabias(meta.example, plotit = TRUE, method.bias = "mm")
+metabias(meta.nexample, plotit = TRUE, method.bias = "mm")
+@
+
+\end{frame}
+
+
+
+\begin{frame}{Regression based Tests}
+Adjustments for binary outcomes:
+\begin{itemize}
+\item \citet{Peters} :$x_{i}$ = inverse of total sample size, $\textrm{variance}_{i}$ as weight.
+\item \citet{Harbord} :$x:{i}$ = score of the log-likelihood of a proportion, $\textrm{variance}_{i}$ as weight.
+\item \citet{Rucker} :Use arcsine variance stabilizing transformation for variances and effects, do e.g. Egger's test.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Rank based tests}
+\citet{begg.ties}
+Let $y_{i}$ the standardized effect size of a study $i$, $v_{i}$ it's variance and $n$ the number of studies
+
+$u$ the number of pairs $(y_{i}, v_{i})$ ranked in the same order, $l$
+the number of pairs in the opposite order
+
+$Z = (u - l)/\sqrt{n(n-1)(2n + 5)/18}$ \\ can be used as a test statistic (based on Kendall's Tau)
+\end{frame}
+
+\begin{frame}{Rank based tests}
+\citet{Schwarzer}
+Let $e_{t}$ the number of events in the treatment group
+
+Given constant log odds ratio, $E_{t}$ follows a hypergeometric distribution.
+
+$\mathbb{E}(E_{t})$ and the variance can be estimated and used as in 
+\citet{begg.ties}
+\end{frame}
+
+
+\begin{frame}{Test Results}
+Application of tests if:
+\begin{itemize}
+\item $n \geq 10$
+\item at least one statistically significant effect in a study
+\item $\frac{\sigma_{\textrm{max}}}{\sigma_{\textrm{min}}} > 4$
+\item $I^2 < 0.5$
+\end{itemize}
+
+From \Sexpr{dim(meta)[1]} with $n \geq 10$, \Sexpr{dim(metac)[1]} remain.
+\end{frame}
+
+% \begin{frame}[fragile]{Test Results: Significance}
 % 
-% \begin{frame}{Publication Bias in the Cochrane Library}
-% Publication bias tests applied for any meta analysis with n > 10
-% 
-% \vspace{-1.7cm}
-% \begin{figure}[fragile]
-% <<echo=FALSE, fig.height = 3.1, fig.width = 6.5 >>=
+% <<echo = FALSE, fig.height = 4>>=
 % grid.arrange(p.bin, p.cont, ncol = 2)
 % @
-% \end{figure}
-% \end{frame}
-% 
-% \begin{frame}{Publication Bias}
-% 
-% \begin{figure}
-% <<echo=FALSE, fig.height = 3.2, fig.width = 6.5 >>=
-% grid.arrange(pbias.time, pbias.ss, ncol = 2)
-% @
-% \end{figure}
-% \end{frame}
-% 
-% 
-% 
-% \begin{frame}{Publication Bias Adjustment}
-% Three approaches:
-% 
-% Trim-and-fill: Non-parametric
-% 
-% Copas: Selection modelling, estimation by sensitivity analysis
-% 
-% Regression: Estimation of a treatment effect with infinite sample size
 % \end{frame}
 
+\begin{frame}[fragile]{Continuous Outcome Test Results}
+$p$-values distribution:
+
+<<echo = FALSE, fig.height = 4, message = FALSE>>=
+plot(p.dist.cont)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Binary Outcome Test Results}
+$p$-values distribution:
+
+<<echo = FALSE, fig.height = 4, message = FALSE>>=
+plot(p.dist.bin)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Agreement in significance}
+Number of significant test results per meta-analysis:
+
+<<echo = FALSE, fig.height = 3.8, message = FALSE>>=
+grid.arrange(agree.cont, agree.bin, ncol = 2)
+@
+\end{frame}
+
+\begin{frame}{Small Study Effect Adjustment}
+Three methods:
+\begin{itemize}
+\item Regression
+\item Copas selection model
+\item Trim-and-fill
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Adjustment by regression}
+Similar to the tests, but with unnormalized effect $y_{i}$:
+
+\begin{align}
+y_{i} = \beta_{0} + \beta_{1}x_{i}
+\end{align}
+
+$\beta_{0}$	 corresponds to $y_{i}$ with $x_{i} = 0$
+\end{frame}
+
+\begin{frame}[fragile]{Adjustment by regression}
+Linear regression method:
+
+<<echo = FALSE, fig.height = 3>>=
+grid.arrange(reg.1, reg.2, ncol = 2)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Shrinkage Regression}
+Extended random effects model:
+
+\vspace{-4mm}
+\begin{align}
+y_{i} = \beta_{0} + \beta_{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{s_{i} + \tau^2}),  
+\epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1) \nonumber
+\end{align}
+
+\vspace{-8mm}
+\begin{align}
+\mathbb{E}(y_{i}) \rightarrow \beta_{0} + \beta_{1}\tau \textrm{ if } \sqrt{v_{i}} \rightarrow 0 \nonumber
+\end{align}
+
+$\beta_{0}, \beta_{1}$ and $\tau$ can be estimated e.g. by ML and REML.
+\end{frame}
+
+\begin{frame}[fragile]{Shrinkage Regression}
+shrinking the within study variance:
+
+\vspace{-4mm}
+\begin{align}
+y_{i} &= \beta_{0}^\star + \beta_{1}^\star(\sqrt{v_{i}/M + \tau^2}) + \epsilon_{i}(\sqrt{s_{i}/M + \tau^2}) \nonumber
+\end{align}
+
+Letting $M \rightarrow \infty$ and substituting for all parameters and the observed residual
+
+\vspace{-8mm}
+\begin{align}
+y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \beta_{0}^\star)
+\end{align}
+
+\end{frame}
+
+\begin{frame}[fragile]{Shrinkage Regression}
+Three different treatment effect estimates:
+
+\begin{align}
+y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \beta_{0}^\star)
+\end{align}
 
 
-
-
+\end{frame}
 
 
 
@@ -480,6 +593,8 @@ Rank based: Begg and Mazumdar's Test
   \bibliographystyle{apalike}
 \bibliography{illustration}
 \end{frame}
+
+
 
 %\appendix
 %% Possible backup slides...

@@ -49,37 +49,34 @@
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
-
 %% The most common packages are already included in:
 \usetheme{biostat}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\usepackage{amsmath,amsfonts,tikz}
+\usepackage{amsmath,amsfonts,tikz, amssymb}
 \usetikzlibrary{trees}
 
 %% Header data: (adjust to your needs:
 \def\uzhunit{Biostatistics}             %% if (not) needed comment/uncomment
 %\def\uzhunitext{STA480}
 
-\title{Publication Bias in the Cochrane Library of Systematic Reviews}
+\title{Publication Bias in Meta-Analysis}%[Publication Bias]
 %% Optional Argument in [Brackets]: Short Title for Footline
 
 %% The following are all optional, simply comment them
-%\subtitle{Subtitle (optional)}
+%\subtitle{Publication Bias in the Cochrane Libary}
 %\institute{Biostatistics Journal Club}  %% optional
 \author{Giuachin Kreiliger}
 %\date{\today}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 \maketitle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%% Start with slides here: put them between `\begin{frame}` and `\end{frame}`
-
-
-
-
 
 \begin{frame}{Cochrane Library}
 Database of high-quality, systematic reviews in clinical science.
@@ -123,12 +120,11 @@ Reviews are peer-reviewed and prepared after guidelines.
           }}
     }
     child [missing] {}
-    child { node {Comparison 1  }};
+    child { node {Comparison 1}};
 \end{tikzpicture}
 %\caption{Structure of a hypothetical review with two different comparisons\label{review.structure}}
 \label{review.structure}
 \end{figure}
-
 \end{frame}
 
 
@@ -141,11 +137,12 @@ Reviews are peer-reviewed and prepared after guidelines.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Review Example: binary outcome}
-Barbiturate efficacy in head injury
+
+\begin{frame}[fragile]{Review Example: binary outcome}
+Barbiturate efficacy for head injury treatment
 \vspace{-5mm}
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun May 12 21:11:51 2019
+% Tue May 14 15:03:41 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -172,19 +169,13 @@ Bohn 1989 & Barbiturate vs no b & Death at the end of & 11 & 41 & 11 & 41 \\
 \label{barbiturates}
 \end{table}
 
-
-% \vspace{-6mm}
-% echo = FALSE, results = 'asis'>>=
-% print(xtable(barbi1, label = "barbiturate.row", digits = 0),
-%       include.rownames = F, size = "tiny")
-% @
-
 \end{frame}
 
-\begin{frame}{Dataset Properties}
+
+\begin{frame}[fragile]{Dataset Properties}
 Missing data:
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun May 12 21:11:51 2019
+% Tue May 14 15:03:41 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lr}
@@ -201,10 +192,10 @@ Missing mean values and mean differences & 984 \\
 \end{frame}
 
 
-\begin{frame}{Dataset Properties}
+\begin{frame}[fragile]{Dataset Properties}
 Review and study properties:
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun May 12 21:11:51 2019
+% Tue May 14 15:03:41 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -226,11 +217,10 @@ Study sample size & 13 & 78 & 750 & 890 \\
 \end{frame}
 
 
-\begin{frame}{Pooling Studies - Meta-Analysis}
+\begin{frame}[fragile]{Pooling Studies - Meta-Analysis}
 Multiple results in a meta-analysis group can be pooled:
-
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun May 12 21:11:51 2019
+% Tue May 14 15:03:41 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -254,8 +244,6 @@ n & Number of groups & Cumulative sum of groups \\
 \label{repr.groups}
 \end{table}
 
-
-
 \end{frame}
 
 \begin{frame}{Meta-analysis}
@@ -270,12 +258,13 @@ Assumptions:
 \item Identical study settings (can be relaxed)
 \item Random sample of studies
 \end{itemize}
-
 \end{frame}
+
 
 \begin{frame}{Small Study Effects}
 ``The tendency for the smaller studies to show larger treatment effects'' \citep{Sterne}
 \end{frame}
+
 
 \begin{frame}{Small Study Effects}
 Causes:
@@ -287,65 +276,285 @@ Causes:
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Publication Bias Tests}
-Test for funnel plot asymmetry:
 
-\vspace{-1cm}
-\begin{figure}
+\begin{frame}{Small Study Effect Tests}
+Tests applicable if:
+\begin{itemize}
+\item $n$ large
+\item variation in the estimated variances of effects \\(here: $\frac{\sigma_{\textrm{max}}}{\sigma_{\textrm{min}}} > 4$)
+\end{itemize}
+Adjustments required if variance is dependent on effect size (e.g. log odds ratios)
+\end{frame}
+
+
+\begin{frame}[fragile]{Small Study Effect Tests}
+Funnel plots (continuous outcome examples):
+
+\vspace{-1.2cm}
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-6-1} 
 
 \end{knitrout}
-\end{figure}
+
 \end{frame}
 
-\begin{frame}{Publication Bias Tests}
-Critical: Number of studies in meta-analysis must be large ($\geq$ 10).
 
-Various tests for meta-analyses with continuous and binary outcomes:
+\begin{frame}[fragile]{Regression based Tests}
+Radial plots (continuous outcome examples):
 
-Regression based: Egger's, Peter's or Thompson and Sharp's test
+\vspace{-1.2cm}
 
-Rank based: Begg and Mazumdar's Test
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} 
+
+\end{knitrout}
+
 \end{frame}
+
+
+\begin{frame}{Regression based Tests}
+Continuous outcomes tests:
+
+$i$ being the $i$th study in a meta-analysis:
+
+Let $y_{i} = \textrm{effect}_{i}/\textrm{se}_{i}$ and $x_{i} = 1/\textrm{se}_{i}$
+\begin{itemize}
+\item \citet{Egger} : \\ $y_{i} \sim N(\beta_{0} + \beta_{1}x_{i}, v_{i})$
+\item \citet{thompson.sharp} : \\ $y_{i} \sim N(\beta_{0} + \beta_{1}x_{i}, v_{i} + \tau^2)$
+\end{itemize}
+%Test for non-zero intercept $\beta_{0}$
+\end{frame}
+
+\begin{frame}[fragile]{Egger's Tests}
+
+\vspace{-6cm}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## 
+## 	Linear regression test of funnel plot asymmetry
+## 
+## data:  meta.example
+## t = -4.095, df = 17, p-value = 0.0007548
+## alternative hypothesis: asymmetry in funnel plot
+## sample estimates:
+##       bias    se.bias      slope 
+## -2.4398295  0.5958069  0.2653786
+\end{verbatim}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-8-1} 
+\begin{kframe}\begin{verbatim}
+## 
+## 	Linear regression test of funnel plot asymmetry
+## 
+## data:  meta.nexample
+## t = 0.2718, df = 12, p-value = 0.7904
+## alternative hypothesis: asymmetry in funnel plot
+## sample estimates:
+##        bias     se.bias       slope 
+##   0.2324769   0.8553371 -21.2466388
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Thompson and Sharp's Tests}
+
+\vspace{-6.5cm}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## 
+## 	Linear regression test of funnel plot asymmetry (methods of
+## 	moment)
+## 
+## data:  meta.example
+## t = -3.9287, df = 17, p-value = 0.001082
+## alternative hypothesis: asymmetry in funnel plot
+## sample estimates:
+##       bias    se.bias      slope 
+## -2.4398295  0.6210298  0.2653786
+\end{verbatim}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-9-1} 
+\begin{kframe}\begin{verbatim}
+## 
+## 	Linear regression test of funnel plot asymmetry (methods of
+## 	moment)
+## 
+## data:  meta.nexample
+## t = -0.030699, df = 12, p-value = 0.976
+## alternative hypothesis: asymmetry in funnel plot
+## sample estimates:
+##         bias      se.bias        slope 
+##  -0.02266344   0.73825654 -20.60252776
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{frame}
+
+
+
+\begin{frame}{Regression based Tests}
+Adjustments for binary outcomes:
+\begin{itemize}
+\item \citet{Peters} :$x_{i}$ = inverse of total sample size, $\textrm{variance}_{i}$ as weight.
+\item \citet{Harbord} :$x:{i}$ = score of the log-likelihood of a proportion, $\textrm{variance}_{i}$ as weight.
+\item \citet{Rucker} :Use arcsine variance stabilizing transformation for variances and effects, do e.g. Egger's test.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Rank based tests}
+\citet{begg.ties}
+Let $y_{i}$ the standardized effect size of a study $i$, $v_{i}$ it's variance and $n$ the number of studies
+
+$u$ the number of pairs $(y_{i}, v_{i})$ ranked in the same order, $l$
+the number of pairs in the opposite order
+
+$Z = (u - l)/\sqrt{n(n-1)(2n + 5)/18}$ \\ can be used as a test statistic (based on Kendall's Tau)
+\end{frame}
+
+\begin{frame}{Rank based tests}
+\citet{Schwarzer}
+Let $e_{t}$ the number of events in the treatment group
+
+Given constant log odds ratio, $E_{t}$ follows a hypergeometric distribution.
+
+$\mathbb{E}(E_{t})$ and the variance can be estimated and used as in 
+\citet{begg.ties}
+\end{frame}
+
+
+\begin{frame}{Test Results}
+Application of tests if:
+\begin{itemize}
+\item $n \geq 10$
+\item at least one statistically significant effect in a study
+\item $\frac{\sigma_{\textrm{max}}}{\sigma_{\textrm{min}}} > 4$
+\item $I^2 < 0.5$
+\end{itemize}
+
+From 5338 with $n \geq 10$, 1602 remain.
+\end{frame}
+
+% \begin{frame}[fragile]{Test Results: Significance}
 % 
-% \begin{frame}{Publication Bias in the Cochrane Library}
-% Publication bias tests applied for any meta analysis with n > 10
-% 
-% \vspace{-1.7cm}
-% \begin{figure}[fragile]
-% <<echo=FALSE, fig.height = 3.1, fig.width = 6.5 >>=
+% <<echo = FALSE, fig.height = 4>>=
 % grid.arrange(p.bin, p.cont, ncol = 2)
 % @
-% \end{figure}
-% \end{frame}
-% 
-% \begin{frame}{Publication Bias}
-% 
-% \begin{figure}
-% <<echo=FALSE, fig.height = 3.2, fig.width = 6.5 >>=
-% grid.arrange(pbias.time, pbias.ss, ncol = 2)
-% @
-% \end{figure}
-% \end{frame}
-% 
-% 
-% 
-% \begin{frame}{Publication Bias Adjustment}
-% Three approaches:
-% 
-% Trim-and-fill: Non-parametric
-% 
-% Copas: Selection modelling, estimation by sensitivity analysis
-% 
-% Regression: Estimation of a treatment effect with infinite sample size
 % \end{frame}
 
+\begin{frame}[fragile]{Continuous Outcome Test Results}
+$p$-values distribution:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
+
+\end{knitrout}
+\end{frame}
+
+\begin{frame}[fragile]{Binary Outcome Test Results}
+$p$-values distribution:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
+
+\end{knitrout}
+\end{frame}
+
+\begin{frame}[fragile]{Agreement in significance}
+Number of significant test results per meta-analysis:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-12-1} 
+
+\end{knitrout}
+\end{frame}
+
+\begin{frame}{Small Study Effect Adjustment}
+Three methods:
+\begin{itemize}
+\item Regression
+\item Copas selection model
+\item Trim-and-fill
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Adjustment by regression}
+Similar to the tests, but with unnormalized effect $y_{i}$:
+
+\begin{align}
+y_{i} = \beta_{0} + \beta_{1}x_{i}
+\end{align}
+
+$\beta_{0}$	 corresponds to $y_{i}$ with $x_{i} = 0$
+\end{frame}
+
+\begin{frame}[fragile]{Adjustment by regression}
+Linear regression method:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-13-1} 
+
+\end{knitrout}
+\end{frame}
+
+\begin{frame}[fragile]{Shrinkage Regression}
+Extended random effects model:
+
+\vspace{-4mm}
+\begin{align}
+y_{i} = \beta_{0} + \beta_{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{s_{i} + \tau^2}),  
+\epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1) \nonumber
+\end{align}
+
+\vspace{-8mm}
+\begin{align}
+\mathbb{E}(y_{i}) \rightarrow \beta_{0} + \beta_{1}\tau \textrm{ if } \sqrt{v_{i}} \rightarrow 0 \nonumber
+\end{align}
+
+$\beta_{0}, \beta_{1}$ and $\tau$ can be estimated e.g. by ML and REML.
+\end{frame}
+
+\begin{frame}[fragile]{Shrinkage Regression}
+shrinking the within study variance:
+
+\vspace{-4mm}
+\begin{align}
+y_{i} &= \beta_{0}^\star + \beta_{1}^\star(\sqrt{v_{i}/M + \tau^2}) + \epsilon_{i}(\sqrt{s_{i}/M + \tau^2}) \nonumber
+\end{align}
+
+Letting $M \rightarrow \infty$ and substituting for all parameters and the observed residual
+
+\vspace{-8mm}
+\begin{align}
+y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \beta_{0}^\star)
+\end{align}
+
+\end{frame}
+
+\begin{frame}[fragile]{Shrinkage Regression}
+Three different treatment effect estimates:
+
+\begin{align}
+y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \beta_{0}^\star)
+\end{align}
 
 
-
-
+\end{frame}
 
 
 
@@ -355,6 +564,8 @@ Rank based: Begg and Mazumdar's Test
   \bibliographystyle{apalike}
 \bibliography{illustration}
 \end{frame}
+
+
 
 %\appendix
 %% Possible backup slides...

@@ -1,9 +1,44 @@
 \begin{thebibliography}{}
 
+\bibitem[Begg, 1988]{begg.ties}
+Begg, C.~B. (1988).
+\newblock Statistical methods in medical research p. armitage and g. berry,
+  blackwell scientific publications, oxford, u.k., 1987. no. of pages: 559.
+  price £22.50.
+\newblock {\em Statistics in Medicine}, 7(7):817--818.
+
+\bibitem[Egger et~al., 1997]{Egger}
+Egger, M., Smith, G.~D., Schneider, M., and Minder, C. (1997).
+\newblock Bias in meta-analysis detected by a simple, graphical test.
+\newblock {\em BMJ}, 315(7109):629--634.
+
+\bibitem[Harbord et~al., 2006]{Harbord}
+Harbord, R.~M., Egger, M., and Sterne, J. A.~C. (2006).
+\newblock A modified test for small-study effects in meta-analyses of
+  controlled trials with binary endpoints.
+\newblock {\em Statistics in Medicine}, 25(20):3443--3457.
+
+\bibitem[Peters et~al., 2006]{Peters}
+Peters, J., Sutton, A., R~Jones, D., Abrams, K., and Rushton, L. (2006).
+\newblock Comparison of two methods to detect publication bias in
+  meta-analysis.
+\newblock {\em JAMA : the journal of the American Medical Association},
+  295:676--80.
+
+\bibitem[Schwarzer et~al., 2007]{Schwarzer}
+Schwarzer, G., Antes, G., and Schumacher, M. (2007).
+\newblock A test for publication bias in meta-analysis with sparse binary data.
+\newblock {\em Statistics in Medicine}, 26(4):721--733.
+
 \bibitem[Sterne et~al., 2001]{Sterne}
 Sterne, J. A.~C., Egger, M., and Smith, G.~D. (2001).
 \newblock Investigating and dealing with publication and other biases in
   meta-analysis.
 \newblock {\em BMJ}, 323(7304):101--105.
+
+\bibitem[Thompson and Sharp, 1999]{thompson.sharp}
+Thompson, S.~G. and Sharp, S.~J. (1999).
+\newblock Explaining heterogeneity in meta-analysis: a comparison of methods.
+\newblock {\em Statistics in Medicine}, 18(20):2693--2708.
 
 \end{thebibliography}

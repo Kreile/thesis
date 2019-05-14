@@ -82,9 +82,10 @@ require(gridExtra)
 
 
 #Meta filtering: 
-metac.bin <- meta.bin %>% filter(n.sig.type > 1) %>% filter((min.se^2)/(max.se^2) > 4) %>% filter(I2 < 0.5)
-metac.cont <- meta.cont %>% filter(n.sig.type > 1) %>% filter((min.se^2)/(max.se^2) > 4) %>% filter(I2 < 0.5)
-metac <- meta %>% filter(n.sig.type > 1) %>% filter((min.se^2)/(max.se^2) > 4)
+#Meta filtering: 
+metac.bin <- meta.bin %>% filter(n.sig.type.bin > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac.cont <- meta.cont %>% filter(n.sig.type.cont > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac <- meta %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
 
 #Publication Bias Test Agreement:
 meta.bin %>% mutate(n.sig = peter.test + rucker.test + egger.test + harbord.test + schwarzer.test) %>% 

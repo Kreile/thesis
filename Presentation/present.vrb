@@ -1,0 +1,8 @@
+\frametitle{Shrinkage Regression}
+Three different treatment effect estimates:
+
+\begin{align}
+y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \beta_{0}^\star)
+\end{align}
+
+

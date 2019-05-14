@@ -54,3 +54,11 @@ Questions:
 
 - General approach: How to use dataset - also like a simulation dataset, to exploit properties of tests and methods? Because the properties found very likely will reflect future properties, and there could be some benefit from knowledge of such benefits.
 Also, is restriction to publication bias necessary?
+
+
+
+Schluss der Introduction: REsearch questions und Hypothesen: Quantifikation von PB und adjustierung und schauen wie sich der EFfekt ändert.
+
+p > 10
+
+Evt. frühere Forschung erwähnen: nicht nur binary outcomes, und mehr Daten. Ioannidis, Duval and Tweedie 2000

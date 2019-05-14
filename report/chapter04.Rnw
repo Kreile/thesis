@@ -114,14 +114,14 @@ If $\beta_{0} \ne 0$, the null hypothesis of no small study effect may be contes
 p &= 2*(1 - t_{n-1}(\beta_{0}/se(\beta_{0}))) \label{egger.pvalue}
 \end{align}
 
-\subsubsection{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}
+\subsubsection{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test} \label{Thompson}
 A method proposed in \citet{thompson.sharp} allows for between study heterogeneity. Let $\tau^2$ be equal to \ref{Tau.definition}. The effect size estimates are then assumed to be distributed as in \ref{t.sharp.regression}. 
 
 \begin{align}
-y_{i} \sim N(\beta_{0} + \beta{1}x_{i}, v_{i} + \tau^2) \label{t.sharp.regression}
+y_{i} \sim N(\beta_{0} + \beta_{1}x_{i}, v_{i} + \tau^2) \label{t.sharp.regression}
 \end{align}
 
-Then, a weighted regression is carried out with weights $1/v_{i}^\star$ based on the inverse of the variance as in \ref{ranef.study.variance}. Analogous to Edger's test, $\beta_{0}$ is then tested with respect to the null hypothesis $\beta{0} = 0$.
+Then, a weighted regression is carried out with weights $1/v_{i}^\star$ based on the inverse of the variance as in \ref{ranef.study.variance}. Analogous to Egger's test, $\beta_{0}$ is then tested with respect to the null hypothesis $\beta_{0} = 0$.
 
 \subsection{Dichotomous Outcomes Tests}
 
@@ -165,7 +165,7 @@ The standardized cell count deviation $(e_{t} - \mathbb{E}(E_{t}))/\sqrt(v_{i})$
 The correlation between variance and effect size of dichotomous outcome measures can be abolished by the variance stabilizing transformation for binomial random variables. Let 
 
 \begin{align}
-y_{i} = \arcsin{e_{t}/n_{t}} - \arcsin{e_{c}/n_{c}}// 
+y_{i} = \arcsin{e_{t}/n_{t}} - \arcsin{e_{c}/n_{c}} \\
 v_{i} = 1/4n_{t} + +/4n_{c}
 \end{align}
 
@@ -248,22 +248,22 @@ To find out if the null-hypothesis of, say, $\mu = 0$ can be rejected, another l
 In practice, only a range of values for $a,b$ are reasonable. For those values, the quantities above can be calculated and illustrated. Values for $\mu$ that have p-values over a predefined significance threshold can be used for inference of the effect size. 
 
 \subsection{Adjustment by Regression}
-There are multiple ways to adjust for small study effects by regression. The general idea is to regress the effect size of a study with a variance of zero based on the given effects and variances. 
+There are multiple ways to adjust for small study effects by regression. The general idea is to extrapolate the effect size of a study with a variance of zero based on the given effects and variances. 
 
 \citet{limitmeta} use a random effects model together with shrinkage procedure to obtain an unbiased estimate. Similarly to what has been seen in Copas selection model, we let $y_{i}$ depend on the intercept $\beta_{0}$ and on its standard error $\sqrt{v_{i}}$ as in \ref{limitmeta.regression}.
 
 \begin{align}
-y_{i}& = \beta_{0} + \beta{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{s_{i} + \tau^2}), \stackrel{\textrm{iid}}{\sim} N(0,1)  \ref{limitmeta.regression}
+y_{i}& = \beta_{0} + \beta_{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{s_{i} + \tau^2}), \epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1)  \label{limitmeta.regression}
 \end{align}
 
-$\beta{1}$ represents the bias introduced by small study effects, as can be seen when looking at \ref{limitmeta.infinitesample}
+$\beta_{1}$ represents the bias introduced by small study effects, as can be seen when looking at \ref{limitmeta.infinitesample}
 
 \begin{align}
-\mathbb{E}((y_{i} - \beta_{})/\sqrt{v_{i}}) \rightarrow \beta_{1} \textrm{if} \sqrt{v_{i}} \rightarrow \infty \\
+\mathbb{E}((y_{i} - \beta_{0})/\sqrt{v_{i}}) \rightarrow \beta_{1} \textrm{ if } \sqrt{v_{i}} \rightarrow \infty \label{limitmeta.infinitesample} \\
 \mathbb{E}(y_{i}) \rightarrow \beta_{0} + \beta_{1}\tau \textrm{if} \sqrt{v_{i}} \rightarrow 0 
 \end{align}
 
-After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen before e.g. in Thompson and Sharp's Test with weights also equal to Thompson and Sharp's Test.
+After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen before e.g. in Thompson and Sharp's Test with weights also equal to Thompson and Sharp's Test (see \ref{Thompson}).
 
 \vspace{0mm}
 To diminuish the random variation within studies, but keep the variation between studies, we change \ref{limitmeta.regression} to a scenario where each study has $M$-fold increased precision:
