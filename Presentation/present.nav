@@ -96,13 +96,21 @@
 \headcommand {\beamer@framepages {48}{48}}
 \headcommand {\slideentry {0}{0}{49}{49/49}{}{0}}
 \headcommand {\beamer@framepages {49}{49}}
-\headcommand {\sectionentry {1}{References}{50}{References}{0}}
-\headcommand {\beamer@sectionpages {1}{49}}
-\headcommand {\beamer@subsectionpages {1}{49}}
-\headcommand {\slideentry {1}{0}{0}{50/50}{}{0}}
+\headcommand {\slideentry {0}{0}{50}{50/50}{}{0}}
 \headcommand {\beamer@framepages {50}{50}}
-\headcommand {\beamer@partpages {1}{50}}
-\headcommand {\beamer@subsectionpages {1}{50}}
-\headcommand {\beamer@sectionpages {1}{50}}
-\headcommand {\beamer@documentpages {50}}
-\headcommand {\def \inserttotalframenumber {50}}
+\headcommand {\slideentry {0}{0}{51}{51/51}{}{0}}
+\headcommand {\beamer@framepages {51}{51}}
+\headcommand {\slideentry {0}{0}{52}{52/52}{}{0}}
+\headcommand {\beamer@framepages {52}{52}}
+\headcommand {\slideentry {0}{0}{53}{53/53}{}{0}}
+\headcommand {\beamer@framepages {53}{53}}
+\headcommand {\sectionentry {1}{References}{54}{References}{0}}
+\headcommand {\beamer@sectionpages {1}{53}}
+\headcommand {\beamer@subsectionpages {1}{53}}
+\headcommand {\slideentry {1}{0}{0}{54/54}{}{0}}
+\headcommand {\beamer@framepages {54}{54}}
+\headcommand {\beamer@partpages {1}{54}}
+\headcommand {\beamer@subsectionpages {1}{54}}
+\headcommand {\beamer@sectionpages {1}{54}}
+\headcommand {\beamer@documentpages {54}}
+\headcommand {\def \inserttotalframenumber {54}}

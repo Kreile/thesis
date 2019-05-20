@@ -245,7 +245,7 @@ p.cont <- metac.cont %>% ungroup() %>%
            color = "white")
 
 dat_text <- data.frame(
-  label = paste(c(sum(metac.cont$begg.test), sum(metac.cont$egger.test), sum(metac.cont$thomson.test)), "< 0.05,",
+  label = paste(c(sum(metac.cont$begg.test), sum(metac.cont$egger.test), sum(metac.cont$thomson.test)), "< 0.1,",
   							round(c(mean(metac.cont$begg.test), mean(metac.cont$egger.test), mean(metac.cont$thomson.test)),2)*100, "%"),
   test.type   = c("pval.begg.cont", "pval.egger.cont", "pval.thomson.cont"))
 
@@ -261,7 +261,7 @@ p.dist.cont <- metac.cont %>% ungroup() %>%
 
 	dat_text <- data.frame(
   label = paste(c(sum(metac.bin$harbord.test), sum(metac.bin$peter.test), 
-  										sum(metac.bin$rucker.test), sum(metac.bin$schwarzer.test)), "< 0.05,",
+  										sum(metac.bin$rucker.test), sum(metac.bin$schwarzer.test)), "< 0.1,",
   							round(c(mean(metac.bin$harbord.test), mean(metac.bin$peter.test), 
   										mean(metac.bin$rucker.test), mean(metac.bin$schwarzer.test)),2)*100, "%"),
   test.type   = c("pval.harbord.bin", "pval.peter.bin", "pval.rucker.bin", "pval.schwarzer.bin"))
@@ -358,13 +358,13 @@ copas.label$label[2] <- sub("11.5,", "11.5, \n   ", copas.label$label[2])
 
 hist.copas <- effect.diff %>% filter(!is.na(est.copas)) %>% ggplot(aes(x = abs(est.fixef - est.copas), fill = factor(fixef.copas.s))) +
 	geom_histogram() + facet_grid(~factor(fixef.copas)) + xlim(0, 2) + xlab("Effect difference") +
-	geom_text(data = copas.label, mapping = aes(label = label, x = 0, hjust = 0, y = 175), 
+	geom_text(data = copas.label, mapping = aes(label = label, x = 0, hjust = 0, y = 160), 
 						color = "black") + scale_fill_discrete(name="Effect direction") + theme_bw() +
 	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
 
 hist.copas1 <- effect.diff %>% filter(!is.na(est.copas)) %>% ggplot(aes(x = abs(est.fixef - est.copas))) +
 	geom_histogram() + facet_grid(~factor(fixef.copas)) + xlim(0, 2) + xlab("Effect difference") +
-	geom_text(data = copas.label, mapping = aes(label = label, x = 0, hjust = 0, y = 175), 
+	geom_text(data = copas.label, mapping = aes(label = label, x = 0, hjust = 0, y = 160), 
 						color = "black") + theme_bw() +
 	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
 
@@ -408,7 +408,7 @@ print(effect.diff %>% group_by(fixef.reg) %>% mutate(dif = abs(est.fixef - est.r
 
 
 #Scatterplots of metac-analysis and corrected log(abs(abs estimates
-ranef.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.ranef)))) + geom_point() + 
+ranef.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.ranef)))) + geom_point(size = 0.8) + 
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
 	xlab("Fixed effects log estimate") + ylab("Random effects log estimate") + ggtitle("Fixed effects to Random effects")
 
@@ -418,69 +418,69 @@ ranef.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log
 
 
 #Scatterplots of metac-analysis and corrected log(abs(abs estimates
-trimfill.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.trimfill.fixef)))) + geom_point() + 
+trimfill.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.trimfill.fixef)))) + geom_point(size = 0.8) + 
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
 	xlab("Fixed effects log estimate") + ylab("Trimfill log estimate") + ggtitle("Fixed effects to Trimfill")
 
-trimfill.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.trimfill.fixef)))) + geom_point() + 
+trimfill.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.trimfill.fixef)))) + geom_point(size = 0.8) + 
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
 	xlab("Random effects log estimate") + ylab("Trimfill log estimate") + ggtitle("Random effects to Trimfill")
 
 
 #Scatterplots of metac-analysis and corrected log estimates
-copas.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.copas)))) + geom_point() + 
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + xlim(0, 25) +
+copas.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.copas)))) + geom_point(size = 0.8) + 
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
 	xlab("Fixed effects log estimate") + ylab("Copas log estimate") + ggtitle("Fixed effects to Copas") 
 
-copas.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.copas)))) + geom_point() + 
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE, show.legend = T) + xlim(0, 20) +
+copas.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.copas)))) + geom_point(size = 0.8) + 
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE, show.legend = T) + 
 	xlab("Random effects log estimate") + ylab("Copas log estimate") + ggtitle("Random effects to Copas") 
 
 
 #Scatterplots of metac-analysis and corrected log estimates
-reg.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.reg.ranef)))) + geom_point() + 
+reg.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.reg.ranef)))) + geom_point(size = 0.8) + 
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
 	xlab("Fixed effects log estimate") + ylab("Regression log estimate") + ggtitle("Fixed effects to Regression")
 
-reg.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.reg.ranef)))) + geom_point() + 
+reg.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.reg.ranef)))) + geom_point(size = 0.8) + 
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
 	xlab("Random effects log estimate") + ylab("Regression log estimate") + ggtitle("Random effects to Regression")
 
 
 #Scatterplots of test- statistics:
-ranef.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.ranef))) + geom_point() +
+ranef.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.ranef))) + geom_point(size = 0.8) +
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
 	ggtitle("Fixed effects and Random effects z statistics") + ylab("Random effects statistic") + xlab("Fixed effects statistic")
 
-metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point() +
+metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point(size = 0.8) +
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
 	ggtitle("Fixed effects and Random effects z statistics") + ylab("Random effects statistic") + xlab("Fixed effects statistic")
 
 
 #Scatterplots of test- statistics:
-trimfill.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point() +
+trimfill.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point(size = 0.8) +
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
 	ggtitle("Fixed effects and trimfill z statistics") + ylab("Trimfill  statistic") + xlab("Fixed effects  statistic")
 
-trimfill.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.trimfill.fixef))) + geom_point() +
+trimfill.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.trimfill.fixef))) + geom_point(size = 0.8) +
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
 	ggtitle("Random effects and trimfill z statistics") + ylab("Trimfill statistic") + xlab("Random effects  statistic")
 
 #Scatterplots of test- statistics:
-copas.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.copas))) + geom_point() +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+copas.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.copas))) + geom_point(size = 0.8) +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + xlim(0, 25) +
 	ggtitle("Fixed effects and Copas z statistics") + ylab("Copas  statistic") + xlab("Fixed effects  statistic")
 
-copas.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.copas))) + geom_point() +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+copas.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.copas))) + geom_point(size = 0.8) +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + xlim(0, 20) +
 	ggtitle("Random effects and Copas z statistics") + ylab("Copas  statistic") + xlab("Random effects  statistic")
 
 #Scatterplots of test- statistics:
-reg.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.reg.ranef))) + geom_point() +
+reg.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.reg.ranef))) + geom_point(size = 0.8) +
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
 	ggtitle("Fixed effects and Regression z statistics") + ylab("Regression  statistic") + xlab("Fixed effects  statistic")
 
-reg.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.reg.ranef))) + geom_point() +
+reg.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.reg.ranef))) + geom_point(size = 0.8) +
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
 	ggtitle("Random effects and Regression z statistics") + ylab("Regression  statistic") + xlab("Random effects  statistic")
 
@@ -505,10 +505,41 @@ p.missing.trim <- metac %>% ggplot(aes(x = missing.trim)) + geom_histogram(bins 
 % \end{frame}
 
 \begin{frame}{Publication Bias}
-Availability of studies depends on the effect sizes thereof
+Studies with large effects are more likely to be published
 
-Thesis topic: Abundancy and extent of publication bias in clinical science
+Incentives for bad research practices ($p$-hacking...)
 \end{frame}
+
+\begin{frame}{Meta-Analysis}
+Aim to summarize evidence \& reach conclusions
+
+classical meta-analyses rely on random sample assumption
+\end{frame}
+
+\begin{frame}{Fixed Effects Meta-Analysis}
+Study $i$ of $n$ studies, effects $\theta_i$ and variances $v_i$, s.e. $s_i$
+
+Fixed effects estimate: weighted mean with $w_i = 1/\hat{v_i}$: 
+
+\begin{align}
+\theta_f &= \frac{\sum_{i = 1}^n w_{i}\theta_i}{\sum_{i = 1}^n w_i} \nonumber \\ 
+\textrm{se}(\theta_f) &= \frac{1}{\sqrt{\sum_{i = 1}^n w_i}} \nonumber
+\end{align}
+\end{frame}
+
+\begin{frame}{Random Effects Meta-Analysis}
+Let $\hat{\theta_i}|\theta_i \sim N(\theta_i, v_i) 
+\theta_i \sim N(\theta, \tau^2)$
+
+Random effects estimate: weigthed mean of $\hat{\theta_i}$ with weights $w_i = 1/(\hat{v_i} + \tau^2)$
+\end{frame}
+
+\begin{frame}{Evidence Based Medicine}
+Likely to base decisions on over-optimistic findings
+
+Direct consequences: patient harm and unnecessary research
+\end{frame}
+
 
 \begin{frame}{Cochrane Organisation}
 Aim: summarise findings in primary clinical research and health care
@@ -516,6 +547,10 @@ Aim: summarise findings in primary clinical research and health care
 Provide peer-reviewed, systematic reviews
 
 Public access (for some countries)
+\end{frame}
+
+\begin{frame}{Research Question}
+Quantify the abundance and impact of publication bias in the Cochrane Library
 \end{frame}
 
 
@@ -582,23 +617,6 @@ print(xtable(dataset.properties, digits = 0, align = "lrrrr"), include.rownames 
 
 
 
-\begin{frame}{Meta-analysis}
-Benefits:
-\begin{itemize}
-\item Summary of evidence (e.g. of a treatment effect)
-\item More reliable evidence (?)
-\end{itemize}
-
-Assumptions:
-\begin{itemize}
-\item Identical study settings (can be relaxed)
-\item Random sample of studies
-\end{itemize}
-\end{frame}
-
-
-
-
 \begin{frame}{Small Study Effects}
 ``The tendency for the smaller studies to show larger treatment effects'' \citep{Sterne}
 \end{frame}
@@ -608,7 +626,6 @@ Assumptions:
 Causes:
 \begin{itemize}
 \item Selective publication of studies with significant results - publication bias
-\item Selective reporting of most favorable outcomes
 \item Systematic differences in study settings
 \end{itemize}
 \end{frame}
@@ -659,7 +676,7 @@ Special methods for binary outcomes
 
 
 \begin{frame}{Regression based Tests}
-studies $i,.. ,n$, effects $\theta_i$ and variances $v_i$, s.e. $s_i$
+study $i$ of $n$ studies, effects $\theta_i$ and variances $v_i$, s.e. $s_i$
 
 $\theta_M$ is the pooled effect and $\tau^2$ the between-study variance.
 
@@ -705,7 +722,7 @@ abline(coef = coef(m.nex), lty = 2, col = 2)
 
 \begin{frame}{Rank based tests}
 \citet{begg.ties}: \\
-Let $y_{i}$ be $frac{\theta_i - \theta_M}{v_i}$ and $x_i$ its variance ($\neq v_i$)
+Let $y_{i}$ be $\frac{\theta_i - \theta_M}{v_i}$ and $x_i$ its variance ($\neq v_i$)
 
 $u$ the number of pairs $(y_{i}, x_{i})$ ranked in the same order, $l$
 the number of pairs in the opposite order
@@ -728,7 +745,7 @@ Inclusion criteria (from \citet{Ioannidis2007}):
 \begin{itemize}
 \item $n \geq 10$
 \item at least one statistically significant effect in a study
-\item $\frac{\sigma_{\textrm{max}}^2}{\sigma_{\textrm{min}}^2} > 4$
+\item $\frac{\hat{v_{\textrm{max}}}^2}{\hat{v_{\textrm{min}}}^2} > 4$
 \item $I^2 < 0.5$
 \end{itemize}
 
@@ -778,7 +795,7 @@ $y_i = \theta_i/s_i, x_i = 1/s_i$
 
 $y_i = \beta_0 + \beta_1 x_i, \epsilon_i \sim N(0, \sigma)$
 
-$\beta_{1}$ is the weighted mean treatment effect if $\beta_{0} = 0$
+$\beta_1$ is the weighted mean treatment effect if $\beta_0 = 0$
 \end{frame}
 
 
@@ -815,7 +832,7 @@ Extended random effects model:
 
 \vspace{-4mm}
 \begin{align}
-y_{i} = \beta_{0} + \beta_{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{v_{i} + \tau^2}), \nonumber \\
+\theta_i = \beta_0 + \beta_1(\sqrt{v_i + \tau^2}) + \epsilon_i(\sqrt{v_i + \tau^2}), \nonumber \\
 \epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1) \nonumber
 \end{align}
 
@@ -843,21 +860,21 @@ funnel(limitmeta(meta.nexample))
 
 \vspace{-8mm}
 \begin{align}
-y_{i} = \mu_{i} + \sigma_{i}\epsilon_{i} \label{population.model} \\
-\mu_{i} \sim N(\mu, \tau^2) \label{population.model} \\
-z_{i} = a + b/s_{i} + \delta_{i} \label{selection.model}
+\hat{\theta_i} = \theta_{i} + v_i\epsilon_i \label{population.model2} \\
+\theta_i \sim N(\theta, \tau^2) \label{population.model} \\
+z_i = a + b/s_i + \delta_i \label{selection.model}
 \end{align}
 
-\ref{population.model} is called population model, \ref{selection.model} the selection model
+\ref{population.model}, \ref{population.model2} is called population model, \ref{selection.model} the selection model
 
-$(\epsilon_{i}, \delta_{i})$ are standard normal residuals with correlation $\rho = cor(y_{i}, z_{i})$.
+$(\epsilon_i, \delta_i)$ are standard normal residuals with correlation $\rho = cor(y_i, z_i)$.
 \end{frame}
 
 
 \begin{frame}[fragile]{Sensitivity Analysis}
 Model the selection process with different $a,b$
 
-Test if small study effect is significant, by including \\ $y_{i} = \mu_{i} + \beta s_{i} + \sigma_{i}\epsilon_{i}$
+Test if small study effect is significant, by including \\ $\theta_i = \theta_i + \beta s_i + v_{i}\epsilon_i$
 
 Estimation: Select $a, b$ such that $H0$ can not be rejected and estimated
 number of unpublished studies is minimal.
@@ -875,8 +892,9 @@ funnel(meta.nexample)
 @
 \end{frame}
 
+
 \begin{frame}[fragile]{Results:}
-Difference between random and fixed effects meta-analysis estimate:
+Difference between random and fixed effects meta-analysis estimate: $|\theta_f - \theta_{r}|$
 
 \vspace{-3mm}
 <<echo = FALSE, fig.height = 3.6, message = FALSE, warning=FALSE>>=
@@ -886,7 +904,7 @@ plot(hist.ranef)
 
 
 \begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
-Difference between adjusted and fixed effects meta-analysis estimate:
+Absolute difference between adjusted and fixed effects meta-analysis estimate: $|{\theta_f} - {\theta_{\textrm{adjusted}}}|$
 
 \vspace{-3mm}
 <<echo = FALSE, fig.height = 3.6, message = FALSE, warning=FALSE>>=
@@ -896,7 +914,7 @@ plot(hist.trimfill1)
 
 
 \begin{frame}[fragile]{Adjustment Results: Copas}
-Difference between adjusted and fixed effects meta-analysis estimate:
+Absolute difference between adjusted and fixed effects meta-analysis estimate: $|{\theta_f} - {\theta_{\textrm{adjusted}}}|$
 
 \vspace{-3mm}
 <<echo = FALSE, fig.height = 3.6, message = FALSE, warning=FALSE>>=
@@ -906,7 +924,7 @@ plot(hist.copas1)
 
 
 \begin{frame}[fragile]{Adjustment Results: Regression}
-Difference between adjusted and fixed effects meta-analysis estimate:
+Absolute difference between adjusted and fixed effects meta-analysis estimate: $|{\theta_f} - {\theta_{\textrm{adjusted}}}|$
 
 \vspace{-3mm}
 <<echo = FALSE, fig.height = 3.6, message = FALSE, warning=FALSE>>=
@@ -983,7 +1001,7 @@ funnel.id(73169)
 \begin{frame}[fragile]{Extreme Results}
 RR Amplification by regression (+14), side effects
 
-<<echo = FALSE, fig.height = 3.5>>=
+<<echo = FALSE, fig.height = 3.5, warning=FALSE>>=
 limitmeta.id(119537)
 @
 \end{frame}

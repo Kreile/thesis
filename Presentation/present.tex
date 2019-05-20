@@ -86,10 +86,41 @@
 % \end{frame}
 
 \begin{frame}{Publication Bias}
-Availability of studies depends on the effect sizes thereof
+Studies with large effects are more likely to be published
 
-Thesis topic: Abundancy and extent of publication bias in clinical science
+Incentives for bad research practices ($p$-hacking...)
 \end{frame}
+
+\begin{frame}{Meta-Analysis}
+Aim to summarize evidence \& reach conclusions
+
+classical meta-analyses rely on random sample assumption
+\end{frame}
+
+\begin{frame}{Fixed Effects Meta-Analysis}
+Study $i$ of $n$ studies, effects $\theta_i$ and variances $v_i$, s.e. $s_i$
+
+Fixed effects estimate: weighted mean with $w_i = 1/\hat{v_i}$: 
+
+\begin{align}
+\theta_f &= \frac{\sum_{i = 1}^n w_{i}\theta_i}{\sum_{i = 1}^n w_i} \nonumber \\ 
+\textrm{se}(\theta_f) &= \frac{1}{\sqrt{\sum_{i = 1}^n w_i}} \nonumber
+\end{align}
+\end{frame}
+
+\begin{frame}{Random Effects Meta-Analysis}
+Let $\hat{\theta_i}|\theta_i \sim N(\theta_i, v_i) 
+\theta_i \sim N(\theta, \tau^2)$
+
+Random effects estimate: weigthed mean of $\hat{\theta_i}$ with weights $w_i = 1/(\hat{v_i} + \tau^2)$
+\end{frame}
+
+\begin{frame}{Evidence Based Medicine}
+Likely to base decisions on over-optimistic findings
+
+Direct consequences: patient harm and unnecessary research
+\end{frame}
+
 
 \begin{frame}{Cochrane Organisation}
 Aim: summarise findings in primary clinical research and health care
@@ -97,6 +128,10 @@ Aim: summarise findings in primary clinical research and health care
 Provide peer-reviewed, systematic reviews
 
 Public access (for some countries)
+\end{frame}
+
+\begin{frame}{Research Question}
+Quantify the abundance and impact of publication bias in the Cochrane Library
 \end{frame}
 
 
@@ -113,7 +148,7 @@ Public access (for some countries)
 Barbiturate efficacy for head injury treatment
 \vspace{-5mm}
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon May 20 19:53:25 2019
+% Mon May 20 22:21:48 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -182,7 +217,7 @@ Bohn 1989 & Barbiturate vs no b & Death at the end of & 11 & 41 & 11 & 41 \\
 \begin{frame}[fragile]{Dataset Properties}
 Review or study level:
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon May 20 19:53:25 2019
+% Mon May 20 22:21:48 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -205,23 +240,6 @@ Study years & 1981 & 2002 & 2000 & 2013 \\
 
 
 
-\begin{frame}{Meta-analysis}
-Benefits:
-\begin{itemize}
-\item Summary of evidence (e.g. of a treatment effect)
-\item More reliable evidence (?)
-\end{itemize}
-
-Assumptions:
-\begin{itemize}
-\item Identical study settings (can be relaxed)
-\item Random sample of studies
-\end{itemize}
-\end{frame}
-
-
-
-
 \begin{frame}{Small Study Effects}
 ``The tendency for the smaller studies to show larger treatment effects'' \citep{Sterne}
 \end{frame}
@@ -231,7 +249,6 @@ Assumptions:
 Causes:
 \begin{itemize}
 \item Selective publication of studies with significant results - publication bias
-\item Selective reporting of most favorable outcomes
 \item Systematic differences in study settings
 \end{itemize}
 \end{frame}
@@ -282,7 +299,7 @@ Special methods for binary outcomes
 
 
 \begin{frame}{Regression based Tests}
-studies $i,.. ,n$, effects $\theta_i$ and variances $v_i$, s.e. $s_i$
+study $i$ of $n$ studies, effects $\theta_i$ and variances $v_i$, s.e. $s_i$
 
 $\theta_M$ is the pooled effect and $\tau^2$ the between-study variance.
 
@@ -318,7 +335,7 @@ Test for non-zero intercept $\beta_{0}$
 
 \begin{frame}{Rank based tests}
 \citet{begg.ties}: \\
-Let $y_{i}$ be $frac{\theta_i - \theta_M}{v_i}$ and $x_i$ its variance ($\neq v_i$)
+Let $y_{i}$ be $\frac{\theta_i - \theta_M}{v_i}$ and $x_i$ its variance ($\neq v_i$)
 
 $u$ the number of pairs $(y_{i}, x_{i})$ ranked in the same order, $l$
 the number of pairs in the opposite order
@@ -341,7 +358,7 @@ Inclusion criteria (from \citet{Ioannidis2007}):
 \begin{itemize}
 \item $n \geq 10$
 \item at least one statistically significant effect in a study
-\item $\frac{\sigma_{\textrm{max}}^2}{\sigma_{\textrm{min}}^2} > 4$
+\item $\frac{\hat{v_{\textrm{max}}}^2}{\hat{v_{\textrm{min}}}^2} > 4$
 \item $I^2 < 0.5$
 \end{itemize}
 
@@ -397,7 +414,7 @@ $y_i = \theta_i/s_i, x_i = 1/s_i$
 
 $y_i = \beta_0 + \beta_1 x_i, \epsilon_i \sim N(0, \sigma)$
 
-$\beta_{1}$ is the weighted mean treatment effect if $\beta_{0} = 0$
+$\beta_1$ is the weighted mean treatment effect if $\beta_0 = 0$
 \end{frame}
 
 
@@ -420,7 +437,7 @@ Extended random effects model:
 
 \vspace{-4mm}
 \begin{align}
-y_{i} = \beta_{0} + \beta_{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{v_{i} + \tau^2}), \nonumber \\
+\theta_i = \beta_0 + \beta_1(\sqrt{v_i + \tau^2}) + \epsilon_i(\sqrt{v_i + \tau^2}), \nonumber \\
 \epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1) \nonumber
 \end{align}
 
@@ -448,21 +465,21 @@ Funnel plot with effect with infinite precision:
 
 \vspace{-8mm}
 \begin{align}
-y_{i} = \mu_{i} + \sigma_{i}\epsilon_{i} \label{population.model} \\
-\mu_{i} \sim N(\mu, \tau^2) \label{population.model} \\
-z_{i} = a + b/s_{i} + \delta_{i} \label{selection.model}
+\hat{theta_i} = \theta_{i} + v_i\epsilon_i \label{population.model2} \\
+\theta_i \sim N(\theta, \tau^2) \label{population.model} \\
+z_i = a + b/s_i + \delta_i \label{selection.model}
 \end{align}
 
-\ref{population.model} is called population model, \ref{selection.model} the selection model
+\ref{population.model}, \ref{population.model2} is called population model, \ref{selection.model} the selection model
 
-$(\epsilon_{i}, \delta_{i})$ are standard normal residuals with correlation $\rho = cor(y_{i}, z_{i})$.
+$(\epsilon_i, \delta_i)$ are standard normal residuals with correlation $\rho = cor(y_i, z_i)$.
 \end{frame}
 
 
 \begin{frame}[fragile]{Sensitivity Analysis}
 Model the selection process with different $a,b$
 
-Test if small study effect is significant, by including \\ $y_{i} = \mu_{i} + \beta s_{i} + \sigma_{i}\epsilon_{i}$
+Test if small study effect is significant, by including \\ $\theta_i = \theta_i + \beta s_i + v_{i}\epsilon_i$
 
 Estimation: Select $a, b$ such that $H0$ can not be rejected and estimated
 number of unpublished studies is minimal.
@@ -480,8 +497,9 @@ Mirror studies that cause asymmetry:
 \end{knitrout}
 \end{frame}
 
+
 \begin{frame}[fragile]{Results:}
-Difference between random and fixed effects meta-analysis estimate:
+Difference between random and fixed effects meta-analysis estimate: $|\theta_f - \theta_{r}|$
 
 \vspace{-3mm}
 \begin{knitrout}
@@ -493,7 +511,7 @@ Difference between random and fixed effects meta-analysis estimate:
 
 
 \begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
-Difference between adjusted and fixed effects meta-analysis estimate:
+Absolute difference between adjusted and fixed effects meta-analysis estimate: $|{\theta_f} - {\theta_{\textrm{adjusted}}}|$
 
 \vspace{-3mm}
 \begin{knitrout}
@@ -505,7 +523,7 @@ Difference between adjusted and fixed effects meta-analysis estimate:
 
 
 \begin{frame}[fragile]{Adjustment Results: Copas}
-Difference between adjusted and fixed effects meta-analysis estimate:
+Absolute difference between adjusted and fixed effects meta-analysis estimate: $|{\theta_f} - {\theta_{\textrm{adjusted}}}|$
 
 \vspace{-3mm}
 \begin{knitrout}
@@ -517,7 +535,7 @@ Difference between adjusted and fixed effects meta-analysis estimate:
 
 
 \begin{frame}[fragile]{Adjustment Results: Regression}
-Difference between adjusted and fixed effects meta-analysis estimate:
+Absolute difference between adjusted and fixed effects meta-analysis estimate: $|{\theta_f} - {\theta_{\textrm{adjusted}}}|$
 
 \vspace{-3mm}
 \begin{knitrout}
@@ -611,12 +629,7 @@ RR Reduction by copas selection model (-4), pain relief
 RR Amplification by regression (+14), side effects
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning in summary.lm(reg): essentially perfect fit: summary may be unreliable}}
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning in summary.lm(reg): essentially perfect fit: summary may be unreliable}}\end{kframe}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-22-1} 
 
 \end{knitrout}
