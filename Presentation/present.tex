@@ -85,6 +85,12 @@
 % 
 % \end{frame}
 
+\begin{frame}{Publication Bias}
+Availability of studies depends on the effect sizes thereof
+
+Thesis topic: Abundancy and extent of publication bias in clinical science
+\end{frame}
+
 \begin{frame}{Cochrane Organisation}
 Aim: summarise findings in primary clinical research and health care
 
@@ -107,7 +113,7 @@ Public access (for some countries)
 Barbiturate efficacy for head injury treatment
 \vspace{-5mm}
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon May 20 09:38:22 2019
+% Mon May 20 19:53:25 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -176,7 +182,7 @@ Bohn 1989 & Barbiturate vs no b & Death at the end of & 11 & 41 & 11 & 41 \\
 \begin{frame}[fragile]{Dataset Properties}
 Review or study level:
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon May 20 09:38:22 2019
+% Mon May 20 19:53:25 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -214,6 +220,8 @@ Assumptions:
 \end{frame}
 
 
+
+
 \begin{frame}{Small Study Effects}
 ``The tendency for the smaller studies to show larger treatment effects'' \citep{Sterne}
 \end{frame}
@@ -224,47 +232,53 @@ Causes:
 \begin{itemize}
 \item Selective publication of studies with significant results - publication bias
 \item Selective reporting of most favorable outcomes
-\item Systematical differences in study settings
+\item Systematic differences in study settings
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Small Study Effect Tests}
-Tests applicable if:
+Different approaches:
 \begin{itemize}
-\item Number of studies $n$ large
-\item variation in the estimated variances of effects %\\(here: $\frac{\sigma_{\textrm{max}}}{\sigma_{\textrm{min}}} > 4$)
+\item Simple linear regression
+\item Rank correlation
 \end{itemize}
-Adjustments required if variance is dependent on effect size (e.g. log odds ratios)
+
+Special methods for binary outcomes	
 \end{frame}
 
 
-\begin{frame}[fragile]{Small Study Effect Tests}
-Funnel plots (continuous outcome examples):
-
-\vspace{-1.2cm}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-4-1} 
-
-\end{knitrout}
-
-\end{frame}
-
-
-\begin{frame}[fragile]{Regression based Tests}
-Radial plots (continuous outcome examples):
-
-\vspace{-1.1cm}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-5-1} 
-
-\end{knitrout}
-
-\end{frame}
+% \begin{frame}[fragile]{Small Study Effect Tests}
+% Funnel plots (continuous outcome examples):
+% 
+% \vspace{-1.2cm}
+% 
+% <<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+% par(las = 1, mfrow = c(1, 2))
+% funnel(meta.example)
+% funnel(meta.nexample)
+% @
+% 
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Regression based Tests}
+% Radial plots (continuous outcome examples):
+% 
+% \vspace{-1.1cm}
+% 
+% <<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+% par(las = 1, mfrow = c(1,2))
+% biased.rev$inv <- 1/biased.rev$se
+% plot(y = (biased.rev$effect/biased.rev$se), x = (biased.rev$se^-1), xlim = c(0, 6), xlab = "inverse standard error", 
+% 		 ylab = "mean diff. / std. error")
+% 
+% unbiased.rev$inv <- 1/unbiased.rev$se
+% plot(y = (unbiased.rev$effect/unbiased.rev$se), x = (unbiased.rev$inv), xlim = c(0, 1.2), 
+% 		 ylim = c(-18, 0), xlab = "inverse standard error", ylab = "mean diff. / std. error")
+% @
+% 
+% \end{frame}
 
 
 \begin{frame}{Regression based Tests}
@@ -286,7 +300,7 @@ Test for non-zero intercept $\beta_{0}$
 \vspace{-1.1cm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-6-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-4-1} 
 
 \end{knitrout}
 \end{frame}
@@ -342,7 +356,7 @@ $p$-values distribution, $n$ = 294:
 \vspace{-2mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-5-1} 
 
 \end{knitrout}
 \end{frame}
@@ -353,7 +367,7 @@ $p$-values distribution, $n$ = 1190:
 \vspace{-2mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-8-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-6-1} 
 
 \end{knitrout}
 \end{frame}
@@ -364,7 +378,7 @@ Number of significant test results per meta-analysis:
 \vspace{-2mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-9-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} 
 
 \end{knitrout}
 \end{frame}
@@ -394,7 +408,7 @@ Radial plots (continuous outcome examples):
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-8-1} 
 
 \end{knitrout}
 \end{frame}
@@ -416,21 +430,21 @@ as corrected treatment efffect.
 
 
 
-\begin{frame}[fragile]{Shrinkage Regression}
+\begin{frame}[fragile]{Limit Meta-Analysis}
 Funnel plot with effect with infinite precision:
 
 \vspace{-1.1cm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-9-1} 
 
 \end{knitrout}
 \end{frame}
 
 
 
-\begin{frame}{Copas selection model}
-\citet{Copas1}: Bivariate normal model with two parts:
+\begin{frame}{Selection model}
+\citet{Copas1}: model based on a bivariate normal distribution:
 
 \vspace{-8mm}
 \begin{align}
@@ -456,12 +470,27 @@ number of unpublished studies is minimal.
 
 
 \begin{frame}{Trim-and-Fill}
-Non-parametric, iterative method:
+Mirror studies that cause asymmetry:
+\vspace{-1.2cm}
 
-Cut away smallest study until funnel plot is symmetric
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
 
-Mirror studies that are responsible for asymmetry
+\end{knitrout}
 \end{frame}
+
+\begin{frame}[fragile]{Results:}
+Difference between random and fixed effects meta-analysis estimate:
+
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
+
+\end{knitrout}
+\end{frame}
+
 
 \begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
 Difference between adjusted and fixed effects meta-analysis estimate:
@@ -498,13 +527,26 @@ Difference between adjusted and fixed effects meta-analysis estimate:
 \end{knitrout}
 \end{frame}
 
+
+\begin{frame}[fragile]{Results:}
+Random and fixed effects meta-analyses test statistics:
+
+\vspace{-3mm} 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-15-1} 
+
+\end{knitrout}
+\end{frame}
+
+
 \begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
 Adjusted and meta-analysis test statistics:
 
 \vspace{-3mm} 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-15-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-16-1} 
 
 \end{knitrout}
 \end{frame}
@@ -516,7 +558,7 @@ Adjusted and meta-analysis test statistics:
 \vspace{-3mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-16-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-17-1} 
 
 \end{knitrout}
 \end{frame}
@@ -528,10 +570,76 @@ Adjusted and meta-analysis test statistics:
 \vspace{-3mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-17-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-18-1} 
 
 \end{knitrout}
 \end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results}
+Missing study proportions:
+
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-19-1} 
+
+\end{knitrout}
+\end{frame}
+
+\begin{frame}[fragile]{Extreme Results}
+RR reduction by trimfill (-3.9), side effects
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-20-1} 
+
+\end{knitrout}
+\end{frame}
+
+\begin{frame}[fragile]{Extreme Results}
+RR Reduction by copas selection model (-4), pain relief
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-21-1} 
+
+\end{knitrout}
+\end{frame}
+
+\begin{frame}[fragile]{Extreme Results}
+RR Amplification by regression (+14), side effects
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in summary.lm(reg): essentially perfect fit: summary may be unreliable}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in summary.lm(reg): essentially perfect fit: summary may be unreliable}}\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-22-1} 
+
+\end{knitrout}
+\end{frame}
+
+\begin{frame}[fragile]{Discussion}
+\begin{itemize}
+\item Proportion of positive tests is well above 10\%
+\item Effect sizes and evidence for treatment effect is diminishued
+\item Limitations: not only primary outcomes, adjustment methods known to
+perform poorly under the 0
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Outlook}
+\begin{itemize}
+\item Connect results with different medical fields, look for differences
+\item Connect results with single studies and journals (?)
+\end{itemize}
+\end{frame}
+
+
 
 
 
@@ -553,7 +661,7 @@ Treatment effect difference:
 \vspace{-3mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-18-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-23-1} 
 
 \end{knitrout}
 \end{frame}
@@ -565,7 +673,7 @@ Treatment effect difference:
 \vspace{-3mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-19-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-24-1} 
 
 \end{knitrout}
 \end{frame}
@@ -577,12 +685,21 @@ Treatment effect difference:
 \vspace{-3mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-20-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-25-1} 
 
 \end{knitrout}
 \end{frame}
 
+\begin{frame}[fragile]{Results}
+log treatment effect estimates:
 
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-26-1} 
+
+\end{knitrout}
+\end{frame}
 
 \begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
 log treatment effect estimates:
@@ -590,7 +707,7 @@ log treatment effect estimates:
 \vspace{-3mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-21-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-27-1} 
 
 \end{knitrout}
 \end{frame}
@@ -602,7 +719,7 @@ log treatment effect estimates:
 \vspace{-3mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-22-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-28-1} 
 
 \end{knitrout}
 \end{frame}
@@ -614,10 +731,12 @@ log treatment effect estimates:
 \vspace{-3mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-23-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-29-1} 
 
 \end{knitrout}
 \end{frame}
+
+
 
 
 

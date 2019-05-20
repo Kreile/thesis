@@ -56,24 +56,6 @@ if (file.exists(file.path(PATH_RESULTS, file.meta))) {
   save(meta, file =  file.path(PATH_RESULTS, file.meta))
 }
 
-
-file.cont <- "mly.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-  load(file.path(PATH_RESULTS, file.cont))
-} else {
-  data.cont <- mly.cont(data.ext, 0.05, min.study.number = 2)
-  save(data.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.bin <- "mly.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-  load(file.path(PATH_RESULTS, file.bin))
-} else {
-  data.bin <- mly.bin(data.ext, 0.05, min.study.number = 2)
-  save(data.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-
 require(biostatUZH)
 require(tidyverse)
 require(meta)

@@ -166,31 +166,43 @@ reg.ranef.sc <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.
 ########################################################################################################################
 ########################################################################################################################
 
+#Scatterplots of test- statistics:
+trimfill.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Fixed effects and trimfill z statistics") + ylab("Trimfill  statistic") + xlab("Fixed effects  statistic")
+
+trimfill.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.trimfill.fixef))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Random effects and trimfill z statistics") + ylab("Trimfill  statistic") + xlab("Random effects  statistic")
+
+#Scatterplots of test- statistics:
+copas.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.copas))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Fixed effects and Copas z statistics") + ylab("Copas  statistic") + xlab("Fixed effects  statistic")
+
+copas.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.copas))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Random effects and Copas z statistics") + ylab("Copas  statistic") + xlab("Random effects  statistic")
+
+#Scatterplots of test- statistics:
+reg.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.reg.ranef))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Fixed effects and Regression z statistics") + ylab("Regression  statistic") + xlab("Fixed effects  statistic")
+
+reg.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.reg.ranef))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Random effects and Regression z statistics") + ylab("Regression  statistic") + xlab("Random effects  statistic")
 
 
-#Scatterplots of test-log statistics:
-metac %>% ggplot(aes(x = log(abs(zval.fixef), y = log(abs(zval.reg.ranef))) + geom_point() +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-	ggtitle("Fixed effects and trimfill z statistics") + ylab("Trimfill log statistic") + xlab("Fixed effects log statistic")
 
-metac %>% ggplot(aes(x = log(abs(zval.ranef), y = log(abs(zval.reg.ranef))) + geom_point() +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-	ggtitle("Random effects and trimfill z statistics") + ylab("Trimfill log statistic") + xlab("Random effects log statistic")
-	
-	#Scatterplots of test-log statistics:
-	metac %>% ggplot(aes(x = log(abs(zval.fixef), y = log(abs(zval.trimfill.fixef))) + geom_point() +
-											 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-											 	ggtitle("Fixed effects and trimfill z statistics") + ylab("Trimfill log statistic") + xlab("Fixed effects log statistic")
-											 
-											 metac %>% ggplot(aes(x = log(abs(zval.ranef), y = log(abs(zval.trimfill.fixef))) + geom_point() +
-											 										 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-											 										 	ggtitle("Random effects and trimfill z statistics") + ylab("Trimfill log statistic") + xlab("Random effects log statistic")
-											 										 
-											 										 #Scatterplots of test-log statistics:
-											 										 metac %>% ggplot(aes(x = log(abs(zval.fixef), y = log(abs(zval.copas))) + geom_point() +
-											 										 										 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-											 										 										 	ggtitle("Fixed effects and trimfill z statistics") + ylab("Trimfill log statistic") + xlab("Fixed effects log statistic")
-											 										 										 
-											 										 										 metac %>% ggplot(aes(x = log(abs(zval.ranef), y = log(abs(zval.copas))) + geom_point() +
-											 										 										 										 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-											 										 										 										 	ggtitle("Random effects and trimfill z statistics") + ylab("Trimfill log statistic") + xlab("Random effects log statistic")
+
+#####
+
+
+p.missing.copas <- metac %>% ggplot(aes(x = missing.copas/n)) + geom_histogram(bins = 20) + 
+	xlim(0, 0.5) + ylim(0, 200) + xlab("Proportion of missing studies") + ggtitle("Copas selection model") + theme_bw()
+p.missing.trim <- metac %>% ggplot(aes(x = missing.trim)) + geom_histogram(bins = 20) + 
+	xlim(0, 0.5) + ylim(0, 200) + xlab("Proportion of missing studies") + ggtitle("Trim-and-fill") + theme_bw()
+grid.arrange(p.missing.copas, p.missing.trim, ncol = 2) 
+
+

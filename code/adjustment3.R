@@ -24,9 +24,38 @@ meta.id <- function(meta.id.tolook){
 	if(any(is.na(dt$events1)) | all(dt$events1 == 0)){
 		meta.ex <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name, data = dt)
 	} else{
-		meta.ex <- metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "RR", data = dt)
+		meta.ex <- metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "RR", data = dt, method = "Inverse")
 	}
 	return(meta.ex)
+}
+
+funnel.id <- function(meta.id.tolook){
+	funnel(meta.id(meta.id.tolook))
+}
+
+trimfill.id <- function(meta.id.tolook){
+	funnel(trimfill(meta.id(meta.id.tolook)))
+}
+
+limitmeta.id <- function(meta.id.tolook){
+	funnel(limitmeta(meta.id(meta.id.tolook)))
+}
+
+copas.id <- function(meta.id.tolook){
+	auto.copas(meta.id(meta.id.tolook), 0.1)
+}
+
+setting.id <- function(meta.id.tolook){
+	return(meta %>% filter(meta.id == meta.id.tolook) %>% select(comparison.name, comparison.nr, outcome.name, sungroup.name))
+}
+
+est.id <- function(meta.id.tolook){
+	return(meta %>% filter(meta.id == meta.id.tolook) %>% select(est.fixef, est.ranef, est.copas, est.trimfill.fixef, est.reg.ranef))
+}
+
+single.study.id <- function(meta.id.tolook){
+	return(print(data.ext %>% filter(meta.id == meta.id.tolook) %>% select(study.name, effect, se, total1, total2, events1, events2, mean1, mean2) %>% 
+							 	arrange(se), n = 200))
 }
 
 file.dat <- "data.RData"
@@ -47,7 +76,7 @@ file.bin <- "pb.bin.RData"
 if (file.exists(file.path(PATH_RESULTS, file.bin))) {
 	load(file.path(PATH_RESULTS, file.bin))
 } else {
-	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
+	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm1 = "RR")
 	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
 }
 
@@ -115,6 +144,10 @@ effect.diff <- metac %>% mutate(
 trimfill.miss <- effect.diff %>% group_by(fixef.trimfill) %>% mutate(dif = abs(est.fixef - est.trimfill.fixef)) %>% 
 	filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% select(label, fixef.trimfill.s, meta.id, type)
 
+print(effect.diff %>% group_by(fixef.trimfill) %>% mutate(dif = abs(est.fixef - est.trimfill.fixef)) %>% 
+	filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% 
+	select(label, fixef.trimfill.s, meta.id, type, comparison.name, outcome.name), n = 200)
+
 trimfill.label <- data.frame(label = paste("missing:", c(paste(trimfill.miss$label[trimfill.miss$fixef.trimfill == "Reduction"], collapse = ", "),
 																												 paste(trimfill.miss$label[trimfill.miss$fixef.trimfill == "Amplification"], collapse = ", "))),
 														fixef.trimfill = unique(trimfill.miss$fixef.trimfill), 
@@ -126,8 +159,11 @@ effect.diff %>% ggplot(aes(x = abs(est.fixef - est.trimfill.fixef), fill = facto
 	geom_text(data = trimfill.label, mapping = aes(label = label, x = 1.25, y = 200), 
 						color = "black") + scale_fill_discrete(name="Effect direction") + theme_bw()
 
+print(effect.diff %>% group_by(fixef.trimfill) %>% mutate(dif = abs(est.fixef - est.trimfill.fixef)) %>% 
+				filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% 
+				select(label, fixef.trimfill.s, meta.id, type), n = 200)
 
-
+#Odds ratio reduction by 3.9
 funnel(trimfill(meta.id(165815)))
 
 
@@ -147,8 +183,9 @@ effect.diff %>% filter(!is.na(est.copas)) %>% ggplot(aes(x = abs(est.fixef - est
 
 funnel(meta.id(56200))
 
-reg.ranef.miss <- effect.diff %>% group_by(fixef.reg) %>% mutate(dif = abs(est.fixef - est.reg.ranef)) %>% 
-	filter(dif > 3) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% select(label, fixef.reg.s, meta.id, type)
+print(effect.diff %>% group_by(fixef.copas) %>% mutate(dif = abs(est.fixef - est.copas)) %>% 
+				filter(dif > 2) %>% filter(fixef.trimfill == "Amplification") %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% 
+				select(label,  meta.id, type, comparison.name, outcome.name), n = 200)
 
 reg.ranef.label <- data.frame(label = paste("missing:", c(paste(reg.ranef.miss$label[reg.ranef.miss$fixef.reg == "Reduction"], collapse = ", "),
 																											paste(reg.ranef.miss$label[reg.ranef.miss$fixef.reg == "Amplification"], collapse = ", "))),

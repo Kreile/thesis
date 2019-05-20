@@ -191,7 +191,7 @@ y_{i} \sim N(\mu_{i}, \sigma_{i}^2) \\
 \mu_{i} \sim N(\mu, \tau^2)
 \end{align}
 
-corresponding to a standard random effects model. $\mu$ is the overall mean effect, $\sigma_{i}^2$ the within study variance and $\tau^2$ the between study variance. This is the \textit{population model}.
+corresponding to a standard random effects meta-analysis. $\mu$ is the overall mean effect, $\sigma_{i}^2$ the within study variance and $\tau^2$ the between study variance. This is the \textit{population model}.
 
 \vspace{0mm}
 The \textit{selection model} is defined as follows. Suppose a selection of studies with reported standard errors $s$ (likely different from $\sigma$). Only a proportion 

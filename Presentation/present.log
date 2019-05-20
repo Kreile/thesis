@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.3.6)  20 MAY 2019 09:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.3.6)  20 MAY 2019 19:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1143,18 +1143,18 @@ LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <20> not available
 
  <./uzh_logo_e_pos.pdf>]
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <12> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 94.
-LaTeX Font Info:    Try loading font information for U+msa on input line 94.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 92.
+LaTeX Font Info:    Try loading font information for U+msa on input line 92.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 94.
+LaTeX Font Info:    Try loading font information for U+msb on input line 92.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+wasy on input line 94.
+LaTeX Font Info:    Try loading font information for U+wasy on input line 92.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/wasysym/uwasy.fd
 File: uwasy.fd 2003/10/30 v2.0 Wasy-2 symbol font definitions
@@ -1163,17 +1163,19 @@ File: uwasy.fd 2003/10/30 v2.0 Wasy-2 symbol font definitions
 ] [3
 
 ]
+[4
+
+]
 \openout4 = `present.vrb'.
 
-
-(./present.vrb
+ (./present.vrb
 Overfull \hbox (32.09444pt too wide) in paragraph at lines 9--30
  [] 
  []
 
-) [4
+) [5
 
-] [5
+] [6
 
 ]
 \openout4 = `present.vrb'.
@@ -1183,9 +1185,7 @@ Overfull \hbox (20.81743pt too wide) in paragraph at lines 8--21
  [] 
  []
 
-) [6
-
-] [7
+) [7
 
 ] [8
 
@@ -1193,160 +1193,160 @@ Overfull \hbox (20.81743pt too wide) in paragraph at lines 8--21
 
 ] [10
 
+] [11
+
+] [12
+
 ]
 \openout4 = `present.vrb'.
 
  (./present.vrb
-<figure/unnamed-chunk-4-1.pdf, id=86, 505.89pt x 289.08pt>
+<figure/unnamed-chunk-4-1.pdf, id=105, 505.89pt x 289.08pt>
 File: figure/unnamed-chunk-4-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-4-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-4-1.pdf used on input line 8.
+Package pdftex.def Info: figure/unnamed-chunk-4-1.pdf used on input line 7.
 (pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
-) [11
+) [13
 
  <./figure/unnamed-chunk-4-1.pdf>]
-\openout4 = `present.vrb'.
-
-
-(./present.vrb <figure/unnamed-chunk-5-1.pdf, id=98, 505.89pt x 289.08pt>
-File: figure/unnamed-chunk-5-1.pdf Graphic file (type pdf)
-
-<use figure/unnamed-chunk-5-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-5-1.pdf used on input line 8.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
-) [12
-
- <./figure/unnamed-chunk-5-1.pdf>]
-[13
-
-]
-\openout4 = `present.vrb'.
-
- (./present.vrb
-<figure/unnamed-chunk-6-1.pdf, id=124, 505.89pt x 289.08pt>
-File: figure/unnamed-chunk-6-1.pdf Graphic file (type pdf)
-
-<use figure/unnamed-chunk-6-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-6-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
-) [14
-
- <./figure/unnamed-chunk-6-1.pdf>]
 LaTeX Font Info:    Font shape `T1/ua1/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ua1/b/n' tried instead on input line 302.
+(Font)              Font shape `T1/ua1/b/n' tried instead on input line 316.
 
 
-Package natbib Warning: Citation `Rucker' on page 15 undefined on input line 30
-2.
+Package natbib Warning: Citation `Rucker' on page 14 undefined on input line 31
+6.
 
-[15
+[14
+
+] [15
 
 ] [16
 
 ] [17
 
-] [18
-
 ]
 \openout4 = `present.vrb'.
 
  (./present.vrb
-<figure/unnamed-chunk-7-1.pdf, id=177, 505.89pt x 289.08pt>
+<figure/unnamed-chunk-5-1.pdf, id=159, 505.89pt x 289.08pt>
+File: figure/unnamed-chunk-5-1.pdf Graphic file (type pdf)
+
+<use figure/unnamed-chunk-5-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-5-1.pdf used on input line 7.
+(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+)
+Overfull \vbox (9.44617pt too high) detected at line 362
+ []
+
+[18
+
+ <./figure/unnamed-chunk-5-1.pdf>]
+\openout4 = `present.vrb'.
+
+ (./present.vrb
+<figure/unnamed-chunk-6-1.pdf, id=171, 505.89pt x 259.97125pt>
+File: figure/unnamed-chunk-6-1.pdf Graphic file (type pdf)
+
+<use figure/unnamed-chunk-6-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-6-1.pdf used on input line 7.
+(pdftex.def)             Requested size: 293.06349pt x 150.60492pt.
+) [19
+
+ <./figure/unnamed-chunk-6-1.pdf>]
+\openout4 = `present.vrb'.
+
+
+(./present.vrb <figure/unnamed-chunk-7-1.pdf, id=184, 505.89pt x 230.8625pt>
 File: figure/unnamed-chunk-7-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-7-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
-)
-Overfull \vbox (9.44617pt too high) detected at line 348
- []
-
-[19
+(pdftex.def)             Requested size: 293.06349pt x 133.7418pt.
+) [20
 
  <./figure/unnamed-chunk-7-1.pdf>]
-\openout4 = `present.vrb'.
+[21
 
- (./present.vrb
-<figure/unnamed-chunk-8-1.pdf, id=190, 505.89pt x 259.97125pt>
+] [22
+
+] <figure/unnamed-chunk-8-1.pdf, id=208, 505.89pt x 289.08pt>
 File: figure/unnamed-chunk-8-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-8-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-8-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 150.60492pt.
-) [20
+Package pdftex.def Info: figure/unnamed-chunk-8-1.pdf used on input line 414.
+(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+ [23
 
  <./figure/unnamed-chunk-8-1.pdf>]
 \openout4 = `present.vrb'.
 
 
-(./present.vrb <figure/unnamed-chunk-9-1.pdf, id=202, 505.89pt x 230.8625pt>
-File: figure/unnamed-chunk-9-1.pdf Graphic file (type pdf)
-
-<use figure/unnamed-chunk-9-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-9-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 133.7418pt.
-) [21
-
- <./figure/unnamed-chunk-9-1.pdf>]
-[22
-
-] [23
-
-] <figure/unnamed-chunk-10-1.pdf, id=226, 505.89pt x 289.08pt>
-File: figure/unnamed-chunk-10-1.pdf Graphic file (type pdf)
-
-<use figure/unnamed-chunk-10-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-10-1.pdf used on input line 400.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
- [24
-
- <./figure/unnamed-chunk-10-1.pdf>]
-\openout4 = `present.vrb'.
-
-
-(./present.vrb) [25
+(./present.vrb) [24
 
 ]
 \openout4 = `present.vrb'.
 
  (./present.vrb
-<figure/unnamed-chunk-11-1.pdf, id=247, 505.89pt x 289.08pt>
-File: figure/unnamed-chunk-11-1.pdf Graphic file (type pdf)
+<figure/unnamed-chunk-9-1.pdf, id=228, 505.89pt x 289.08pt>
+File: figure/unnamed-chunk-9-1.pdf Graphic file (type pdf)
 
-<use figure/unnamed-chunk-11-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-11-1.pdf used on input line 7.
+<use figure/unnamed-chunk-9-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-9-1.pdf used on input line 7.
 (pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
-) [26
+) [25
 
- <./figure/unnamed-chunk-11-1.pdf>]
-[27
+ <./figure/unnamed-chunk-9-1.pdf>]
+[26
 
 pdfTeX warning (ext4): destination with the same identifier (name{population.mo
 del}) has been already used, duplicate ignored
 
 \@EveryShipout@Output ...@Org@Shipout \box \@cclv 
                                                   
-l.445 \end{frame}
+l.459 \end{frame}
                  ]
 \openout4 = `present.vrb'.
 
- (./present.vrb) [28
-
-] [29
+ (./present.vrb) [27
 
 ]
+<figure/unnamed-chunk-10-1.pdf, id=259, 505.89pt x 289.08pt>
+File: figure/unnamed-chunk-10-1.pdf Graphic file (type pdf)
+
+<use figure/unnamed-chunk-10-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-10-1.pdf used on input line 481.
+(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+ [28
+
+ <./figure/unnamed-chunk-10-1.pdf>]
+\openout4 = `present.vrb'.
+
+
+(./present.vrb <figure/unnamed-chunk-11-1.pdf, id=271, 505.89pt x 259.97125pt>
+File: figure/unnamed-chunk-11-1.pdf Graphic file (type pdf)
+
+<use figure/unnamed-chunk-11-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-11-1.pdf used on input line 7.
+(pdftex.def)             Requested size: 293.06349pt x 150.60492pt.
+)
+Overfull \vbox (3.34102pt too high) detected at line 492
+ []
+
+[29
+
+ <./figure/unnamed-chunk-11-1.pdf>]
 \openout4 = `present.vrb'.
 
  (./present.vrb
-<figure/unnamed-chunk-12-1.pdf, id=283, 505.89pt x 289.08pt>
+<figure/unnamed-chunk-12-1.pdf, id=283, 505.89pt x 259.97125pt>
 File: figure/unnamed-chunk-12-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-12-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-12-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+(pdftex.def)             Requested size: 293.06349pt x 150.60492pt.
 )
-Overfull \vbox (20.20412pt too high) detected at line 475
+Overfull \vbox (3.34102pt too high) detected at line 504
  []
 
 [30
@@ -1355,14 +1355,14 @@ Overfull \vbox (20.20412pt too high) detected at line 475
 \openout4 = `present.vrb'.
 
  (./present.vrb
-<figure/unnamed-chunk-13-1.pdf, id=296, 505.89pt x 289.08pt>
+<figure/unnamed-chunk-13-1.pdf, id=296, 505.89pt x 259.97125pt>
 File: figure/unnamed-chunk-13-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-13-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-13-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+(pdftex.def)             Requested size: 293.06349pt x 150.60492pt.
 )
-Overfull \vbox (20.20412pt too high) detected at line 487
+Overfull \vbox (3.34102pt too high) detected at line 516
  []
 
 [31
@@ -1371,14 +1371,14 @@ Overfull \vbox (20.20412pt too high) detected at line 487
 \openout4 = `present.vrb'.
 
  (./present.vrb
-<figure/unnamed-chunk-14-1.pdf, id=309, 505.89pt x 289.08pt>
+<figure/unnamed-chunk-14-1.pdf, id=309, 505.89pt x 259.97125pt>
 File: figure/unnamed-chunk-14-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-14-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-14-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+(pdftex.def)             Requested size: 293.06349pt x 150.60492pt.
 )
-Overfull \vbox (20.20412pt too high) detected at line 499
+Overfull \vbox (3.34102pt too high) detected at line 528
  []
 
 [32
@@ -1387,126 +1387,103 @@ Overfull \vbox (20.20412pt too high) detected at line 499
 \openout4 = `present.vrb'.
 
  (./present.vrb
-<figure/unnamed-chunk-15-1.pdf, id=321, 505.89pt x 289.08pt>
+<figure/unnamed-chunk-15-1.pdf, id=321, 505.89pt x 274.02374pt>
 File: figure/unnamed-chunk-15-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-15-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-15-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
-)
-Overfull \vbox (6.55708pt too high) detected at line 510
- []
-
-[33
+(pdftex.def)             Requested size: 293.06349pt x 158.74571pt.
+) [33
 
  <./figure/unnamed-chunk-15-1.pdf>]
 \openout4 = `present.vrb'.
 
- (./present.vrb
-<figure/unnamed-chunk-16-1.pdf, id=333, 505.89pt x 289.08pt>
+
+(./present.vrb <figure/unnamed-chunk-16-1.pdf, id=333, 505.89pt x 274.02374pt>
 File: figure/unnamed-chunk-16-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-16-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-16-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
-)
-Overfull \vbox (6.55708pt too high) detected at line 522
- []
-
-[34
+(pdftex.def)             Requested size: 293.06349pt x 158.74571pt.
+) [34
 
  <./figure/unnamed-chunk-16-1.pdf>]
 \openout4 = `present.vrb'.
 
- (./present.vrb
-<figure/unnamed-chunk-17-1.pdf, id=345, 505.89pt x 289.08pt>
+
+(./present.vrb <figure/unnamed-chunk-17-1.pdf, id=345, 505.89pt x 274.02374pt>
 File: figure/unnamed-chunk-17-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-17-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-17-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
-)
-Overfull \vbox (6.55708pt too high) detected at line 534
- []
-
-[35
+(pdftex.def)             Requested size: 293.06349pt x 158.74571pt.
+) [35
 
  <./figure/unnamed-chunk-17-1.pdf>]
 \openout4 = `present.vrb'.
 
- (./present.vrb
-<figure/unnamed-chunk-18-1.pdf, id=357, 505.89pt x 289.08pt>
+
+(./present.vrb <figure/unnamed-chunk-18-1.pdf, id=357, 505.89pt x 274.02374pt>
 File: figure/unnamed-chunk-18-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-18-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-18-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
-)
-Overfull \vbox (4.5642pt too high) detected at line 559
- []
-
-[36
+(pdftex.def)             Requested size: 293.06349pt x 158.74571pt.
+) [36
 
  <./figure/unnamed-chunk-18-1.pdf>]
 \openout4 = `present.vrb'.
 
- (./present.vrb
-<figure/unnamed-chunk-19-1.pdf, id=369, 505.89pt x 289.08pt>
+
+(./present.vrb <figure/unnamed-chunk-19-1.pdf, id=369, 505.89pt x 274.02374pt>
 File: figure/unnamed-chunk-19-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-19-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-19-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
-)
-Overfull \vbox (4.5642pt too high) detected at line 571
- []
-
-[37
+(pdftex.def)             Requested size: 293.06349pt x 158.74571pt.
+) [37
 
  <./figure/unnamed-chunk-19-1.pdf>]
 \openout4 = `present.vrb'.
 
- (./present.vrb
-<figure/unnamed-chunk-20-1.pdf, id=382, 505.89pt x 289.08pt>
+
+(./present.vrb <figure/unnamed-chunk-20-1.pdf, id=382, 505.89pt x 252.945pt>
 File: figure/unnamed-chunk-20-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-20-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-20-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
-)
-Overfull \vbox (4.5642pt too high) detected at line 583
- []
-
-[38
+Package pdftex.def Info: figure/unnamed-chunk-20-1.pdf used on input line 6.
+(pdftex.def)             Requested size: 293.06349pt x 146.53452pt.
+) [38
 
  <./figure/unnamed-chunk-20-1.pdf>]
 \openout4 = `present.vrb'.
 
- (./present.vrb
-<figure/unnamed-chunk-21-1.pdf, id=394, 505.89pt x 289.08pt>
+
+(./present.vrb <figure/unnamed-chunk-21-1.pdf, id=394, 505.89pt x 252.945pt>
 File: figure/unnamed-chunk-21-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-21-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-21-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
-)
-Overfull \vbox (6.55708pt too high) detected at line 596
- []
-
-[39
+Package pdftex.def Info: figure/unnamed-chunk-21-1.pdf used on input line 6.
+(pdftex.def)             Requested size: 293.06349pt x 146.53452pt.
+) [39
 
  <./figure/unnamed-chunk-21-1.pdf>]
 \openout4 = `present.vrb'.
 
- (./present.vrb
-<figure/unnamed-chunk-22-1.pdf, id=406, 505.89pt x 289.08pt>
+
+(./present.vrb
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 8.
+ (/usr/local/texlive/2017/texmf-dist/tex/latex/base/t1cmtt.fd
+File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+<figure/unnamed-chunk-22-1.pdf, id=406, 505.89pt x 252.945pt>
 File: figure/unnamed-chunk-22-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-22-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-22-1.pdf used on input line 7.
-(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+Package pdftex.def Info: figure/unnamed-chunk-22-1.pdf used on input line 11.
+(pdftex.def)             Requested size: 293.06349pt x 146.53452pt.
 )
-Overfull \vbox (6.55708pt too high) detected at line 608
+Overfull \vbox (83.3675pt too high) detected at line 623
  []
 
 [40
@@ -1514,24 +1491,131 @@ Overfull \vbox (6.55708pt too high) detected at line 608
  <./figure/unnamed-chunk-22-1.pdf>]
 \openout4 = `present.vrb'.
 
+ (./present.vrb) [41
+
+]
+\openout4 = `present.vrb'.
+
+ (./present.vrb)
+[42
+
+]
+\openout4 = `present.vrb'.
+
  (./present.vrb
-<figure/unnamed-chunk-23-1.pdf, id=418, 505.89pt x 289.08pt>
+<figure/unnamed-chunk-23-1.pdf, id=432, 505.89pt x 289.08pt>
 File: figure/unnamed-chunk-23-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-23-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-23-1.pdf used on input line 7.
 (pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
 )
-Overfull \vbox (6.55708pt too high) detected at line 620
+Overfull \vbox (4.5642pt too high) detected at line 667
  []
 
-[41
+[43
 
- <./figure/unnamed-chunk-23-1.pdf>] (./present.bbl)
-Overfull \vbox (239.9061pt too high) detected at line 628
+ <./figure/unnamed-chunk-23-1.pdf>]
+\openout4 = `present.vrb'.
+
+ (./present.vrb
+<figure/unnamed-chunk-24-1.pdf, id=445, 505.89pt x 289.08pt>
+File: figure/unnamed-chunk-24-1.pdf Graphic file (type pdf)
+
+<use figure/unnamed-chunk-24-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-24-1.pdf used on input line 7.
+(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+)
+Overfull \vbox (4.5642pt too high) detected at line 679
  []
 
-[42
+[44
+
+ <./figure/unnamed-chunk-24-1.pdf>]
+\openout4 = `present.vrb'.
+
+ (./present.vrb
+<figure/unnamed-chunk-25-1.pdf, id=457, 505.89pt x 289.08pt>
+File: figure/unnamed-chunk-25-1.pdf Graphic file (type pdf)
+
+<use figure/unnamed-chunk-25-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-25-1.pdf used on input line 7.
+(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+)
+Overfull \vbox (4.5642pt too high) detected at line 691
+ []
+
+[45
+
+ <./figure/unnamed-chunk-25-1.pdf>]
+\openout4 = `present.vrb'.
+
+ (./present.vrb
+<figure/unnamed-chunk-26-1.pdf, id=469, 505.89pt x 289.08pt>
+File: figure/unnamed-chunk-26-1.pdf Graphic file (type pdf)
+
+<use figure/unnamed-chunk-26-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-26-1.pdf used on input line 7.
+(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+)
+Overfull \vbox (6.55708pt too high) detected at line 702
+ []
+
+[46
+
+ <./figure/unnamed-chunk-26-1.pdf>]
+\openout4 = `present.vrb'.
+
+ (./present.vrb
+<figure/unnamed-chunk-27-1.pdf, id=481, 505.89pt x 289.08pt>
+File: figure/unnamed-chunk-27-1.pdf Graphic file (type pdf)
+
+<use figure/unnamed-chunk-27-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-27-1.pdf used on input line 7.
+(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+)
+Overfull \vbox (6.55708pt too high) detected at line 713
+ []
+
+[47
+
+ <./figure/unnamed-chunk-27-1.pdf>]
+\openout4 = `present.vrb'.
+
+ (./present.vrb
+<figure/unnamed-chunk-28-1.pdf, id=493, 505.89pt x 289.08pt>
+File: figure/unnamed-chunk-28-1.pdf Graphic file (type pdf)
+
+<use figure/unnamed-chunk-28-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-28-1.pdf used on input line 7.
+(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+)
+Overfull \vbox (6.55708pt too high) detected at line 725
+ []
+
+[48
+
+ <./figure/unnamed-chunk-28-1.pdf>]
+\openout4 = `present.vrb'.
+
+ (./present.vrb
+<figure/unnamed-chunk-29-1.pdf, id=505, 505.89pt x 289.08pt>
+File: figure/unnamed-chunk-29-1.pdf Graphic file (type pdf)
+
+<use figure/unnamed-chunk-29-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-29-1.pdf used on input line 7.
+(pdftex.def)             Requested size: 293.06349pt x 167.46802pt.
+)
+Overfull \vbox (6.55708pt too high) detected at line 737
+ []
+
+[49
+
+ <./figure/unnamed-chunk-29-1.pdf>] (./present.bbl)
+Overfull \vbox (239.9061pt too high) detected at line 747
+ []
+
+[50
 
 ]
 \tf@nav=\write6
@@ -1547,11 +1631,11 @@ Overfull \vbox (239.9061pt too high) detected at line 628
 
 Package natbib Warning: There were undefined citations.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 739.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 739.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 858.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 858.
 (./present.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 739.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 739.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 858.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 858.
 Package rerunfilecheck Info: File `present.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
@@ -1560,11 +1644,11 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 22386 strings out of 492995
- 429700 string characters out of 6132705
+ 22479 strings out of 492995
+ 431690 string characters out of 6132705
  511434 words of memory out of 5000000
- 25224 multiletter control sequences out of 15000+600000
- 134306 words of font info for 94 fonts, out of 8000000 for 9000
+ 25277 multiletter control sequences out of 15000+600000
+ 134620 words of font info for 95 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  56i,15n,59p,847b,1585s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
@@ -1578,14 +1662,15 @@ ve/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive
 7/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2017/
 texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2
 017/texmf-dist/fonts/type1/public/cm-super/sfrm0600.pfb></usr/local/texlive/201
-7/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/texmf
--local/fonts/type1/urw/arial/ua1b8a.pfb></usr/local/texlive/texmf-local/fonts/t
-ype1/urw/arial/ua1r8a.pfb></usr/local/texlive/texmf-local/fonts/type1/urw/arial
-/ua1ri8a.pfb>
-Output written on present.pdf (42 pages, 1133548 bytes).
+7/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2017/
+texmf-dist/fonts/type1/public/cm-super/sftt1095.pfb></usr/local/texlive/texmf-l
+ocal/fonts/type1/urw/arial/ua1b8a.pfb></usr/local/texlive/texmf-local/fonts/typ
+e1/urw/arial/ua1r8a.pfb></usr/local/texlive/texmf-local/fonts/type1/urw/arial/u
+a1ri8a.pfb>
+Output written on present.pdf (50 pages, 1314551 bytes).
 PDF statistics:
- 506 PDF objects out of 1000 (max. 8388607)
- 397 compressed objects within 4 object streams
- 99 named destinations out of 1000 (max. 500000)
- 148 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 601 PDF objects out of 1000 (max. 8388607)
+ 470 compressed objects within 5 object streams
+ 115 named destinations out of 1000 (max. 500000)
+ 178 words of extra memory for PDF output out of 10000 (max. 10000000)
 

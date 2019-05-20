@@ -52,6 +52,49 @@ require(tidyverse)
 require(meta)
 require(xtable)
 
+
+
+
+meta.id <- function(meta.id.tolook){
+	dt <- data.ext %>% filter(meta.id == meta.id.tolook)
+	if(any(is.na(dt$events1)) | all(dt$events1 == 0)){
+		meta.ex <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name, data = dt)
+	} else{
+		meta.ex <- metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "RR", data = dt, method = "Inverse")
+	}
+	return(meta.ex)
+}
+
+funnel.id <- function(meta.id.tolook){
+	funnel(meta.id(meta.id.tolook))
+}
+
+trimfill.id <- function(meta.id.tolook){
+	funnel(trimfill(meta.id(meta.id.tolook)))
+}
+
+limitmeta.id <- function(meta.id.tolook){
+	funnel(limitmeta(meta.id(meta.id.tolook)))
+}
+
+copas.id <- function(meta.id.tolook){
+	auto.copas(meta.id(meta.id.tolook), 0.1)
+}
+
+setting.id <- function(meta.id.tolook){
+	return(meta %>% filter(meta.id == meta.id.tolook) %>% select(comparison.name, comparison.nr, outcome.name, sungroup.name))
+}
+
+est.id <- function(meta.id.tolook){
+	return(meta %>% filter(meta.id == meta.id.tolook) %>% select(est.fixef, est.ranef, est.copas, est.trimfill.fixef, est.reg.ranef))
+}
+
+single.study.id <- function(meta.id.tolook){
+	return(print(data.ext %>% filter(meta.id == meta.id.tolook) %>% select(study.name, effect, se, total1, total2, events1, events2, mean1, mean2) %>% 
+							 	arrange(se), n = 200))
+}
+	
+
 #Meta-analysis example
 data.ext <- data.ext %>% mutate(study.year = ifelse(study.year < 2019, study.year, NA)) %>% 
     mutate(study.year = ifelse(study.year > 1920, study.year, NA))
@@ -164,6 +207,7 @@ metac.bin <- meta.bin %>% filter(n.sig.type.bin > 1) %>% filter((se.max^2)/(se.m
 metac.cont <- meta.cont %>% filter(n.sig.type.cont > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
 metac <- meta %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
 
+
 #Significant proportion
 test.bin <- metac.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
                                                           schwarzer.test = mean(schwarzer.test),
@@ -201,28 +245,36 @@ p.cont <- metac.cont %>% ungroup() %>%
            color = "white")
 
 dat_text <- data.frame(
-  label = paste(c(sum(metac.cont$begg.test), sum(metac.cont$egger.test), sum(metac.cont$thomson.test)), "< 0.05"),
+  label = paste(c(sum(metac.cont$begg.test), sum(metac.cont$egger.test), sum(metac.cont$thomson.test)), "< 0.05,",
+  							round(c(mean(metac.cont$begg.test), mean(metac.cont$egger.test), mean(metac.cont$thomson.test)),2)*100, "%"),
   test.type   = c("pval.begg.cont", "pval.egger.cont", "pval.thomson.cont"))
 
-
+labels <- c(pval.begg.cont = "Begg Mazumdar", pval.egger.cont = "Egger", pval.thomson.cont = "Thompson Sharp")
 p.dist.cont <- metac.cont %>% ungroup() %>% 
   select(pval.egger.cont, pval.thomson.cont, pval.begg.cont) %>% 
   gather(key = "test.type", value = "p.value") %>% 
-  ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + facet_wrap(~test.type) + 
-	geom_text(data = dat_text, mapping = aes(x = -Inf, y = -Inf, label = label), hjust   = -1,
-  vjust   = -4, color = "white")
+  ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + 
+	facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 25, label = label),  color = "black") + 
+	theme(strip.text.x = element_text(size=15))
 
-dat_text <- data.frame(
-  label = paste(c(sum(metac.bin$egger.test), sum(metac.bin$harbord.test), sum(metac.bin$peter.test), 
-  										sum(metac.bin$rucker.test), sum(metac.bin$schwarzer.test)), "< 0.05"),
-  test.type   = c("pval.egger.bin", "pval.harbord.bin", "pval.peter.bin", "pval.rucker.bin", "pval.schwarzer.bin"))
+
+	dat_text <- data.frame(
+  label = paste(c(sum(metac.bin$harbord.test), sum(metac.bin$peter.test), 
+  										sum(metac.bin$rucker.test), sum(metac.bin$schwarzer.test)), "< 0.05,",
+  							round(c(mean(metac.bin$harbord.test), mean(metac.bin$peter.test), 
+  										mean(metac.bin$rucker.test), mean(metac.bin$schwarzer.test)),2)*100, "%"),
+  test.type   = c("pval.harbord.bin", "pval.peter.bin", "pval.rucker.bin", "pval.schwarzer.bin"))
+
+labels <- c(pval.harbord.bin = "Harbord", pval.peter.bin = "Peter", pval.rucker.bin = "Rucker", pval.schwarzer.bin = "Schwarzer")
 
 p.dist.bin <- metac.bin %>% ungroup() %>% 
-  select(pval.egger.bin, pval.harbord.bin, pval.peter.bin, pval.rucker.bin, pval.schwarzer.bin) %>% 
+  select(pval.harbord.bin, pval.peter.bin, pval.rucker.bin, pval.schwarzer.bin) %>% 
   gather(key = "test.type", value = "p.value") %>% 
-  ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + facet_wrap(~test.type) + 
-	geom_text(data = dat_text, mapping = aes(x = -Inf, y = -Inf, label = label), hjust   = -0.65,
-  vjust   = -2, color = "white")
+  ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 100, label = label), color = "black") + 
+	theme(strip.text.x = element_text(size=15))
+
 
 #Test agreement
 agree.bin <- metac.bin %>% mutate(n.sig = peter.test + rucker.test + egger.test + harbord.test + schwarzer.test) %>% 
@@ -232,6 +284,8 @@ agree.bin <- metac.bin %>% mutate(n.sig = peter.test + rucker.test + egger.test 
 agree.cont <- metac.cont %>% mutate(n.sig = egger.test + thomson.test + begg.test) %>% 
   group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
   ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
+
+
 
 #Adjustment example plots regression:
 reg.1 <- qplot(x = biased.rev$se, y = biased.rev$effect, xlim = c(0, 1.2)) + geom_point() + 
@@ -249,12 +303,17 @@ effect.diff <- metac %>% mutate(
 	est.trimfill.fixef = ifelse(!is.na(est.fixef.bin), est.trimfill.fixef - 1, est.trimfill.fixef),
 	est.copas = ifelse(!is.na(est.fixef.bin), est.copas - 1, est.copas),
 	est.reg.ranef = ifelse(!is.na(est.fixef.bin), est.reg.ranef - 1, est.reg.ranef),
+	fixef.ranef = ifelse(abs(est.ranef) > abs(est.fixef), "Reduction", "Amplification"),
 	fixef.trimfill = ifelse(abs(est.fixef) > abs(est.trimfill.fixef), "Reduction", "Amplification"),
 	fixef.copas = ifelse(abs(est.fixef) > abs(est.copas), "Reduction", "Amplification"),
 	fixef.reg = ifelse(abs(est.fixef) > abs(est.reg.ranef), "Reduction", "Amplification"),
 	fixef.trimfill.s = ifelse(sign(est.fixef) == sign(est.trimfill.fixef), "Unchanged", "Reversed"),
 	fixef.copas.s = ifelse(sign(est.fixef) == sign(est.copas), "Unchanged", "Reversed"),
 	fixef.reg.s = ifelse(sign(est.fixef) == sign(est.reg.ranef), "Unchanged", "Reversed")) 
+
+hist.ranef <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.ranef))) +
+	geom_histogram() + facet_grid(~factor(fixef.ranef)) + xlim(0, 2) + xlab("Effect difference") + 
+	theme_bw() + theme(legend.position = "bottom", strip.text.x = element_text(size=15)) + ylim(0, 250)
 
 
 trimfill.miss <- effect.diff %>% group_by(fixef.trimfill) %>% mutate(dif = abs(est.fixef - est.trimfill.fixef)) %>% 
@@ -277,7 +336,7 @@ hist.trimfill <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.trimfill.fix
 
 hist.trimfill1 <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.trimfill.fixef))) +
 	geom_histogram() + facet_grid(~factor(fixef.trimfill)) + xlim(0, 2)+ xlab("Effect difference") +
-	geom_text(data = trimfill.label, mapping = aes(label = label, x = 0, hjust = 0.05, y = 300), 
+	geom_text(data = trimfill.label, mapping = aes(label = label, x = 0, hjust = 0, y = 300), 
 						color = "black") + theme_bw() + 
 	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
 
@@ -294,6 +353,7 @@ copas.label <- data.frame(label = paste("missing:", c(paste(copas.miss$label[cop
 
 copas.label$label <- as.character(copas.label$label)
 copas.label$label[1] <- sub("3.5,", "3.5, \n   ", copas.label$label[1])
+copas.label$label[2] <- sub("11.5,", "11.5, \n   ", copas.label$label[2])
 
 
 hist.copas <- effect.diff %>% filter(!is.na(est.copas)) %>% ggplot(aes(x = abs(est.fixef - est.copas), fill = factor(fixef.copas.s))) +
@@ -304,7 +364,7 @@ hist.copas <- effect.diff %>% filter(!is.na(est.copas)) %>% ggplot(aes(x = abs(e
 
 hist.copas1 <- effect.diff %>% filter(!is.na(est.copas)) %>% ggplot(aes(x = abs(est.fixef - est.copas))) +
 	geom_histogram() + facet_grid(~factor(fixef.copas)) + xlim(0, 2) + xlab("Effect difference") +
-	geom_text(data = copas.label, mapping = aes(label = label, x = 0, hjust = 0.05, y = 175), 
+	geom_text(data = copas.label, mapping = aes(label = label, x = 0, hjust = 0, y = 175), 
 						color = "black") + theme_bw() +
 	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
 
@@ -324,13 +384,13 @@ reg.ranef.label$label[1] <- sub("4.8,", "4.8,\n   ", reg.ranef.label$label[1])
 
 hist.reg <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.reg.ranef), fill = factor(fixef.reg.s))) +
 	geom_histogram() + facet_grid(~factor(fixef.reg)) + xlim(0, 3)+ xlab("Effect difference") +
-	geom_text(data = reg.ranef.label, mapping = aes(label = label, x= 0, y = 250, hjust = 0.05), 
+	geom_text(data = reg.ranef.label, mapping = aes(label = label, x= 0, y = 250, hjust = 0), 
 						color = "black", size = 2.8) + theme_bw() + scale_fill_discrete(name="Effect direction") +
 	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
 
 hist.reg1 <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.reg.ranef))) +
 	geom_histogram() + facet_grid(~factor(fixef.reg)) + xlim(0, 3)+ xlab("Effect difference") +
-	geom_text(data = reg.ranef.label, mapping = aes(label = label, x= 0, y = 250, hjust = 0.05), 
+	geom_text(data = reg.ranef.label, mapping = aes(label = label, x= 0, y = 250, hjust = 0), 
 						color = "black", size = 2.8) + theme_bw() + 
 	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
 
@@ -348,6 +408,16 @@ print(effect.diff %>% group_by(fixef.reg) %>% mutate(dif = abs(est.fixef - est.r
 
 
 #Scatterplots of metac-analysis and corrected log(abs(abs estimates
+ranef.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.ranef)))) + geom_point() + 
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
+	xlab("Fixed effects log estimate") + ylab("Random effects log estimate") + ggtitle("Fixed effects to Random effects")
+
+# metac %>% ggplot(aes(y = log(abs((est.ranef))), x = log(abs(est.trimfill.fixef)))) + geom_point() + 
+# 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
+# 	xlab("Random effects log estimate") + ylab("Trimfill log estimate") + ggtitle("Random effects to Trimfill")
+
+
+#Scatterplots of metac-analysis and corrected log(abs(abs estimates
 trimfill.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.trimfill.fixef)))) + geom_point() + 
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
 	xlab("Fixed effects log estimate") + ylab("Trimfill log estimate") + ggtitle("Fixed effects to Trimfill")
@@ -359,22 +429,33 @@ trimfill.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = 
 
 #Scatterplots of metac-analysis and corrected log estimates
 copas.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.copas)))) + geom_point() + 
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + xlim(0, 25) +
 	xlab("Fixed effects log estimate") + ylab("Copas log estimate") + ggtitle("Fixed effects to Copas") 
 
 copas.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.copas)))) + geom_point() + 
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE, show.legend = T) + 
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE, show.legend = T) + xlim(0, 20) +
 	xlab("Random effects log estimate") + ylab("Copas log estimate") + ggtitle("Random effects to Copas") 
 
 
 #Scatterplots of metac-analysis and corrected log estimates
-reg.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs(log(abs((est.fixef))))), y = log(abs(log(abs(est.reg.ranef)))))) + geom_point() + 
+reg.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.reg.ranef)))) + geom_point() + 
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
 	xlab("Fixed effects log estimate") + ylab("Regression log estimate") + ggtitle("Fixed effects to Regression")
 
 reg.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.reg.ranef)))) + geom_point() + 
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
 	xlab("Random effects log estimate") + ylab("Regression log estimate") + ggtitle("Random effects to Regression")
+
+
+#Scatterplots of test- statistics:
+ranef.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.ranef))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Fixed effects and Random effects z statistics") + ylab("Random effects statistic") + xlab("Fixed effects statistic")
+
+metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Fixed effects and Random effects z statistics") + ylab("Random effects statistic") + xlab("Fixed effects statistic")
+
 
 #Scatterplots of test- statistics:
 trimfill.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point() +
@@ -383,7 +464,7 @@ trimfill.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval
 
 trimfill.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.trimfill.fixef))) + geom_point() +
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
-	ggtitle("Random effects and trimfill z statistics") + ylab("Trimfill  statistic") + xlab("Random effects  statistic")
+	ggtitle("Random effects and trimfill z statistics") + ylab("Trimfill statistic") + xlab("Random effects  statistic")
 
 #Scatterplots of test- statistics:
 copas.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.copas))) + geom_point() +
@@ -402,6 +483,12 @@ reg.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.reg.
 reg.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.reg.ranef))) + geom_point() +
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
 	ggtitle("Random effects and Regression z statistics") + ylab("Regression  statistic") + xlab("Random effects  statistic")
+
+#Missing study proportions:
+p.missing.copas <- metac %>% ggplot(aes(x = missing.copas/n)) + geom_histogram(bins = 20) + 
+	xlim(0, 0.5) + ylim(0, 200) + xlab("Proportion of missing studies") + ggtitle("Copas selection model") + theme_bw()
+p.missing.trim <- metac %>% ggplot(aes(x = missing.trim)) + geom_histogram(bins = 20) + 
+	xlim(0, 0.5) + ylim(0, 200) + xlab("Proportion of missing studies") + ggtitle("Trim-and-fill") + theme_bw()
 @
 
 
@@ -416,6 +503,12 @@ reg.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.reg.
 % Quantitatively by meta-analysis
 % 
 % \end{frame}
+
+\begin{frame}{Publication Bias}
+Availability of studies depends on the effect sizes thereof
+
+Thesis topic: Abundancy and extent of publication bias in clinical science
+\end{frame}
 
 \begin{frame}{Cochrane Organisation}
 Aim: summarise findings in primary clinical research and health care
@@ -504,6 +597,8 @@ Assumptions:
 \end{frame}
 
 
+
+
 \begin{frame}{Small Study Effects}
 ``The tendency for the smaller studies to show larger treatment effects'' \citep{Sterne}
 \end{frame}
@@ -514,52 +609,53 @@ Causes:
 \begin{itemize}
 \item Selective publication of studies with significant results - publication bias
 \item Selective reporting of most favorable outcomes
-\item Systematical differences in study settings
+\item Systematic differences in study settings
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Small Study Effect Tests}
-Tests applicable if:
+Different approaches:
 \begin{itemize}
-\item Number of studies $n$ large
-\item variation in the estimated variances of effects %\\(here: $\frac{\sigma_{\textrm{max}}}{\sigma_{\textrm{min}}} > 4$)
+\item Simple linear regression
+\item Rank correlation
 \end{itemize}
-Adjustments required if variance is dependent on effect size (e.g. log odds ratios)
+
+Special methods for binary outcomes	
 \end{frame}
 
 
-\begin{frame}[fragile]{Small Study Effect Tests}
-Funnel plots (continuous outcome examples):
-
-\vspace{-1.2cm}
-
-<<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
-par(las = 1, mfrow = c(1, 2))
-funnel(meta.example)
-funnel(meta.nexample)
-@
-
-\end{frame}
-
-
-\begin{frame}[fragile]{Regression based Tests}
-Radial plots (continuous outcome examples):
-
-\vspace{-1.1cm}
-
-<<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
-par(las = 1, mfrow = c(1,2))
-biased.rev$inv <- 1/biased.rev$se
-plot(y = (biased.rev$effect/biased.rev$se), x = (biased.rev$se^-1), xlim = c(0, 6), xlab = "inverse standard error", 
-		 ylab = "mean diff. / std. error")
-
-unbiased.rev$inv <- 1/unbiased.rev$se
-plot(y = (unbiased.rev$effect/unbiased.rev$se), x = (unbiased.rev$inv), xlim = c(0, 1.2), 
-		 ylim = c(-18, 0), xlab = "inverse standard error", ylab = "mean diff. / std. error")
-@
-
-\end{frame}
+% \begin{frame}[fragile]{Small Study Effect Tests}
+% Funnel plots (continuous outcome examples):
+% 
+% \vspace{-1.2cm}
+% 
+% <<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+% par(las = 1, mfrow = c(1, 2))
+% funnel(meta.example)
+% funnel(meta.nexample)
+% @
+% 
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Regression based Tests}
+% Radial plots (continuous outcome examples):
+% 
+% \vspace{-1.1cm}
+% 
+% <<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+% par(las = 1, mfrow = c(1,2))
+% biased.rev$inv <- 1/biased.rev$se
+% plot(y = (biased.rev$effect/biased.rev$se), x = (biased.rev$se^-1), xlim = c(0, 6), xlab = "inverse standard error", 
+% 		 ylab = "mean diff. / std. error")
+% 
+% unbiased.rev$inv <- 1/unbiased.rev$se
+% plot(y = (unbiased.rev$effect/unbiased.rev$se), x = (unbiased.rev$inv), xlim = c(0, 1.2), 
+% 		 ylim = c(-18, 0), xlab = "inverse standard error", ylab = "mean diff. / std. error")
+% @
+% 
+% \end{frame}
 
 
 \begin{frame}{Regression based Tests}
@@ -729,7 +825,7 @@ as corrected treatment efffect.
 
 
 
-\begin{frame}[fragile]{Shrinkage Regression}
+\begin{frame}[fragile]{Limit Meta-Analysis}
 Funnel plot with effect with infinite precision:
 
 \vspace{-1.1cm}
@@ -742,8 +838,8 @@ funnel(limitmeta(meta.nexample))
 
 
 
-\begin{frame}{Copas selection model}
-\citet{Copas1}: Bivariate normal model with two parts:
+\begin{frame}{Selection model}
+\citet{Copas1}: model based on a bivariate normal distribution:
 
 \vspace{-8mm}
 \begin{align}
@@ -769,18 +865,31 @@ number of unpublished studies is minimal.
 
 
 \begin{frame}{Trim-and-Fill}
-Non-parametric, iterative method:
+Mirror studies that cause asymmetry:
+\vspace{-1.2cm}
 
-Cut away smallest study until funnel plot is symmetric
-
-Mirror studies that are responsible for asymmetry
+<<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+par(las = 1, mfrow = c(1, 2))
+funnel(meta.example)
+funnel(meta.nexample)
+@
 \end{frame}
+
+\begin{frame}[fragile]{Results:}
+Difference between random and fixed effects meta-analysis estimate:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 3.6, message = FALSE, warning=FALSE>>=
+plot(hist.ranef)
+@
+\end{frame}
+
 
 \begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
 Difference between adjusted and fixed effects meta-analysis estimate:
 
 \vspace{-3mm}
-<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+<<echo = FALSE, fig.height = 3.6, message = FALSE, warning=FALSE>>=
 plot(hist.trimfill1)
 @
 \end{frame}
@@ -790,7 +899,7 @@ plot(hist.trimfill1)
 Difference between adjusted and fixed effects meta-analysis estimate:
 
 \vspace{-3mm}
-<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+<<echo = FALSE, fig.height = 3.6, message = FALSE, warning=FALSE>>=
 plot(hist.copas1)
 @
 \end{frame}
@@ -800,16 +909,27 @@ plot(hist.copas1)
 Difference between adjusted and fixed effects meta-analysis estimate:
 
 \vspace{-3mm}
-<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+<<echo = FALSE, fig.height = 3.6, message = FALSE, warning=FALSE>>=
 plot(hist.reg1)
 @
 \end{frame}
+
+
+\begin{frame}[fragile]{Results:}
+Random and fixed effects meta-analyses test statistics:
+
+\vspace{-3mm} 
+<<echo = FALSE, fig.height = 3.8, message = FALSE, warning=FALSE>>=
+plot(ranef.fixef.sc.zval)
+@
+\end{frame}
+
 
 \begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
 Adjusted and meta-analysis test statistics:
 
 \vspace{-3mm} 
-<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+<<echo = FALSE, fig.height = 3.8, message = FALSE, warning=FALSE>>=
 grid.arrange(trimfill.fixef.sc.zval, trimfill.ranef.sc.zval, ncol = 2)
 @
 \end{frame}
@@ -819,7 +939,7 @@ grid.arrange(trimfill.fixef.sc.zval, trimfill.ranef.sc.zval, ncol = 2)
 Adjusted and meta-analysis test statistics:
 
 \vspace{-3mm}
-<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+<<echo = FALSE, fig.height = 3.8, message = FALSE, warning=FALSE>>=
 grid.arrange(copas.fixef.sc.zval, copas.ranef.sc.zval, ncol = 2)
 @
 \end{frame}
@@ -829,10 +949,63 @@ grid.arrange(copas.fixef.sc.zval, copas.ranef.sc.zval, ncol = 2)
 Adjusted and meta-analysis test statistics:
 
 \vspace{-3mm}
-<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+<<echo = FALSE, fig.height = 3.8, message = FALSE, warning=FALSE>>=
 grid.arrange(reg.fixef.sc.zval, reg.ranef.sc.zval, ncol = 2)
 @
 \end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results}
+Missing study proportions:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 3.8, message = FALSE, warning=FALSE>>=
+grid.arrange(p.missing.copas, p.missing.trim, ncol = 2) 
+@
+\end{frame}
+
+\begin{frame}[fragile]{Extreme Results}
+RR reduction by trimfill (-3.9), side effects
+
+<<echo = FALSE, fig.height = 3.5>>=
+trimfill.id(165815)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Extreme Results}
+RR Reduction by copas selection model (-4), pain relief
+
+<<echo = FALSE, fig.height = 3.5>>=
+funnel.id(73169)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Extreme Results}
+RR Amplification by regression (+14), side effects
+
+<<echo = FALSE, fig.height = 3.5>>=
+limitmeta.id(119537)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Discussion}
+\begin{itemize}
+\item Proportion of positive tests is well above 10\%
+\item Effect sizes and evidence for treatment effect is diminishued
+\item Limitations: not only primary outcomes, adjustment methods known to
+perform poorly under the 0
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Outlook}
+\begin{itemize}
+\item Connect results with different medical fields, look for differences
+\item Connect results with single studies and journals (?)
+\end{itemize}
+\end{frame}
+
+
 
 
 
@@ -877,7 +1050,14 @@ plot(hist.reg)
 @
 \end{frame}
 
+\begin{frame}[fragile]{Results}
+log treatment effect estimates:
 
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+plot(ranef.fixef.sc.effect)
+@
+\end{frame}
 
 \begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
 log treatment effect estimates:
@@ -907,6 +1087,8 @@ log treatment effect estimates:
 grid.arrange(reg.fixef.sc.effect, reg.ranef.sc.effect, ncol = 2)
 @
 \end{frame}
+
+
 
 
 
