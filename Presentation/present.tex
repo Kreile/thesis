@@ -78,12 +78,19 @@
 \maketitle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-\begin{frame}{Cochrane Library}
-Database of high-quality, systematic reviews in clinical science.
+% \begin{frame}{Evidence Synthesis}
+% Summarise evidence over fields and studies
+% 
+% Quantitatively by meta-analysis
+% 
+% \end{frame}
 
-Currently $\sim$ 8,000 reviews, prepared by independent groups. 
+\begin{frame}{Cochrane Organisation}
+Aim: summarise findings in primary clinical research and health care
 
-Reviews are peer-reviewed and prepared after guidelines.
+Provide peer-reviewed, systematic reviews
+
+Public access (for some countries)
 \end{frame}
 
 
@@ -94,6 +101,41 @@ Reviews are peer-reviewed and prepared after guidelines.
 
 463,820 study results.
 \end{frame}
+
+
+\begin{frame}[fragile]{Review Example: Binary Outcome}
+Barbiturate efficacy for head injury treatment
+\vspace{-5mm}
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Mon May 20 09:38:22 2019
+\begin{table}[ht]
+\centering
+\begingroup\tiny
+\begin{tabular}{lllrrrr}
+  \hline
+Study & Comparison & Outcome & Events & Total & Events\_c & Total\_c \\ 
+  \hline
+Bohn 1989 & Barbiturate vs no b & Death at the end of & 11 & 41 & 11 & 41 \\ 
+  Bohn 1989 & Barbiturate vs no b & Death or severe dis & 18 & 41 & 13 & 41 \\ 
+  Eisenberg 1988 & Barbiturate vs no b & Uncontrolled ICP du & 25 & 37 & 30 & 36 \\ 
+  Eisenberg 1988 & Barbiturate vs no b & Hypotension during  & 23 & 37 & 18 & 36 \\ 
+  Perez-Barcena 2008 & Pentobarbital vs Th & Death at the end of & 16 & 21 & 9 & 21 \\ 
+  Perez-Barcena 2008 & Pentobarbital vs Th & Death or severe dis & 17 & 21 & 13 & 21 \\ 
+  Perez-Barcena 2008 & Pentobarbital vs Th & Uncontrolled ICP du & 18 & 22 & 11 & 22 \\ 
+  Perez-Barcena 2008 & Pentobarbital vs Th & Hypotension during  & 20 & 22 & 21 & 22 \\ 
+  Schwartz 1984 & Barbiturate vs Mann & Death at the end of & 6 & 15 & 7 & 14 \\ 
+  Schwartz 1984 & Barbiturate vs Mann & Uncontrolled ICP du & 19 & 28 & 12 & 31 \\ 
+  Ward 1985 & Barbiturate vs no b & Mean ICP during tre & 0 & 27 & 0 & 26 \\ 
+  Ward 1985 & Barbiturate vs no b & Mean arterial press & 0 & 27 & 0 & 26 \\ 
+  Ward 1985 & Barbiturate vs no b & Mean body temperatu & 0 & 27 & 0 & 26 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\label{barbiturates}
+\end{table}
+
+\end{frame}
+
 
 
 \begin{frame}{Dataset Structure}
@@ -128,88 +170,27 @@ Reviews are peer-reviewed and prepared after guidelines.
 \end{frame}
 
 
-\begin{frame}{Dataset Structure}
-\begin{itemize}
-\item Comparison: What is compared, e.g. treatment vs. control
-\item Outcome: How it is compared
-\item Subgroup: Subgroup affiliation
-\item Meta-Analysis Group: Results from same comparison, outcome and subgroup
-\end{itemize}
-\end{frame}
 
-
-\begin{frame}[fragile]{Review Example: binary outcome}
-Barbiturate efficacy for head injury treatment
-\vspace{-5mm}
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue May 14 15:03:41 2019
-\begin{table}[ht]
-\centering
-\begingroup\tiny
-\begin{tabular}{lllrrrr}
-  \hline
-Study & Comparison & Outcome & Events & Total & Events\_c & Total\_c \\ 
-  \hline
-Bohn 1989 & Barbiturate vs no b & Death at the end of & 11 & 41 & 11 & 41 \\ 
-  Bohn 1989 & Barbiturate vs no b & Death or severe dis & 18 & 41 & 13 & 41 \\ 
-  Eisenberg 1988 & Barbiturate vs no b & Uncontrolled ICP du & 25 & 37 & 30 & 36 \\ 
-  Eisenberg 1988 & Barbiturate vs no b & Hypotension during  & 23 & 37 & 18 & 36 \\ 
-  Perez-Barcena 2008 & Pentobarbital vs Th & Death at the end of & 16 & 21 & 9 & 21 \\ 
-  Perez-Barcena 2008 & Pentobarbital vs Th & Death or severe dis & 17 & 21 & 13 & 21 \\ 
-  Perez-Barcena 2008 & Pentobarbital vs Th & Uncontrolled ICP du & 18 & 22 & 11 & 22 \\ 
-  Perez-Barcena 2008 & Pentobarbital vs Th & Hypotension during  & 20 & 22 & 21 & 22 \\ 
-  Schwartz 1984 & Barbiturate vs Mann & Death at the end of & 6 & 15 & 7 & 14 \\ 
-  Schwartz 1984 & Barbiturate vs Mann & Uncontrolled ICP du & 19 & 28 & 12 & 31 \\ 
-  Ward 1985 & Barbiturate vs no b & Mean ICP during tre & 0 & 27 & 0 & 26 \\ 
-  Ward 1985 & Barbiturate vs no b & Mean arterial press & 0 & 27 & 0 & 26 \\ 
-  Ward 1985 & Barbiturate vs no b & Mean body temperatu & 0 & 27 & 0 & 26 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\label{barbiturates}
-\end{table}
-
-\end{frame}
 
 
 \begin{frame}[fragile]{Dataset Properties}
-Missing data:
+Review or study level:
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue May 14 15:03:41 2019
-\begin{table}[ht]
-\centering
-\begin{tabular}{lr}
-  \hline
-  \hline
-Missing mean values and mean differences & 984 \\ 
-  Missing standard deviations and standard errors & 1300 \\ 
-  Missing sample sizes & 12173 \\ 
-  Missing study year & 44649 \\ 
-   \hline
-\end{tabular}
-\end{table}
-
-\end{frame}
-
-
-\begin{frame}[fragile]{Dataset Properties}
-Review and study properties:
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue May 14 15:03:41 2019
+% Mon May 20 09:38:22 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
 \begin{tabular}{lrrrr}
   & 5\% quantile & median & mean & 95\% quantile \\ 
   \hline
-Study number & 1 & 7 & 12 & 40 \\ 
+Number of studies & 1 & 7 & 12 & 40 \\ 
    \hline
 \hline
-Comparison number & 1 & 2 & 4 & 12 \\ 
-  Group number & 2 & 19 & 37 & 132 \\ 
-  Study years & 1981 & 2002 & 2000 & 2013 \\ 
+Number of comparisons & 1 & 2 & 4 & 12 \\ 
+  Number of meta-analyses & 2 & 19 & 37 & 132 \\ 
    \hline
-Study sample size & 13 & 78 & 750 & 890 \\ 
+Study years & 1981 & 2002 & 2000 & 2013 \\ 
+  Study sample size & 13 & 78 & 750 & 890 \\ 
   \end{tabular}
 \endgroup
 \end{table}
@@ -217,39 +198,11 @@ Study sample size & 13 & 78 & 750 & 890 \\
 \end{frame}
 
 
-\begin{frame}[fragile]{Pooling Studies - Meta-Analysis}
-Multiple results in a meta-analysis group can be pooled:
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue May 14 15:03:41 2019
-\begin{table}[ht]
-\centering
-\begingroup\footnotesize
-\begin{tabular}{rrr}
-  \hline
-n & Number of groups & Cumulative sum of groups \\ 
-  \hline
-1 & 102344 & 188079 \\ 
-  2 & 31686 & 85735 \\ 
-  3 & 16072 & 54049 \\ 
-  4 & 9628 & 37977 \\ 
-  5 & 6444 & 28349 \\ 
-  6 & 4230 & 21905 \\ 
-  7 & 2961 & 17675 \\ 
-  8 & 2114 & 14714 \\ 
-  9 & 1592 & 12600 \\ 
-  10 & 11008 & 11008 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\label{repr.groups}
-\end{table}
-
-\end{frame}
 
 \begin{frame}{Meta-analysis}
 Benefits:
 \begin{itemize}
-\item Summary of evidence (e.g. of a treatment)
+\item Summary of evidence (e.g. of a treatment effect)
 \item More reliable evidence (?)
 \end{itemize}
 
@@ -269,10 +222,9 @@ Assumptions:
 \begin{frame}{Small Study Effects}
 Causes:
 \begin{itemize}
-\item Selective publication of studies with large effects
-\item Bias in smaller studies
+\item Selective publication of studies with significant results - publication bias
+\item Selective reporting of most favorable outcomes
 \item Systematical differences in study settings
-\item \ldots
 \end{itemize}
 \end{frame}
 
@@ -280,8 +232,8 @@ Causes:
 \begin{frame}{Small Study Effect Tests}
 Tests applicable if:
 \begin{itemize}
-\item $n$ large
-\item variation in the estimated variances of effects \\(here: $\frac{\sigma_{\textrm{max}}}{\sigma_{\textrm{min}}} > 4$)
+\item Number of studies $n$ large
+\item variation in the estimated variances of effects %\\(here: $\frac{\sigma_{\textrm{max}}}{\sigma_{\textrm{min}}} > 4$)
 \end{itemize}
 Adjustments required if variance is dependent on effect size (e.g. log odds ratios)
 \end{frame}
@@ -294,7 +246,7 @@ Funnel plots (continuous outcome examples):
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-6-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-4-1} 
 
 \end{knitrout}
 
@@ -304,11 +256,11 @@ Funnel plots (continuous outcome examples):
 \begin{frame}[fragile]{Regression based Tests}
 Radial plots (continuous outcome examples):
 
-\vspace{-1.2cm}
+\vspace{-1.1cm}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-5-1} 
 
 \end{knitrout}
 
@@ -316,159 +268,92 @@ Radial plots (continuous outcome examples):
 
 
 \begin{frame}{Regression based Tests}
-Continuous outcomes tests:
+studies $i,.. ,n$, effects $\theta_i$ and variances $v_i$, s.e. $s_i$
 
-$i$ being the $i$th study in a meta-analysis:
+$\theta_M$ is the pooled effect and $\tau^2$ the between-study variance.
 
-Let $y_{i} = \textrm{effect}_{i}/\textrm{se}_{i}$ and $x_{i} = 1/\textrm{se}_{i}$
+Let $y_{i} = \theta_{i}/_{i}$ and $x_i = 1/s_i$
 \begin{itemize}
-\item \citet{Egger} : \\ $y_{i} \sim N(\beta_{0} + \beta_{1}x_{i}, v_{i})$
-\item \citet{thompson.sharp} : \\ $y_{i} \sim N(\beta_{0} + \beta_{1}x_{i}, v_{i} + \tau^2)$
+\item \citet{Egger} : Simple linear regression \\ $y_i = \beta_0 + \beta_1 x_i, \epsilon_i \sim N(0, \sigma)$
+\item \citet{thompson.sharp} : extension of Egger with study weights $v_{i} + \tau^2$ 
 \end{itemize}
-%Test for non-zero intercept $\beta_{0}$
+
 \end{frame}
 
-\begin{frame}[fragile]{Egger's Tests}
+\begin{frame}[fragile]{Egger's Test examples}
+Test for non-zero intercept $\beta_{0}$
 
-\vspace{-6cm}
-
+\vspace{-1.1cm}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-## 
-## 	Linear regression test of funnel plot asymmetry
-## 
-## data:  meta.example
-## t = -4.095, df = 17, p-value = 0.0007548
-## alternative hypothesis: asymmetry in funnel plot
-## sample estimates:
-##       bias    se.bias      slope 
-## -2.4398295  0.5958069  0.2653786
-\end{verbatim}
-\end{kframe}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-8-1} 
-\begin{kframe}\begin{verbatim}
-## 
-## 	Linear regression test of funnel plot asymmetry
-## 
-## data:  meta.nexample
-## t = 0.2718, df = 12, p-value = 0.7904
-## alternative hypothesis: asymmetry in funnel plot
-## sample estimates:
-##        bias     se.bias       slope 
-##   0.2324769   0.8553371 -21.2466388
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-6-1} 
 
+\end{knitrout}
 \end{frame}
 
 
-\begin{frame}[fragile]{Thompson and Sharp's Tests}
+\begin{frame}{Regression Tests for Binary Outcomes}
 
-\vspace{-6.5cm}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-## 
-## 	Linear regression test of funnel plot asymmetry (methods of
-## 	moment)
-## 
-## data:  meta.example
-## t = -3.9287, df = 17, p-value = 0.001082
-## alternative hypothesis: asymmetry in funnel plot
-## sample estimates:
-##       bias    se.bias      slope 
-## -2.4398295  0.6210298  0.2653786
-\end{verbatim}
-\end{kframe}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-9-1} 
-\begin{kframe}\begin{verbatim}
-## 
-## 	Linear regression test of funnel plot asymmetry (methods of
-## 	moment)
-## 
-## data:  meta.nexample
-## t = -0.030699, df = 12, p-value = 0.976
-## alternative hypothesis: asymmetry in funnel plot
-## sample estimates:
-##         bias      se.bias        slope 
-##  -0.02266344   0.73825654 -20.60252776
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-\end{frame}
-
-
-
-\begin{frame}{Regression based Tests}
-Adjustments for binary outcomes:
 \begin{itemize}
-\item \citet{Peters} :$x_{i}$ = inverse of total sample size, $\textrm{variance}_{i}$ as weight.
-\item \citet{Harbord} :$x:{i}$ = score of the log-likelihood of a proportion, $\textrm{variance}_{i}$ as weight.
+\item \citet{Peters} :$x_i = 1/n_i$ instead $1/s_i$, inverse variances as weight.
+\item \citet{Harbord} :$x_i$ = score of the log-likelihood of a proportion and inverse variances as weights.
 \item \citet{Rucker} :Use arcsine variance stabilizing transformation for variances and effects, do e.g. Egger's test.
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Rank based tests}
-\citet{begg.ties}
-Let $y_{i}$ the standardized effect size of a study $i$, $v_{i}$ it's variance and $n$ the number of studies
+\citet{begg.ties}: \\
+Let $y_{i}$ be $frac{\theta_i - \theta_M}{v_i}$ and $x_i$ its variance ($\neq v_i$)
 
-$u$ the number of pairs $(y_{i}, v_{i})$ ranked in the same order, $l$
+$u$ the number of pairs $(y_{i}, x_{i})$ ranked in the same order, $l$
 the number of pairs in the opposite order
 
-$Z = (u - l)/\sqrt{n(n-1)(2n + 5)/18}$ \\ can be used as a test statistic (based on Kendall's Tau)
+$Z = \frac{(u - l)}{\sqrt{n(n-1)(2n + 5)/18}}$  is a test statistic
 \end{frame}
 
 \begin{frame}{Rank based tests}
-\citet{Schwarzer}
-Let $e_{t}$ the number of events in the treatment group
+\citet{Schwarzer}: \\
+$e_t$ number of events in the treatment group
 
-Given constant log odds ratio, $E_{t}$ follows a hypergeometric distribution.
+$E_t$ follows hypergeometric distribution: calculate $\mathbb{E}(E_{t})$ and variances
 
-$\mathbb{E}(E_{t})$ and the variance can be estimated and used as in 
-\citet{begg.ties}
+proceed as in \citet{begg.ties}
 \end{frame}
 
 
 \begin{frame}{Test Results}
-Application of tests if:
+Inclusion criteria (from \citet{Ioannidis2007}):
 \begin{itemize}
 \item $n \geq 10$
 \item at least one statistically significant effect in a study
-\item $\frac{\sigma_{\textrm{max}}}{\sigma_{\textrm{min}}} > 4$
+\item $\frac{\sigma_{\textrm{max}}^2}{\sigma_{\textrm{min}}^2} > 4$
 \item $I^2 < 0.5$
 \end{itemize}
 
-From 5338 with $n \geq 10$, 1602 remain.
+From 5338 with $n \geq 10$, 1484 remain.
 \end{frame}
 
-% \begin{frame}[fragile]{Test Results: Significance}
-% 
-% <<echo = FALSE, fig.height = 4>>=
-% grid.arrange(p.bin, p.cont, ncol = 2)
-% @
-% \end{frame}
+
 
 \begin{frame}[fragile]{Continuous Outcome Test Results}
-$p$-values distribution:
+$p$-values distribution, $n$ = 294:
 
+\vspace{-2mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} 
 
 \end{knitrout}
 \end{frame}
 
 \begin{frame}[fragile]{Binary Outcome Test Results}
-$p$-values distribution:
+$p$-values distribution, $n$ = 1190:
 
+\vspace{-2mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-8-1} 
 
 \end{knitrout}
 \end{frame}
@@ -476,9 +361,10 @@ $p$-values distribution:
 \begin{frame}[fragile]{Agreement in significance}
 Number of significant test results per meta-analysis:
 
+\vspace{-2mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-12-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-9-1} 
 
 \end{knitrout}
 \end{frame}
@@ -493,18 +379,106 @@ Three methods:
 \end{frame}
 
 \begin{frame}{Adjustment by regression}
-Similar to the tests, but with unnormalized effect $y_{i}$:
+$y_i = \theta_i/s_i, x_i = 1/s_i$
 
-\begin{align}
-y_{i} = \beta_{0} + \beta_{1}x_{i}
-\end{align}
+$y_i = \beta_0 + \beta_1 x_i, \epsilon_i \sim N(0, \sigma)$
 
-$\beta_{0}$	 corresponds to $y_{i}$ with $x_{i} = 0$
+$\beta_{1}$ is the weighted mean treatment effect if $\beta_{0} = 0$
 \end{frame}
 
-\begin{frame}[fragile]{Adjustment by regression}
-Linear regression method:
 
+\begin{frame}{Adjustment by regression}
+Radial plots (continuous outcome examples):
+
+\vspace{-1.1cm}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
+
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Limit Meta-Analysis}
+Extended random effects model:
+
+\vspace{-4mm}
+\begin{align}
+y_{i} = \beta_{0} + \beta_{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{v_{i} + \tau^2}), \nonumber \\
+\epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1) \nonumber
+\end{align}
+
+Use $\mathbb{E}(y_{i}) \rightarrow \beta_{0} + \beta_{1}\tau$ for $\sqrt{v_{i}} \rightarrow 0$
+as corrected treatment efffect.
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Shrinkage Regression}
+Funnel plot with effect with infinite precision:
+
+\vspace{-1.1cm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
+
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}{Copas selection model}
+\citet{Copas1}: Bivariate normal model with two parts:
+
+\vspace{-8mm}
+\begin{align}
+y_{i} = \mu_{i} + \sigma_{i}\epsilon_{i} \label{population.model} \\
+\mu_{i} \sim N(\mu, \tau^2) \label{population.model} \\
+z_{i} = a + b/s_{i} + \delta_{i} \label{selection.model}
+\end{align}
+
+\ref{population.model} is called population model, \ref{selection.model} the selection model
+
+$(\epsilon_{i}, \delta_{i})$ are standard normal residuals with correlation $\rho = cor(y_{i}, z_{i})$.
+\end{frame}
+
+
+\begin{frame}[fragile]{Sensitivity Analysis}
+Model the selection process with different $a,b$
+
+Test if small study effect is significant, by including \\ $y_{i} = \mu_{i} + \beta s_{i} + \sigma_{i}\epsilon_{i}$
+
+Estimation: Select $a, b$ such that $H0$ can not be rejected and estimated
+number of unpublished studies is minimal.
+\end{frame}
+
+
+\begin{frame}{Trim-and-Fill}
+Non-parametric, iterative method:
+
+Cut away smallest study until funnel plot is symmetric
+
+Mirror studies that are responsible for asymmetry
+\end{frame}
+
+\begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
+Difference between adjusted and fixed effects meta-analysis estimate:
+
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-12-1} 
+
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Copas}
+Difference between adjusted and fixed effects meta-analysis estimate:
+
+\vspace{-3mm}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-13-1} 
@@ -512,50 +486,138 @@ Linear regression method:
 \end{knitrout}
 \end{frame}
 
-\begin{frame}[fragile]{Shrinkage Regression}
-Extended random effects model:
 
-\vspace{-4mm}
-\begin{align}
-y_{i} = \beta_{0} + \beta_{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{s_{i} + \tau^2}),  
-\epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1) \nonumber
-\end{align}
+\begin{frame}[fragile]{Adjustment Results: Regression}
+Difference between adjusted and fixed effects meta-analysis estimate:
 
-\vspace{-8mm}
-\begin{align}
-\mathbb{E}(y_{i}) \rightarrow \beta_{0} + \beta_{1}\tau \textrm{ if } \sqrt{v_{i}} \rightarrow 0 \nonumber
-\end{align}
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-14-1} 
 
-$\beta_{0}, \beta_{1}$ and $\tau$ can be estimated e.g. by ML and REML.
+\end{knitrout}
 \end{frame}
 
-\begin{frame}[fragile]{Shrinkage Regression}
-shrinking the within study variance:
+\begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
+Adjusted and meta-analysis test statistics:
 
-\vspace{-4mm}
-\begin{align}
-y_{i} &= \beta_{0}^\star + \beta_{1}^\star(\sqrt{v_{i}/M + \tau^2}) + \epsilon_{i}(\sqrt{s_{i}/M + \tau^2}) \nonumber
-\end{align}
+\vspace{-3mm} 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-15-1} 
 
-Letting $M \rightarrow \infty$ and substituting for all parameters and the observed residual
-
-\vspace{-8mm}
-\begin{align}
-y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \beta_{0}^\star)
-\end{align}
-
+\end{knitrout}
 \end{frame}
 
-\begin{frame}[fragile]{Shrinkage Regression}
-Three different treatment effect estimates:
 
-\begin{align}
-y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \beta_{0}^\star)
-\end{align}
+\begin{frame}[fragile]{Adjustment Results: Copas}
+Adjusted and meta-analysis test statistics:
 
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-16-1} 
 
+\end{knitrout}
 \end{frame}
 
+
+\begin{frame}[fragile]{Adjustment Results: Regression}
+Adjusted and meta-analysis test statistics:
+
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-17-1} 
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Backup Slides%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
+Treatment effect difference:
+
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-18-1} 
+
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Copas}
+Treatment effect difference:
+
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-19-1} 
+
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Regression}
+Treatment effect difference:
+
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-20-1} 
+
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
+log treatment effect estimates:
+
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-21-1} 
+
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Copas}
+log treatment effect estimates:
+
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-22-1} 
+
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Regression}
+log treatment effect estimates:
+
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-23-1} 
+
+\end{knitrout}
+\end{frame}
 
 
 
@@ -572,5 +634,106 @@ y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \
 
 %% chapter division is accomplished with:
 %% \part{Appendix}
+
+% \begin{frame}[fragile]{Test Results: Significance}
+% 
+% <<echo = FALSE, fig.height = 4>>=
+% grid.arrange(p.bin, p.cont, ncol = 2)
+% @
+% \end{frame}
+
+% \begin{frame}[fragile]{Pooling Studies - Meta-Analysis}
+% Multiple results in a meta-analysis group can be pooled:
+% <<echo=FALSE, results = 'asis'>>=
+% print(xtable(cum.repr.trials.subg, label = "repr.groups", align = "lrrr", digits = 0), include.rownames = F, size = "footnotesize")
+% @
+% \end{frame}
+
+% \begin{frame}{Dataset Structure}
+% \begin{itemize}
+% \item Comparison: What is compared, e.g. treatment vs. control
+% \item Outcome: How it is compared
+% \item Subgroup: Subgroup affiliation
+% \item Meta-Analysis Group: Results from same comparison, outcome and subgroup
+% \end{itemize}
+% \end{frame}
+
+% \begin{frame}[fragile]{Dataset Properties}
+% Missing data:
+% <<echo=FALSE, results = 'asis'>>=
+% print(xtable(missing.table, align = "lr"), include.rownames = T, include.colnames = F)
+% @
+% \end{frame}
+
+
+
+
+% \begin{frame}{Adjustment by regression}
+% Similar to the tests, but with unnormalized effect $y_{i}$:
+% 
+% \begin{align}
+% y_{i} = \beta_{0} + \beta_{1}x_{i}
+% \end{align}
+% 
+% $\beta_{0}$	 corresponds to $y_{i}$ with $x_{i} = 0$
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Adjustment by regression}
+% Linear regression method:
+% 
+% <<echo = FALSE, fig.height = 3>>=
+% grid.arrange(reg.1, reg.2, ncol = 2)
+% @
+% \end{frame}
+
+
+% \begin{frame}[fragile]{Thompson and Sharp's Tests}
+% Generalised radial plot with new standard error $x_i = s_i + \tau$
+% 
+% \vspace{-1.1cm}
+% <<message = FALSE, echo=FALSE, warning = FALSE, fig.height= 4>>=
+% par(las = 1, mfrow = c(1,2))
+% tau.ex <- meta.example$tau
+% biased.rev$inv <- 1/sqrt((biased.rev$se^2 + tau.ex^2))
+% m.ex <- lm(formula = (biased.rev$effect*biased.rev$inv) ~ (biased.rev$inv), weights = biased.rev$se)
+% biased.rev$inv <- 1/biased.rev$se
+% plot(y = (biased.rev$effect/biased.rev$se), x = (biased.rev$inv), xlim = c(0, 4), xlab = "inverse standard error", 
+% 		 ylab = "mean diff. / std. error")
+% abline(coef = coef(m.ex), lty = 2, col = 2)
+% 
+% tau.nex <- meta.nexample$tau
+% unbiased.rev$inv <- 1/sqrt((unbiased.rev$se^2 + tau.nex^2))
+% m.nex <- lm(formula = (unbiased.rev$effect*unbiased.rev$inv) ~ (unbiased.rev$inv), weights = unbiased.rev$se)
+% plot(y = (unbiased.rev$effect/unbiased.rev$se), x = (unbiased.rev$inv), xlim = c(0, .6), 
+% 		 ylim = c(-18, 0), xlab = "inverse standard error", ylab = "mean diff. / std. error")
+% abline(coef = coef(m.nex), lty = 2, col = 2)
+% @
+% 
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Limit Meta-Analysis}
+% \begin{align}
+% y_{M,i} &= \beta_{0} + \beta_{1}(\sqrt{v_{i}/M + \tau^2}) + \epsilon_{i}(\sqrt{s_{i}/M + \tau^2}) \nonumber
+% \end{align}
+% 
+% Letting $M \rightarrow \infty$ and substituting for all parameters and the observed residual
+% 
+% \vspace{-8mm}
+% \begin{align}
+% y_{\infty,i} &= \beta_{0} + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_i - \beta_0)
+% \end{align}
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Limit Meta-Analysis}
+% By plugging in $s_i$ for $v_i$, $\hat{tau}$ for $\tau$ and $\hat{\beta_0}$, get new study effects:
+% 
+% Three different treatment effect estimates:
+% \begin{itemize}
+% \item Expectated adjusted treatment effect with infinite precision: $\hat{\beta_{0}^\star} + \hat{\beta_{1}}\hat{\tau}$
+% \item Fixed effect estimate based on $(y_{\infty,1},.. , y_{\infty,n}$
+% \item Slope $\beta_{\textrm{lim}}$ of best-fitting regression line in radial plot with $(y_{\infty,i}, s_{i})$
+% \end{itemize}
+% \end{frame}
 
 \end{document}

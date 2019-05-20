@@ -1,8 +1,9 @@
-\frametitle{Shrinkage Regression}
-Three different treatment effect estimates:
+\frametitle{Adjustment Results: Regression}
+log treatment effect estimates:
 
-\begin{align}
-y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \beta_{0}^\star)
-\end{align}
+\vspace{-3mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-23-1}
 
-
+\end{knitrout}

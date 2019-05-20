@@ -253,7 +253,7 @@ There are multiple ways to adjust for small study effects by regression. The gen
 \citet{limitmeta} use a random effects model together with shrinkage procedure to obtain an unbiased estimate. Similarly to what has been seen in Copas selection model, we let $y_{i}$ depend on the intercept $\beta_{0}$ and on its standard error $\sqrt{v_{i}}$ as in \ref{limitmeta.regression}.
 
 \begin{align}
-y_{i}& = \beta_{0} + \beta_{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{s_{i} + \tau^2}), \epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1)  \label{limitmeta.regression}
+y_{i}& = \beta_{0} + \beta_{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{v_{i} + \tau^2}), \epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1)  \label{limitmeta.regression}
 \end{align}
 
 $\beta_{1}$ represents the bias introduced by small study effects, as can be seen when looking at \ref{limitmeta.infinitesample}
@@ -269,7 +269,7 @@ After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen 
 To diminuish the random variation within studies, but keep the variation between studies, we change \ref{limitmeta.regression} to a scenario where each study has $M$-fold increased precision:
 
 \begin{align}
-y_{i} &= \beta_{0}^\star + \beta_{1}^\star(\sqrt{v_{i}/M + \tau^2}) + \epsilon_{i}(\sqrt{s_{i}/M + \tau^2}) \label{limitmeta.regression}
+y_{M,i} &= \beta_{0}^\star + \beta_{1}^\star(\sqrt{v_{i}/M + \tau^2}) + \epsilon_{i}(\sqrt{v_{i}/M + \tau^2}) \label{limitmeta.regression}
 \end{align}
 
 Letting $M \rightarrow \infty$, we obtain:

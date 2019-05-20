@@ -7,6 +7,12 @@ Begg, C.~B. (1988).
   price £22.50.
 \newblock {\em Statistics in Medicine}, 7(7):817--818.
 
+\bibitem[Copas and Shi, 2001]{Copas1}
+Copas, J.~B. and Shi, J.~Q. (2001).
+\newblock A sensitivity analysis for publication bias in systematic reviews.
+\newblock {\em Statistical Methods in Medical Research}, 10(4):251--265.
+\newblock PMID: 11491412.
+
 \bibitem[Egger et~al., 1997]{Egger}
 Egger, M., Smith, G.~D., Schneider, M., and Minder, C. (1997).
 \newblock Bias in meta-analysis detected by a simple, graphical test.
@@ -17,6 +23,12 @@ Harbord, R.~M., Egger, M., and Sterne, J. A.~C. (2006).
 \newblock A modified test for small-study effects in meta-analyses of
   controlled trials with binary endpoints.
 \newblock {\em Statistics in Medicine}, 25(20):3443--3457.
+
+\bibitem[Ioannidis and Trikalinos, 2007]{Ioannidis2007}
+Ioannidis, J.~P. and Trikalinos, T.~A. (2007).
+\newblock The appropriateness of asymmetry tests for publication bias in
+  meta-analyses: a large survey.
+\newblock {\em CMAJ}, 176(8):1091--1096.
 
 \bibitem[Peters et~al., 2006]{Peters}
 Peters, J., Sutton, A., R~Jones, D., Abrams, K., and Rushton, L. (2006).

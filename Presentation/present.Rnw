@@ -123,7 +123,7 @@ sample.size <- data.ext %>% group_by(file.nr) %>% distinct(study.name, .keep_all
 						mean = mean(samplesize, na.rm = T), upper = quantile(samplesize, 0.95, na.rm = T))
 
 dataset.properties <- rbind(study.rev, comparison.rev, meta.rev, study.years, sample.size)
-rownames(dataset.properties) <- c("Study number", "Comparison number", "Group number", "Study years", "Study sample size")
+rownames(dataset.properties) <- c("Number of studies", "Number of comparisons", "Number of meta-analyses", "Study years", "Study sample size")
 colnames(dataset.properties) <- c("5% quantile", "median", "mean", "95% quantile")
 
 #Pooling studies
@@ -146,6 +146,17 @@ file.meta <- "meta.RData"
 load(file.path(PATH_RESULTS, file.meta))
 
 library(gridExtra)
+
+meta.id <- function(meta.id.tolook){
+	dt <- data.ext %>% filter(meta.id == meta.id.tolook)
+	if(any(is.na(dt$events1)) | all(dt$events1 == 0)){
+		meta.ex <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name, data = dt)
+	} else{
+		meta.ex <- metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "RR", data = dt)
+	}
+	return(meta.ex)
+}
+
 
 
 #Meta filtering: 
@@ -190,7 +201,7 @@ p.cont <- metac.cont %>% ungroup() %>%
            color = "white")
 
 dat_text <- data.frame(
-  label = paste(c(sum(metac.cont$begg.test), sum(metac.cont$egger.test), sum(metac.cont$thomson.test)), "> 0.05"),
+  label = paste(c(sum(metac.cont$begg.test), sum(metac.cont$egger.test), sum(metac.cont$thomson.test)), "< 0.05"),
   test.type   = c("pval.begg.cont", "pval.egger.cont", "pval.thomson.cont"))
 
 
@@ -203,7 +214,7 @@ p.dist.cont <- metac.cont %>% ungroup() %>%
 
 dat_text <- data.frame(
   label = paste(c(sum(metac.bin$egger.test), sum(metac.bin$harbord.test), sum(metac.bin$peter.test), 
-  										sum(metac.bin$rucker.test), sum(metac.bin$schwarzer.test)), "> 0.05"),
+  										sum(metac.bin$rucker.test), sum(metac.bin$schwarzer.test)), "< 0.05"),
   test.type   = c("pval.egger.bin", "pval.harbord.bin", "pval.peter.bin", "pval.rucker.bin", "pval.schwarzer.bin"))
 
 p.dist.bin <- metac.bin %>% ungroup() %>% 
@@ -211,14 +222,14 @@ p.dist.bin <- metac.bin %>% ungroup() %>%
   gather(key = "test.type", value = "p.value") %>% 
   ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + facet_wrap(~test.type) + 
 	geom_text(data = dat_text, mapping = aes(x = -Inf, y = -Inf, label = label), hjust   = -0.65,
-  vjust   = -4, color = "white")
+  vjust   = -2, color = "white")
 
 #Test agreement
-agree.bin <- meta.bin %>% mutate(n.sig = peter.test + rucker.test + egger.test + harbord.test + schwarzer.test) %>% 
+agree.bin <- metac.bin %>% mutate(n.sig = peter.test + rucker.test + egger.test + harbord.test + schwarzer.test) %>% 
   group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
   ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Binary Outcomes")
 
-agree.cont <- meta.cont %>% mutate(n.sig = egger.test + thomson.test + begg.test) %>% 
+agree.cont <- metac.cont %>% mutate(n.sig = egger.test + thomson.test + begg.test) %>% 
   group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
   ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
 
@@ -231,6 +242,166 @@ reg.2 <- qplot(x = unbiased.rev$se, y = unbiased.rev$effect, xlim = c(0, 6.5)) +
 	stat_smooth(method="lm", fullrange=TRUE, se = F) + coord_flip() + theme_bw() +
 	ylab("Std. Mean Difference") + xlab("Standard error")
 
+#Adjustment results: Effect difference histograms
+effect.diff <- metac %>% mutate(
+	est.fixef = ifelse(!is.na(est.fixef.bin), est.fixef - 1, est.fixef),
+	est.ranef = ifelse(!is.na(est.fixef.bin), est.ranef - 1, est.ranef),
+	est.trimfill.fixef = ifelse(!is.na(est.fixef.bin), est.trimfill.fixef - 1, est.trimfill.fixef),
+	est.copas = ifelse(!is.na(est.fixef.bin), est.copas - 1, est.copas),
+	est.reg.ranef = ifelse(!is.na(est.fixef.bin), est.reg.ranef - 1, est.reg.ranef),
+	fixef.trimfill = ifelse(abs(est.fixef) > abs(est.trimfill.fixef), "Reduction", "Amplification"),
+	fixef.copas = ifelse(abs(est.fixef) > abs(est.copas), "Reduction", "Amplification"),
+	fixef.reg = ifelse(abs(est.fixef) > abs(est.reg.ranef), "Reduction", "Amplification"),
+	fixef.trimfill.s = ifelse(sign(est.fixef) == sign(est.trimfill.fixef), "Unchanged", "Reversed"),
+	fixef.copas.s = ifelse(sign(est.fixef) == sign(est.copas), "Unchanged", "Reversed"),
+	fixef.reg.s = ifelse(sign(est.fixef) == sign(est.reg.ranef), "Unchanged", "Reversed")) 
+
+
+trimfill.miss <- effect.diff %>% group_by(fixef.trimfill) %>% mutate(dif = abs(est.fixef - est.trimfill.fixef)) %>% 
+	filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% select(label, fixef.trimfill.s, meta.id, type)
+
+trimfill.label <- data.frame(label = paste("missing:", c(paste(trimfill.miss$label[trimfill.miss$fixef.trimfill == "Reduction"], collapse = ", "),
+																												 paste(trimfill.miss$label[trimfill.miss$fixef.trimfill == "Amplification"], collapse = ", "))),
+														fixef.trimfill = unique(trimfill.miss$fixef.trimfill), 
+														fixef.trimfill.s  = "Reversed")
+
+trimfill.label$label <- as.character(trimfill.label$label)
+trimfill.label$label[1] <- sub("2.5,", "2.5, \n   ", trimfill.label$label[1])
+
+
+hist.trimfill <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.trimfill.fixef), fill = factor(fixef.trimfill.s))) +
+	geom_histogram() + facet_grid(~factor(fixef.trimfill)) + xlim(0, 2)+ xlab("Effect difference") +
+	geom_text(data = trimfill.label, mapping = aes(label = label, x = 0, hjust = 0, y = 300), 
+						color = "black") + scale_fill_discrete(name="Effect direction") + theme_bw() + 
+	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
+
+hist.trimfill1 <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.trimfill.fixef))) +
+	geom_histogram() + facet_grid(~factor(fixef.trimfill)) + xlim(0, 2)+ xlab("Effect difference") +
+	geom_text(data = trimfill.label, mapping = aes(label = label, x = 0, hjust = 0.05, y = 300), 
+						color = "black") + theme_bw() + 
+	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
+
+funnel(trimfill(meta.id(165815)))
+
+
+copas.miss <- effect.diff %>% filter(!is.na(est.copas)) %>% group_by(fixef.copas) %>% mutate(dif = abs(est.fixef - est.copas)) %>% 
+	filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% select(label, fixef.copas.s, meta.id, type)
+
+copas.label <- data.frame(label = paste("missing:", c(paste(copas.miss$label[copas.miss$fixef.copas == "Reduction"], collapse = ", "),
+																												 paste(copas.miss$label[copas.miss$fixef.copas == "Amplification"], collapse = ", "))),
+														 fixef.copas = unique(copas.miss$fixef.copas), 
+														 fixef.copas.s  = "Reversed")
+
+copas.label$label <- as.character(copas.label$label)
+copas.label$label[1] <- sub("3.5,", "3.5, \n   ", copas.label$label[1])
+
+
+hist.copas <- effect.diff %>% filter(!is.na(est.copas)) %>% ggplot(aes(x = abs(est.fixef - est.copas), fill = factor(fixef.copas.s))) +
+	geom_histogram() + facet_grid(~factor(fixef.copas)) + xlim(0, 2) + xlab("Effect difference") +
+	geom_text(data = copas.label, mapping = aes(label = label, x = 0, hjust = 0, y = 175), 
+						color = "black") + scale_fill_discrete(name="Effect direction") + theme_bw() +
+	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
+
+hist.copas1 <- effect.diff %>% filter(!is.na(est.copas)) %>% ggplot(aes(x = abs(est.fixef - est.copas))) +
+	geom_histogram() + facet_grid(~factor(fixef.copas)) + xlim(0, 2) + xlab("Effect difference") +
+	geom_text(data = copas.label, mapping = aes(label = label, x = 0, hjust = 0.05, y = 175), 
+						color = "black") + theme_bw() +
+	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
+
+funnel(meta.id(56200))
+
+reg.ranef.miss <- effect.diff %>% group_by(fixef.reg) %>% mutate(dif = abs(est.fixef - est.reg.ranef)) %>% 
+	filter(dif > 3) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% select(label, fixef.reg.s, meta.id, type)
+
+reg.ranef.label <- data.frame(label = paste("missing:", c(paste(reg.ranef.miss$label[reg.ranef.miss$fixef.reg == "Reduction"], collapse = ", "),
+																											paste(reg.ranef.miss$label[reg.ranef.miss$fixef.reg == "Amplification"], collapse = ", "))),
+													fixef.reg = unique(reg.ranef.miss$fixef.reg), 
+													fixef.reg.s  = "Reversed")
+
+reg.ranef.label$label <- as.character(reg.ranef.label$label)
+reg.ranef.label$label[1] <- sub("4.8,", "4.8,\n   ", reg.ranef.label$label[1])
+
+
+hist.reg <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.reg.ranef), fill = factor(fixef.reg.s))) +
+	geom_histogram() + facet_grid(~factor(fixef.reg)) + xlim(0, 3)+ xlab("Effect difference") +
+	geom_text(data = reg.ranef.label, mapping = aes(label = label, x= 0, y = 250, hjust = 0.05), 
+						color = "black", size = 2.8) + theme_bw() + scale_fill_discrete(name="Effect direction") +
+	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
+
+hist.reg1 <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.reg.ranef))) +
+	geom_histogram() + facet_grid(~factor(fixef.reg)) + xlim(0, 3)+ xlab("Effect difference") +
+	geom_text(data = reg.ranef.label, mapping = aes(label = label, x= 0, y = 250, hjust = 0.05), 
+						color = "black", size = 2.8) + theme_bw() + 
+	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
+
+metac %>% filter(meta.id == 101436) %>% select(comparison.name, outcome.name, sungroup.name, est.fixef, est.copas, 
+																							 est.trimfill.fixef, est.reg.ranef, est.copas)
+par(mfrow = c(1,3))
+funnel(meta.id(101436))
+funnel(trimfill(meta.id(101436)))
+funnel(limitmeta(meta.id(101436)))
+
+print(effect.diff %>% group_by(fixef.reg) %>% mutate(dif = abs(est.fixef - est.reg.ranef)) %>% 
+				filter(dif > 3) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% 
+				arrange(label) %>% select(label, type, meta.id, comparison.name, outcome.name), n = 200)
+
+
+
+#Scatterplots of metac-analysis and corrected log(abs(abs estimates
+trimfill.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.trimfill.fixef)))) + geom_point() + 
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
+	xlab("Fixed effects log estimate") + ylab("Trimfill log estimate") + ggtitle("Fixed effects to Trimfill")
+
+trimfill.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.trimfill.fixef)))) + geom_point() + 
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
+	xlab("Random effects log estimate") + ylab("Trimfill log estimate") + ggtitle("Random effects to Trimfill")
+
+
+#Scatterplots of metac-analysis and corrected log estimates
+copas.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.copas)))) + geom_point() + 
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
+	xlab("Fixed effects log estimate") + ylab("Copas log estimate") + ggtitle("Fixed effects to Copas") 
+
+copas.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.copas)))) + geom_point() + 
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE, show.legend = T) + 
+	xlab("Random effects log estimate") + ylab("Copas log estimate") + ggtitle("Random effects to Copas") 
+
+
+#Scatterplots of metac-analysis and corrected log estimates
+reg.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs(log(abs((est.fixef))))), y = log(abs(log(abs(est.reg.ranef)))))) + geom_point() + 
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
+	xlab("Fixed effects log estimate") + ylab("Regression log estimate") + ggtitle("Fixed effects to Regression")
+
+reg.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.reg.ranef)))) + geom_point() + 
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
+	xlab("Random effects log estimate") + ylab("Regression log estimate") + ggtitle("Random effects to Regression")
+
+#Scatterplots of test- statistics:
+trimfill.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Fixed effects and trimfill z statistics") + ylab("Trimfill  statistic") + xlab("Fixed effects  statistic")
+
+trimfill.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.trimfill.fixef))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Random effects and trimfill z statistics") + ylab("Trimfill  statistic") + xlab("Random effects  statistic")
+
+#Scatterplots of test- statistics:
+copas.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.copas))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Fixed effects and Copas z statistics") + ylab("Copas  statistic") + xlab("Fixed effects  statistic")
+
+copas.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.copas))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Random effects and Copas z statistics") + ylab("Copas  statistic") + xlab("Random effects  statistic")
+
+#Scatterplots of test- statistics:
+reg.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.reg.ranef))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Fixed effects and Regression z statistics") + ylab("Regression  statistic") + xlab("Fixed effects  statistic")
+
+reg.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.reg.ranef))) + geom_point() +
+	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+	ggtitle("Random effects and Regression z statistics") + ylab("Regression  statistic") + xlab("Random effects  statistic")
 @
 
 
@@ -239,12 +410,19 @@ reg.2 <- qplot(x = unbiased.rev$se, y = unbiased.rev$effect, xlim = c(0, 6.5)) +
 \maketitle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-\begin{frame}{Cochrane Library}
-Database of high-quality, systematic reviews in clinical science.
+% \begin{frame}{Evidence Synthesis}
+% Summarise evidence over fields and studies
+% 
+% Quantitatively by meta-analysis
+% 
+% \end{frame}
 
-Currently $\sim$ 8,000 reviews, prepared by independent groups. 
+\begin{frame}{Cochrane Organisation}
+Aim: summarise findings in primary clinical research and health care
 
-Reviews are peer-reviewed and prepared after guidelines.
+Provide peer-reviewed, systematic reviews
+
+Public access (for some countries)
 \end{frame}
 
 
@@ -255,6 +433,16 @@ Reviews are peer-reviewed and prepared after guidelines.
 
 \Sexpr{format(dim(data)[1], big.mark=",")} study results.
 \end{frame}
+
+
+\begin{frame}[fragile]{Review Example: Binary Outcome}
+Barbiturate efficacy for head injury treatment
+\vspace{-5mm}
+<<echo = FALSE, results = 'asis'>>=
+print(xtable(barbi2, label = "barbiturates", digits = 0), include.rownames = F, size = "tiny")
+@
+\end{frame}
+
 
 
 \begin{frame}{Dataset Structure}
@@ -289,52 +477,22 @@ Reviews are peer-reviewed and prepared after guidelines.
 \end{frame}
 
 
-\begin{frame}{Dataset Structure}
-\begin{itemize}
-\item Comparison: What is compared, e.g. treatment vs. control
-\item Outcome: How it is compared
-\item Subgroup: Subgroup affiliation
-\item Meta-Analysis Group: Results from same comparison, outcome and subgroup
-\end{itemize}
-\end{frame}
 
-
-\begin{frame}[fragile]{Review Example: binary outcome}
-Barbiturate efficacy for head injury treatment
-\vspace{-5mm}
-<<echo = FALSE, results = 'asis'>>=
-print(xtable(barbi2, label = "barbiturates", digits = 0), include.rownames = F, size = "tiny")
-@
-\end{frame}
 
 
 \begin{frame}[fragile]{Dataset Properties}
-Missing data:
+Review or study level:
 <<echo=FALSE, results = 'asis'>>=
-print(xtable(missing.table, align = "lr"), include.rownames = T, include.colnames = F)
+print(xtable(dataset.properties, digits = 0, align = "lrrrr"), include.rownames = T, size = "footnotesize", hline = c(0,1,1,3))
 @
 \end{frame}
 
 
-\begin{frame}[fragile]{Dataset Properties}
-Review and study properties:
-<<echo=FALSE, results = 'asis'>>=
-print(xtable(dataset.properties, digits = 0, align = "lrrrr"), include.rownames = T, size = "footnotesize", hline = c(0,1,1,4))
-@
-\end{frame}
-
-
-\begin{frame}[fragile]{Pooling Studies - Meta-Analysis}
-Multiple results in a meta-analysis group can be pooled:
-<<echo=FALSE, results = 'asis'>>=
-print(xtable(cum.repr.trials.subg, label = "repr.groups", align = "lrrr", digits = 0), include.rownames = F, size = "footnotesize")
-@
-\end{frame}
 
 \begin{frame}{Meta-analysis}
 Benefits:
 \begin{itemize}
-\item Summary of evidence (e.g. of a treatment)
+\item Summary of evidence (e.g. of a treatment effect)
 \item More reliable evidence (?)
 \end{itemize}
 
@@ -354,10 +512,9 @@ Assumptions:
 \begin{frame}{Small Study Effects}
 Causes:
 \begin{itemize}
-\item Selective publication of studies with large effects
-\item Bias in smaller studies
+\item Selective publication of studies with significant results - publication bias
+\item Selective reporting of most favorable outcomes
 \item Systematical differences in study settings
-\item \ldots
 \end{itemize}
 \end{frame}
 
@@ -365,8 +522,8 @@ Causes:
 \begin{frame}{Small Study Effect Tests}
 Tests applicable if:
 \begin{itemize}
-\item $n$ large
-\item variation in the estimated variances of effects \\(here: $\frac{\sigma_{\textrm{max}}}{\sigma_{\textrm{min}}} > 4$)
+\item Number of studies $n$ large
+\item variation in the estimated variances of effects %\\(here: $\frac{\sigma_{\textrm{max}}}{\sigma_{\textrm{min}}} > 4$)
 \end{itemize}
 Adjustments required if variance is dependent on effect size (e.g. log odds ratios)
 \end{frame}
@@ -389,119 +546,115 @@ funnel(meta.nexample)
 \begin{frame}[fragile]{Regression based Tests}
 Radial plots (continuous outcome examples):
 
-\vspace{-1.2cm}
+\vspace{-1.1cm}
 
 <<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
 par(las = 1, mfrow = c(1,2))
-radial(meta.example, comb.fixed = F)
-radial(meta.nexample, comb.fixed = F)
+biased.rev$inv <- 1/biased.rev$se
+plot(y = (biased.rev$effect/biased.rev$se), x = (biased.rev$se^-1), xlim = c(0, 6), xlab = "inverse standard error", 
+		 ylab = "mean diff. / std. error")
+
+unbiased.rev$inv <- 1/unbiased.rev$se
+plot(y = (unbiased.rev$effect/unbiased.rev$se), x = (unbiased.rev$inv), xlim = c(0, 1.2), 
+		 ylim = c(-18, 0), xlab = "inverse standard error", ylab = "mean diff. / std. error")
 @
 
 \end{frame}
 
 
 \begin{frame}{Regression based Tests}
-Continuous outcomes tests:
+studies $i,.. ,n$, effects $\theta_i$ and variances $v_i$, s.e. $s_i$
 
-$i$ being the $i$th study in a meta-analysis:
+$\theta_M$ is the pooled effect and $\tau^2$ the between-study variance.
 
-Let $y_{i} = \textrm{effect}_{i}/\textrm{se}_{i}$ and $x_{i} = 1/\textrm{se}_{i}$
+Let $y_{i} = \theta_{i}/_{i}$ and $x_i = 1/s_i$
 \begin{itemize}
-\item \citet{Egger} : \\ $y_{i} \sim N(\beta_{0} + \beta_{1}x_{i}, v_{i})$
-\item \citet{thompson.sharp} : \\ $y_{i} \sim N(\beta_{0} + \beta_{1}x_{i}, v_{i} + \tau^2)$
+\item \citet{Egger} : Simple linear regression \\ $y_i = \beta_0 + \beta_1 x_i, \epsilon_i \sim N(0, \sigma)$
+\item \citet{thompson.sharp} : extension of Egger with study weights $v_{i} + \tau^2$ 
 \end{itemize}
-%Test for non-zero intercept $\beta_{0}$
+
 \end{frame}
 
-\begin{frame}[fragile]{Egger's Tests}
+\begin{frame}[fragile]{Egger's Test examples}
+Test for non-zero intercept $\beta_{0}$
 
-\vspace{-6cm}
-
+\vspace{-1.1cm}
 <<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
 par(las = 1, mfrow = c(1,2))
-metabias(meta.example, plotit = TRUE, method.bias = "linreg")
-metabias(meta.nexample, plotit = TRUE, method.bias = "linreg")
-@
+biased.rev$inv <- 1/biased.rev$se
+m.ex <- lm(formula = (biased.rev$effect/biased.rev$se) ~ (biased.rev$inv))
+plot(y = (biased.rev$effect/biased.rev$se), x = (biased.rev$se^-1), xlim = c(0, 6), xlab = "inverse standard error", 
+		 ylab = "mean diff. / std. error")
+abline(coef = coef(m.ex), lty = 2, col = 2)
 
+
+unbiased.rev$inv <- 1/unbiased.rev$se
+m.nex <- lm(formula = (unbiased.rev$effect/unbiased.rev$se) ~ (unbiased.rev$inv))
+plot(y = (unbiased.rev$effect/unbiased.rev$se), x = (unbiased.rev$inv), xlim = c(0, 1.2), 
+		 ylim = c(-18, 0), xlab = "inverse standard error", ylab = "mean diff. / std. error")
+abline(coef = coef(m.nex), lty = 2, col = 2)
+@
 \end{frame}
 
 
-\begin{frame}[fragile]{Thompson and Sharp's Tests}
+\begin{frame}{Regression Tests for Binary Outcomes}
 
-\vspace{-6.5cm}
-
-<<message = FALSE, echo=FALSE, warning = FALSE, fig.height= 4>>=
-par(las = 1, mfrow = c(1,2))
-metabias(meta.example, plotit = TRUE, method.bias = "mm")
-metabias(meta.nexample, plotit = TRUE, method.bias = "mm")
-@
-
-\end{frame}
-
-
-
-\begin{frame}{Regression based Tests}
-Adjustments for binary outcomes:
 \begin{itemize}
-\item \citet{Peters} :$x_{i}$ = inverse of total sample size, $\textrm{variance}_{i}$ as weight.
-\item \citet{Harbord} :$x:{i}$ = score of the log-likelihood of a proportion, $\textrm{variance}_{i}$ as weight.
+\item \citet{Peters} :$x_i = 1/n_i$ instead $1/s_i$, inverse variances as weight.
+\item \citet{Harbord} :$x_i$ = score of the log-likelihood of a proportion and inverse variances as weights.
 \item \citet{Rucker} :Use arcsine variance stabilizing transformation for variances and effects, do e.g. Egger's test.
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Rank based tests}
-\citet{begg.ties}
-Let $y_{i}$ the standardized effect size of a study $i$, $v_{i}$ it's variance and $n$ the number of studies
+\citet{begg.ties}: \\
+Let $y_{i}$ be $frac{\theta_i - \theta_M}{v_i}$ and $x_i$ its variance ($\neq v_i$)
 
-$u$ the number of pairs $(y_{i}, v_{i})$ ranked in the same order, $l$
+$u$ the number of pairs $(y_{i}, x_{i})$ ranked in the same order, $l$
 the number of pairs in the opposite order
 
-$Z = (u - l)/\sqrt{n(n-1)(2n + 5)/18}$ \\ can be used as a test statistic (based on Kendall's Tau)
+$Z = \frac{(u - l)}{\sqrt{n(n-1)(2n + 5)/18}}$  is a test statistic
 \end{frame}
 
 \begin{frame}{Rank based tests}
-\citet{Schwarzer}
-Let $e_{t}$ the number of events in the treatment group
+\citet{Schwarzer}: \\
+$e_t$ number of events in the treatment group
 
-Given constant log odds ratio, $E_{t}$ follows a hypergeometric distribution.
+$E_t$ follows hypergeometric distribution: calculate $\mathbb{E}(E_{t})$ and variances
 
-$\mathbb{E}(E_{t})$ and the variance can be estimated and used as in 
-\citet{begg.ties}
+proceed as in \citet{begg.ties}
 \end{frame}
 
 
 \begin{frame}{Test Results}
-Application of tests if:
+Inclusion criteria (from \citet{Ioannidis2007}):
 \begin{itemize}
 \item $n \geq 10$
 \item at least one statistically significant effect in a study
-\item $\frac{\sigma_{\textrm{max}}}{\sigma_{\textrm{min}}} > 4$
+\item $\frac{\sigma_{\textrm{max}}^2}{\sigma_{\textrm{min}}^2} > 4$
 \item $I^2 < 0.5$
 \end{itemize}
 
 From \Sexpr{dim(meta)[1]} with $n \geq 10$, \Sexpr{dim(metac)[1]} remain.
 \end{frame}
 
-% \begin{frame}[fragile]{Test Results: Significance}
-% 
-% <<echo = FALSE, fig.height = 4>>=
-% grid.arrange(p.bin, p.cont, ncol = 2)
-% @
-% \end{frame}
+
 
 \begin{frame}[fragile]{Continuous Outcome Test Results}
-$p$-values distribution:
+$p$-values distribution, $n$ = \Sexpr{dim(metac.cont)[1]}:
 
+\vspace{-2mm}
 <<echo = FALSE, fig.height = 4, message = FALSE>>=
 plot(p.dist.cont)
 @
 \end{frame}
 
 \begin{frame}[fragile]{Binary Outcome Test Results}
-$p$-values distribution:
+$p$-values distribution, $n$ = \Sexpr{dim(metac.bin)[1]}:
 
-<<echo = FALSE, fig.height = 4, message = FALSE>>=
+\vspace{-2mm}
+<<echo = FALSE, fig.height = 3.6, message = FALSE>>=
 plot(p.dist.bin)
 @
 \end{frame}
@@ -509,7 +662,8 @@ plot(p.dist.bin)
 \begin{frame}[fragile]{Agreement in significance}
 Number of significant test results per meta-analysis:
 
-<<echo = FALSE, fig.height = 3.8, message = FALSE>>=
+\vspace{-2mm}
+<<echo = FALSE, fig.height = 3.2, message = FALSE>>=
 grid.arrange(agree.cont, agree.bin, ncol = 2)
 @
 \end{frame}
@@ -524,67 +678,235 @@ Three methods:
 \end{frame}
 
 \begin{frame}{Adjustment by regression}
-Similar to the tests, but with unnormalized effect $y_{i}$:
+$y_i = \theta_i/s_i, x_i = 1/s_i$
 
-\begin{align}
-y_{i} = \beta_{0} + \beta_{1}x_{i}
-\end{align}
+$y_i = \beta_0 + \beta_1 x_i, \epsilon_i \sim N(0, \sigma)$
 
-$\beta_{0}$	 corresponds to $y_{i}$ with $x_{i} = 0$
+$\beta_{1}$ is the weighted mean treatment effect if $\beta_{0} = 0$
 \end{frame}
 
-\begin{frame}[fragile]{Adjustment by regression}
-Linear regression method:
 
-<<echo = FALSE, fig.height = 3>>=
-grid.arrange(reg.1, reg.2, ncol = 2)
+\begin{frame}{Adjustment by regression}
+Radial plots (continuous outcome examples):
+
+\vspace{-1.1cm}
+
+<<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+par(las = 1, mfrow = c(1,2))
+biased.rev$inv <- 1/biased.rev$se
+m.ex.0 <- lm(formula = (biased.rev$effect/biased.rev$se) ~ 0 + (biased.rev$inv))
+m.ex <- lm(formula = (biased.rev$effect/biased.rev$se) ~ (biased.rev$inv))
+plot(y = (biased.rev$effect/biased.rev$se), x = (biased.rev$se^-1), xlim = c(0, 6), xlab = "inverse standard error", 
+		 ylab = "mean diff. / std. error")
+abline(coef = c(0,coef(m.ex.0)), lty = 2)
+abline(coef = coef(m.ex), lty = 2, col = 2)
+
+
+unbiased.rev$inv <- 1/unbiased.rev$se
+m.nex.0 <- lm(formula = (unbiased.rev$effect/unbiased.rev$se) ~ 0 + (unbiased.rev$inv))
+m.nex <- lm(formula = (unbiased.rev$effect/unbiased.rev$se) ~ (unbiased.rev$inv))
+plot(y = (unbiased.rev$effect/unbiased.rev$se), x = (unbiased.rev$inv), xlim = c(0, 1), 
+		 ylim = c(-18, 0), xlab = "inverse standard error", ylab = "mean diff. / std. error")
+abline(coef = c(0,coef(m.nex.0)), lty = 2)
+abline(coef = coef(m.nex), lty = 2, col = 2)
 @
 \end{frame}
 
-\begin{frame}[fragile]{Shrinkage Regression}
+
+
+\begin{frame}[fragile]{Limit Meta-Analysis}
 Extended random effects model:
 
 \vspace{-4mm}
 \begin{align}
-y_{i} = \beta_{0} + \beta_{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{s_{i} + \tau^2}),  
+y_{i} = \beta_{0} + \beta_{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{v_{i} + \tau^2}), \nonumber \\
 \epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1) \nonumber
 \end{align}
 
-\vspace{-8mm}
-\begin{align}
-\mathbb{E}(y_{i}) \rightarrow \beta_{0} + \beta_{1}\tau \textrm{ if } \sqrt{v_{i}} \rightarrow 0 \nonumber
-\end{align}
-
-$\beta_{0}, \beta_{1}$ and $\tau$ can be estimated e.g. by ML and REML.
+Use $\mathbb{E}(y_{i}) \rightarrow \beta_{0} + \beta_{1}\tau$ for $\sqrt{v_{i}} \rightarrow 0$
+as corrected treatment efffect.
 \end{frame}
+
+
 
 \begin{frame}[fragile]{Shrinkage Regression}
-shrinking the within study variance:
+Funnel plot with effect with infinite precision:
 
-\vspace{-4mm}
-\begin{align}
-y_{i} &= \beta_{0}^\star + \beta_{1}^\star(\sqrt{v_{i}/M + \tau^2}) + \epsilon_{i}(\sqrt{s_{i}/M + \tau^2}) \nonumber
-\end{align}
+\vspace{-1.1cm}
+<<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+par(las = 1, mfrow = c(1,2))
+funnel(limitmeta(meta.example))
+funnel(limitmeta(meta.nexample))
+@
+\end{frame}
 
-Letting $M \rightarrow \infty$ and substituting for all parameters and the observed residual
+
+
+\begin{frame}{Copas selection model}
+\citet{Copas1}: Bivariate normal model with two parts:
 
 \vspace{-8mm}
 \begin{align}
-y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \beta_{0}^\star)
+y_{i} = \mu_{i} + \sigma_{i}\epsilon_{i} \label{population.model} \\
+\mu_{i} \sim N(\mu, \tau^2) \label{population.model} \\
+z_{i} = a + b/s_{i} + \delta_{i} \label{selection.model}
 \end{align}
 
+\ref{population.model} is called population model, \ref{selection.model} the selection model
+
+$(\epsilon_{i}, \delta_{i})$ are standard normal residuals with correlation $\rho = cor(y_{i}, z_{i})$.
 \end{frame}
 
-\begin{frame}[fragile]{Shrinkage Regression}
-Three different treatment effect estimates:
 
-\begin{align}
-y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \beta_{0}^\star)
-\end{align}
+\begin{frame}[fragile]{Sensitivity Analysis}
+Model the selection process with different $a,b$
 
+Test if small study effect is significant, by including \\ $y_{i} = \mu_{i} + \beta s_{i} + \sigma_{i}\epsilon_{i}$
 
+Estimation: Select $a, b$ such that $H0$ can not be rejected and estimated
+number of unpublished studies is minimal.
 \end{frame}
 
+
+\begin{frame}{Trim-and-Fill}
+Non-parametric, iterative method:
+
+Cut away smallest study until funnel plot is symmetric
+
+Mirror studies that are responsible for asymmetry
+\end{frame}
+
+\begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
+Difference between adjusted and fixed effects meta-analysis estimate:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+plot(hist.trimfill1)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Copas}
+Difference between adjusted and fixed effects meta-analysis estimate:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+plot(hist.copas1)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Regression}
+Difference between adjusted and fixed effects meta-analysis estimate:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+plot(hist.reg1)
+@
+\end{frame}
+
+\begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
+Adjusted and meta-analysis test statistics:
+
+\vspace{-3mm} 
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+grid.arrange(trimfill.fixef.sc.zval, trimfill.ranef.sc.zval, ncol = 2)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Copas}
+Adjusted and meta-analysis test statistics:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+grid.arrange(copas.fixef.sc.zval, copas.ranef.sc.zval, ncol = 2)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Regression}
+Adjusted and meta-analysis test statistics:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+grid.arrange(reg.fixef.sc.zval, reg.ranef.sc.zval, ncol = 2)
+@
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Backup Slides%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
+Treatment effect difference:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+plot(hist.trimfill)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Copas}
+Treatment effect difference:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+plot(hist.copas)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Regression}
+Treatment effect difference:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+plot(hist.reg)
+@
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
+log treatment effect estimates:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+grid.arrange(trimfill.fixef.sc.effect, trimfill.ranef.sc.effect, ncol = 2)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Copas}
+log treatment effect estimates:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+grid.arrange(copas.fixef.sc.effect, copas.ranef.sc.effect, ncol = 2)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]{Adjustment Results: Regression}
+log treatment effect estimates:
+
+\vspace{-3mm}
+<<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+grid.arrange(reg.fixef.sc.effect, reg.ranef.sc.effect, ncol = 2)
+@
+\end{frame}
 
 
 
@@ -601,5 +923,106 @@ y_{\infty,i} &= \beta_{0}^\star + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_{i} - \
 
 %% chapter division is accomplished with:
 %% \part{Appendix}
+
+% \begin{frame}[fragile]{Test Results: Significance}
+% 
+% <<echo = FALSE, fig.height = 4>>=
+% grid.arrange(p.bin, p.cont, ncol = 2)
+% @
+% \end{frame}
+
+% \begin{frame}[fragile]{Pooling Studies - Meta-Analysis}
+% Multiple results in a meta-analysis group can be pooled:
+% <<echo=FALSE, results = 'asis'>>=
+% print(xtable(cum.repr.trials.subg, label = "repr.groups", align = "lrrr", digits = 0), include.rownames = F, size = "footnotesize")
+% @
+% \end{frame}
+
+% \begin{frame}{Dataset Structure}
+% \begin{itemize}
+% \item Comparison: What is compared, e.g. treatment vs. control
+% \item Outcome: How it is compared
+% \item Subgroup: Subgroup affiliation
+% \item Meta-Analysis Group: Results from same comparison, outcome and subgroup
+% \end{itemize}
+% \end{frame}
+
+% \begin{frame}[fragile]{Dataset Properties}
+% Missing data:
+% <<echo=FALSE, results = 'asis'>>=
+% print(xtable(missing.table, align = "lr"), include.rownames = T, include.colnames = F)
+% @
+% \end{frame}
+
+
+
+
+% \begin{frame}{Adjustment by regression}
+% Similar to the tests, but with unnormalized effect $y_{i}$:
+% 
+% \begin{align}
+% y_{i} = \beta_{0} + \beta_{1}x_{i}
+% \end{align}
+% 
+% $\beta_{0}$	 corresponds to $y_{i}$ with $x_{i} = 0$
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Adjustment by regression}
+% Linear regression method:
+% 
+% <<echo = FALSE, fig.height = 3>>=
+% grid.arrange(reg.1, reg.2, ncol = 2)
+% @
+% \end{frame}
+
+
+% \begin{frame}[fragile]{Thompson and Sharp's Tests}
+% Generalised radial plot with new standard error $x_i = s_i + \tau$
+% 
+% \vspace{-1.1cm}
+% <<message = FALSE, echo=FALSE, warning = FALSE, fig.height= 4>>=
+% par(las = 1, mfrow = c(1,2))
+% tau.ex <- meta.example$tau
+% biased.rev$inv <- 1/sqrt((biased.rev$se^2 + tau.ex^2))
+% m.ex <- lm(formula = (biased.rev$effect*biased.rev$inv) ~ (biased.rev$inv), weights = biased.rev$se)
+% biased.rev$inv <- 1/biased.rev$se
+% plot(y = (biased.rev$effect/biased.rev$se), x = (biased.rev$inv), xlim = c(0, 4), xlab = "inverse standard error", 
+% 		 ylab = "mean diff. / std. error")
+% abline(coef = coef(m.ex), lty = 2, col = 2)
+% 
+% tau.nex <- meta.nexample$tau
+% unbiased.rev$inv <- 1/sqrt((unbiased.rev$se^2 + tau.nex^2))
+% m.nex <- lm(formula = (unbiased.rev$effect*unbiased.rev$inv) ~ (unbiased.rev$inv), weights = unbiased.rev$se)
+% plot(y = (unbiased.rev$effect/unbiased.rev$se), x = (unbiased.rev$inv), xlim = c(0, .6), 
+% 		 ylim = c(-18, 0), xlab = "inverse standard error", ylab = "mean diff. / std. error")
+% abline(coef = coef(m.nex), lty = 2, col = 2)
+% @
+% 
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Limit Meta-Analysis}
+% \begin{align}
+% y_{M,i} &= \beta_{0} + \beta_{1}(\sqrt{v_{i}/M + \tau^2}) + \epsilon_{i}(\sqrt{s_{i}/M + \tau^2}) \nonumber
+% \end{align}
+% 
+% Letting $M \rightarrow \infty$ and substituting for all parameters and the observed residual
+% 
+% \vspace{-8mm}
+% \begin{align}
+% y_{\infty,i} &= \beta_{0} + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_i - \beta_0)
+% \end{align}
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Limit Meta-Analysis}
+% By plugging in $s_i$ for $v_i$, $\hat{tau}$ for $\tau$ and $\hat{\beta_0}$, get new study effects:
+% 
+% Three different treatment effect estimates:
+% \begin{itemize}
+% \item Expectated adjusted treatment effect with infinite precision: $\hat{\beta_{0}^\star} + \hat{\beta_{1}}\hat{\tau}$
+% \item Fixed effect estimate based on $(y_{\infty,1},.. , y_{\infty,n}$
+% \item Slope $\beta_{\textrm{lim}}$ of best-fitting regression line in radial plot with $(y_{\infty,i}, s_{i})$
+% \end{itemize}
+% \end{frame}
 
 \end{document}
