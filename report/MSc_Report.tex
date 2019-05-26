@@ -178,6 +178,14 @@ The reviews are arguably of good quality, since the authors are following elabor
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
 
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in mly.cont(data.ext, 0.05, min.study.number = 2): could not find function "{}mly.cont"{}}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in mly.bin(data.ext, 0.05, min.study.number = 2): could not find function "{}mly.bin"{}}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in readChar(con, 5L, useBytes = TRUE): cannot open compressed file '/Users/p.galiot/PubBias/results/mly.RData', probable reason 'No such file or directory'}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in readChar(con, 5L, useBytes = TRUE): cannot open the connection}}
+
 {\ttfamily\noindent\itshape\color{messagecolor}{\#\# Joining, by = c("{}n"{}, "{}nn"{})}}\end{kframe}
 \end{knitrout}
 
@@ -250,7 +258,7 @@ The dataset consists of 5016 systematic reviews from the Cochrane Library with 5
 In Table \ref{barbiturate.row}, two results from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, the result is further specified by the variables in the columns. The comparison variable specifies what treatments or interventions are compared, the outcome variable how it is compared, and the subgroup variable (not given in table) indicates if the result belongs to a certain subgroup. Here, the result is of a binary outcome, so the events in the barbiturate treatment group and the total number of participants are given in columns ``Events'' and ``Total'' and the number of events in the control group ``Events\_c'' and participants ``Total\_c''. Events denotes here number of deaths at the end of follow up.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun May 12 15:22:08 2019
+% Tue May 21 16:18:00 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -337,7 +345,7 @@ The review comprises five studies in total. Three of them compared barbiturate t
 The complete listing of outcomes is in table \ref{barbiturates}. The table also gives an illustration of the variety of data that can be included in a review. We have for example continuous (mean body temperature) and binary outcome data (death). Additionally to primary and secondary outcomes, often also dropouts and adverse effects are included in a review.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun May 12 15:22:08 2019
+% Tue May 21 16:18:00 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -377,7 +385,7 @@ It is important not to confuse results with studies. A study can contribute mult
 Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years. In the case of continuous outcomes, the cases have been counted were effect sizes and standard errors of effect sizes are not available. This means that neither mean values of groups nor mean differences are given, or that neither standard deviation nor standard error is given for a result. Study years before 1920 and after 2019 have been counted as missing, as well as sample sizes below zero.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun May 12 15:22:08 2019
+% Tue May 21 16:18:00 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -402,7 +410,7 @@ The studies that are included in the reviews and have been published are most of
 The results of a study are summarised in a result by a effect measure. This effect measure varies, depending on whether data is continuous, binary or time-to-event. The most abundant effect measures used are summarised in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 30 \% of outcomes in the dataset are continuous and the being some sort of discrete or binary outcomes, most often binary (> 65\%).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun May 12 15:22:08 2019
+% Tue May 21 16:18:00 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -443,7 +451,7 @@ The amount of studies that can be pooled for meta-analyses is of special interes
 Table \ref{repr.groups} shows the number of \textit{groups} of groups with equal or more than $n$ results. Practically, this means that a given number of meta analyses can be performed with each having at least $n$ results.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun May 12 15:22:08 2019
+% Tue May 21 16:18:00 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -493,65 +501,49 @@ n & Number of groups & Cumulative sum of groups \\
 
 \chapter{Results}
 
-
-
-
-\section{Meta-analysis}
-The data at hand is composed of over 400,000 results with balanced sample size $n > 24$. The significance of the p-values of treatment effect estimates was calculated for all results in the dataset with acceptable sample size and outcome measures as odds ratios, peto odds ratios, risk ratios, risk differences and mean and standardized mean differences. 
-
-%Significance over time? Chunck 1
-
-The results that can be pooled are analysed by fixed-effects meta-analysis, random-effects meta-analysis and random-effects meta-analysis with Hartung-Knapp method.
-
-\vspace{0mm}
-In the following, the results are combined with the results of their corresponding meta-analysis if possible (i.e. if studies were not unique in the dataset with respect to their experimental setup). The significance of the treatment effect (primary significance) in a single result is then compared to the significance of the pooled treatment effect (secondary significance). 
-In Figure \ref{primary.secondary.significance}, the overall fraction of studies with significant and non-significant meta-analysis results is shown. The meta-analysis method used to pool the treatment effect estimates and assessing significance is indicated on the right hand side of the Figure. The colors indicate the overall fraction of rejected or accepted null-hypotheses of no treatment effect.
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-13-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis. The fractions have been calculated
-by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
-\label{primary.secondary.significance}
-\end{figure}
-
-What has been found is that even the meta-analysis that for all meta-analysis methods, the amount of secondary significance is higher than the amount of primary significance. Thus more primarily non-significant results can be attached to a secondarily significant result than vice-versa.
-
-\vspace{0mm}
-To illustrate this, the fraction of studies with significant primary treatment effect and primary non-significant treatment effect can be plotted separately (Figure \ref{primary.secondary.significance.sep.sig}). 
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-14-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis, separated by significance of study treatment effect estimate. The fractions have been calculated
-by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
-\label{primary.secondary.significance}
-\end{figure}
-
-It can be seen that the extent of overlap between primary and secondary significance varies between meta-analysis. A considerable amount of both primary significant and primary non-significant results are overruled by meta-analysis hypothesis tests. 
-
-
-The amount of significant heterogeneity in the results used by the meta-analyses is 53350 and corresponds to 81.5936377\% of the total number of meta-analyses.
-
-%Comparison of significance separated for significant Q? Chunck 2
-
-%Proportion of significant pooled estimates based on proportion of single pooled estimates? Chunck 5
+% 
+% \section{Meta-analysis}
+% The data at hand is composed of over 400,000 results with balanced sample size $n > 24$. The significance of the p-values of treatment effect estimates was calculated for all results in the dataset with acceptable sample size and outcome measures as odds ratios, peto odds ratios, risk ratios, risk differences and mean and standardized mean differences. 
+% 
+% %Significance over time? Chunck 1
+% 
+% The results that can be pooled are analysed by fixed-effects meta-analysis, random-effects meta-analysis and random-effects meta-analysis with Hartung-Knapp method.
+% 
+% \vspace{0mm}
+% In the following, the results are combined with the results of their corresponding meta-analysis if possible (i.e. if studies were not unique in the dataset with respect to their experimental setup). The significance of the treatment effect (primary significance) in a single result is then compared to the significance of the pooled treatment effect (secondary significance). 
+% In Figure \ref{primary.secondary.significance}, the overall fraction of studies with significant and non-significant meta-analysis results is shown. The meta-analysis method used to pool the treatment effect estimates and assessing significance is indicated on the right hand side of the Figure. The colors indicate the overall fraction of rejected or accepted null-hypotheses of no treatment effect.
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% #plot(sig.meta.c)
+% @
+% \caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis. The fractions have been calculated
+% by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
+% \label{primary.secondary.significance}
+% \end{figure}
+% 
+% What has been found is that even the meta-analysis that for all meta-analysis methods, the amount of secondary significance is higher than the amount of primary significance. Thus more primarily non-significant results can be attached to a secondarily significant result than vice-versa.
+% 
+% \vspace{0mm}
+% To illustrate this, the fraction of studies with significant primary treatment effect and primary non-significant treatment effect can be plotted separately (Figure \ref{primary.secondary.significance.sep.sig}). 
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% #grid.arrange(sig.meta.plot1, nonsig.meta.plot, ncol= 1)
+% @
+% \caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis, separated by significance of study treatment effect estimate. The fractions have been calculated
+% by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
+% \label{primary.secondary.significance}
+% \end{figure}
+% 
+% It can be seen that the extent of overlap between primary and secondary significance varies between meta-analysis. A considerable amount of both primary significant and primary non-significant results are overruled by meta-analysis hypothesis tests. 
+% 
+% 
+% The amount of significant heterogeneity in the results used by the meta-analyses is length(which(mly$sig.Q == 0)) and corresponds to (length(which(mly$sig.Q == 0))/ dim(mly)[1])*100\% of the total number of meta-analyses.
+% 
+% %Comparison of significance separated for significant Q? Chunck 2
+% 
+% %Proportion of significant pooled estimates based on proportion of single pooled estimates? Chunck 5
 
 
 \section{Small study effects}
@@ -570,7 +562,7 @@ All effects are normalized by subtracting the mean effect size of the dataset an
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-16-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-13-1} 
 
 }
 
@@ -589,7 +581,7 @@ for all effect sizes, the effects are normalized with respect to the effects of 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-17-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-14-1} 
 
 }
 
@@ -613,14 +605,14 @@ There are tests that can be applied to find out if small study effects are prese
 
 \vspace{0mm}
 There are modifications to make tests more appropriate in case of binary outcomes, therefore the results have been separated in continuous and dichotomous outcome test results. In Figure \ref{bias.results.cont} the proportion of test results that led to rejection of the null hypothesis of no small study effect based on the 5 \% level are shown for continuous outcomes ($n$ = 1383)
-The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measures ($n$ = 3442). The amount of studies varies from 5\% (Schwarzer's Test) to 13 \% (Egger's Test) for binary outcomes and 9\% (Begg and Mazumdar's Test) to 25 \% (Egger's Test) for continuous outcomes. 
+The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measures ($n$ = 3955). The amount of studies varies from 5\% (Schwarzer's Test) to 13 \% (Egger's Test) for binary outcomes and 9\% (Begg and Mazumdar's Test) to 25 \% (Egger's Test) for continuous outcomes. 
 
 
 \begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-19-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-16-1} 
 
 }
 
@@ -635,7 +627,7 @@ The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measu
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-20-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-17-1} 
 
 }
 
@@ -646,7 +638,7 @@ The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measu
 \label{bias.results.bin}
 \end{figure}
 
-There is no substantive change in the fraction of positive test results, depending on if the pooled treatment effect size estimate is significant or not. Most substantively, the fraction of positive Egger Test results increases for significant pooled treatment effects by 0.0768414 (the minimal increase is 0.0103761 for Schwarzer's Test).
+There is no substantive change in the fraction of positive test results, depending on if the pooled treatment effect size estimate is significant or not. Most substantively, the fraction of positive Egger Test results increases for significant pooled treatment effects by 0.1825716 (the minimal increase is -0.0032246 for Schwarzer's Test).
 
 %Show plots of significant meta-analyses separated? Chunck 4
 
@@ -656,7 +648,7 @@ Furthermore one can look if the frequencies of tests that reject the null hypoth
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-21-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-18-1} 
 
 }
 
@@ -671,7 +663,7 @@ Furthermore one can look if the frequencies of tests that reject the null hypoth
 The agreement of the tests, i.e. the proportion of meta-analyses where the rest results are equal between tests, is shown in Table \ref{agreement.bin} and Table \ref{agreement.cont}, again separated for outcome types. Agreement in tests for binary outcomes is better than continuous outcomes, with some variation between tests (binary outcomes: 83 to 91\%). Correlation varies more between tests, both for continuous and binary outcome tests.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue May  7 13:05:39 2019
+% Tue May 21 16:14:47 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -679,15 +671,15 @@ The agreement of the tests, i.e. the proportion of meta-analyses where the rest 
   \hline
  & Test Agreement & P-value Correlation \\ 
   \hline
-egger.schwarzer & 0.87 & 0.39 \\ 
-  egger.peter & 0.89 & 0.51 \\ 
-  egger.rucker & 0.88 & 0.48 \\ 
-  egger.harbord & 0.93 & 0.76 \\ 
-  schwarzer.peter & 0.89 & 0.29 \\ 
-  schwarzer.rucker & 0.88 & 0.34 \\ 
-  schwarzer.harbord & 0.92 & 0.51 \\ 
-  rucker.peter & 0.92 & 0.67 \\ 
-  harbord.peter & 0.91 & 0.52 \\ 
+egger.schwarzer & 0.73 & 0.23 \\ 
+  egger.peter & 0.75 & 0.37 \\ 
+  egger.rucker & 0.75 & 0.34 \\ 
+  egger.harbord & 0.79 & 0.51 \\ 
+  schwarzer.peter & 0.81 & 0.26 \\ 
+  schwarzer.rucker & 0.81 & 0.25 \\ 
+  schwarzer.harbord & 0.86 & 0.47 \\ 
+  rucker.peter & 0.87 & 0.64 \\ 
+  harbord.peter & 0.84 & 0.50 \\ 
    \hline
 \end{tabular}
 \endgroup
@@ -698,7 +690,7 @@ egger.schwarzer & 0.87 & 0.39 \\
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue May  7 13:05:39 2019
+% Tue May 21 16:14:47 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -706,9 +698,9 @@ egger.schwarzer & 0.87 & 0.39 \\
   \hline
  & Test Agreement & P-value Correlation \\ 
   \hline
-thomson.egger & 0.89 & 0.69 \\ 
-  thomson.begg & 0.82 & 0.47 \\ 
-  egger.begg & 0.79 & 0.36 \\ 
+thomson.egger & 0.85 & 0.69 \\ 
+  thomson.begg & 0.77 & 0.47 \\ 
+  egger.begg & 0.73 & 0.36 \\ 
    \hline
 \end{tabular}
 \endgroup
@@ -725,7 +717,7 @@ In the case of binary outcomes, the arcsine variance stabilizing function has be
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-24-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-21-1} 
 
 }
 
@@ -747,7 +739,7 @@ In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-25-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-22-1} 
 
 }
 
@@ -762,7 +754,7 @@ In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-26-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-23-1} 
 
 }
 
@@ -792,7 +784,7 @@ The results of this can be seen in Figure \ref{significance.change.fixed} for al
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-27-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-24-1} 
 
 }
 
@@ -807,7 +799,7 @@ The results of this can be seen in Figure \ref{significance.change.fixed} for al
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-28-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-25-1} 
 
 }
 
@@ -824,7 +816,7 @@ Since it has been previously seen in Figure \ref{test.results} that the results 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-29-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-26-1} 
 
 }
 
@@ -839,7 +831,7 @@ Since it has been previously seen in Figure \ref{test.results} that the results 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-30-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-27-1} 
 
 }
 
@@ -857,7 +849,7 @@ Because the real amount of publication bias in the dataset is not known, the cor
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-31-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-28-1} 
 
 }
 
@@ -874,7 +866,7 @@ Similarly, the number of missing studies per meta-analysis, i.e. those which hav
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-32-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch02_figunnamed-chunk-29-1} 
 
 }
 
@@ -1140,8 +1132,20 @@ The notation used here will be used throughout the chapter and exceptions will b
 \vspace{0mm}
 In the case of binary outcomes, let $e_{t}$ be the number of events and $n_{t}$ be the total number of patients in the treatment arm and $n_{c}$ and $e_{c}$ analogously for the control arm in a two-armed study $i$. 
 
+
+\section{Transformation between effect sizes}
+Binary and continuous outcome measures can both be transformed into correlations and fishers z-scaled correlations in order to be compared. 
+
+
+
 \section{Heterogeneity}
-In addition to sampling error, there can be additional, ``real'' variation between estimates of different studies, indicating real differences between the studies. This is called between study variation in contrast to within study variation (noise). 
+In addition to sampling error, there can be additional, ``real'' variation between estimates of different studies, indicating real differences between the studies. This is called between study variation in contrast to within study variation (noise). Let $\theta$ be a log odds ratio. A standardized mean difference $d$ (also known as Cohen's $d$) is calculated by multiplying $\theta$ with $\sqrt{3}/\pi$. \\
+We get from a standardized mean difference $d$ to a correlation $r$ by using 
+\begin{align}
+r &= \frac{d}{\sqrt{d^2 + a}} \nonumber
+\end{align}
+where $a$ is a correction factor if $n_t \neq n_c, a = (n_c + n_t)^2 / n_c n_t$
+
 
 \vspace{0mm}
 The $Q$ statistic is a weighted sum of squares that quantifies the deviation from the weighted mean of study effect estimates. Let $w_i$ be the inverse of the variance and $\Delta$ be a summarized effect estimate of your choice as for example a variance-weighted mean \ref{weighted.mean}. Then $Q$ can be calculated as in \ref{Q.heterogeneity}
@@ -1238,14 +1242,14 @@ If $\beta_{0} \ne 0$, the null hypothesis of no small study effect may be contes
 p &= 2*(1 - t_{n-1}(\beta_{0}/se(\beta_{0}))) \label{egger.pvalue}
 \end{align}
 
-\subsubsection{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}
+\subsubsection{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test} \label{Thompson}
 A method proposed in \citet{thompson.sharp} allows for between study heterogeneity. Let $\tau^2$ be equal to \ref{Tau.definition}. The effect size estimates are then assumed to be distributed as in \ref{t.sharp.regression}. 
 
 \begin{align}
-y_{i} \sim N(\beta_{0} + \beta{1}x_{i}, v_{i} + \tau^2) \label{t.sharp.regression}
+y_{i} \sim N(\beta_{0} + \beta_{1}x_{i}, v_{i} + \tau^2) \label{t.sharp.regression}
 \end{align}
 
-Then, a weighted regression is carried out with weights $1/v_{i}^\star$ based on the inverse of the variance as in \ref{ranef.study.variance}. Analogous to Edger's test, $\beta_{0}$ is then tested with respect to the null hypothesis $\beta{0} = 0$.
+Then, a weighted regression is carried out with weights $1/v_{i}^\star$ based on the inverse of the variance as in \ref{ranef.study.variance}. Analogous to Egger's test, $\beta_{0}$ is then tested with respect to the null hypothesis $\beta_{0} = 0$.
 
 \subsection{Dichotomous Outcomes Tests}
 
@@ -1289,7 +1293,7 @@ The standardized cell count deviation $(e_{t} - \mathbb{E}(E_{t}))/\sqrt(v_{i})$
 The correlation between variance and effect size of dichotomous outcome measures can be abolished by the variance stabilizing transformation for binomial random variables. Let 
 
 \begin{align}
-y_{i} = \arcsin{e_{t}/n_{t}} - \arcsin{e_{c}/n_{c}}// 
+y_{i} = \arcsin{e_{t}/n_{t}} - \arcsin{e_{c}/n_{c}} \\
 v_{i} = 1/4n_{t} + +/4n_{c}
 \end{align}
 
@@ -1315,7 +1319,7 @@ y_{i} \sim N(\mu_{i}, \sigma_{i}^2) \\
 \mu_{i} \sim N(\mu, \tau^2)
 \end{align}
 
-corresponding to a standard random effects model. $\mu$ is the overall mean effect, $\sigma_{i}^2$ the within study variance and $\tau^2$ the between study variance. This is the \textit{population model}.
+corresponding to a standard random effects meta-analysis. $\mu$ is the overall mean effect, $\sigma_{i}^2$ the within study variance and $\tau^2$ the between study variance. This is the \textit{population model}.
 
 \vspace{0mm}
 The \textit{selection model} is defined as follows. Suppose a selection of studies with reported standard errors $s$ (likely different from $\sigma$). Only a proportion 
@@ -1372,28 +1376,28 @@ To find out if the null-hypothesis of, say, $\mu = 0$ can be rejected, another l
 In practice, only a range of values for $a,b$ are reasonable. For those values, the quantities above can be calculated and illustrated. Values for $\mu$ that have p-values over a predefined significance threshold can be used for inference of the effect size. 
 
 \subsection{Adjustment by Regression}
-There are multiple ways to adjust for small study effects by regression. The general idea is to regress the effect size of a study with a variance of zero based on the given effects and variances. 
+There are multiple ways to adjust for small study effects by regression. The general idea is to extrapolate the effect size of a study with a variance of zero based on the given effects and variances. 
 
 \citet{limitmeta} use a random effects model together with shrinkage procedure to obtain an unbiased estimate. Similarly to what has been seen in Copas selection model, we let $y_{i}$ depend on the intercept $\beta_{0}$ and on its standard error $\sqrt{v_{i}}$ as in \ref{limitmeta.regression}.
 
 \begin{align}
-y_{i}& = \beta_{0} + \beta{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{s_{i} + \tau^2}), \stackrel{\textrm{iid}}{\sim} N(0,1)  \ref{limitmeta.regression}
+y_{i}& = \beta_{0} + \beta_{1}(\sqrt{v_{i} + \tau^2}) + \epsilon_{i}(\sqrt{v_{i} + \tau^2}), \epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1)  \label{limitmeta.regression}
 \end{align}
 
-$\beta{1}$ represents the bias introduced by small study effects, as can be seen when looking at \ref{limitmeta.infinitesample}
+$\beta_{1}$ represents the bias introduced by small study effects, as can be seen when looking at \ref{limitmeta.infinitesample}
 
 \begin{align}
-\mathbb{E}((y_{i} - \beta_{})/\sqrt{v_{i}}) \rightarrow \beta_{1} \textrm{if} \sqrt{v_{i}} \rightarrow \infty \\
+\mathbb{E}((y_{i} - \beta_{0})/\sqrt{v_{i}}) \rightarrow \beta_{1} \textrm{ if } \sqrt{v_{i}} \rightarrow \infty \label{limitmeta.infinitesample} \\
 \mathbb{E}(y_{i}) \rightarrow \beta_{0} + \beta_{1}\tau \textrm{if} \sqrt{v_{i}} \rightarrow 0 
 \end{align}
 
-After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen before e.g. in Thompson and Sharp's Test with weights also equal to Thompson and Sharp's Test.
+After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen before e.g. in Thompson and Sharp's Test with weights also equal to Thompson and Sharp's Test (see \ref{Thompson}).
 
 \vspace{0mm}
 To diminuish the random variation within studies, but keep the variation between studies, we change \ref{limitmeta.regression} to a scenario where each study has $M$-fold increased precision:
 
 \begin{align}
-y_{i} &= \beta_{0}^\star + \beta_{1}^\star(\sqrt{v_{i}/M + \tau^2}) + \epsilon_{i}(\sqrt{s_{i}/M + \tau^2}) \label{limitmeta.regression}
+y_{M,i} &= \beta_{0}^\star + \beta_{1}^\star(\sqrt{v_{i}/M + \tau^2}) + \epsilon_{i}(\sqrt{v_{i}/M + \tau^2}) \label{limitmeta.regression}
 \end{align}
 
 Letting $M \rightarrow \infty$, we obtain:

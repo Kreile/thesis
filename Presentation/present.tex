@@ -148,7 +148,7 @@ Quantify the abundance and impact of publication bias in the Cochrane Library
 Barbiturate efficacy for head injury treatment
 \vspace{-5mm}
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon May 20 22:21:48 2019
+% Tue May 21 11:59:19 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -217,7 +217,7 @@ Bohn 1989 & Barbiturate vs no b & Death at the end of & 11 & 41 & 11 & 41 \\
 \begin{frame}[fragile]{Dataset Properties}
 Review or study level:
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon May 20 22:21:48 2019
+% Tue May 21 11:59:19 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -441,7 +441,7 @@ Extended random effects model:
 \epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1) \nonumber
 \end{align}
 
-Use $\mathbb{E}(y_{i}) \rightarrow \beta_{0} + \beta_{1}\tau$ for $\sqrt{v_{i}} \rightarrow 0$
+Use $\mathbb{E}(\theta_{i}) \rightarrow \beta_{0} + \beta_{1}\tau$ for $\sqrt{v_{i}} \rightarrow 0$
 as corrected treatment efffect.
 \end{frame}
 
@@ -465,12 +465,12 @@ Funnel plot with effect with infinite precision:
 
 \vspace{-8mm}
 \begin{align}
-\hat{theta_i} = \theta_{i} + v_i\epsilon_i \label{population.model2} \\
+\hat{\theta_i} = \theta_{i} + \sigma_i\epsilon_i \label{population.model2} \\
 \theta_i \sim N(\theta, \tau^2) \label{population.model} \\
-z_i = a + b/s_i + \delta_i \label{selection.model}
+z_i = a + b/\hat{s_i} + \delta_i \label{selection.model}
 \end{align}
 
-\ref{population.model}, \ref{population.model2} is called population model, \ref{selection.model} the selection model
+\ref{population.model2},\ref{population.model} is called population model, \ref{selection.model} the selection model
 
 $(\epsilon_i, \delta_i)$ are standard normal residuals with correlation $\rho = cor(y_i, z_i)$.
 \end{frame}

@@ -39,6 +39,7 @@ It is clear that the findings of simulation studies etc. can be incorporated int
 
 - Replace z-test p-values of continuous tests with t-test p-values
 
+- Incidence rates and Survival outcomes could also be included into the analysis (Ir n = ~2800, "Rate Ratio", "Rate difference")
 
 
 
@@ -62,3 +63,5 @@ Schluss der Introduction: REsearch questions und Hypothesen: Quantifikation von 
 p > 10
 
 Evt. frühere Forschung erwähnen: nicht nur binary outcomes, und mehr Daten. Ioannidis, Duval and Tweedie 2000
+
+

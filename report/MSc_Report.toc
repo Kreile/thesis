@@ -10,30 +10,30 @@
 \contentsline {subsection}{\numberline {2.1.1}Methods for Cochrane Reviews}{4}{subsection.2.1.1}
 \contentsline {subsection}{\numberline {2.1.2}Structure and Content}{5}{subsection.2.1.2}
 \contentsline {chapter}{\numberline {3}Results}{11}{chapter.3}
-\contentsline {section}{\numberline {3.1}Meta-analysis}{11}{section.3.1}
-\contentsline {section}{\numberline {3.2}Small study effects}{12}{section.3.2}
-\contentsline {subsection}{\numberline {3.2.1}Small Study Effect Tests}{13}{subsection.3.2.1}
-\contentsline {subsection}{\numberline {3.2.2}Small Study Effect Correction}{15}{subsection.3.2.2}
+\contentsline {section}{\numberline {3.1}Small study effects}{11}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}Small Study Effect Tests}{11}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Small Study Effect Correction}{14}{subsection.3.1.2}
 \contentsline {chapter}{\numberline {4}Methods}{19}{chapter.4}
 \contentsline {section}{\numberline {4.1}Basic notation}{19}{section.4.1}
-\contentsline {section}{\numberline {4.2}Heterogeneity}{19}{section.4.2}
-\contentsline {section}{\numberline {4.3}Meta Analysis}{20}{section.4.3}
-\contentsline {section}{\numberline {4.4}Small Study Effects Tests}{21}{section.4.4}
-\contentsline {subsection}{\numberline {4.4.1}Continuous Outcome Tests}{21}{subsection.4.4.1}
-\contentsline {subsubsection}{Begg and Mazumdar: Rank Correlation Test}{21}{section*.28}
-\contentsline {subsubsection}{Egger's Test: Linear Regression Test}{21}{section*.29}
-\contentsline {subsubsection}{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{22}{section*.30}
-\contentsline {subsection}{\numberline {4.4.2}Dichotomous Outcomes Tests}{22}{subsection.4.4.2}
-\contentsline {subsubsection}{Peters Test: Weighted Linear Regression Test}{22}{section*.31}
-\contentsline {subsubsection}{Harbord's Test: Score based Test}{22}{section*.32}
-\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{23}{section*.33}
-\contentsline {subsubsection}{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{23}{section*.34}
-\contentsline {section}{\numberline {4.5}Small Study Effect Adjustment}{23}{section.4.5}
-\contentsline {subsection}{\numberline {4.5.1}Trim and Fill}{23}{subsection.4.5.1}
-\contentsline {subsection}{\numberline {4.5.2}Copas Selection Model}{23}{subsection.4.5.2}
-\contentsline {subsection}{\numberline {4.5.3}Adjustment by Regression}{25}{subsection.4.5.3}
+\contentsline {section}{\numberline {4.2}Transformation between effect sizes}{19}{section.4.2}
+\contentsline {section}{\numberline {4.3}Heterogeneity}{19}{section.4.3}
+\contentsline {section}{\numberline {4.4}Meta Analysis}{20}{section.4.4}
+\contentsline {section}{\numberline {4.5}Small Study Effects Tests}{21}{section.4.5}
+\contentsline {subsection}{\numberline {4.5.1}Continuous Outcome Tests}{21}{subsection.4.5.1}
+\contentsline {subsubsection}{Begg and Mazumdar: Rank Correlation Test}{21}{section*.26}
+\contentsline {subsubsection}{Egger's Test: Linear Regression Test}{22}{section*.27}
+\contentsline {subsubsection}{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{22}{section*.28}
+\contentsline {subsection}{\numberline {4.5.2}Dichotomous Outcomes Tests}{22}{subsection.4.5.2}
+\contentsline {subsubsection}{Peters Test: Weighted Linear Regression Test}{22}{section*.29}
+\contentsline {subsubsection}{Harbord's Test: Score based Test}{22}{section*.30}
+\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{23}{section*.31}
+\contentsline {subsubsection}{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{23}{section*.32}
+\contentsline {section}{\numberline {4.6}Small Study Effect Adjustment}{23}{section.4.6}
+\contentsline {subsection}{\numberline {4.6.1}Trim and Fill}{23}{subsection.4.6.1}
+\contentsline {subsection}{\numberline {4.6.2}Copas Selection Model}{23}{subsection.4.6.2}
+\contentsline {subsection}{\numberline {4.6.3}Adjustment by Regression}{25}{subsection.4.6.3}
 \contentsline {chapter}{\numberline {5}Discussion}{27}{chapter.5}
 \contentsline {section}{\numberline {5.1}Meta-analyses}{27}{section.5.1}
 \contentsline {chapter}{\numberline {A}Appendix}{29}{appendix.A}
 \vspace *{10mm}
-\contentsline {chapter}{\bfseries Bibliography}{31}{section*.35}
+\contentsline {chapter}{\bfseries Bibliography}{31}{section*.33}

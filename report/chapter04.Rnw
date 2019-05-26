@@ -16,8 +16,29 @@ The notation used here will be used throughout the chapter and exceptions will b
 \vspace{0mm}
 In the case of binary outcomes, let $e_{t}$ be the number of events and $n_{t}$ be the total number of patients in the treatment arm and $n_{c}$ and $e_{c}$ analogously for the control arm in a two-armed study $i$. 
 
+
+\section{Transformation between effect sizes}
+Binary and continuous outcome measures can both be transformed into correlations and fishers z-scaled correlations in order to be compared. Let $\theta$ be a log odds ratio. A standardized mean difference $d$ (also known as Cohen's $d$) is calculated by multiplying $\theta$ with $\sqrt{3}/\pi$. The variance of the standardized mean difference is attained as $v_d = v_\theta \sqrt{3}/\pi$.\\
+We get from a standardized mean difference $d$ to a correlation $r$ by using 
+\begin{align}
+r &= \frac{d}{\sqrt{d^2 + a}} \nonumber
+\end{align}
+where $a$ is a correction factor if $n_t \neq n_c, a = (n_c + n_t)^2 / n_c n_t$. The variance of $r$ is computed by using 
+\begin{align}
+v_r &= v_d
+\end{align}
+
+Finally, we can get to a fisher's z-scaled correlation $z$ and it's variance $v_z$ by using
+\begin{align}
+z &= 0.5 \ln(\frac{1 + r}{1 - r}) \nonumber
+v_z &= \frac{1}{n-3}
+\end{align}
+
+
+
 \section{Heterogeneity}
 In addition to sampling error, there can be additional, ``real'' variation between estimates of different studies, indicating real differences between the studies. This is called between study variation in contrast to within study variation (noise). 
+
 
 \vspace{0mm}
 The $Q$ statistic is a weighted sum of squares that quantifies the deviation from the weighted mean of study effect estimates. Let $w_i$ be the inverse of the variance and $\Delta$ be a summarized effect estimate of your choice as for example a variance-weighted mean \ref{weighted.mean}. Then $Q$ can be calculated as in \ref{Q.heterogeneity}

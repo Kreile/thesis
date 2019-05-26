@@ -599,5 +599,86 @@ sig.meta.Q %>% filter(sig.Q == 0) %>%  ggplot(aes(x = meta.analysis.method, fill
 
 
 
+######Report Backup:
+#Merge comparisons with meta-analysis result:
+mly.tomerge <- mly %>% select(meta.id, sig.Q, n.sig.type, n.sig.fishersz, sig.fixef, sig.ranef, sig.ranef.hkn)
 
+data.mly <- merge(x = data.ext, y = mly.tomerge, by = c("meta.id")) #ideally, 278626 comparisons ( = sum(mly$n)), 
+# but 300831 (18261 have smaller sample size than mly, but same meta.id)
+
+data.mly <- data.mly %>% filter(total1 > 11 & total2 > 11) #Now 282550
+
+
+
+sig.meta.c <- data.mly %>% select(sig.type, sig.fixef, sig.ranef, sig.ranef.hkn) %>% 
+  gather(key = "meta.analysis.method", value = "sig.meta.analysis") %>% mutate(sig.meta.analysis = factor(sig.meta.analysis))
+
+sig.meta.count.c <- sig.meta.c %>% 
+  group_by(sig.meta.analysis, meta.analysis.method) %>% count()
+
+sig.meta.c <- sig.meta.c %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
+  geom_bar() + coord_flip() +
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("meta.nonsig", "meta.sig")) +
+  annotate("text", x = sig.meta.count.c[sig.meta.count.c$sig.meta.analysis == 0,]$meta.analysis.method, y = 100000, 
+           label = paste(sig.meta.count.c[sig.meta.count.c$sig.meta.analysis == 0,]$n, "nonsig."), 
+           color = "white")
+
+
+#Change in significance after meta-analysis, separated by significant effect size estimate
+sig.meta <- data.mly %>% 
+  select(meta.id, study.id, sig.fixef, sig.ranef, sig.ranef.hkn) %>% 
+  gather(key = "meta.analysis.method", value = "sig.meta.analysis", sig.fixef:sig.ranef.hkn) %>% mutate(sig.meta.analysis = factor(sig.meta.analysis))
+
+# duplicate.studies <- data.mly %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr, study.name) %>% 
+#   count() %>% filter(n > 1) #Merging is not possible for these since studies bear multiple results, but are not distinguishable and are multiplied while merging.
+
+sig.meta.plot <- merge(y = select(data.ext, meta.id, study.id, sig.type), 
+                       x = sig.meta, by = c("meta.id", "study.id")) %>% 
+  mutate(sig.type = factor(sig.type))
+
+sig.meta.count <- sig.meta.plot %>% 
+  group_by(sig.meta.analysis, meta.analysis.method, sig.type) %>% count()
+
+sig.meta.plot1 <- sig.meta.plot %>% filter(sig.type == 1) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
+  geom_bar() + coord_flip() + ggtitle("Significant studies") +
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("non-significant", "significant")) +
+  annotate("text", x = sig.meta.count[which(sig.meta.count$sig.type == 1)[1:3],]$meta.analysis.method, y = 20000, 
+           label = paste(sig.meta.count[which(sig.meta.count$sig.type == 1)[1:3],]$n, "changed to nonsig."), 
+           color = "white")
+
+nonsig.meta.plot <- sig.meta.plot %>% filter(sig.type == 0) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
+  geom_bar() + coord_flip() + ggtitle("Non-significant studies") +
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("non-significant", "significant")) +
+  annotate("text", x = sig.meta.count[which(sig.meta.count$sig.type == 0)[4:6],]$meta.analysis.method, y = 100000, 
+           label = paste(sig.meta.count[which(sig.meta.count$sig.type == 0)[4:6],]$n, "changed to sig."), 
+           color = "white")
+
+
+#Change in significance after meta-analysis, separated by significant heterogeneity
+sig.meta.Q <- data.mly %>% 
+  select(meta.id, sig.Q, sig.fixef, sig.ranef, sig.ranef.hkn) %>% 
+  gather(key = "meta.analysis.method", value = "sig.meta.analysis", sig.fixef:sig.ranef.hkn) %>% 
+  mutate(sig.meta.analysis = factor(sig.meta.analysis))
+
+
+sig.meta.count.Q <- sig.meta.Q %>% 
+  group_by(sig.meta.analysis, meta.analysis.method, sig.Q) %>% count()
+
+sig.meta.Q1 <- sig.meta.Q %>% filter(sig.Q == 1) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
+  geom_bar() + coord_flip() + ggtitle("Significant heterogeneity Q studies") +
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("non-significant", "significant")) +
+  annotate("text", x = sig.meta.count.Q[which(sig.meta.count.Q$sig.Q == 1)[1:3],]$meta.analysis.method, y = 20000, 
+           label = paste(sig.meta.count.Q[which(sig.meta.count.Q$sig.Q == 1)[1:3],]$n, "nonsig."), 
+           color = "white")
+
+nonsig.meta.Q <- sig.meta.Q %>% filter(sig.Q == 0) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
+  geom_bar() + coord_flip() + ggtitle("Non-significant heterogeneity Q studies") +
+  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("non-significant", "significant")) +
+  annotate("text", x = sig.meta.count.Q[which(sig.meta.count.Q$sig.Q == 0)[1:3],]$meta.analysis.method, y = 100000, 
+           label = paste(sig.meta.count.Q[which(sig.meta.count.Q$sig.Q == 0)[1:3],]$n, "nonsig."), 
+           color = "white")
+
+p.secondary.over.meansig <- mly %>% filter(NA.sig.type != 0) %>% ggplot(aes(x = mean.sig.type, fill = factor(sig.ranef), stat(count))) + 
+  geom_density(na.rm = T, position = "fill") + 
+  labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
 

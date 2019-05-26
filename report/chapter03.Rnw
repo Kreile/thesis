@@ -88,25 +88,6 @@ if (file.exists(file.path(PATH_RESULTS, file.meta))) {
   save(meta, file =  file.path(PATH_RESULTS, file.meta))
 }
 
-
-file.cont <- "mly.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-  load(file.path(PATH_RESULTS, file.cont))
-} else {
-  data.cont <- mly.cont(data.ext, 0.05, min.study.number = 2)
-  save(data.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.bin <- "mly.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-  load(file.path(PATH_RESULTS, file.bin))
-} else {
-  data.bin <- mly.bin(data.ext, 0.05, min.study.number = 2)
-  save(data.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-
-load(file.path(PATH_RESULTS, file = "mly.RData"))
 load(file.path(PATH_RESULTS, file = "data.processed.RData"))
 
 require(biostatUZH)
@@ -114,138 +95,55 @@ require(tidyverse)
 require(meta)
 require(metasens)
 require(gridExtra)
+require(xtable)
 @
 
 
 \chapter{Results}
 
-<<echo = FALSE, warning =FALSE>>=
-#Merge comparisons with meta-analysis result:
-mly.tomerge <- mly %>% select(meta.id, sig.Q, n.sig.type, n.sig.fishersz, sig.fixef, sig.ranef, sig.ranef.hkn)
-
-data.mly <- merge(x = data.ext, y = mly.tomerge, by = c("meta.id")) #ideally, 278626 comparisons ( = sum(mly$n)), 
-# but 300831 (18261 have smaller sample size than mly, but same meta.id)
-
-data.mly <- data.mly %>% filter(total1 > 11 & total2 > 11) #Now 282550
-
-                   
-
-sig.meta.c <- data.mly %>% select(sig.type, sig.fixef, sig.ranef, sig.ranef.hkn) %>% 
-  gather(key = "meta.analysis.method", value = "sig.meta.analysis") %>% mutate(sig.meta.analysis = factor(sig.meta.analysis))
-
-sig.meta.count.c <- sig.meta.c %>% 
-  group_by(sig.meta.analysis, meta.analysis.method) %>% count()
-
-sig.meta.c <- sig.meta.c %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
-  geom_bar() + coord_flip() +
-  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("meta.nonsig", "meta.sig")) +
-  annotate("text", x = sig.meta.count.c[sig.meta.count.c$sig.meta.analysis == 0,]$meta.analysis.method, y = 100000, 
-           label = paste(sig.meta.count.c[sig.meta.count.c$sig.meta.analysis == 0,]$n, "nonsig."), 
-           color = "white")
-
-
-#Change in significance after meta-analysis, separated by significant effect size estimate
-sig.meta <- data.mly %>% 
-  select(meta.id, study.id, sig.fixef, sig.ranef, sig.ranef.hkn) %>% 
-  gather(key = "meta.analysis.method", value = "sig.meta.analysis", sig.fixef:sig.ranef.hkn) %>% mutate(sig.meta.analysis = factor(sig.meta.analysis))
-
-# duplicate.studies <- data.mly %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr, study.name) %>% 
-#   count() %>% filter(n > 1) #Merging is not possible for these since studies bear multiple results, but are not distinguishable and are multiplied while merging.
-
-sig.meta.plot <- merge(y = select(data.ext, meta.id, study.id, sig.type), 
-                       x = sig.meta, by = c("meta.id", "study.id")) %>% 
-  mutate(sig.type = factor(sig.type))
-
-sig.meta.count <- sig.meta.plot %>% 
-  group_by(sig.meta.analysis, meta.analysis.method, sig.type) %>% count()
-
-sig.meta.plot1 <- sig.meta.plot %>% filter(sig.type == 1) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
-  geom_bar() + coord_flip() + ggtitle("Significant studies") +
-  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("non-significant", "significant")) +
-  annotate("text", x = sig.meta.count[which(sig.meta.count$sig.type == 1)[1:3],]$meta.analysis.method, y = 20000, 
-           label = paste(sig.meta.count[which(sig.meta.count$sig.type == 1)[1:3],]$n, "changed to nonsig."), 
-           color = "white")
-
-nonsig.meta.plot <- sig.meta.plot %>% filter(sig.type == 0) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
-  geom_bar() + coord_flip() + ggtitle("Non-significant studies") +
-  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("non-significant", "significant")) +
-  annotate("text", x = sig.meta.count[which(sig.meta.count$sig.type == 0)[4:6],]$meta.analysis.method, y = 100000, 
-           label = paste(sig.meta.count[which(sig.meta.count$sig.type == 0)[4:6],]$n, "changed to sig."), 
-           color = "white")
-
-
-#Change in significance after meta-analysis, separated by significant heterogeneity
-sig.meta.Q <- data.mly %>% 
-  select(meta.id, sig.Q, sig.fixef, sig.ranef, sig.ranef.hkn) %>% 
-  gather(key = "meta.analysis.method", value = "sig.meta.analysis", sig.fixef:sig.ranef.hkn) %>% 
-  mutate(sig.meta.analysis = factor(sig.meta.analysis))
-
-
-sig.meta.count.Q <- sig.meta.Q %>% 
-  group_by(sig.meta.analysis, meta.analysis.method, sig.Q) %>% count()
-
-sig.meta.Q1 <- sig.meta.Q %>% filter(sig.Q == 1) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
-  geom_bar() + coord_flip() + ggtitle("Significant heterogeneity Q studies") +
-  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("non-significant", "significant")) +
-  annotate("text", x = sig.meta.count.Q[which(sig.meta.count.Q$sig.Q == 1)[1:3],]$meta.analysis.method, y = 20000, 
-           label = paste(sig.meta.count.Q[which(sig.meta.count.Q$sig.Q == 1)[1:3],]$n, "nonsig."), 
-           color = "white")
-
-nonsig.meta.Q <- sig.meta.Q %>% filter(sig.Q == 0) %>%  ggplot(aes(x = meta.analysis.method, fill = sig.meta.analysis)) + 
-  geom_bar() + coord_flip() + ggtitle("Non-significant heterogeneity Q studies") +
-  theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("non-significant", "significant")) +
-  annotate("text", x = sig.meta.count.Q[which(sig.meta.count.Q$sig.Q == 0)[1:3],]$meta.analysis.method, y = 100000, 
-           label = paste(sig.meta.count.Q[which(sig.meta.count.Q$sig.Q == 0)[1:3],]$n, "nonsig."), 
-           color = "white")
-
-p.secondary.over.meansig <- mly %>% filter(NA.sig.type != 0) %>% ggplot(aes(x = mean.sig.type, fill = factor(sig.ranef), stat(count))) + 
-  geom_density(na.rm = T, position = "fill") + 
-  labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
-@
-
-
-\section{Meta-analysis}
-The data at hand is composed of over 400,000 results with balanced sample size $n > 24$. The significance of the p-values of treatment effect estimates was calculated for all results in the dataset with acceptable sample size and outcome measures as odds ratios, peto odds ratios, risk ratios, risk differences and mean and standardized mean differences. 
-
-%Significance over time? Chunck 1
-
-The results that can be pooled are analysed by fixed-effects meta-analysis, random-effects meta-analysis and random-effects meta-analysis with Hartung-Knapp method.
-
-\vspace{0mm}
-In the following, the results are combined with the results of their corresponding meta-analysis if possible (i.e. if studies were not unique in the dataset with respect to their experimental setup). The significance of the treatment effect (primary significance) in a single result is then compared to the significance of the pooled treatment effect (secondary significance). 
-In Figure \ref{primary.secondary.significance}, the overall fraction of studies with significant and non-significant meta-analysis results is shown. The meta-analysis method used to pool the treatment effect estimates and assessing significance is indicated on the right hand side of the Figure. The colors indicate the overall fraction of rejected or accepted null-hypotheses of no treatment effect.
-
-\begin{figure}
-<<echo=FALSE, warning=FALSE>>=
-plot(sig.meta.c)
-@
-\caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis. The fractions have been calculated
-by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
-\label{primary.secondary.significance}
-\end{figure}
-
-What has been found is that even the meta-analysis that for all meta-analysis methods, the amount of secondary significance is higher than the amount of primary significance. Thus more primarily non-significant results can be attached to a secondarily significant result than vice-versa.
-
-\vspace{0mm}
-To illustrate this, the fraction of studies with significant primary treatment effect and primary non-significant treatment effect can be plotted separately (Figure \ref{primary.secondary.significance.sep.sig}). 
-
-\begin{figure}
-<<echo=FALSE, warning=FALSE>>=
-grid.arrange(sig.meta.plot1, nonsig.meta.plot, ncol= 1)
-@
-\caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis, separated by significance of study treatment effect estimate. The fractions have been calculated
-by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
-\label{primary.secondary.significance}
-\end{figure}
-
-It can be seen that the extent of overlap between primary and secondary significance varies between meta-analysis. A considerable amount of both primary significant and primary non-significant results are overruled by meta-analysis hypothesis tests. 
-
-
-The amount of significant heterogeneity in the results used by the meta-analyses is \Sexpr{length(which(mly$sig.Q == 0))} and corresponds to \Sexpr{(length(which(mly$sig.Q == 0))/ dim(mly)[1])*100}\% of the total number of meta-analyses.
-
-%Comparison of significance separated for significant Q? Chunck 2
-
-%Proportion of significant pooled estimates based on proportion of single pooled estimates? Chunck 5
+% 
+% \section{Meta-analysis}
+% The data at hand is composed of over 400,000 results with balanced sample size $n > 24$. The significance of the p-values of treatment effect estimates was calculated for all results in the dataset with acceptable sample size and outcome measures as odds ratios, peto odds ratios, risk ratios, risk differences and mean and standardized mean differences. 
+% 
+% %Significance over time? Chunck 1
+% 
+% The results that can be pooled are analysed by fixed-effects meta-analysis, random-effects meta-analysis and random-effects meta-analysis with Hartung-Knapp method.
+% 
+% \vspace{0mm}
+% In the following, the results are combined with the results of their corresponding meta-analysis if possible (i.e. if studies were not unique in the dataset with respect to their experimental setup). The significance of the treatment effect (primary significance) in a single result is then compared to the significance of the pooled treatment effect (secondary significance). 
+% In Figure \ref{primary.secondary.significance}, the overall fraction of studies with significant and non-significant meta-analysis results is shown. The meta-analysis method used to pool the treatment effect estimates and assessing significance is indicated on the right hand side of the Figure. The colors indicate the overall fraction of rejected or accepted null-hypotheses of no treatment effect.
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% #plot(sig.meta.c)
+% @
+% \caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis. The fractions have been calculated
+% by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
+% \label{primary.secondary.significance}
+% \end{figure}
+% 
+% What has been found is that even the meta-analysis that for all meta-analysis methods, the amount of secondary significance is higher than the amount of primary significance. Thus more primarily non-significant results can be attached to a secondarily significant result than vice-versa.
+% 
+% \vspace{0mm}
+% To illustrate this, the fraction of studies with significant primary treatment effect and primary non-significant treatment effect can be plotted separately (Figure \ref{primary.secondary.significance.sep.sig}). 
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% #grid.arrange(sig.meta.plot1, nonsig.meta.plot, ncol= 1)
+% @
+% \caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis, separated by significance of study treatment effect estimate. The fractions have been calculated
+% by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
+% \label{primary.secondary.significance}
+% \end{figure}
+% 
+% It can be seen that the extent of overlap between primary and secondary significance varies between meta-analysis. A considerable amount of both primary significant and primary non-significant results are overruled by meta-analysis hypothesis tests. 
+% 
+% 
+% The amount of significant heterogeneity in the results used by the meta-analyses is \Sexpr{length(which(mly$sig.Q == 0))} and corresponds to \Sexpr{(length(which(mly$sig.Q == 0))/ dim(mly)[1])*100}\% of the total number of meta-analyses.
+% 
+% %Comparison of significance separated for significant Q? Chunck 2
+% 
+% %Proportion of significant pooled estimates based on proportion of single pooled estimates? Chunck 5
 
 
 \section{Small study effects}
