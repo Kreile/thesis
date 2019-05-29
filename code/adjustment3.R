@@ -12,51 +12,74 @@ file_results = "pb.RData"
 
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
-
-# data = pb.readData(path = PATH_DATA, file = FILE)
-# tmp = pb.clean(data)
-# data = tmp[[1]]
-# aliases = tmp[[2]]
-
-
-meta.id <- function(meta.id.tolook){
-	dt <- data.ext %>% filter(meta.id == meta.id.tolook)
-	if(any(is.na(dt$events1)) | all(dt$events1 == 0)){
-		meta.ex <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name, data = dt)
-	} else{
-		meta.ex <- metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "RR", data = dt, method = "Inverse")
-	}
-	return(meta.ex)
+file.dat <- "data.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+	load(file.path(PATH_RESULTS, file.dat))
+} else {
+	data = pb.readData(path = PATH_DATA, file = FILE)
+	tmp = pb.clean(data)
+	data = tmp[[1]]
+	aliases = tmp[[2]]
+	save(data, file =  file.path(PATH_RESULTS, file.dat))
 }
 
-funnel.id <- function(meta.id.tolook){
-	funnel(meta.id(meta.id.tolook))
+file.dat <- "data.processed.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+	load(file.path(PATH_RESULTS, file.dat))
+} else {
+	data.ext2 = pb.process2(data)
+	save(data.ext2, file =  file.path(PATH_RESULTS, file.dat))
 }
 
-trimfill.id <- function(meta.id.tolook){
-	funnel(trimfill(meta.id(meta.id.tolook)))
+file.bin <- "pb.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+	load(file.path(PATH_RESULTS, file.bin))
+} else {
+	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
+	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
 }
 
-limitmeta.id <- function(meta.id.tolook){
-	funnel(limitmeta(meta.id(meta.id.tolook)))
+file.cont <- "pb.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+	load(file.path(PATH_RESULTS, file.cont))
+} else {
+	meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.1)
+	save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
 }
 
-copas.id <- function(meta.id.tolook){
-	auto.copas(meta.id(meta.id.tolook), 0.1)
+file.meta <- "meta.RData"
+if (file.exists(file.path(PATH_RESULTS, file.meta))) {
+	load(file.path(PATH_RESULTS, file.meta))
+} else {
+	meta <- pb.meta.merge(meta.bin, meta.cont)
+	save(meta, file =  file.path(PATH_RESULTS, file.meta))
 }
 
-setting.id <- function(meta.id.tolook){
-	return(meta %>% filter(meta.id == meta.id.tolook) %>% select(comparison.name, comparison.nr, outcome.name, sungroup.name))
-}
+load(file.path(PATH_RESULTS, "meta.complete.RData"))
 
-est.id <- function(meta.id.tolook){
-	return(meta %>% filter(meta.id == meta.id.tolook) %>% select(est.fixef, est.ranef, est.copas, est.trimfill.fixef, est.reg.ranef))
-}
 
-single.study.id <- function(meta.id.tolook){
-	return(print(data.ext %>% filter(meta.id == meta.id.tolook) %>% select(study.name, effect, se, total1, total2, events1, events2, mean1, mean2) %>% 
-							 	arrange(se), n = 200))
-}
+#Applying test and adjustment criteria:
+metac.bin <- meta.bin %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac.cont <- meta.cont %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac <- meta %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+
+
+
+
+
+rm(list = ls())
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
+FILE = 'cochrane_2018-06-09.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH2, 'code')
+PATH_RESULTS = file.path(PATH2, 'results')
+PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+
+file_results = "pb.RData"
+
+source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
 file.dat <- "data.RData"
 if (file.exists(file.path(PATH_RESULTS, file.dat))) {
@@ -76,7 +99,7 @@ file.bin <- "pb.bin.RData"
 if (file.exists(file.path(PATH_RESULTS, file.bin))) {
 	load(file.path(PATH_RESULTS, file.bin))
 } else {
-	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm1 = "RR")
+	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
 	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
 }
 
@@ -97,30 +120,13 @@ if (file.exists(file.path(PATH_RESULTS, file.meta))) {
 }
 
 
-file.cont <- "mly.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-	load(file.path(PATH_RESULTS, file.cont))
-} else {
-	data.cont <- mly.cont(data.ext, 0.05, min.study.number = 2)
-	save(data.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.bin <- "mly.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-	load(file.path(PATH_RESULTS, file.bin))
-} else {
-	data.bin <- mly.bin(data.ext, 0.05, min.study.number = 2)
-	save(data.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
+data.ext2 <- pb.process2(data)
 
 
-require(biostatUZH)
-require(tidyverse)
-require(meta)
-require(metasens)
-require(gridExtra)
-
-
+#Meta filtering: 
+metac.bin <- meta.bin %>% filter(n.sig.type.bin > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac.cont <- meta.cont %>% filter(n.sig.type.cont > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac <- meta %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
 #Meta filtering: 
 metac.bin <- meta.bin %>% filter(n.sig.type.bin > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
 metac.cont <- meta.cont %>% filter(n.sig.type.cont > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
@@ -128,11 +134,11 @@ metac <- meta %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %
 
 
 effect.diff <- metac %>% mutate(
-	est.fixef = ifelse(!is.na(est.fixef.bin), est.fixef - 1, est.fixef),
-	est.ranef = ifelse(!is.na(est.fixef.bin), est.ranef - 1, est.ranef),
-	est.trimfill.fixef = ifelse(!is.na(est.fixef.bin), est.trimfill.fixef - 1, est.trimfill.fixef),
-	est.copas = ifelse(!is.na(est.fixef.bin), est.copas - 1, est.copas),
-	est.reg.ranef = ifelse(!is.na(est.fixef.bin), est.reg.ranef - 1, est.reg.ranef),
+	est.fixef = ifelse(!is.na(est.fixef), est.fixef - 1, est.fixef),
+	est.ranef = ifelse(!is.na(est.fixef), est.ranef - 1, est.ranef),
+	est.trimfill.fixef = ifelse(!is.na(est.fixef), est.trimfill.fixef - 1, est.trimfill.fixef),
+	est.copas = ifelse(!is.na(est.fixef), est.copas - 1, est.copas),
+	est.reg.ranef = ifelse(!is.na(est.fixef), est.reg.ranef - 1, est.reg.ranef),
 	fixef.trimfill = ifelse(abs(est.fixef) > abs(est.trimfill.fixef), "Reduction", "Amplification"),
 	fixef.copas = ifelse(abs(est.fixef) > abs(est.copas), "Reduction", "Amplification"),
 	fixef.reg = ifelse(abs(est.fixef) > abs(est.reg.ranef), "Reduction", "Amplification"),
@@ -142,10 +148,10 @@ effect.diff <- metac %>% mutate(
 
 
 trimfill.miss <- effect.diff %>% group_by(fixef.trimfill) %>% mutate(dif = abs(est.fixef - est.trimfill.fixef)) %>% 
-	filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% select(label, fixef.trimfill.s, meta.id, type)
+	filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef)) %>% arrange(label) %>% select(label, fixef.trimfill.s, meta.id, type)
 
 print(effect.diff %>% group_by(fixef.trimfill) %>% mutate(dif = abs(est.fixef - est.trimfill.fixef)) %>% 
-	filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% 
+	filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef)) %>% arrange(label) %>% 
 	select(label, fixef.trimfill.s, meta.id, type, comparison.name, outcome.name), n = 200)
 
 trimfill.label <- data.frame(label = paste("missing:", c(paste(trimfill.miss$label[trimfill.miss$fixef.trimfill == "Reduction"], collapse = ", "),
@@ -160,7 +166,7 @@ effect.diff %>% ggplot(aes(x = abs(est.fixef - est.trimfill.fixef), fill = facto
 						color = "black") + scale_fill_discrete(name="Effect direction") + theme_bw()
 
 print(effect.diff %>% group_by(fixef.trimfill) %>% mutate(dif = abs(est.fixef - est.trimfill.fixef)) %>% 
-				filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% 
+				filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef)) %>% arrange(label) %>% 
 				select(label, fixef.trimfill.s, meta.id, type), n = 200)
 
 #Odds ratio reduction by 3.9
@@ -168,7 +174,7 @@ funnel(trimfill(meta.id(165815)))
 
 
 copas.miss <- effect.diff %>% filter(!is.na(est.copas)) %>% group_by(fixef.copas) %>% mutate(dif = abs(est.fixef - est.copas)) %>% 
-	filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% select(label, fixef.copas.s, meta.id, type)
+	filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef)) %>% arrange(label) %>% select(label, fixef.copas.s, meta.id, type)
 
 copas.label <- data.frame(label = paste("missing:", c(paste(copas.miss$label[copas.miss$fixef.copas == "Reduction"], collapse = ", "),
 																												 paste(copas.miss$label[copas.miss$fixef.copas == "Amplification"], collapse = ", "))),
@@ -184,7 +190,7 @@ effect.diff %>% filter(!is.na(est.copas)) %>% ggplot(aes(x = abs(est.fixef - est
 funnel(meta.id(56200))
 
 print(effect.diff %>% group_by(fixef.copas) %>% mutate(dif = abs(est.fixef - est.copas)) %>% 
-				filter(dif > 2) %>% filter(fixef.trimfill == "Amplification") %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% 
+				filter(dif > 2) %>% filter(fixef.trimfill == "Amplification") %>% mutate(label = round(dif, 1), type = !is.na(est.fixef)) %>% arrange(label) %>% 
 				select(label,  meta.id, type, comparison.name, outcome.name), n = 200)
 
 reg.ranef.label <- data.frame(label = paste("missing:", c(paste(reg.ranef.miss$label[reg.ranef.miss$fixef.reg == "Reduction"], collapse = ", "),
@@ -206,7 +212,7 @@ funnel(trimfill(meta.id(101436)))
 funnel(limitmeta(meta.id(101436)))
 
 print(effect.diff %>% group_by(fixef.reg) %>% mutate(dif = abs(est.fixef - est.reg.ranef)) %>% 
-				filter(dif > 3) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% 
+				filter(dif > 3) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef)) %>% 
 				arrange(label) %>% select(label, type, meta.id, comparison.name, outcome.name), n = 200)
 
 

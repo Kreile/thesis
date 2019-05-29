@@ -12,21 +12,84 @@ file_results = "pb.RData"
 
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
+file.dat <- "data.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+	load(file.path(PATH_RESULTS, file.dat))
+} else {
+	data = pb.readData(path = PATH_DATA, file = FILE)
+	tmp = pb.clean(data)
+	data = tmp[[1]]
+	aliases = tmp[[2]]
+	save(data, file =  file.path(PATH_RESULTS, file.dat))
+}
 
-# data = pb.readData(path = PATH_DATA, file = FILE)
-# tmp = pb.clean(data)
-# data = tmp[[1]]
-# aliases = tmp[[2]]
+file.dat <- "data.processed.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+	load(file.path(PATH_RESULTS, file.dat))
+} else {
+	data.ext2 = pb.process2(data)
+	save(data.ext2, file =  file.path(PATH_RESULTS, file.dat))
+}
+
+file.bin <- "pb.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+	load(file.path(PATH_RESULTS, file.bin))
+} else {
+	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
+	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
+}
+
+file.cont <- "pb.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+	load(file.path(PATH_RESULTS, file.cont))
+} else {
+	meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.1)
+	save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
+}
+
+file.meta <- "meta.RData"
+if (file.exists(file.path(PATH_RESULTS, file.meta))) {
+	load(file.path(PATH_RESULTS, file.meta))
+} else {
+	meta <- pb.meta.merge(meta.bin, meta.cont)
+	save(meta, file =  file.path(PATH_RESULTS, file.meta))
+}
+
+load(file.path(PATH_RESULTS, "meta.complete.RData"))
+
+
+#Applying test and adjustment criteria:
+metac.bin <- meta.bin %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac.cont <- meta.cont %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac <- meta %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+
+
+
+
+
+rm(list = ls())
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
+FILE = 'cochrane_2018-06-09.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH2, 'code')
+PATH_RESULTS = file.path(PATH2, 'results')
+PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+
+file_results = "pb.RData"
+
+source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
 file.dat <- "data.RData"
 if (file.exists(file.path(PATH_RESULTS, file.dat))) {
-  load(file.path(PATH_RESULTS, file.dat))
+	load(file.path(PATH_RESULTS, file.dat))
 } else {
-  data = pb.readData(path = PATH_DATA, file = FILE)
-  tmp = pb.clean(data)
-  data = tmp[[1]]
-  aliases = tmp[[2]]
-  save(data, file =  file.path(PATH_RESULTS, file.dat))
+	data = pb.readData(path = PATH_DATA, file = FILE)
+	tmp = pb.clean(data)
+	data = tmp[[1]]
+	aliases = tmp[[2]]
+	save(data, file =  file.path(PATH_RESULTS, file.dat))
 }
 
 load(file.path(PATH_RESULTS, file = "mly.RData"))
@@ -34,59 +97,36 @@ load(file.path(PATH_RESULTS, file = "data.processed.RData"))
 
 file.bin <- "pb.bin.RData"
 if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-  load(file.path(PATH_RESULTS, file.bin))
+	load(file.path(PATH_RESULTS, file.bin))
 } else {
-  meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.05, sm = "OR")
-  save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
+	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
+	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
 }
 
 file.cont <- "pb.cont.RData"
 if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-  load(file.path(PATH_RESULTS, file.cont))
+	load(file.path(PATH_RESULTS, file.cont))
 } else {
-  meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.05)
-  save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
+	meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.1)
+	save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
 }
 
 file.meta <- "meta.RData"
 if (file.exists(file.path(PATH_RESULTS, file.meta))) {
-  load(file.path(PATH_RESULTS, file.meta))
+	load(file.path(PATH_RESULTS, file.meta))
 } else {
-  meta <- pb.meta.merge(meta.bin, meta.cont)
-  save(meta, file =  file.path(PATH_RESULTS, file.meta))
+	meta <- pb.meta.merge(meta.bin, meta.cont)
+	save(meta, file =  file.path(PATH_RESULTS, file.meta))
 }
 
 
-file.cont <- "mly.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-  load(file.path(PATH_RESULTS, file.cont))
-} else {
-  data.cont <- mly.cont(data.ext, 0.05, min.study.number = 2)
-  save(data.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.bin <- "mly.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-  load(file.path(PATH_RESULTS, file.bin))
-} else {
-  data.bin <- mly.bin(data.ext, 0.05, min.study.number = 2)
-  save(data.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-
-require(biostatUZH)
-require(tidyverse)
-require(meta)
-require(metasens)
-require(gridExtra)
+data.ext2 <- pb.process2(data)
 
 
 #Meta filtering: 
-#Meta filtering: 
-metac.bin <- meta.bin %>% filter(n.sig.type.bin > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac.bin <- meta.bin %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
 metac.cont <- meta.cont %>% filter(n.sig.type.cont > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
 metac <- meta %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-
 #Publication Bias Test Agreement:
 meta.bin %>% mutate(n.sig = peter.test + rucker.test + egger.test + harbord.test + schwarzer.test) %>% 
   group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
@@ -122,14 +162,14 @@ p.bin <- meta.bin %>% ungroup() %>%
 
 
 
-test.sig.bin <- meta.bin %>% filter(sig.fixef.bin == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.sig.bin <- meta.bin %>% filter(sig.fixef == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
                                                                                     schwarzer.test = mean(schwarzer.test),
                                                                                     rucker.test = mean(rucker.test),
                                                                                     harbord.test = mean(harbord.test),
                                                                                     peter.test = mean(peter.test))
 test.sig.bin <- test.sig.bin %>% gather(key = "test.type", value = "mean")
 
-p1 <- meta.bin %>% ungroup() %>% filter(sig.fixef.bin == 1) %>% 
+p1 <- meta.bin %>% ungroup() %>% filter(sig.fixef == 1) %>% 
   select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
   gather(key = "test.type", value = "null.hypothesis") %>% 
   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
@@ -139,7 +179,7 @@ p1 <- meta.bin %>% ungroup() %>% filter(sig.fixef.bin == 1) %>%
            label = paste(round(test.sig.bin$mean, 2)*100, "% rejected"), 
            color = "white")
 
-test.nonsig.bin <- meta.bin %>% filter(sig.fixef.bin == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.nonsig.bin <- meta.bin %>% filter(sig.fixef == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
                                                                                        schwarzer.test = mean(schwarzer.test),
                                                                                        rucker.test = mean(rucker.test),
                                                                                        harbord.test = mean(harbord.test),
@@ -147,7 +187,7 @@ test.nonsig.bin <- meta.bin %>% filter(sig.fixef.bin == 0) %>% ungroup() %>% sum
 test.nonsig.bin <- test.nonsig.bin %>% gather(key = "test.type", value = "mean")
 
 p2 <- meta.bin %>% 
-  filter(sig.fixef.bin == 0) %>% ungroup() %>% 
+  filter(sig.fixef == 0) %>% ungroup() %>% 
   select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
   gather(key = "test.type", value = "null.hypothesis") %>% 
   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
@@ -177,14 +217,14 @@ p.cont <- meta.cont %>% ungroup() %>%
            color = "white")
 
 
-test.sig.cont <- meta.cont %>% filter(sig.fixef.cont == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.sig.cont <- meta.cont %>% filter(sig.fixef == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
                                                                                        begg.test = mean(begg.test),
                                                                                        thomson.test = mean(thomson.test))
 
 test.sig.cont <- test.sig.cont %>% gather(key = "test.type", value = "mean")
 
 p3 <- meta.cont %>% 
-  filter(sig.fixef.cont == 1) %>% ungroup() %>% 
+  filter(sig.fixef == 1) %>% ungroup() %>% 
   select(egger.test, thomson.test, begg.test) %>% 
   gather(key = "test.type", value = "null.hypothesis") %>% 
   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
@@ -194,14 +234,14 @@ p3 <- meta.cont %>%
            label = paste(round(test.sig.cont$mean, 2)*100, "% rejected"), 
            color = "white")
 
-test.nonsig.cont <- meta.cont %>% filter(sig.fixef.cont == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.nonsig.cont <- meta.cont %>% filter(sig.fixef == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
                                                                                           begg.test = mean(begg.test),
                                                                                           thomson.test = mean(thomson.test))
 
 test.nonsig.cont <- test.nonsig.cont %>% gather(key = "test.type", value = "mean")
 
 p4 <- meta.cont %>% 
-  filter(sig.fixef.cont == 0) %>% ungroup() %>% 
+  filter(sig.fixef == 0) %>% ungroup() %>% 
   select(egger.test, thomson.test, begg.test) %>% 
   gather(key = "test.type", value = "null.hypothesis") %>% 
   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
@@ -240,14 +280,14 @@ p.bins <- meta.bin %>% ungroup() %>%
 
 
 
-test.sig.bin <- meta.bin %>% filter(sig.fixef.bin == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.sig.bin <- meta.bin %>% filter(sig.fixef == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
                                                                                     schwarzer.test = mean(schwarzer.test),
                                                                                     rucker.test = mean(rucker.test),
                                                                                     harbord.test = mean(harbord.test),
                                                                                     peter.test = mean(peter.test))
 test.sig.bin <- test.sig.bin %>% gather(key = "test.type", value = "mean")
 
-p1s <- meta.bin %>% ungroup() %>% filter(sig.fixef.bin == 1) %>% 
+p1s <- meta.bin %>% ungroup() %>% filter(sig.fixef == 1) %>% 
   select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
   gather(key = "test.type", value = "null.hypothesis") %>% 
   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
@@ -257,7 +297,7 @@ p1s <- meta.bin %>% ungroup() %>% filter(sig.fixef.bin == 1) %>%
            label = paste(round(test.sig.bin$mean, 2)*100, "% rejected"), 
            color = "white")
 
-test.nonsig.bin <- meta.bin %>% filter(sig.fixef.bin == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.nonsig.bin <- meta.bin %>% filter(sig.fixef == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
                                                                                        schwarzer.test = mean(schwarzer.test),
                                                                                        rucker.test = mean(rucker.test),
                                                                                        harbord.test = mean(harbord.test),
@@ -265,7 +305,7 @@ test.nonsig.bin <- meta.bin %>% filter(sig.fixef.bin == 0) %>% ungroup() %>% sum
 test.nonsig.bin <- test.nonsig.bin %>% gather(key = "test.type", value = "mean")
 
 p2s <- meta.bin %>% 
-  filter(sig.fixef.bin == 0) %>% ungroup() %>% 
+  filter(sig.fixef == 0) %>% ungroup() %>% 
   select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
   gather(key = "test.type", value = "null.hypothesis") %>% 
   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
@@ -295,14 +335,14 @@ p.conts <- meta.cont %>% ungroup() %>%
            color = "white")
 
 
-test.sig.cont <- meta.cont %>% filter(sig.fixef.cont == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.sig.cont <- meta.cont %>% filter(sig.fixef == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
                                                                                        begg.test = mean(begg.test),
                                                                                        thomson.test = mean(thomson.test))
 
 test.sig.cont <- test.sig.cont %>% gather(key = "test.type", value = "mean")
 
 p3s <- meta.cont %>% 
-  filter(sig.fixef.cont == 1) %>% ungroup() %>% 
+  filter(sig.fixef == 1) %>% ungroup() %>% 
   select(egger.test, thomson.test, begg.test) %>% 
   gather(key = "test.type", value = "null.hypothesis") %>% 
   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
@@ -312,14 +352,14 @@ p3s <- meta.cont %>%
            label = paste(round(test.sig.cont$mean, 2)*100, "% rejected"), 
            color = "white")
 
-test.nonsig.cont <- meta.cont %>% filter(sig.fixef.cont == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.nonsig.cont <- meta.cont %>% filter(sig.fixef == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
                                                                                           begg.test = mean(begg.test),
                                                                                           thomson.test = mean(thomson.test))
 
 test.nonsig.cont <- test.nonsig.cont %>% gather(key = "test.type", value = "mean")
 
 p4s <- meta.cont %>% 
-  filter(sig.fixef.cont == 0) %>% ungroup() %>% 
+  filter(sig.fixef == 0) %>% ungroup() %>% 
   select(egger.test, thomson.test, begg.test) %>% 
   gather(key = "test.type", value = "null.hypothesis") %>% 
   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 

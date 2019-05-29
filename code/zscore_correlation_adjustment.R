@@ -67,90 +67,11 @@ metac <- meta %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4)
 
 
 
-rm(list = ls())
-PATH_HOME = path.expand("~") # user home
-PATH = file.path(PATH_HOME, 'Data/PubBias')
-PATH2 = file.path(PATH_HOME, 'PubBias')
-FILE = 'cochrane_2018-06-09.csv'
-PATH_DATA = file.path(PATH, 'data')
-PATH_CODE = file.path(PATH2, 'code')
-PATH_RESULTS = file.path(PATH2, 'results')
-PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
-
-file_results = "pb.RData"
-
-source(file.path(PATH_CODE, 'PubBias_functions.R'))
-
-file.dat <- "data.RData"
-if (file.exists(file.path(PATH_RESULTS, file.dat))) {
-	load(file.path(PATH_RESULTS, file.dat))
-} else {
-	data = pb.readData(path = PATH_DATA, file = FILE)
-	tmp = pb.clean(data)
-	data = tmp[[1]]
-	aliases = tmp[[2]]
-	save(data, file =  file.path(PATH_RESULTS, file.dat))
-}
-
-load(file.path(PATH_RESULTS, file = "data.processed.RData"))
-
-file.bin <- "pb.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-	load(file.path(PATH_RESULTS, file.bin))
-} else {
-	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
-	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-file.cont <- "pb.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-	load(file.path(PATH_RESULTS, file.cont))
-} else {
-	meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.1)
-	save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.meta <- "meta.RData"
-if (file.exists(file.path(PATH_RESULTS, file.meta))) {
-	load(file.path(PATH_RESULTS, file.meta))
-} else {
-	meta <- pb.meta.merge(meta.bin, meta.cont)
-	save(meta, file =  file.path(PATH_RESULTS, file.meta))
-}
-
-
-data.ext2 <- pb.process2(data)
-metac.bin <- meta.bin %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac.cont <- meta.cont %>% filter(n.sig.type.cont > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac <- meta %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-
-
-mcor <- function(data){
-  if(all(data$outcome.type == "bin")){
-    mt <- metacor(cor = cor.phi, n = total1 + total2, studlab = study.name, data = data)
-  }else{
-    if(all(data$outcome.type == "cont")){
-      mt <- metacor(cor = cor.pearson, n = total1 + total2, studlab = study.name, data = data)
-    } else{
-      if(all(data$outcome.type == "surv")){
-        mt <- metagen(TE = effect, seTE =  se, studlab = study.name, data = data)
-      } else{
-        mt <- NA
-      }
-    }
-  }
-  
-  return(mt)
-}
-
-
-
 tmp <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %>% 
 	filter(outcome.type != "rate" & !is.na(outcome.type)) # %>% filter(file.nr != 3014 & file.nr != 208)
 
 # tmp <- tmp %>% filter(meta.id == 8361 | meta.id == 8363)
 # tmp <- tmp %>% filter(meta.id == 378)
-
 
 #Meta-analysis and ajustment part:
 # meta.id.vector <- unique(tmp$meta.id)
@@ -184,6 +105,7 @@ correlation.meta.analysis.estimates <- cbind(
 	est.cor.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[1]})),
 	se.est.cor.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[2]})))
 
+meta.wcor <- merge(metac, zscore.meta.analysis.estimates, by = c("meta.id"))
 
 #Meta-analysis and ajustment part:
 # meta.id.vector <- unique(tmp$meta.id)
@@ -238,77 +160,35 @@ load(file.path(PATH_RESULTS, "meta.complete.RData"))
 
 
 
-#Examplary m.a. for test purpose: 134944 (bin), 158355 (cont)
-
-bin <- data.ext2 %>% filter(meta.id == 134944)
-cont <- data.ext2 %>% filter(meta.id == 158355)
-bin2 <- data.ext2 %>% filter(meta.id == 16060)
 
 
-forest(meta.id(134944))
-forest(metacor(cor = cor.phi, n = total1 + total2, data = bin))
-forest(metacor(cor = cor.fisher, n = total1 + total2, data = bin))
-
-
-forest(rma.uni(ai = events1, bi = total1 - events1, ci = events2, di = total2 - events2,  
-               measure = "RR", method = "FE", data = bin)) #For comparison
-forest(rma.uni(yi = smd.pbit, vi = var.smd.pbit, measure = "PBIT", method = "FE", 
-               data = bin)) 
-forest(rma.uni(yi = cor.phi, vi = var.cor.phi, measure = "PHI", method = "FE", 
-               data = bin)) 
-forest(rma.uni(yi = cor.fisher, vi = var.cor.fisher, measure = "ZCOR", method = "FE", 
-               data = bin)) 
-
-forest(rma.uni(yi = effect, sei = se, measure = "MD", method = "FE", data = cont))
-forest(rma.uni(m1i = mean1, m2i = mean2, sd1i = sd1, sd2i = sd2, n1i = total1, n2i = total2, 
-               measure = "MD", method = "FE", data = cont))
-forest(rma.uni(yi = smd, vi = var.smd, measure = "SMD", method = "FE", data = cont))
-forest(rma.uni(yi = cor.pearson, vi = var.cor.pearson, measure = "COR", method = "FE", data = cont))
-forest(rma.uni(yi = cor.fisher, vi = var.cor.fisher, measure = "ZCOR", method = "FE", data = cont))
-
-
-
-
+# #Examplary m.a. for test purpose: 134944 (bin), 158355 (cont)
+# 
+# bin <- data.ext2 %>% filter(meta.id == 134944)
+# cont <- data.ext2 %>% filter(meta.id == 158355)
+# bin2 <- data.ext2 %>% filter(meta.id == 16060)
+# 
+# 
+# forest(meta.id(134944))
+# forest(metacor(cor = cor.phi, n = total1 + total2, data = bin))
+# forest(metacor(cor = cor.fisher, n = total1 + total2, data = bin))
+# 
+# 
+# forest(rma.uni(ai = events1, bi = total1 - events1, ci = events2, di = total2 - events2,  
+#                measure = "RR", method = "FE", data = bin)) #For comparison
+# forest(rma.uni(yi = smd.pbit, vi = var.smd.pbit, measure = "PBIT", method = "FE", 
+#                data = bin)) 
+# forest(rma.uni(yi = cor.phi, vi = var.cor.phi, measure = "PHI", method = "FE", 
+#                data = bin)) 
+# forest(rma.uni(yi = cor.fisher, vi = var.cor.fisher, measure = "ZCOR", method = "FE", 
+#                data = bin)) 
+# 
+# forest(rma.uni(yi = effect, sei = se, measure = "MD", method = "FE", data = cont))
+# forest(rma.uni(m1i = mean1, m2i = mean2, sd1i = sd1, sd2i = sd2, n1i = total1, n2i = total2, 
+#                measure = "MD", method = "FE", data = cont))
+# forest(rma.uni(yi = smd, vi = var.smd, measure = "SMD", method = "FE", data = cont))
+# forest(rma.uni(yi = cor.pearson, vi = var.cor.pearson, measure = "COR", method = "FE", data = cont))
+# forest(rma.uni(yi = cor.fisher, vi = var.cor.fisher, measure = "ZCOR", method = "FE", data = cont))
 
 
 
-
-mcor <- function(outcome.type, cor.phi, cor.pearson, total1, total2, study.name, data){
-	if(all(outcome.type == "bin")){
-		mt <- metacor(cor = cor.phi, n = total1 + total2, studlab = study.name)
-	}else{
-		if(all(outcome.type == "cont")){
-			mt <- metacor(cor = cor.pearson, n = total1 + total2, studlab = study.name)
-		} else{
-			if(all(outcome.type == "surv")){
-				mt <- metagen(TE = effect, seTE =  se, studlab = study.name)
-			} else{
-				mt <- NA
-			}
-		}
-	}
-	
-	return(mt)
-}
-
-= case_when(Frequency == 'Year' ~ 1,
-						Frequency == 'Month' ~ 12,
-						Frequency == 'Week' ~ 48)
-
-mcor2 <- function(data){
-	mt <- case_when(all(outcome.type == "bin") ~ metacor(cor = cor.phi, n = total1 + total2, studlab = study.name),
-									all(outcome.type == "cont")~ metacor(cor = cor.pearson, n = total1 + total2, studlab = study.name),
-									all(outcome.type == "surv")~ metagen(TE = effect, seTE =  se, studlab = study.name))
-	return(mt)
-}
-
-x <- data.frame(events1 = c(0,10,1,1), events2 = c(1,1,0,10), total1 = c(10,10,10,10), total2 = c(10,10,10,10))
-
-x %>% mutate(events1c  = case_when(events1 == 0 ~ events1 + 0.5,
-																	events2 == 0 ~ events1 + 0.5,
-																	events1 - total1 == 0 ~ events1 - 0.5,
-																	events2 - total2 == 0 ~ events1 - 0.5),
-						 events2c = case_when(events2 == 0 ~ events2 + 0.5,
-						 										 events1 == 0 ~ events2 + 0.5,
-						 										 events2 - total1 == 0 ~ events2 - 0.5,
-						 										 events1 - total2 == 0 ~ events2 - 0.5))

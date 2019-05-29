@@ -1,27 +1,13 @@
-- Publication Bias Publikationen, literature review
-
-Comparisons:
-- Pooled effect size and corrected pooled effect size difference vs. - ? (pbias test, added studies, heterogeneity, ..)
-- Significance of pooled effect sizes and ? (corrected pooled effect size significance, subgroup analysis pooled effect size, ..)
 
 - How to deal with sparse data (binary outcomes)? e.g. metabin(incr = "TACC")
 Currently, e(t) = 0 and e(c) = 0 is used as exclusion criteria. If only one is 0,
 incr = 0.5 is used (default in metabin() function)
 
-- Use bland altmann plots to compare p-values of pbias tests.
-
 - Replace correlation btw. p-values with Rsquared.
-
-- There is the possibility that a study is once given as odds ratio, once as risk ratio..
 
 - Hartung Knapp is not always conservative compared to fixef (Cochrane MEthods 2016)
 
 - Different validation - face validation
-
-- Subgroup analysis? 
-
-- In general: Expectation of the masters thesis: Explore properties of the results with respect to properties of the dataset? Or also with respect to each other?
-It is clear that the findings of simulation studies etc. can be incorporated into the discussion and can help..
 
 - cache gitignore
 
@@ -33,30 +19,14 @@ It is clear that the findings of simulation studies etc. can be incorporated int
 
 - Extend pb.meta function to peto odds ratios
 
-- Prozentzahlen bei Meta-analysis plots einführen.
-
 - Dissemination bias also used as term for meta-analysis
-
-- Replace z-test p-values of continuous tests with t-test p-values
 
 - Incidence rates and Survival outcomes could also be included into the analysis (Ir n = ~2800, "Rate Ratio", "Rate difference")
 
 
 
 Questions:
-
--OR or RR?
 - Meta-analysis with survival outcomes?
-- Discrimination methods using meta-analyses, publication bias tests and correction methods? (F.ex. discriminate by significant heterogeneity or pbias test?) How to handle between study heterogeneity? Some tests have been shown to work only well if heterogeneity is present? Automatic discrimination in test use for a more exact assessment of publication bias?
-
-
-
-
-
-- General approach: How to use dataset - also like a simulation dataset, to exploit properties of tests and methods? Because the properties found very likely will reflect future properties, and there could be some benefit from knowledge of such benefits.
-Also, is restriction to publication bias necessary?
-
-
 
 Schluss der Introduction: REsearch questions und Hypothesen: Quantifikation von PB und adjustierung und schauen wie sich der EFfekt ändert.
 

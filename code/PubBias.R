@@ -12,6 +12,75 @@ file_results = "pb.RData"
 
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
+file.dat <- "data.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+	load(file.path(PATH_RESULTS, file.dat))
+} else {
+	data = pb.readData(path = PATH_DATA, file = FILE)
+	tmp = pb.clean(data)
+	data = tmp[[1]]
+	aliases = tmp[[2]]
+	save(data, file =  file.path(PATH_RESULTS, file.dat))
+}
+
+file.dat <- "data.processed.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+	load(file.path(PATH_RESULTS, file.dat))
+} else {
+	data.ext2 = pb.process2(data)
+	save(data.ext2, file =  file.path(PATH_RESULTS, file.dat))
+}
+
+file.bin <- "pb.bin.RData"
+if (file.exists(file.path(PATH_RESULTS, file.bin))) {
+	load(file.path(PATH_RESULTS, file.bin))
+} else {
+	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
+	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
+}
+
+file.cont <- "pb.cont.RData"
+if (file.exists(file.path(PATH_RESULTS, file.cont))) {
+	load(file.path(PATH_RESULTS, file.cont))
+} else {
+	meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.1)
+	save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
+}
+
+file.meta <- "meta.RData"
+if (file.exists(file.path(PATH_RESULTS, file.meta))) {
+	load(file.path(PATH_RESULTS, file.meta))
+} else {
+	meta <- pb.meta.merge(meta.bin, meta.cont)
+	save(meta, file =  file.path(PATH_RESULTS, file.meta))
+}
+
+load(file.path(PATH_RESULTS, "meta.complete.RData"))
+
+
+#Applying test and adjustment criteria:
+metac.bin <- meta.bin %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac.cont <- meta.cont %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac <- meta %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+
+
+
+
+
+rm(list = ls())
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
+FILE = 'cochrane_2018-06-09.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH2, 'code')
+PATH_RESULTS = file.path(PATH2, 'results')
+PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+
+file_results = "pb.RData"
+
+source(file.path(PATH_CODE, 'PubBias_functions.R'))
+
 
 # data = pb.readData(path = PATH_DATA, file = FILE)
 # tmp = pb.clean(data)
@@ -54,23 +123,6 @@ if (file.exists(file.path(PATH_RESULTS, file.meta))) {
   save(meta, file =  file.path(PATH_RESULTS, file.meta))
 }
 
-# meta <- pb.meta.merge(meta.bin, meta.cont)
-
-file.cont <- "mly.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-  load(file.path(PATH_RESULTS, file.cont))
-} else {
-  data.cont <- mly.cont(data.ext, 0.05, min.study.number = 2)
-  save(data.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.bin <- "mly.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-  load(file.path(PATH_RESULTS, file.bin))
-} else {
-  data.bin <- mly.bin(data.ext, 0.05, min.study.number = 2)
-  save(data.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
 
 
 load(file.path(PATH_RESULTS, file = "mly.RData"))
@@ -90,13 +142,13 @@ require(xtable)
 #                                             sig.change.fixef.copas = sig.change(sig.before = sig.fixef.cont, sig.after =  sig.copas.cont),
 #                                             sig.change.fixef.trimfill = sig.change(sig.before = sig.fixef.cont, sig.after =  sig.trimfill.cont))
 # 
-# meta.bin <- meta.bin %>% mutate(sig.copas.bin = ifelse(pval.copas.bin > 0.05, 0, 1),
-#   sig.change.ranef.reg = sig.change(sig.before = sig.ranef.bin, sig.after =  sig.reg.ranef.bin), 
-#                                                 sig.change.ranef.copas = sig.change(sig.before = sig.ranef.bin, sig.after =  sig.copas.bin),
-#                                                 sig.change.ranef.trimfill = sig.change(sig.before = sig.ranef.bin, sig.after =  sig.trimfill.bin),
-#                                                 sig.change.fixef.reg = sig.change(sig.before = sig.fixef.bin, sig.after =  sig.reg.ranef.bin),
-#                                                 sig.change.fixef.copas = sig.change(sig.before = sig.fixef.bin, sig.after =  sig.copas.bin),
-#                                                 sig.change.fixef.trimfill = sig.change(sig.before = sig.fixef.bin, sig.after =  sig.trimfill.bin))
+# meta.bin <- meta.bin %>% mutate(sig.copas = ifelse(pval.copas > 0.05, 0, 1),
+#   sig.change.ranef.reg = sig.change(sig.before = sig.ranef, sig.after =  sig.reg.ranef), 
+#                                                 sig.change.ranef.copas = sig.change(sig.before = sig.ranef, sig.after =  sig.copas),
+#                                                 sig.change.ranef.trimfill = sig.change(sig.before = sig.ranef, sig.after =  sig.trimfill),
+#                                                 sig.change.fixef.reg = sig.change(sig.before = sig.fixef, sig.after =  sig.reg.ranef),
+#                                                 sig.change.fixef.copas = sig.change(sig.before = sig.fixef, sig.after =  sig.copas),
+#                                                 sig.change.fixef.trimfill = sig.change(sig.before = sig.fixef, sig.after =  sig.trimfill))
 
 
 # save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
@@ -278,20 +330,20 @@ meta %>% filter(!is.na(sig.change)) %>% ggplot(aes(x = sig.change, stat = "count
 trimfill.cont.mean <- meta.cont %>% ungroup() %>% summarise(mean = mean(missing.trim.cont)) %>% select(mean)
 trimfill.cont.median <- meta.cont %>% ungroup() %>% summarise(median = median(missing.trim.cont)) %>% select(median)
 
-trimfill.bin.mean <- meta.bin %>% ungroup() %>% summarise(mean = mean(missing.trim.bin)) %>% select(mean)
-trimfill.bin.median <- meta.bin %>% ungroup() %>% summarise(median = median(missing.trim.bin)) %>% select(median)
+trimfill.bin.mean <- meta.bin %>% ungroup() %>% summarise(mean = mean(missing.trim)) %>% select(mean)
+trimfill.bin.median <- meta.bin %>% ungroup() %>% summarise(median = median(missing.trim)) %>% select(median)
 
-meta.bin %>% ggplot(aes(x = missing.trim.bin)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
+meta.bin %>% ggplot(aes(x = missing.trim)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
   theme_bw() + labs(title = "Fraction of Trimmed Comparisons (binary outcome)") + xlab("Fraction") + ylab("Frequency")
 
 meta.cont %>% ggplot(aes(x = missing.trim.cont)) + geom_histogram(col = "gray15", fill = "dodgerblue") +
   theme_bw() + labs(title = "Fraction of Trimmed Comparisons (continuous outcome)") + xlab("Fraction") + ylab("Frequency")
 
-meta.bin %>% ggplot(aes(x = missing.trim.bin, fill = factor(peter.test), stat(count))) + 
+meta.bin %>% ggplot(aes(x = missing.trim, fill = factor(peter.test), stat(count))) + 
   geom_density(na.rm = T, position = "fill") + 
   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
 
-meta.bin %>% ggplot(aes(x = missing.trim.bin, fill = factor(harbord.test), stat(count))) + geom_density(na.rm = T, position = "fill")
+meta.bin %>% ggplot(aes(x = missing.trim, fill = factor(harbord.test), stat(count))) + geom_density(na.rm = T, position = "fill")
 
 meta.cont %>% filter(missing.trim.cont < 0.5) %>% 
   ggplot(aes(x = missing.trim.cont, fill = factor(thomson.test), stat(count))) + 
@@ -300,13 +352,13 @@ meta.cont %>% filter(missing.trim.cont < 0.5) %>%
 
 #Time trends in significance of tests
 meta.bin %>% filter(mean.publication.year < 2019 & mean.publication.year > 1960) %>% 
-  ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef.bin))) + geom_histogram()
+  ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef))) + geom_histogram()
 
 meta.bin %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
-  ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef.bin), stat(count))) + geom_density(na.rm = T, position = "fill")
+  ggplot(aes(x = mean.publication.year, fill = factor(sig.fixef), stat(count))) + geom_density(na.rm = T, position = "fill")
 
 meta.bin %>% filter(first.publication.year < 2013 & first.publication.year > 1990) %>% 
-  ggplot(aes(x = first.publication.year, fill = factor(sig.fixef.bin))) + geom_density(na.rm = T, position = "fill")
+  ggplot(aes(x = first.publication.year, fill = factor(sig.fixef))) + geom_density(na.rm = T, position = "fill")
 
 meta.bin %>% filter(first.publication.year < 2013 & first.publication.year > 1990) %>% 
   ggplot(aes(x = first.publication.year, fill = factor(peter.test))) + geom_density(na.rm = T, position = "fill")
@@ -383,15 +435,15 @@ agreement.bin <- meta.bin %>% ungroup() %>% summarise(egger.schwarzer = sum(egge
                                                       rucker.peter = sum(rucker.peter == "agree")/n(),
                                                       harbord.peter = sum(harbord.peter == "agree")/n())
 
-correlation.bin <- meta.bin %>%ungroup() %>%  summarise(egger.schwarzer = cor(pval.egger.bin, pval.schwarzer.bin),
-                                                        egger.peter = cor(pval.egger.bin, pval.peter.bin),
-                                                        egger.rucker = cor(pval.egger.bin, pval.rucker.bin),
-                                                        egger.harbord = cor(pval.egger.bin, pval.harbord.bin),
-                                                        schwarzer.peter = cor(pval.schwarzer.bin, pval.peter.bin),
-                                                        schwarzer.rucker = cor(pval.schwarzer.bin, pval.rucker.bin),
-                                                        schwarzer.harbord = cor(pval.schwarzer.bin, pval.harbord.bin),
-                                                        rucker.peter = cor(pval.rucker.bin, pval.peter.bin),
-                                                        harbord.peter = cor(pval.harbord.bin, pval.peter.bin))
+correlation.bin <- meta.bin %>%ungroup() %>%  summarise(egger.schwarzer = cor(pval.egger, pval.schwarzer),
+                                                        egger.peter = cor(pval.egger, pval.peter),
+                                                        egger.rucker = cor(pval.egger, pval.rucker),
+                                                        egger.harbord = cor(pval.egger, pval.harbord),
+                                                        schwarzer.peter = cor(pval.schwarzer, pval.peter),
+                                                        schwarzer.rucker = cor(pval.schwarzer, pval.rucker),
+                                                        schwarzer.harbord = cor(pval.schwarzer, pval.harbord),
+                                                        rucker.peter = cor(pval.rucker, pval.peter),
+                                                        harbord.peter = cor(pval.harbord, pval.peter))
 
 binary.tests.agreement <- rbind(agreement.bin, correlation.bin)
 rownames(binary.tests.agreement) <- c("Test Agreement","P-value Correlation")

@@ -1,0 +1,516 @@
+rm(list = ls())
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
+FILE = 'cochrane_2018-06-09.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH2, 'code')
+PATH_RESULTS = file.path(PATH2, 'results')
+PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+
+file_results = "pb.RData"
+
+source(file.path(PATH_CODE, 'PubBias_functions.R'))
+
+file.dat <- "data.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+	load(file.path(PATH_RESULTS, file.dat))
+} else {
+	data = pb.readData(path = PATH_DATA, file = FILE)
+	tmp = pb.clean(data)
+	data = tmp[[1]]
+	aliases = tmp[[2]]
+	save(data, file =  file.path(PATH_RESULTS, file.dat))
+}
+
+data.ext2 <- pb.process2(data)
+
+# load(file.path(PATH_RESULTS, "meta_analyses_summary_bin_cont_surv.RData"))
+# load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+# load(file.path(PATH_RESULTS, "data_used_for_summary.RData"))
+load(file.path(PATH_RESULTS, "meta_complete_list_bin.RData"))
+load(file.path(PATH_RESULTS, "meta_complete_list_cont.RData"))
+load(file.path(PATH_RESULTS, "meta_complete_list_surv.RData"))
+
+settings.meta(hakn=TRUE, method.tau="PM", method = "Inverse")
+
+##########################################################################################
+##########################################################################################
+##########################################################################################
+##########################################################################################
+#META-ANALYSIS CALCULATION:
+#Binary outcomes:
+##########################################################################################
+##########################################################################################
+##########################################################################################
+##########################################################################################
+
+tmp <- data.ext2 %>% filter(outcome.type == "bin") %>% group_by(meta.id) %>% 
+	mutate(n = n()) %>% filter(n >= 10) %>% filter(!all(events1 == 0) & !all(events2 == 0)) %>% 
+	filter(meta.id != 94519 & meta.id != 62301) #Copas likelihood conv. problems..
+
+meta.id.vector <- unique(tmp$meta.id)
+meta.analyses <- list()
+meta.analyses.asd <- list()
+meta.analyses.limitmeta <- list()
+meta.analyses.copas <- list()
+meta.analyses.trimfill <- list()
+meta.tests.harbord <- list()
+meta.tests.peter <- list()
+meta.tests.rucker <- list()
+meta.tests.schwarzer <- list()
+counter <- 0
+
+
+# for(u in meta.id.vector){
+# 	counter <- counter + 1
+# 	print(c(u, counter))
+# 	meta.analyses[[counter]] <- metabin(event.e = events1c, n.e = total1, event.c = events2c, n.c = total2, 
+# 																			studlab = study.name, sm = "RR",
+# 																			method = "Inverse", data = tmp[tmp$meta.id == u,])
+# 	meta.analyses.asd[[counter]] <- metabin(event.e = events1c, n.e = total1, event.c = events2c, n.c = total2, 
+# 																			studlab = study.name, sm = "ASD",
+# 																			method = "Inverse", data = tmp[tmp$meta.id == u,])
+# 	
+# 	meta.analyses.limitmeta[[counter]] <- limitmeta(meta.analyses[[counter]])
+# 	meta.analyses.trimfill[[counter]] <- trimfill(meta.analyses[[counter]])
+# 	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
+# 	
+# 	meta.tests.harbord[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "score", k.min = 2)
+# 	meta.tests.peter[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "peters", k.min = 2)
+# 	meta.tests.schwarzer[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "count", k.min = 2)
+# 	meta.tests.rucker[[counter]] <- metabias(meta.analyses.asd[[counter]], method.bias = "mm", k.min = 2)
+# }
+# 
+# for(u in meta.id.vector){
+# 	if(length(meta.analyses.copas[[counter]]) < 3){
+# 		meta.analyses.copas[[counter]] <- c(NA, NA, NA)
+# 	}
+# 	
+# }
+
+meta.analyses <- bin.meta.list[[3]]
+meta.analyses.limitmeta <- bin.meta.list[[5]]
+meta.analyses.copas <- bin.meta.list[[6]]
+meta.analyses.trimfill <- bin.meta.list[[7]]
+meta.tests.harbord <- bin.meta.list[[8]]
+meta.tests.peter <- bin.meta.list[[9]]
+meta.tests.rucker <- bin.meta.list[[10]]
+meta.tests.schwarzer <- bin.meta.list[[11]]
+
+bin.meta.list <- list(tmp, meta.id.vector, meta.analyses,
+											meta.analyses.asd,
+											meta.analyses.limitmeta,
+											meta.analyses.copas,
+											meta.analyses.trimfill,
+											meta.tests.harbord,
+											meta.tests.peter,
+											meta.tests.rucker,
+											meta.tests.schwarzer)
+
+#Extract from lists:
+bin.results <- data.frame(
+	meta.id = meta.id.vector,
+	meta.es.measure = rep(times = length(meta.id.vector), "log risk ratio"),
+	
+	n.sig.single2 = unlist(lapply(meta.analyses, FUN = function(meta.analysis){length(which(meta.analysis$pval < 0.05))})),
+	
+	#Meta-analysis:
+	est.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.fixed})),
+	est.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.random})),
+	
+	zval.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$zval.fixed})),
+	zval.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$zval.random})),
+	
+	pval.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$pval.fixed})),
+	pval.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$pval.random})),
+	
+	se.est.fixef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.fixed})),
+	se.est.ranef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.random})),
+	
+	Q = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$Q})),
+	pval.Q = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$pval.Q})),
+	#I2 = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$I2.w})),
+	tau = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$tau})),
+	#se.tau = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$se.tau})),
+	sparse = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$sparse})),
+	k = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$k})),
+	
+	#Adjustment:
+	method.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$method.adjust})),
+	est.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$TE.adjust})),
+	se.est.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$seTE.adjust})),
+	zval.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$zval.adjust})),
+	pval.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$pval.adjust})),
+	alpha.r = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$pval.adjust})),
+	beta.r = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$pval.adjust})),
+	Q.small = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$Q.small})),
+	Q.resid = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$Q.resid})),
+	G.squared = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$G.squared})),
+	
+	est.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[1]})),
+	se.est.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[2]})),
+	missing.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[3]})),
+	
+	#Tests;
+	pval.harbord = unlist(lapply(meta.tests.harbord, FUN = function(meta.test){meta.test$p.value})),
+	stat.harbord = unlist(lapply(meta.tests.harbord, FUN = function(meta.test){meta.test$statistic})),
+	pval.peter = unlist(lapply(meta.tests.peter, FUN = function(meta.test){meta.test$p.value})),
+	stat.peter = unlist(lapply(meta.tests.peter, FUN = function(meta.test){meta.test$statistic})),
+	pval.rucker = unlist(lapply(meta.tests.rucker, FUN = function(meta.test){meta.test$p.value})),
+	stat.rucker = unlist(lapply(meta.tests.rucker, FUN = function(meta.test){meta.test$statistic})),
+	pval.schwarzer = unlist(lapply(meta.tests.schwarzer, FUN = function(meta.test){meta.test$p.value})),
+	stat.schwarzer = unlist(lapply(meta.tests.schwarzer, FUN = function(meta.test){meta.test$statistic}))
+	)
+
+
+
+##########################################################################################
+##########################################################################################
+#Continuous outcomes:
+##########################################################################################
+##########################################################################################
+tmp <- data.ext2 %>% filter(outcome.type == "cont") %>% group_by(meta.id) %>% 
+	mutate(n = n()) %>% filter(n >= 10) %>% filter(!all(mean1 == 0) & !all(mean2 == 0)) %>% 
+	filter(!all(sd1 == 0) | !all(sd2 == 0)) %>% filter(meta.id < 42716 | meta.id > 42725) #single patient data..
+
+meta.id.vector <- unique(tmp$meta.id)
+# meta.analyses <- list()
+# meta.analyses.limitmeta <- list()
+# meta.analyses.copas <- list()
+# meta.analyses.trimfill <- list()
+# meta.tests.linreg <- list()
+# meta.tests.begg <- list()
+# meta.tests.mm <- list()
+# counter <- 0
+# 
+# for(u in meta.id.vector){
+# 	counter <- counter + 1
+# 	print(c(u, counter))
+# 	meta.analyses[[counter]] <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, 
+# 																			 mean.c = mean2, sd.c = sd2, sm = "SMD", studlab = study.name,
+# 																			 data = tmp[tmp$meta.id == u,])
+# 	meta.analyses.limitmeta[[counter]] <- limitmeta(meta.analyses[[counter]])
+# 	meta.analyses.trimfill[[counter]] <- trimfill(meta.analyses[[counter]])
+# 	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
+# 	
+# 	meta.tests.linreg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "linreg")
+# 	meta.tests.begg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "rank")
+# 	meta.tests.mm[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "mm")
+# }
+
+meta.analyses <- cont.meta.list[[3]]
+meta.analyses.limitmeta <- cont.meta.list[[4]]
+meta.analyses.copas <- cont.meta.list[[5]]
+meta.analyses.trimfill <- cont.meta.list[[6]]
+meta.tests.linreg <- cont.meta.list[[7]]
+meta.tests.begg <- cont.meta.list[[8]]
+meta.tests.mm <- cont.meta.list[[9]]
+
+cont.meta.list <- list(tmp, meta.id.vector, meta.analyses, 
+											 meta.analyses.limitmeta,
+											 meta.analyses.copas,
+											 meta.analyses.trimfill,
+											 meta.tests.linreg,
+											 meta.tests.begg,
+											 meta.tests.mm)
+
+#Extract from lists:
+cont.results <- data.frame(
+	meta.id = meta.id.vector,
+	meta.es.measure = rep("std. mean difference", times = length(meta.id.vector)),
+	
+	n.sig.single2 = unlist(lapply(meta.analyses, FUN = function(meta.analysis){length(which(meta.analysis$pval < 0.05))})),
+	
+	#Meta-Analysis
+	est.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.fixed})),
+	est.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.random})),
+	
+	zval.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$zval.fixed})),
+	zval.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$zval.random})),
+	
+	pval.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$pval.fixed})),
+	pval.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$pval.random})),
+	
+	se.est.fixef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.fixed})),
+	se.est.ranef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.random})),
+	
+	Q = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$Q})),
+	pval.Q = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$pval.Q})),
+	#I2 = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$I2.w})),
+	tau = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$tau})),
+	#se.tau = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$se.tau})),
+	#sparse = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$sparse})),
+	k = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$k})),
+	
+	#Adjustment:
+	method.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$method.adjust})),
+	est.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$TE.adjust})),
+	se.est.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$seTE.adjust})),
+	zval.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$zval.adjust})),
+	pval.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$pval.adjust})),
+	alpha.r = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$pval.adjust})),
+	beta.r = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$pval.adjust})),
+	Q.small = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$Q.small})),
+	Q.resid = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$Q.resid})),
+	G.squared = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$G.squared})),
+	
+	est.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[1]})),
+	se.est.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[2]})),
+	missing.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[3]})),
+	
+	#Tests:
+	pval.egger = unlist(lapply(meta.tests.linreg, FUN = function(meta.test){meta.test$p.value})),
+	stat.egger = unlist(lapply(meta.tests.linreg, FUN = function(meta.test){meta.test$statistic})),
+	pval.begg = unlist(lapply(meta.tests.begg, FUN = function(meta.test){meta.test$p.value})),
+	stat.begg = unlist(lapply(meta.tests.begg, FUN = function(meta.test){meta.test$statistic})),
+	pval.thompson = unlist(lapply(meta.tests.mm, FUN = function(meta.test){meta.test$p.value})),
+	stat.thompson = unlist(lapply(meta.tests.mm, FUN = function(meta.test){meta.test$statistic}))
+)
+
+
+##########################################################################################
+##########################################################################################
+#Survival outcomes:
+##########################################################################################
+##########################################################################################
+
+tmp <- data.ext2 %>% filter(outcome.type == "surv") %>% group_by(meta.id) %>% 
+	mutate(n = n()) %>% filter(n >= 10) 
+
+meta.id.vector <- unique(tmp$meta.id)
+# meta.analyses <- list()
+# meta.analyses.limitmeta <- list()
+# meta.analyses.copas <- list()
+# meta.analyses.trimfill <- list()
+# meta.tests.linreg <- list()
+# meta.tests.begg <- list()
+# meta.tests.mm <- list()
+# counter <- 0
+# 
+# 
+# for(u in meta.id.vector){
+# 	counter <- counter + 1
+# 	print(c(u, counter))
+# 	meta.analyses[[counter]] <- metagen(TE = effect, seTE = se, studlab = study.name, sm = "HR", data = tmp[tmp$meta.id == u,])
+# 
+# 	meta.analyses.limitmeta[[counter]] <- limitmeta(meta.analyses[[counter]])
+# 	meta.analyses.trimfill[[counter]] <- trimfill(meta.analyses[[counter]])
+# 	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
+# 	
+# 	meta.tests.linreg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "linreg", k.min = 2)
+# 	meta.tests.begg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "rank", k.min = 2)
+# 	meta.tests.mm[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "mm", k.min = 2)
+# }
+
+meta.analyses <- surv.meta.list[[3]]
+meta.analyses.limitmeta <- surv.meta.list[[4]]
+meta.analyses.copas <- surv.meta.list[[5]]
+meta.analyses.trimfill <- surv.meta.list[[6]]
+meta.tests.linreg <- surv.meta.list[[7]]
+meta.tests.begg <- surv.meta.list[[8]]
+meta.tests.mm <- surv.meta.list[[9]]
+
+surv.meta.list <- list(tmp, meta.id.vector, meta.analyses, 
+											 meta.analyses.limitmeta,
+											 meta.analyses.copas,
+											 meta.analyses.trimfill,
+											 meta.tests.linreg,
+											 meta.tests.begg,
+											 meta.tests.mm)
+
+#Extract from lists:
+surv.results <- data.frame(
+	meta.id = meta.id.vector,
+	meta.es.measure = rep(times = length(meta.id.vector), "log hazard ratio"),
+	
+	n.sig.single2 = unlist(lapply(meta.analyses, FUN = function(meta.analysis){length(which(meta.analysis$pval < 0.05))})),
+	#Meta-Analysis
+	est.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.fixed})),
+	est.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.random})),
+	
+	zval.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$zval.fixed})),
+	zval.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$zval.random})),
+	
+	pval.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$pval.fixed})),
+	pval.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$pval.random})),
+	
+	se.est.fixef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.fixed})),
+	se.est.ranef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.random})),
+	
+	Q = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$Q})),
+	pval.Q = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$pval.Q})),
+	# I2 = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$I2.w})),
+	tau = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$tau})),
+	# se.tau = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$se.tau})),
+	# sparse = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$sparse})),
+	k = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$k})),
+	
+	#Adjustment:
+	method.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$method.adjust})),
+	est.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$TE.adjust})),
+	se.est.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$seTE.adjust})),
+	zval.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$zval.adjust})),
+	pval.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$pval.adjust})),
+	alpha.r = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$pval.adjust})),
+	beta.r = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$pval.adjust})),
+	Q.small = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$Q.small})),
+	Q.resid = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$Q.resid})),
+	G.squared = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$G.squared})),
+	
+	est.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[1]})),
+	se.est.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[2]})),
+	missing.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[3]})),
+	
+	#Tests:
+	pval.egger = unlist(lapply(meta.tests.linreg, FUN = function(meta.test){meta.test$p.value})),
+	stat.egger = unlist(lapply(meta.tests.linreg, FUN = function(meta.test){meta.test$statistic})),
+	pval.begg = unlist(lapply(meta.tests.begg, FUN = function(meta.test){meta.test$p.value})),
+	stat.begg = unlist(lapply(meta.tests.begg, FUN = function(meta.test){meta.test$statistic})),
+	pval.thompson = unlist(lapply(meta.tests.mm, FUN = function(meta.test){meta.test$p.value})),
+	stat.thompson = unlist(lapply(meta.tests.mm, FUN = function(meta.test){meta.test$statistic}))
+)
+
+####################################################################################
+####################################################################################
+# Build complete dataset:
+####################################################################################
+####################################################################################
+
+meta.results <- bind_rows(bin.results, cont.results, surv.results, .id = NULL)
+
+meta.results <- meta.results %>% rowwise() %>% 
+	mutate(I2  = max(0, (Q - k + 1)/Q)) #Proportion of variance of study estimates that is due to real variance)
+
+meta.info <- data.ext2 %>%
+	group_by(meta.id) %>% 
+	mutate(n = n()) %>% filter(n >= 10) %>% 
+	summarize(doi = unique(doi),
+						outcome.type = unique(outcome.type),
+						file.nr = unique(file.nr),
+						comparison.nr = unique(comparison.nr),
+						comparison.name = unique(comparison.name),
+						outcome.name = unique(outcome.name),
+						outcome.nr = unique(outcome.nr),
+						subgroup.name = unique(subgroup.name),
+						subgroup.nr = unique(subgroup.nr),
+						outcome.measure.new = unique(outcome.measure.new),
+						outcome.measure.new = unique(outcome.measure),
+						n = n(), #Number of studies in meta-analysis
+						mean.samplesize = mean(total1 + total2, na.rm = T),
+						total.samplesize = sum(total1 + total2),
+						var.samplesize = var(total1 + total2, na.rm = T),
+						min.samplesize = min(min(total1, na.rm = T), min(total2, na.rm = T)),
+						total.events = sum(events1 + events2),
+						mean.events = mean(events1 + events2),
+						mean.publication.year = mean(study.year, na.rm = TRUE),
+						first.publication.year = min(study.year, na.rm = T),
+						n.sig.single = sum(sig.single, na.rm = T),
+						NA.sig.single = sum(is.na(sig.single)),
+						se.min = min(se, na.rm = T),
+						se.max = max(se, na.rm = T))
+
+meta <- merge(meta.results, meta.info, by = c("meta.id"))
+
+
+##########################################################################################
+##########################################################################################
+#Z-score and correlation meta-analyses:
+##########################################################################################
+##########################################################################################
+
+metac <- meta %>% filter(n.sig.single2 > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+
+tmp <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %>% 
+	filter(outcome.type != "rate" & !is.na(outcome.type)) # %>% filter(file.nr != 3014 & file.nr != 208)
+
+# tmp <- tmp %>% filter(meta.id == 8361 | meta.id == 8363)
+# tmp <- tmp %>% filter(meta.id == 378)
+
+#Meta-analysis and ajustment part:
+# meta.id.vector <- unique(tmp$meta.id)
+meta.id.vector <- metac$meta.id
+#meta.id.vector <- meta.id.vector[-which(meta.id.vector == 159329)]
+meta.analyses <- list()
+meta.analyses.limitmeta <- list()
+meta.analyses.copas <- list()
+counter <- 0
+
+for(u in meta.id.vector){
+	counter <- counter + 1
+	print(c(u,counter))
+	meta.analyses[[counter]] <- mcor(data = tmp[tmp$meta.id == u,])
+	meta.analyses.limitmeta[[counter]] <- limitmeta(meta.analyses[[counter]])
+	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
+}
+
+cor.meta.list <- list(tmp, meta.id.vector, meta.analyses, meta.analyses.limitmeta, meta.analyses.copas)
+
+#List extraction:
+correlation.meta.analysis.estimates <- cbind(
+	meta.id = meta.id.vector,
+	est.cor.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.fixed})),
+	est.cor.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.random})),
+	se.est.cor.fixef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.fixed})),
+	se.est.cor.ranef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.random})),
+	
+	est.cor.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$TE.adjust})),
+	se.est.cor.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$seTE.adjust})),
+	
+	est.cor.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[1]})),
+	se.est.cor.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[2]})))
+
+meta.wcor <- merge(metac, zscore.meta.analysis.estimates, by = c("meta.id"))
+
+#Meta-analysis and ajustment part:
+# meta.id.vector <- unique(tmp$meta.id)
+meta.id.vector <- metac$meta.id
+meta.id.vector <- meta.id.vector[-which(meta.id.vector == 157083)]
+meta.analyses <- list()
+meta.analyses.limitmeta <- list()
+meta.analyses.copas <- list()
+counter <- 0
+
+for(u in meta.id.vector){
+	counter <- counter + 1
+	print(c(u,counter))
+	meta.analyses[[counter]] <- metagen(TE = z, seTE = sqrt(var.z), studlab = study.name, tmp[tmp$meta.id == u,])
+	meta.analyses.limitmeta[[counter]] <- limitmeta(meta.analyses[[counter]])
+	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
+}
+
+zscore.meta.list <- list(tmp, meta.id.vector, meta.analyses, meta.analyses.limitmeta, meta.analyses.copas)
+
+#List extraction:
+zscore.meta.analysis.estimates <- cbind(
+	meta.id = meta.id.vector,
+	est.z.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.fixed})),
+	est.z.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.random})),
+	se.est.z.fixef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.fixed})),
+	se.est.z.ranef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.random})),
+	
+	est.z.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$TE.adjust})),
+	se.est.z.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$seTE.adjust})),
+	
+	est.z.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[1]})),
+	se.est.z.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[2]})))
+
+
+
+
+# correlation.meta.analysis.estimates <- data.frame(correlation.meta.analysis.estimates) %>% 
+# 	mutate(est.z.fixef = 0.5 * log( (1 + est.cor.fixef)/(1 - est.cor.fixef) , base = exp(1)),
+# 				 est.z.ranef = 0.5 * log( (1 + est.cor.ranef)/(1 - est.cor.ranef) , base = exp(1)),
+# 				 est.z.reg = 0.5 * log( (1 + est.cor.reg)/(1 - est.cor.reg), base = exp(1)),
+# 				 est.z.copas = 0.5 * log( (1 + est.cor.copas)/(1 - est.cor.copas) , base = exp(1)),
+# 				 se.est.z.fixef = ifelse(total1 + total2 > 4))
+
+meta.f <- merge(metac, zscore.meta.analysis.estimates, by = c("meta.id"))
+
+save(meta, file =  file.path(PATH_RESULTS, "meta_analyses_summary_bin_cont_surv.RData"))
+save(meta.f, file =  file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+save(data.ext2, file =  file.path(PATH_RESULTS, "data_used_for_summary.RData"))
+save(bin.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_bin.RData"))
+save(cont.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cont.RData"))
+save(surv.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_surv.RData"))
+save(data, file =  file.path(PATH_RESULTS, file.dat))
