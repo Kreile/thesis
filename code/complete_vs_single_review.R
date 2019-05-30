@@ -23,108 +23,71 @@ if (file.exists(file.path(PATH_RESULTS, file.dat))) {
 	save(data, file =  file.path(PATH_RESULTS, file.dat))
 }
 
-file.dat <- "data.processed.RData"
-if (file.exists(file.path(PATH_RESULTS, file.dat))) {
-	load(file.path(PATH_RESULTS, file.dat))
-} else {
-	data.ext2 = pb.process2(data)
-	save(data.ext2, file =  file.path(PATH_RESULTS, file.dat))
-}
-
-file.bin <- "pb.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-	load(file.path(PATH_RESULTS, file.bin))
-} else {
-	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
-	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-file.cont <- "pb.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-	load(file.path(PATH_RESULTS, file.cont))
-} else {
-	meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.1)
-	save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.meta <- "meta.RData"
-if (file.exists(file.path(PATH_RESULTS, file.meta))) {
-	load(file.path(PATH_RESULTS, file.meta))
-} else {
-	meta <- pb.meta.merge(meta.bin, meta.cont)
-	save(meta, file =  file.path(PATH_RESULTS, file.meta))
-}
-
-load(file.path(PATH_RESULTS, "meta.complete.RData"))
-
-
-#Applying test and adjustment criteria:
-metac.bin <- meta.bin %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac.cont <- meta.cont %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac <- meta %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+load(file.path(PATH_RESULTS, "meta.bin.RData"))
+load(file.path(PATH_RESULTS, "meta.cont.RData"))
+load(file.path(PATH_RESULTS, "meta.surv.RData"))
+load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
 
 
+#Explanation of coding: 0 = (unsig, unsig), 1 = (unsig, sig), 2 = (sig, sig), 3 = (sig, unsig)
+sig.level <- 0.05
+meta.f <- meta.f %>% 
+	mutate(
+		pval.copas = 2*(1-pnorm(abs(est.copas/se.est.copas))),
+		
+		sig.fixef = ifelse(pval.fixef > sig.level, 0, 1),
+		sig.ranef = ifelse(pval.ranef > sig.level, 0, 1),
+		sig.reg.ranef = ifelse(pval.reg > sig.level, 0, 1),
+		sig.copas = ifelse(pval.copas > sig.level, 0, 1),
+		
+		sig.change.ranef.reg = sig.change(sig.before = sig.ranef, sig.after =  sig.reg), #Function to register if significance of estimate has changed after correction
+		sig.change.ranef.copas = sig.change(sig.before = sig.ranef, sig.after =  sig.copas),
+		sig.change.fixef.reg = sig.change(sig.before = sig.fixef, sig.after =  sig.reg),
+		sig.change.fixef.copas = sig.change(sig.before = sig.fixef, sig.after =  sig.copas))
 
 
-rm(list = ls())
-PATH_HOME = path.expand("~") # user home
-PATH = file.path(PATH_HOME, 'Data/PubBias')
-PATH2 = file.path(PATH_HOME, 'PubBias')
-FILE = 'cochrane_2018-06-09.csv'
-PATH_DATA = file.path(PATH, 'data')
-PATH_CODE = file.path(PATH2, 'code')
-PATH_RESULTS = file.path(PATH2, 'results')
-PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+sig.level <- 0.1
+meta.f <- meta.f %>% 
+	mutate(egger.test = ifelse(pval.peter < sig.level, 1, 0),
+				 thompson.test = ifelse(pval.thompson < sig.level, 1, 0),
+				 begg.test = ifelse(pval.begg < sig.level, 1, 0),
+				 
+				 schwarzer.test = ifelse(pval.schwarzer < sig.level, 1, 0),
+				 rucker.test = ifelse(pval.rucker < sig.level, 1, 0),
+				 harbord.test = ifelse(pval.harbord < sig.level, 1, 0),
+				 peter.test = ifelse(pval.peter < sig.level, 1, 0))
 
-file_results = "pb.RData"
+meta.bin <- meta.f %>% filter(outcome.type == "bin")
+meta.cont <- meta.f %>% filter(outcome.type == "cont")
+meta.surv <- meta.f %>% filter(outcome.type == "surv")
 
-source(file.path(PATH_CODE, 'PubBias_functions.R'))
+#Comparison of "original effect sizes":
+effect.diff <- meta.f %>% mutate(
+	est.fixef = ifelse(outcome.type == "bin", exp(est.fixef), est.fixef),
+	est.ranef = ifelse(outcome.type == "bin", exp(est.ranef), est.ranef),
+	est.copas = ifelse(outcome.type == "bin", exp(est.copas), est.copas),
+	est.reg = ifelse(outcome.type == "bin", exp(est.reg.ranef), est.reg.ranef)
+)
 
-file.dat <- "data.RData"
-if (file.exists(file.path(PATH_RESULTS, file.dat))) {
-	load(file.path(PATH_RESULTS, file.dat))
-} else {
-	data = pb.readData(path = PATH_DATA, file = FILE)
-	tmp = pb.clean(data)
-	data = tmp[[1]]
-	aliases = tmp[[2]]
-	save(data, file =  file.path(PATH_RESULTS, file.dat))
-}
+effect.diff <- effect.diff %>% mutate(
+	est.fixef = ifelse(outcome.type == "bin", est.fixef - 1, est.fixef),
+	est.ranef = ifelse(outcome.type == "bin", est.ranef - 1, est.ranef),
+	est.copas = ifelse(outcome.type == "bin", est.copas - 1, est.copas),
+	est.reg = ifelse(outcome.type == "bin", est.reg.ranef - 1, est.reg.ranef),
+	fixef.ranef = ifelse(abs(est.ranef) > abs(est.fixef), "Reduction", "Amplification"),
+	fixef.copas = ifelse(abs(est.fixef) > abs(est.copas), "Reduction", "Amplification"),
+	fixef.reg = ifelse(abs(est.fixef) > abs(est.reg), "Reduction", "Amplification"),
+	fixef.copas.s = ifelse(sign(est.fixef) == sign(est.copas), "Unchanged", "Reversed"),
+	fixef.reg.s = ifelse(sign(est.fixef) == sign(est.reg), "Unchanged", "Reversed")) 
 
-load(file.path(PATH_RESULTS, file = "data.processed.RData"))
 
-file.bin <- "pb.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-	load(file.path(PATH_RESULTS, file.bin))
-} else {
-	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
-	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
 
-file.cont <- "pb.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-	load(file.path(PATH_RESULTS, file.cont))
-} else {
-	meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.1)
-	save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
 
-file.meta <- "meta.RData"
-if (file.exists(file.path(PATH_RESULTS, file.meta))) {
-	load(file.path(PATH_RESULTS, file.meta))
-} else {
-	meta <- pb.meta.merge(meta.bin, meta.cont)
-	save(meta, file =  file.path(PATH_RESULTS, file.meta))
-}
 
-data.ext2 <- pb.process2(data)
 
-metac.bin <- meta.bin %>% filter(n.sig.type.bin > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac.cont <- meta.cont %>% filter(n.sig.type.cont > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac <- meta %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
 
-load(file.path(PATH_RESULTS, "meta.complete.RData"))
 
 #Significant proportion
 test.bin <- metac.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
@@ -398,4 +361,246 @@ meta.wcor %>% filter(!is.na(est.z.copas)) %>%
 	ggplot(aes(x = abs(fisher.z))) + geom_histogram() + theme_bw() + facet_wrap(~method, ncol = 2) + 
 	geom_vline(xintercept = 1.96, color = "red") + 
 	geom_text(data = sig.zcor, aes(x = 10, y = 35, label = label), position = "dodge")
+
+
+
+########################################################################################################################
+########################################################################################################################
+#Check if proportions of pbbias change if only meta-analyses from different reviews are analyzed:
+########################################################################################################################
+########################################################################################################################
+
+#Overall test:
+test.bin <- meta.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																								 schwarzer.test = mean(schwarzer.test),
+																								 rucker.test = mean(rucker.test),
+																								 harbord.test = mean(harbord.test),
+																								 peter.test = mean(peter.test))
+test.bin <- test.bin %>% gather(key = "test.type", value = "mean")
+
+p.bin <- meta.bin %>% ungroup() %>% 
+	select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>%  
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + xlab(label = NULL) +
+	annotate("text", x = test.bin$test.type, y = 1000, 
+					 label = paste(round(test.bin$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+
+
+test.sig.bin <- meta.bin %>% filter(sig.fixef == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																																								schwarzer.test = mean(schwarzer.test),
+																																								rucker.test = mean(rucker.test),
+																																								harbord.test = mean(harbord.test),
+																																								peter.test = mean(peter.test))
+test.sig.bin <- test.sig.bin %>% gather(key = "test.type", value = "mean")
+
+p1 <- meta.bin %>% ungroup() %>% filter(sig.fixef == 1) %>% 
+	select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>% 
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + ggtitle("Significant Pooled Effects")+ xlab(label = NULL) + theme(legend.position="none") +
+	annotate("text", x = test.sig.bin$test.type, y = 1750, 
+					 label = paste(round(test.sig.bin$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+test.nonsig.bin <- meta.bin %>% filter(sig.fixef == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																																									 schwarzer.test = mean(schwarzer.test),
+																																									 rucker.test = mean(rucker.test),
+																																									 harbord.test = mean(harbord.test),
+																																									 peter.test = mean(peter.test))
+test.nonsig.bin <- test.nonsig.bin %>% gather(key = "test.type", value = "mean")
+
+p2 <- meta.bin %>% 
+	filter(sig.fixef == 0) %>% ungroup() %>% 
+	select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>% 
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + ggtitle("Non-significant Pooled Effects")+ xlab(label = NULL) +theme(legend.position="none") +
+	annotate("text", x = test.nonsig.bin$test.type, y = 650, 
+					 label = paste(round(test.nonsig.bin$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+range.pb.difference.bin <- range(test.sig.bin$mean - test.nonsig.bin$mean)
+
+#Test Results: Continuous
+test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																									 begg.test = mean(begg.test),
+																									 thomson.test = mean(thomson.test))
+
+test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
+
+p.cont <- meta.cont %>% ungroup() %>% 
+	select(egger.test, thomson.test, begg.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>% 
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + xlab(label = NULL) +
+	annotate("text", x = test.cont$test.type, y = 750, 
+					 label = paste(round(test.cont$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+
+test.sig.cont <- meta.cont %>% filter(sig.fixef == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																																									begg.test = mean(begg.test),
+																																									thomson.test = mean(thomson.test))
+
+test.sig.cont <- test.sig.cont %>% gather(key = "test.type", value = "mean")
+
+p3 <- meta.cont %>% 
+	filter(sig.fixef == 1) %>% ungroup() %>% 
+	select(egger.test, thomson.test, begg.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>% 
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + ggtitle("Significant Pooled Effects")+ xlab(label = NULL) + theme(legend.position="none") +
+	annotate("text", x = test.sig.cont$test.type, y = 600, 
+					 label = paste(round(test.sig.cont$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+test.nonsig.cont <- meta.cont %>% filter(sig.fixef == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																																										 begg.test = mean(begg.test),
+																																										 thomson.test = mean(thomson.test))
+
+test.nonsig.cont <- test.nonsig.cont %>% gather(key = "test.type", value = "mean")
+
+p4 <- meta.cont %>% 
+	filter(sig.fixef == 0) %>% ungroup() %>% 
+	select(egger.test, thomson.test, begg.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>% 
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + ggtitle("Non-significant Pooled Effects")+ xlab(label = NULL) + theme(legend.position="none") +
+	annotate("text", x = test.nonsig.cont$test.type, y = 100, 
+					 label = paste(round(test.nonsig.cont$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+########################################################################################################################
+########################################################################################################################
+#Selective test
+########################################################################################################################
+########################################################################################################################
+
+
+meta.bin <- meta.bin %>% distinct(file.nr, .keep_all = T)
+meta.cont <- meta.cont %>% distinct(file.nr, .keep_all = T)
+
+test.bin <- meta.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																								 schwarzer.test = mean(schwarzer.test),
+																								 rucker.test = mean(rucker.test),
+																								 harbord.test = mean(harbord.test),
+																								 peter.test = mean(peter.test))
+test.bin <- test.bin %>% gather(key = "test.type", value = "mean")
+
+p.bins <- meta.bin %>% ungroup() %>% 
+	select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>%  
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + xlab(label = NULL) +
+	annotate("text", x = test.bin$test.type, y = 1000, 
+					 label = paste(round(test.bin$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+
+
+test.sig.bin <- meta.bin %>% filter(sig.fixef == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																																								schwarzer.test = mean(schwarzer.test),
+																																								rucker.test = mean(rucker.test),
+																																								harbord.test = mean(harbord.test),
+																																								peter.test = mean(peter.test))
+test.sig.bin <- test.sig.bin %>% gather(key = "test.type", value = "mean")
+
+p1s <- meta.bin %>% ungroup() %>% filter(sig.fixef == 1) %>% 
+	select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>% 
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + ggtitle("Significant Pooled Effects")+ xlab(label = NULL) + theme(legend.position="none") +
+	annotate("text", x = test.sig.bin$test.type, y = 1750, 
+					 label = paste(round(test.sig.bin$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+test.nonsig.bin <- meta.bin %>% filter(sig.fixef == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																																									 schwarzer.test = mean(schwarzer.test),
+																																									 rucker.test = mean(rucker.test),
+																																									 harbord.test = mean(harbord.test),
+																																									 peter.test = mean(peter.test))
+test.nonsig.bin <- test.nonsig.bin %>% gather(key = "test.type", value = "mean")
+
+p2s <- meta.bin %>% 
+	filter(sig.fixef == 0) %>% ungroup() %>% 
+	select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>% 
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + ggtitle("Non-significant Pooled Effects")+ xlab(label = NULL) +theme(legend.position="none") +
+	annotate("text", x = test.nonsig.bin$test.type, y = 650, 
+					 label = paste(round(test.nonsig.bin$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+range.pb.difference.bin <- range(test.sig.bin$mean - test.nonsig.bin$mean)
+
+#Test Results: Continuous
+test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																									 begg.test = mean(begg.test),
+																									 thomson.test = mean(thomson.test))
+
+test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
+
+p.conts <- meta.cont %>% ungroup() %>% 
+	select(egger.test, thomson.test, begg.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>% 
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + xlab(label = NULL) +
+	annotate("text", x = test.cont$test.type, y = 150, 
+					 label = paste(round(test.cont$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+
+test.sig.cont <- meta.cont %>% filter(sig.fixef == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																																									begg.test = mean(begg.test),
+																																									thomson.test = mean(thomson.test))
+
+test.sig.cont <- test.sig.cont %>% gather(key = "test.type", value = "mean")
+
+p3s <- meta.cont %>% 
+	filter(sig.fixef == 1) %>% ungroup() %>% 
+	select(egger.test, thomson.test, begg.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>% 
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + ggtitle("Significant Pooled Effects")+ xlab(label = NULL) + theme(legend.position="none") +
+	annotate("text", x = test.sig.cont$test.type, y = 100, 
+					 label = paste(round(test.sig.cont$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+test.nonsig.cont <- meta.cont %>% filter(sig.fixef == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																																										 begg.test = mean(begg.test),
+																																										 thomson.test = mean(thomson.test))
+
+test.nonsig.cont <- test.nonsig.cont %>% gather(key = "test.type", value = "mean")
+
+p4s <- meta.cont %>% 
+	filter(sig.fixef == 0) %>% ungroup() %>% 
+	select(egger.test, thomson.test, begg.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>% 
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + ggtitle("Non-significant Pooled Effects")+ xlab(label = NULL) + theme(legend.position="none") +
+	annotate("text", x = test.nonsig.cont$test.type, y = 100, 
+					 label = paste(round(test.nonsig.cont$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+grid.arrange(p.bin, p.bins, ncol = 2)
+grid.arrange(p.cont, p.conts, ncol = 2)
+grid.arrange(p1, p1s, ncol = 2)
+grid.arrange(p2, p2s, ncol = 2)
+grid.arrange(p3, p3s, ncol = 2)
+grid.arrange(p4, p4s, ncol = 2)
 

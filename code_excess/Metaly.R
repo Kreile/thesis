@@ -23,331 +23,69 @@ if (file.exists(file.path(PATH_RESULTS, file.dat))) {
 	save(data, file =  file.path(PATH_RESULTS, file.dat))
 }
 
-file.dat <- "data.processed.RData"
-if (file.exists(file.path(PATH_RESULTS, file.dat))) {
-	load(file.path(PATH_RESULTS, file.dat))
-} else {
-	data.ext2 = pb.process2(data)
-	save(data.ext2, file =  file.path(PATH_RESULTS, file.dat))
-}
-
-file.bin <- "pb.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-	load(file.path(PATH_RESULTS, file.bin))
-} else {
-	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
-	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-file.cont <- "pb.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-	load(file.path(PATH_RESULTS, file.cont))
-} else {
-	meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.1)
-	save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.meta <- "meta.RData"
-if (file.exists(file.path(PATH_RESULTS, file.meta))) {
-	load(file.path(PATH_RESULTS, file.meta))
-} else {
-	meta <- pb.meta.merge(meta.bin, meta.cont)
-	save(meta, file =  file.path(PATH_RESULTS, file.meta))
-}
-
-load(file.path(PATH_RESULTS, "meta.complete.RData"))
-
-
-#Applying test and adjustment criteria:
-metac.bin <- meta.bin %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac.cont <- meta.cont %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac <- meta %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+load(file.path(PATH_RESULTS, "meta.bin.RData"))
+load(file.path(PATH_RESULTS, "meta.cont.RData"))
+load(file.path(PATH_RESULTS, "meta.surv.RData"))
+load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
 
 
+#Explanation of coding: 0 = (unsig, unsig), 1 = (unsig, sig), 2 = (sig, sig), 3 = (sig, unsig)
+sig.level <- 0.05
+meta.f <- meta.f %>% 
+	mutate(
+		pval.copas = 2*(1-pnorm(abs(est.copas/se.est.copas))),
+		
+		sig.fixef = ifelse(pval.fixef > sig.level, 0, 1),
+		sig.ranef = ifelse(pval.ranef > sig.level, 0, 1),
+		sig.reg.ranef = ifelse(pval.reg > sig.level, 0, 1),
+		sig.copas = ifelse(pval.copas > sig.level, 0, 1),
+		
+		sig.change.ranef.reg = sig.change(sig.before = sig.ranef, sig.after =  sig.reg), #Function to register if significance of estimate has changed after correction
+		sig.change.ranef.copas = sig.change(sig.before = sig.ranef, sig.after =  sig.copas),
+		sig.change.fixef.reg = sig.change(sig.before = sig.fixef, sig.after =  sig.reg),
+		sig.change.fixef.copas = sig.change(sig.before = sig.fixef, sig.after =  sig.copas))
 
 
-################################################################################################################
-################################################################################################################
-#Import data
-rm(list = ls())
-PATH_HOME = path.expand("~") # user home
-PATH = file.path(PATH_HOME, 'Data/PubBias')
-PATH2 = file.path(PATH_HOME, 'PubBias')
-FILE = 'cochrane_2018-06-09.csv'
-PATH_DATA = file.path(PATH, 'data')
-PATH_CODE = file.path(PATH2, 'code')
-PATH_RESULTS = file.path(PATH2, 'results')
-PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+sig.level <- 0.1
+meta.f <- meta.f %>% 
+	mutate(egger.test = ifelse(pval.peter < sig.level, 1, 0),
+				 thompson.test = ifelse(pval.thompson < sig.level, 1, 0),
+				 begg.test = ifelse(pval.begg < sig.level, 1, 0),
+				 
+				 schwarzer.test = ifelse(pval.schwarzer < sig.level, 1, 0),
+				 rucker.test = ifelse(pval.rucker < sig.level, 1, 0),
+				 harbord.test = ifelse(pval.harbord < sig.level, 1, 0),
+				 peter.test = ifelse(pval.peter < sig.level, 1, 0))
 
-file_results = "pb.RData"
+meta.bin <- meta.f %>% filter(outcome.type == "bin")
+meta.cont <- meta.f %>% filter(outcome.type == "cont")
+meta.surv <- meta.f %>% filter(outcome.type == "surv")
 
-source(file.path(PATH_CODE, 'PubBias_functions.R'))
+#Comparison of "original effect sizes":
+effect.diff <- meta.f %>% mutate(
+	est.fixef = ifelse(outcome.type == "bin", exp(est.fixef), est.fixef),
+	est.ranef = ifelse(outcome.type == "bin", exp(est.ranef), est.ranef),
+	est.copas = ifelse(outcome.type == "bin", exp(est.copas), est.copas),
+	est.reg = ifelse(outcome.type == "bin", exp(est.reg.ranef), est.reg.ranef)
+)
 
-
-# data = pb.readData(path = PATH_DATA, file = FILE)
-# tmp = pb.clean(data)
-# data = tmp[[1]]
-# aliases = tmp[[2]]
-
-file.dat <- "data.RData"
-if (file.exists(file.path(PATH_RESULTS, file.dat))) {
-  load(file.path(PATH_RESULTS, file.dat))
-} else {
-  data = pb.readData(path = PATH_DATA, file = FILE)
-  tmp = pb.clean(data)
-  data = tmp[[1]]
-  aliases = tmp[[2]]
-  save(data, file =  file.path(PATH_RESULTS, file.dat))
-}
-
-
-file.bin <- "pb.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-  load(file.path(PATH_RESULTS, file.bin))
-} else {
-  meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.05, sm = "OR")
-  save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-file.cont <- "pb.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-  load(file.path(PATH_RESULTS, file.cont))
-} else {
-  meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.05)
-  save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.meta <- "meta.RData"
-if (file.exists(file.path(PATH_RESULTS, file.meta))) {
-  load(file.path(PATH_RESULTS, file.meta))
-} else {
-  meta <- pb.meta.merge(meta.bin, meta.cont)
-  save(meta, file =  file.path(PATH_RESULTS, file.meta))
-}
-
-
-file.cont <- "mly.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-  load(file.path(PATH_RESULTS, file.cont))
-} else {
-  data.cont <- mly.cont(data.ext, 0.05, min.study.number = 2)
-  save(data.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.bin <- "mly.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-  load(file.path(PATH_RESULTS, file.bin))
-} else {
-  data.bin <- mly.bin(data.ext, 0.05, min.study.number = 2)
-  save(data.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-
-load(file.path(PATH_RESULTS, file = "mly.RData"))
-load(file.path(PATH_RESULTS, file = "data.processed.RData"))
-
-require(biostatUZH)
-require(tidyverse)
-require(meta)
-require(metasens)
-require(gridExtra)
-
-################################################################################################################
-################################################################################################################
-# Adding meta-analysis group ID (meta.id) and within group index (study.id)
-data <- data %>% mutate(meta.id = group_indices(., file.nr, comparison.nr, outcome.nr, subgroup.nr)) %>%
-  group_by(meta.id) %>% mutate(study.id = row_number())
-
-#data %>% select(file.nr, comparison.nr, outcome.nr, subgroup.nr, study.name, meta.id, study.id)
+effect.diff <- effect.diff %>% mutate(
+	est.fixef = ifelse(outcome.type == "bin", est.fixef - 1, est.fixef),
+	est.ranef = ifelse(outcome.type == "bin", est.ranef - 1, est.ranef),
+	est.copas = ifelse(outcome.type == "bin", est.copas - 1, est.copas),
+	est.reg = ifelse(outcome.type == "bin", est.reg.ranef - 1, est.reg.ranef),
+	fixef.ranef = ifelse(abs(est.ranef) > abs(est.fixef), "Reduction", "Amplification"),
+	fixef.copas = ifelse(abs(est.fixef) > abs(est.copas), "Reduction", "Amplification"),
+	fixef.reg = ifelse(abs(est.fixef) > abs(est.reg), "Reduction", "Amplification"),
+	fixef.copas.s = ifelse(sign(est.fixef) == sign(est.copas), "Unchanged", "Reversed"),
+	fixef.reg.s = ifelse(sign(est.fixef) == sign(est.reg), "Unchanged", "Reversed")) 
 
 
 
-################################################################################################################
-################################################################################################################
-# Transform Binary outcomes to odds ratios -> standardized mean difference -> correlation -> fisher scala correlation
 
-mly.fishersz <- function(data){
-  data <- data %>% mutate(odds.ratio = NA,
-                          std.mean.d = NA,
-                          correlation = NA,
-                          fishersz = NA, 
-                          fishersz.variance = NA,
-                          log.OR = NA,
-                          se.log.OR = NA,
-                          std.m.d = NA,
-                          se.std.m.d = NA, 
-                          outcome.type = ifelse(outcome.measure.new == "Odds Ratio" | outcome.measure.new == "Risk Ratio" |
-                            outcome.measure.new == "Peto Odds Ratio" | outcome.measure.new == "Risk Difference", "bin", "cont"),
-                          pval.type = NA,
-                          pval.fishersz = NA,
-                          sig.type = NA,
-                          sig.fishersz = NA,
-                          samplesize = ifelse(total1 > 12 & total2 > 12, 1, 0))
-  
-  binary.unprob <- which(data$events1 > 0 & data$events2 > 0 & data$total1 - data$events1 > 0 & data$total2 - data$events2 > 0 &
-                           data$total1 + data$total2 > 3 & data$samplesize == 1& data$outcome.type == "bin")
-  
-  data[binary.unprob,] <- data[binary.unprob,] %>%
-    mutate(log.OR = log( (events1 * (total2 - events2))/ (events2 * (total1 - events1)) ), 
-           se.log.OR = sqrt( (1/events1) + 1/(total1 - events1) + (1/events2) + 1/(total2 - events2)),
-           std.mean.d = log.OR * (sqrt(3)/pi),
-           correlation = std.mean.d/sqrt((std.mean.d^2) + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1- pnorm(abs(log.OR/se.log.OR))),
-           outcome.type = "bin")
-  
-  #Indices of comparisons with zero events or total events
-  zero1 <- which(data$events2 == 0 & data$total1 - data$events1 > 0 & data$outcome.type == "bin" & data$samplesize == 1)
-  zero2 <- which(data$events1 == 0 & data$total2 - data$events2 > 0 & data$outcome.type == "bin" & data$samplesize == 1)
-  binary.zeros <- c(zero1, zero2)
-  totals1 <- which(data$samplesize == 1 & data$total1 - data$events1 == 0 & data$events2 > 0 & data$outcome.type == "bin")
-  totals2 <- which(data$samplesize == 1 & data$total2 - data$events2 == 0 & data$events1 > 0 & data$outcome.type == "bin")
-  binary.totals <- c(totals1, totals2)
-  
-  data[binary.zeros,] <- data[binary.zeros,] %>%
-    mutate(events1 = events1 + 0.5, events2 = events2 + 0.5,
-      log.OR = log( (events1 * (total2 - events2))/ (events2 * (total1 - events1)) ), 
-           se.log.OR = sqrt( (1/events1) + 1/(total1 - events1) + (1/events2) + 1/(total2 - events2)),
-           std.mean.d = log.OR * (sqrt(3)/pi),
-           correlation = std.mean.d/sqrt((std.mean.d^2) + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1- pnorm(abs(log.OR/se.log.OR))),
-           outcome.type = "bin")
-  
-  data[binary.totals,] <- data[binary.totals,] %>%
-    mutate(events1 = events1 - 0.5, events2 = events2 - 0.5,
-           log.OR = log( (events1 * (total2 - events2))/ (events2 * (total1 - events1)) ), 
-           se.log.OR = sqrt( (1/events1) + 1/(total1 - events1) + (1/events2) + 1/(total2 - events2)),
-           std.mean.d = log.OR * (sqrt(3)/pi),
-           correlation = std.mean.d/sqrt((std.mean.d^2) + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1- pnorm(abs(log.OR/se.log.OR))),
-           outcome.type = "bin")
-  
-  #from 307311 outcomes with outcome type "bin", 280886 have been used (difference = 26425). 26370 have too low sample size
-  
-  data[!is.na(data$outcome.measure.new) & data$outcome.measure.new == "Mean Difference", ] <- data %>% 
-    filter(outcome.measure.new == "Mean Difference") %>%
-    mutate(std.m.d = (mean1 - mean2)/sqrt((sd1^2+sd2^2)/2),
-           se.std.m.d = sqrt( (total1 + total2)/(total1 * total2) + (std.m.d^2)/(2*(total1 + total2)) ),
-           correlation = std.m.d/sqrt(std.m.d^2 + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1-pnorm(abs(std.m.d/se.std.m.d))),
-           outcome.type = "cont"
-    )
-  
-  data[!is.na(data$outcome.measure.new) & data$outcome.measure.new == "Std. Mean Difference", ] <- data %>% 
-    filter(outcome.measure.new == "Std. Mean Difference") %>%
-    mutate(std.m.d = (mean1 - mean2)/sqrt((sd1^2+sd2^2)/2), #No correction factor used..
-           se.std.m.d = sqrt( (total1 + total2)/(total1 * total2) + (std.m.d^2)/(2*(total1 + total2)) ),
-           correlation = std.m.d/sqrt(std.m.d^2 + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1-pnorm(abs(std.m.d/se.std.m.d))),
-           outcome.type = "cont")
-  
-  #Calculate pvalues etc. when no mean or sd values are given
-  data[is.na(data$mean1) & !is.na(data$outcome.measure.new) & data$outcome.measure.new == "Mean Difference", ] <- data %>% 
-    filter(outcome.measure.new == "Mean Difference", is.na(mean1)) %>%
-    mutate(std.m.d = effect/sqrt((sd1^2+sd2^2)/2),
-           se.std.m.d = sqrt( (total1 + total2)/(total1 * total2) + (std.m.d^2)/(2*(total1 + total2)) ),
-           correlation = std.m.d/sqrt(std.m.d^2 + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1-pnorm(abs(std.m.d/se.std.m.d))),
-           outcome.type = "cont")
-  
-  data[is.na(data$mean2) & !is.na(data$outcome.measure.new) & data$outcome.measure.new == "Mean Difference", ] <- data %>% 
-    filter(outcome.measure.new == "Mean Difference", is.na(mean2)) %>%
-    mutate(std.m.d = effect/sqrt((sd1^2+sd2^2)/2),
-           se.std.m.d = sqrt( (total1 + total2)/(total1 * total2) + (std.m.d^2)/(2*(total1 + total2)) ),
-           correlation = std.m.d/sqrt(std.m.d^2 + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1-pnorm(abs(std.m.d/se.std.m.d))),
-           outcome.type = "cont")
-  
-  data[is.na(data$sd1) & !is.na(data$outcome.measure.new) & data$outcome.measure.new == "Mean Difference", ] <- data %>% 
-    filter(outcome.measure.new == "Mean Difference", is.na(sd1)) %>%
-    mutate(std.m.d = effect/se,
-           se.std.m.d = sqrt( (total1 + total2)/(total1 * total2) + (std.m.d^2)/(2*(total1 + total2)) ),
-           correlation = std.m.d/sqrt(std.m.d^2 + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1-pnorm(abs(std.m.d/se.std.m.d))),
-           outcome.type = "cont")
-  
-  data[is.na(data$sd2) & !is.na(data$outcome.measure.new) & data$outcome.measure.new == "Mean Difference", ] <- data %>% 
-    filter(outcome.measure.new == "Mean Difference", is.na(sd2)) %>%
-    mutate(std.m.d = effect/se,
-           se.std.m.d = sqrt( (total1 + total2)/(total1 * total2) + (std.m.d^2)/(2*(total1 + total2)) ),
-           correlation = std.m.d/sqrt(std.m.d^2 + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1-pnorm(abs(std.m.d/se.std.m.d))),
-           outcome.type = "cont")
-  
-  #Calculate pvalues etc. when no mean or sd values are given
-  data[is.na(data$mean1) & !is.na(data$outcome.measure.new) & data$outcome.measure.new == "Std. Mean Difference", ] <- data %>% 
-    filter(outcome.measure.new == "Std. Mean Difference", is.na(mean1)) %>%
-    mutate(std.m.d = effect,
-           se.std.m.d = se,
-           correlation = std.m.d/sqrt(std.m.d^2 + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1-pnorm(abs(std.m.d/se.std.m.d))),
-           outcome.type = "cont")
 
-  data[is.na(data$mean2) & !is.na(data$outcome.measure.new) & data$outcome.measure.new == "Std. Mean Difference", ] <- data %>% 
-    filter(outcome.measure.new == "Std. Mean Difference", is.na(mean2)) %>%
-    mutate(std.m.d = effect,
-           se.std.m.d = se,
-           correlation = std.m.d/sqrt(std.m.d^2 + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1-pnorm(abs(std.m.d/se.std.m.d))),
-           outcome.type = "cont")
-  
-  data[is.na(data$sd2) & !is.na(data$outcome.measure.new) & data$outcome.measure.new == "Std. Mean Difference", ] <- data %>% 
-    filter(outcome.measure.new == "Std. Mean Difference", is.na(sd2)) %>%
-    mutate(std.m.d = effect,
-           se.std.m.d = se,
-           correlation = std.m.d/sqrt(std.m.d^2 + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1-pnorm(abs(std.m.d/se.std.m.d))),
-           outcome.type = "cont")
-  
-  data[is.na(data$sd1) & !is.na(data$outcome.measure.new) & data$outcome.measure.new == "Std. Mean Difference", ] <- data %>% 
-    filter(outcome.measure.new == "Std. Mean Difference", is.na(sd1)) %>%
-    mutate(std.m.d = effect,
-           se.std.m.d = se,
-           correlation = std.m.d/sqrt(std.m.d^2 + ((total1 + total2)^2)/(total2*total1)),
-           fishersz = 0.5 * log( (1 + correlation)/(1 - correlation) ), 
-           fishersz.variance = 1/(total1 + total2 - 3),
-           pval.type = 2*(1-pnorm(abs(std.m.d/se.std.m.d))),
-           outcome.type = "cont")
-  
-  #142850 have mean or std mean difference, 126620 can be used for calculations (92781 from 102315 md (have small ss or missing sds and effects))
-  
-  data[!is.na(data$fishersz) & !is.na(data$fishersz.variance),] <- data[!is.na(data$fishersz) & !is.na(data$fishersz.variance),] %>% 
-    mutate(pval.fishersz = 2*(1-pnorm(abs(fishersz/fishersz.variance))))
-  
-  data[!is.na(data$pval.type),] <- data[!is.na(data$pval.type),] %>% 
-    mutate(sig.type = ifelse(pval.type < 0.05, 1, 0))
-  
-  data[!is.na(data$pval.fishersz),] <- data[!is.na(data$pval.fishersz),] %>% 
-    mutate(sig.fishersz = ifelse(pval.fishersz < 0.05, 1, 0))
-  return(data)
-}
-
-data.ext <- mly.fishersz(data)
-save(data.ext, file = file.path(PATH_RESULTS, "data.processed.RData"))
 
 mly.bin = function(data, sig.level, min.study.number) {
   meta.bin <- data %>% filter(outcome.measure.new == "Risk Ratio" | outcome.measure.new == "Odds Ratio" | outcome.measure.new == "Risk Difference"

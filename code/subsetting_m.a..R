@@ -23,47 +23,11 @@ if (file.exists(file.path(PATH_RESULTS, file.dat))) {
 	save(data, file =  file.path(PATH_RESULTS, file.dat))
 }
 
-file.dat <- "data.processed.RData"
-if (file.exists(file.path(PATH_RESULTS, file.dat))) {
-	load(file.path(PATH_RESULTS, file.dat))
-} else {
-	data.ext2 = pb.process2(data)
-	save(data.ext2, file =  file.path(PATH_RESULTS, file.dat))
-}
-
-file.bin <- "pb.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-	load(file.path(PATH_RESULTS, file.bin))
-} else {
-	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
-	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-file.cont <- "pb.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-	load(file.path(PATH_RESULTS, file.cont))
-} else {
-	meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.1)
-	save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.meta <- "meta.RData"
-if (file.exists(file.path(PATH_RESULTS, file.meta))) {
-	load(file.path(PATH_RESULTS, file.meta))
-} else {
-	meta <- pb.meta.merge(meta.bin, meta.cont)
-	save(meta, file =  file.path(PATH_RESULTS, file.meta))
-}
-
-load(file.path(PATH_RESULTS, "meta.complete.RData"))
-
-
-#Applying test and adjustment criteria:
-metac.bin <- meta.bin %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac.cont <- meta.cont %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac <- meta %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-
-
+load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+load(file.path(PATH_RESULTS, "meta.bin.RData"))
+load(file.path(PATH_RESULTS, "meta.cont.RData"))
+load(file.path(PATH_RESULTS, "meta.surv.RData"))
+load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
 
 

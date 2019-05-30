@@ -46,50 +46,23 @@ if (file.exists(file.path(PATH_RESULTS, file.dat))) {
 	save(data, file =  file.path(PATH_RESULTS, file.dat))
 }
 
-load(file.path(PATH_RESULTS, file = "mly.RData"))
-load(file.path(PATH_RESULTS, file = "data.processed.RData"))
+load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+load(file.path(PATH_RESULTS, "meta.bin.RData"))
+load(file.path(PATH_RESULTS, "meta.cont.RData"))
+load(file.path(PATH_RESULTS, "meta.surv.RData"))
+load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
-file.bin <- "pb.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-	load(file.path(PATH_RESULTS, file.bin))
-} else {
-	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
-	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
+library(gridExtra)
 
-file.cont <- "pb.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-	load(file.path(PATH_RESULTS, file.cont))
-} else {
-	meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.1)
-	save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.meta <- "meta.RData"
-if (file.exists(file.path(PATH_RESULTS, file.meta))) {
-	load(file.path(PATH_RESULTS, file.meta))
-} else {
-	meta <- pb.meta.merge(meta.bin, meta.cont)
-	save(meta, file =  file.path(PATH_RESULTS, file.meta))
-}
-
-
-data.ext2 <- pb.process2(data)
-
-
-#Meta filtering: 
-metac.bin <- meta.bin %>% filter(n.sig.type.bin > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac.cont <- meta.cont %>% filter(n.sig.type.cont > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac <- meta %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
 
 #Meta-analysis example
-data.ext <- data.ext %>% mutate(study.year = ifelse(study.year < 2019, study.year, NA)) %>% 
+data.ext2 <- data.ext2 %>% mutate(study.year = ifelse(study.year < 2019, study.year, NA)) %>% 
     mutate(study.year = ifelse(study.year > 1920, study.year, NA))
-biased.rev <- data.ext %>% filter(meta.id == 122943)
-unbiased.rev <- data.ext %>% filter(meta.id == 181863)
-meta.example <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, 
+biased.rev <- data.ext2 %>% filter(meta.id == 122943)
+unbiased.rev <- data.ext2 %>% filter(meta.id == 181863)
+meta.example <- meta.font(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, 
 												 studlab = study.name, data = biased.rev)
-meta.nexample <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, 
+meta.nexample <- meta.font(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, 
 												 studlab = study.name, data = unbiased.rev)
 
 #Barbiturate Examples
@@ -140,14 +113,14 @@ study.rev <- data %>% group_by(file.nr) %>% distinct(study.name) %>% count() %>%
 	summarise(lower = quantile(n, 0.05), median = quantile(n, 0.5), mean = mean(n), upper = quantile(n, 0.95))
 comparison.rev <- data %>% group_by(file.nr) %>% distinct(comparison.name) %>% count() %>% ungroup() %>% 
 	summarise(lower = quantile(n, 0.05), median = quantile(n, 0.5), mean = mean(n), upper = quantile(n, 0.95))
-meta.rev <- data.ext %>% group_by(file.nr) %>% distinct(meta.id) %>% count() %>% ungroup() %>% 
+meta.rev <- data.ext2 %>% group_by(file.nr) %>% distinct(meta.id) %>% count() %>% ungroup() %>% 
 	summarise(lower = quantile(n, 0.05), median = quantile(n, 0.5), mean = mean(n), upper = quantile(n, 0.95))
 
 #Global level
-study.years <- data.ext %>% group_by(file.nr) %>% distinct(study.name, .keep_all = T) %>% ungroup() %>% 
+study.years <- data.ext2 %>% group_by(file.nr) %>% distinct(study.name, .keep_all = T) %>% ungroup() %>% 
 	summarise(lower = quantile(study.year, 0.05, na.rm = T), median = quantile(study.year, 0.5, na.rm = T),
 						mean = mean(study.year, na.rm = T), upper = quantile(study.year, 0.95, na.rm = T))
-sample.size <- data.ext %>% group_by(file.nr) %>% distinct(study.name, .keep_all = T) %>% ungroup() %>% 
+sample.size <- data.ext2 %>% group_by(file.nr) %>% distinct(study.name, .keep_all = T) %>% ungroup() %>% 
 	mutate(samplesize = total1 + total2) %>% 
 	summarise(lower = quantile(samplesize, 0.05, na.rm = T), median = quantile(samplesize, 0.5, na.rm = T),
 						mean = mean(samplesize, na.rm = T), upper = quantile(samplesize, 0.95, na.rm = T))
@@ -165,45 +138,35 @@ cum.repr.trials.subg <- data %>% group_by(file.nr, comparison.nr, outcome.nr, su
 
 colnames(cum.repr.trials.subg)  <- c("n","Number of groups", "Cumulative sum of groups")
 
-#Loading meta-analysis results:
-file.bin <- "pb.bin.RData"
-load(file.path(PATH_RESULTS, file.bin))
-
-file.cont <- "pb.cont.RData"
-load(file.path(PATH_RESULTS, file.cont))
-
-file.meta <- "meta.RData"
-load(file.path(PATH_RESULTS, file.meta))
 
 library(gridExtra)
 
-meta.id <- function(meta.id.tolook){
-	dt <- data.ext %>% filter(meta.id == meta.id.tolook)
-	if(any(is.na(dt$events1)) | all(dt$events1 == 0)){
-		meta.ex <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2, studlab = study.name, data = dt)
-	} else{
-		meta.ex <- metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, studlab = study.name, sm = "RR", data = dt)
-	}
-	return(meta.ex)
-}
-
-
-
-#Meta filtering: 
-metac.bin <- meta.bin %>% filter(n.sig.type.bin > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac.cont <- meta.cont %>% filter(n.sig.type.cont > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac <- meta %>% filter(n.sig.type > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
 
 
 #Significant proportion
-test.bin <- metac.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+meta.f <- meta.f %>% 
+	mutate(egger.test = ifelse(pval.peter < sig.level, 1, 0),
+				 thompson.test = ifelse(pval.thompson < sig.level, 1, 0),
+				 begg.test = ifelse(pval.begg < sig.level, 1, 0),
+				 
+				 schwarzer.test = ifelse(pval.schwarzer < sig.level, 1, 0),
+				 rucker.test = ifelse(pval.rucker < sig.level, 1, 0),
+				 harbord.test = ifelse(pval.harbord < sig.level, 1, 0),
+				 peter.test = ifelse(pval.peter < sig.level, 1, 0))
+
+meta.bin <- meta.f %>% filter(outcome.type == "bin")
+meta.cont <- meta.f %>% filter(outcome.type == "cont")
+meta.surv <- meta.f %>% filter(outcome.type == "surv")
+
+
+test.bin <- meta.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
                                                           schwarzer.test = mean(schwarzer.test),
                                                           rucker.test = mean(rucker.test),
                                                           harbord.test = mean(harbord.test),
                                                           peter.test = mean(peter.test))
 test.bin <- test.bin %>% gather(key = "test.type", value = "mean")
 
-p.bin <- metac.bin %>% ungroup() %>% 
+p.bin <- meta.bin %>% ungroup() %>% 
   select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
   gather(key = "test.type", value = "null.hypothesis") %>%  
   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
@@ -214,13 +177,29 @@ p.bin <- metac.bin %>% ungroup() %>%
            label = paste(round(test.bin$mean, 2)*100, "% rejected"), 
            color = "white")
 
-test.cont <- metac.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+dat_text <- data.frame(
+  label = paste(c(sum(meta.bin$harbord.test), sum(meta.bin$peter.test), 
+  										sum(meta.bin$rucker.test), sum(meta.bin$schwarzer.test)), "< 0.1,",
+  							round(c(mean(meta.bin$harbord.test), mean(meta.bin$peter.test), 
+  										mean(meta.bin$rucker.test), mean(meta.bin$schwarzer.test)),2)*100, "%"),
+  test.type   = c("pval.harbord", "pval.peter", "pval.rucker", "pval.schwarzer"))
+
+labels <- c(pval.harbord = "Harbord", pval.peter = "Peter", pval.rucker = "Rucker", pval.schwarzer = "Schwarzer")
+
+p.dist.bin <- meta.bin %>% ungroup() %>% 
+  select(pval.harbord, pval.peter, pval.rucker, pval.schwarzer) %>% 
+  gather(key = "test.type", value = "p.value") %>% 
+  ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 100, label = label), color = "black") + 
+	theme(strip.text.x = element_text(size=15))
+
+test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
                                                             begg.test = mean(begg.test),
                                                             thomson.test = mean(thomson.test))
 
 test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
 
-p.cont <- metac.cont %>% ungroup() %>% 
+p.cont <- meta.cont %>% ungroup() %>% 
   select(egger.test, thomson.test, begg.test) %>% 
   gather(key = "test.type", value = "null.hypothesis") %>% 
   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
@@ -232,13 +211,13 @@ p.cont <- metac.cont %>% ungroup() %>%
            color = "white")
 
 dat_text <- data.frame(
-  label = paste(c(sum(metac.cont$begg.test), sum(metac.cont$egger.test), sum(metac.cont$thomson.test)), "< 0.1,",
-  							round(c(mean(metac.cont$begg.test), mean(metac.cont$egger.test), mean(metac.cont$thomson.test)),2)*100, "%"),
-  test.type   = c("pval.begg.cont", "pval.egger.cont", "pval.thomson.cont"))
+  label = paste(c(sum(meta.cont$begg.test), sum(meta.cont$egger.test), sum(meta.cont$thomson.test)), "< 0.1,",
+  							round(c(mean(meta.cont$begg.test), mean(meta.cont$egger.test), mean(meta.cont$thomson.test)),2)*100, "%"),
+  test.type   = c("pval.begg", "pval.egger", "pval.thomson"))
 
-labels <- c(pval.begg.cont = "Begg Mazumdar", pval.egger.cont = "Egger", pval.thomson.cont = "Thompson Sharp")
-p.dist.cont <- metac.cont %>% ungroup() %>% 
-  select(pval.egger.cont, pval.thomson.cont, pval.begg.cont) %>% 
+labels <- c(pval.begg = "Begg Mazumdar", pval.egger = "Egger", pval.thomson = "Thompson Sharp")
+p.dist.cont <- meta.cont %>% ungroup() %>% 
+  select(pval.egger, pval.thomson, pval.begg) %>% 
   gather(key = "test.type", value = "p.value") %>% 
   ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + 
 	facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
@@ -246,29 +225,49 @@ p.dist.cont <- metac.cont %>% ungroup() %>%
 	theme(strip.text.x = element_text(size=15))
 
 
-	dat_text <- data.frame(
-  label = paste(c(sum(metac.bin$harbord.test), sum(metac.bin$peter.test), 
-  										sum(metac.bin$rucker.test), sum(metac.bin$schwarzer.test)), "< 0.1,",
-  							round(c(mean(metac.bin$harbord.test), mean(metac.bin$peter.test), 
-  										mean(metac.bin$rucker.test), mean(metac.bin$schwarzer.test)),2)*100, "%"),
-  test.type   = c("pval.harbord.bin", "pval.peter.bin", "pval.rucker.bin", "pval.schwarzer.bin"))
+test.surv <- meta.surv %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+                                                            begg.test = mean(begg.test),
+                                                            thomson.test = mean(thomson.test))
 
-labels <- c(pval.harbord.bin = "Harbord", pval.peter.bin = "Peter", pval.rucker.bin = "Rucker", pval.schwarzer.bin = "Schwarzer")
+test.surv <- test.surv %>% gather(key = "test.type", value = "mean")
 
-p.dist.bin <- metac.bin %>% ungroup() %>% 
-  select(pval.harbord.bin, pval.peter.bin, pval.rucker.bin, pval.schwarzer.bin) %>% 
+p.surv <- meta.surv %>% ungroup() %>% 
+  select(egger.test, thomson.test, begg.test) %>% 
+  gather(key = "test.type", value = "null.hypothesis") %>% 
+  mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
+  ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+  theme_bw() + xlab(label = NULL) + ggtitle("Continuous Outcomes") + theme(legend.position = "top") +
+	guides(fill=guide_legend(title=NULL))+
+  annotate("text", x = test.surv$test.type, y = 150, 
+           label = paste(round(test.surv$mean, 2)*100, "% rejected"), 
+           color = "white")
+
+dat_text <- data.frame(
+  label = paste(c(sum(meta.surv$begg.test), sum(meta.surv$egger.test), sum(meta.surv$thomson.test)), "< 0.1,",
+  							round(c(mean(meta.surv$begg.test), mean(meta.surv$egger.test), mean(meta.surv$thomson.test)),2)*100, "%"),
+  test.type   = c("pval.begg", "pval.egger", "pval.thomson"))
+
+labels <- c(pval.begg = "Begg Mazumdar", pval.egger = "Egger", pval.thomson = "Thompson Sharp")
+p.dist.surv <- meta.surv %>% ungroup() %>% 
+  select(pval.egger, pval.thomson, pval.begg) %>% 
   gather(key = "test.type", value = "p.value") %>% 
-  ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
-	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 100, label = label), color = "black") + 
+  ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + 
+	facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 25, label = label),  color = "black") + 
 	theme(strip.text.x = element_text(size=15))
 
 
+
 #Test agreement
-agree.bin <- metac.bin %>% mutate(n.sig = peter.test + rucker.test + egger.test + harbord.test + schwarzer.test) %>% 
+agree.bin <- meta.bin %>% mutate(n.sig = peter.test + rucker.test + harbord.test + schwarzer.test) %>% 
   group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
   ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Binary Outcomes")
 
-agree.cont <- metac.cont %>% mutate(n.sig = egger.test + thomson.test + begg.test) %>% 
+agree.cont <- meta.cont %>% mutate(n.sig = egger.test + thomson.test + begg.test) %>% 
+  group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
+  ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
+
+agree.surv <- meta.surv %>% mutate(n.sig = egger.test + thomson.test + begg.test) %>% 
   group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
   ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
 
@@ -283,55 +282,59 @@ reg.2 <- qplot(x = unbiased.rev$se, y = unbiased.rev$effect, xlim = c(0, 6.5)) +
 	stat_smooth(method="lm", fullrange=TRUE, se = F) + coord_flip() + theme_bw() +
 	ylab("Std. Mean Difference") + xlab("Standard error")
 
-#Adjustment results: Effect difference histograms
-effect.diff <- metac %>% mutate(
-	est.fixef = ifelse(!is.na(est.fixef.bin), est.fixef - 1, est.fixef),
-	est.ranef = ifelse(!is.na(est.fixef.bin), est.ranef - 1, est.ranef),
-	est.trimfill.fixef = ifelse(!is.na(est.fixef.bin), est.trimfill.fixef - 1, est.trimfill.fixef),
-	est.copas = ifelse(!is.na(est.fixef.bin), est.copas - 1, est.copas),
-	est.reg.ranef = ifelse(!is.na(est.fixef.bin), est.reg.ranef - 1, est.reg.ranef),
+#Comparison of "original effect sizes":
+effect.diff <- meta.f %>% mutate(
+	est.fixef = ifelse(outcome.type == "bin", exp(est.fixef), est.fixef),
+	est.ranef = ifelse(outcome.type == "bin", exp(est.ranef), est.ranef),
+	est.copas = ifelse(outcome.type == "bin", exp(est.copas), est.copas),
+	est.reg = ifelse(outcome.type == "bin", exp(est.reg.ranef), est.reg.ranef)
+)
+
+effect.diff <- effect.diff %>% mutate(
+	est.fixef = ifelse(outcome.type == "bin", est.fixef - 1, est.fixef),
+	est.ranef = ifelse(outcome.type == "bin", est.ranef - 1, est.ranef),
+	est.copas = ifelse(outcome.type == "bin", est.copas - 1, est.copas),
+	est.reg = ifelse(outcome.type == "bin", est.reg.ranef - 1, est.reg.ranef),
 	fixef.ranef = ifelse(abs(est.ranef) > abs(est.fixef), "Reduction", "Amplification"),
-	fixef.trimfill = ifelse(abs(est.fixef) > abs(est.trimfill.fixef), "Reduction", "Amplification"),
 	fixef.copas = ifelse(abs(est.fixef) > abs(est.copas), "Reduction", "Amplification"),
-	fixef.reg = ifelse(abs(est.fixef) > abs(est.reg.ranef), "Reduction", "Amplification"),
-	fixef.trimfill.s = ifelse(sign(est.fixef) == sign(est.trimfill.fixef), "Unchanged", "Reversed"),
+	fixef.reg = ifelse(abs(est.fixef) > abs(est.reg), "Reduction", "Amplification"),
 	fixef.copas.s = ifelse(sign(est.fixef) == sign(est.copas), "Unchanged", "Reversed"),
-	fixef.reg.s = ifelse(sign(est.fixef) == sign(est.reg.ranef), "Unchanged", "Reversed")) 
+	fixef.reg.s = ifelse(sign(est.fixef) == sign(est.reg), "Unchanged", "Reversed")) 
 
 hist.ranef <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.ranef))) +
 	geom_histogram() + facet_grid(~factor(fixef.ranef)) + xlim(0, 2) + xlab("Effect difference") + 
 	theme_bw() + theme(legend.position = "bottom", strip.text.x = element_text(size=15)) + ylim(0, 250)
 
 
-trimfill.miss <- effect.diff %>% group_by(fixef.trimfill) %>% mutate(dif = abs(est.fixef - est.trimfill.fixef)) %>% 
-	filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% select(label, fixef.trimfill.s, meta.id, type)
+# trimfill.miss <- effect.diff %>% group_by(fixef.trimfill) %>% mutate(dif = abs(est.fixef - est.trimfill.fixef)) %>% 
+# 	filter(dif > 2) %>% mutate(label = round(dif, 1), type = outcome.type == "bin") %>% arrange(label) %>% select(label, fixef.trimfill.s, meta.id, type)
 
-trimfill.label <- data.frame(label = paste("missing:", c(paste(trimfill.miss$label[trimfill.miss$fixef.trimfill == "Reduction"], collapse = ", "),
-																												 paste(trimfill.miss$label[trimfill.miss$fixef.trimfill == "Amplification"], collapse = ", "))),
-														fixef.trimfill = unique(trimfill.miss$fixef.trimfill), 
-														fixef.trimfill.s  = "Reversed")
-
-trimfill.label$label <- as.character(trimfill.label$label)
-trimfill.label$label[1] <- sub("2.5,", "2.5, \n   ", trimfill.label$label[1])
-
-
-hist.trimfill <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.trimfill.fixef), fill = factor(fixef.trimfill.s))) +
-	geom_histogram() + facet_grid(~factor(fixef.trimfill)) + xlim(0, 2)+ xlab("Effect difference") +
-	geom_text(data = trimfill.label, mapping = aes(label = label, x = 0, hjust = 0, y = 300), 
-						color = "black") + scale_fill_discrete(name="Effect direction") + theme_bw() + 
-	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
-
-hist.trimfill1 <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.trimfill.fixef))) +
-	geom_histogram() + facet_grid(~factor(fixef.trimfill)) + xlim(0, 2)+ xlab("Effect difference") +
-	geom_text(data = trimfill.label, mapping = aes(label = label, x = 0, hjust = 0, y = 300), 
-						color = "black") + theme_bw() + 
-	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
-
-funnel(trimfill(meta.id(165815)))
+# trimfill.label <- data.frame(label = paste("missing:", c(paste(trimfill.miss$label[trimfill.miss$fixef.trimfill == "Reduction"], collapse = ", "),
+# 																												 paste(trimfill.miss$label[trimfill.miss$fixef.trimfill == "Amplification"], collapse = ", "))),
+# 														fixef.trimfill = unique(trimfill.miss$fixef.trimfill), 
+# 														fixef.trimfill.s  = "Reversed")
+# 
+# trimfill.label$label <- as.character(trimfill.label$label)
+# trimfill.label$label[1] <- sub("2.5,", "2.5, \n   ", trimfill.label$label[1])
+# 
+# 
+# hist.trimfill <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.trimfill.fixef), fill = factor(fixef.trimfill.s))) +
+# 	geom_histogram() + facet_grid(~factor(fixef.trimfill)) + xlim(0, 2)+ xlab("Effect difference") +
+# 	geom_text(data = trimfill.label, mapping = aes(label = label, x = 0, hjust = 0, y = 300), 
+# 						color = "black") + scale_fill_discrete(name="Effect direction") + theme_bw() + 
+# 	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
+# 
+# hist.trimfill1 <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.trimfill.fixef))) +
+# 	geom_histogram() + facet_grid(~factor(fixef.trimfill)) + xlim(0, 2)+ xlab("Effect difference") +
+# 	geom_text(data = trimfill.label, mapping = aes(label = label, x = 0, hjust = 0, y = 300), 
+# 						color = "black") + theme_bw() + 
+# 	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
+# 
+# funnel(trimfill(meta.id(165815)))
 
 
 copas.miss <- effect.diff %>% filter(!is.na(est.copas)) %>% group_by(fixef.copas) %>% mutate(dif = abs(est.fixef - est.copas)) %>% 
-	filter(dif > 2) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% select(label, fixef.copas.s, meta.id, type)
+	filter(dif > 2) %>% mutate(label = round(dif, 1), type = outcome.type == "bin") %>% arrange(label) %>% select(label, fixef.copas.s, meta.id, type)
 
 copas.label <- data.frame(label = paste("missing:", c(paste(copas.miss$label[copas.miss$fixef.copas == "Reduction"], collapse = ", "),
 																												 paste(copas.miss$label[copas.miss$fixef.copas == "Amplification"], collapse = ", "))),
@@ -355,10 +358,9 @@ hist.copas1 <- effect.diff %>% filter(!is.na(est.copas)) %>% ggplot(aes(x = abs(
 						color = "black") + theme_bw() +
 	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
 
-funnel(meta.id(56200))
 
 reg.ranef.miss <- effect.diff %>% group_by(fixef.reg) %>% mutate(dif = abs(est.fixef - est.reg.ranef)) %>% 
-	filter(dif > 3) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% arrange(label) %>% select(label, fixef.reg.s, meta.id, type)
+	filter(dif > 3) %>% mutate(label = round(dif, 1), type = outcome.type == "bin") %>% arrange(label) %>% select(label, fixef.reg.s, meta.id, type)
 
 reg.ranef.label <- data.frame(label = paste("missing:", c(paste(reg.ranef.miss$label[reg.ranef.miss$fixef.reg == "Reduction"], collapse = ", "),
 																											paste(reg.ranef.miss$label[reg.ranef.miss$fixef.reg == "Amplification"], collapse = ", "))),
@@ -381,101 +383,10 @@ hist.reg1 <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.reg.ranef))) +
 						color = "black", size = 2.8) + theme_bw() + 
 	theme(legend.position = "bottom", strip.text.x = element_text(size=15))
 
-metac %>% filter(meta.id == 101436) %>% select(comparison.name, outcome.name, sungroup.name, est.fixef, est.copas, 
-																							 est.trimfill.fixef, est.reg.ranef, est.copas)
-par(mfrow = c(1,3))
-funnel(meta.id(101436))
-funnel(trimfill(meta.id(101436)))
-funnel(limitmeta(meta.id(101436)))
 
-print(effect.diff %>% group_by(fixef.reg) %>% mutate(dif = abs(est.fixef - est.reg.ranef)) %>% 
-				filter(dif > 3) %>% mutate(label = round(dif, 1), type = !is.na(est.fixef.bin)) %>% 
-				arrange(label) %>% select(label, type, meta.id, comparison.name, outcome.name), n = 200)
-
-
-
-#Scatterplots of metac-analysis and corrected log(abs(abs estimates
-ranef.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.ranef)))) + geom_point(size = 0.8) + 
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-	xlab("Fixed effects log estimate") + ylab("Random effects log estimate") + ggtitle("Fixed effects to Random effects")
-
-# metac %>% ggplot(aes(y = log(abs((est.ranef))), x = log(abs(est.trimfill.fixef)))) + geom_point() + 
-# 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-# 	xlab("Random effects log estimate") + ylab("Trimfill log estimate") + ggtitle("Random effects to Trimfill")
-
-
-#Scatterplots of metac-analysis and corrected log(abs(abs estimates
-trimfill.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.trimfill.fixef)))) + geom_point(size = 0.8) + 
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-	xlab("Fixed effects log estimate") + ylab("Trimfill log estimate") + ggtitle("Fixed effects to Trimfill")
-
-trimfill.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.trimfill.fixef)))) + geom_point(size = 0.8) + 
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-	xlab("Random effects log estimate") + ylab("Trimfill log estimate") + ggtitle("Random effects to Trimfill")
-
-
-#Scatterplots of metac-analysis and corrected log estimates
-copas.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.copas)))) + geom_point(size = 0.8) + 
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-	xlab("Fixed effects log estimate") + ylab("Copas log estimate") + ggtitle("Fixed effects to Copas") 
-
-copas.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.copas)))) + geom_point(size = 0.8) + 
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE, show.legend = T) + 
-	xlab("Random effects log estimate") + ylab("Copas log estimate") + ggtitle("Random effects to Copas") 
-
-
-#Scatterplots of metac-analysis and corrected log estimates
-reg.fixef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.fixef))), y = log(abs(est.reg.ranef)))) + geom_point(size = 0.8) + 
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-	xlab("Fixed effects log estimate") + ylab("Regression log estimate") + ggtitle("Fixed effects to Regression")
-
-reg.ranef.sc.effect <- metac %>% ggplot(aes(x = log(abs((est.ranef))), y = log(abs(est.reg.ranef)))) + geom_point(size = 0.8) + 
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + 
-	xlab("Random effects log estimate") + ylab("Regression log estimate") + ggtitle("Random effects to Regression")
-
-
-#Scatterplots of test- statistics:
-ranef.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.ranef))) + geom_point(size = 0.8) +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
-	ggtitle("Fixed effects and Random effects z statistics") + ylab("Random effects statistic") + xlab("Fixed effects statistic")
-
-metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point(size = 0.8) +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
-	ggtitle("Fixed effects and Random effects z statistics") + ylab("Random effects statistic") + xlab("Fixed effects statistic")
-
-
-#Scatterplots of test- statistics:
-trimfill.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point(size = 0.8) +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
-	ggtitle("Fixed effects and trimfill z statistics") + ylab("Trimfill  statistic") + xlab("Fixed effects  statistic")
-
-trimfill.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.trimfill.fixef))) + geom_point(size = 0.8) +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
-	ggtitle("Random effects and trimfill z statistics") + ylab("Trimfill statistic") + xlab("Random effects  statistic")
-
-#Scatterplots of test- statistics:
-copas.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.copas))) + geom_point(size = 0.8) +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + xlim(0, 25) +
-	ggtitle("Fixed effects and Copas z statistics") + ylab("Copas  statistic") + xlab("Fixed effects  statistic")
-
-copas.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.copas))) + geom_point(size = 0.8) +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + xlim(0, 20) +
-	ggtitle("Random effects and Copas z statistics") + ylab("Copas  statistic") + xlab("Random effects  statistic")
-
-#Scatterplots of test- statistics:
-reg.fixef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.reg.ranef))) + geom_point(size = 0.8) +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
-	ggtitle("Fixed effects and Regression z statistics") + ylab("Regression  statistic") + xlab("Fixed effects  statistic")
-
-reg.ranef.sc.zval <- metac %>% ggplot(aes(x = abs(zval.ranef), y = abs(zval.reg.ranef))) + geom_point(size = 0.8) +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
-	ggtitle("Random effects and Regression z statistics") + ylab("Regression  statistic") + xlab("Random effects  statistic")
-
-#Missing study proportions:
-p.missing.copas <- metac %>% ggplot(aes(x = missing.copas/n)) + geom_histogram(bins = 20) + 
-	xlim(0, 0.5) + ylim(0, 200) + xlab("Proportion of missing studies") + ggtitle("Copas selection model") + theme_bw()
-p.missing.trim <- metac %>% ggplot(aes(x = missing.trim)) + geom_histogram(bins = 20) + 
-	xlim(0, 0.5) + ylim(0, 200) + xlab("Proportion of missing studies") + ggtitle("Trim-and-fill") + theme_bw()
+# print(effect.diff %>% group_by(fixef.reg) %>% mutate(dif = abs(est.fixef - est.reg.ranef)) %>% 
+# 				filter(dif > 3) %>% mutate(label = round(dif, 1), outcome.type) %>% 
+# 				arrange(label) %>% select(label, type, meta.id, comparison.name, outcome.name), n = 200)
 @
 
 
@@ -736,13 +647,13 @@ Inclusion criteria (from \citet{Ioannidis2007}):
 \item $I^2 < 0.5$
 \end{itemize}
 
-From \Sexpr{dim(meta)[1]} with $n \geq 10$, \Sexpr{dim(metac)[1]} remain.
+From \Sexpr{dim(meta)[1]} with $n \geq 10$, \Sexpr{dim(meta.f)[1]} remain.
 \end{frame}
 
 
 
 \begin{frame}[fragile]{Continuous Outcome Test Results}
-$p$-values distribution, $n$ = \Sexpr{dim(metac.cont)[1]}:
+$p$-values distribution, $n$ = \Sexpr{dim(meta.cont)[1]}:
 
 \vspace{-2mm}
 <<echo = FALSE, fig.height = 4, message = FALSE>>=
@@ -751,7 +662,7 @@ plot(p.dist.cont)
 \end{frame}
 
 \begin{frame}[fragile]{Binary Outcome Test Results}
-$p$-values distribution, $n$ = \Sexpr{dim(metac.bin)[1]}:
+$p$-values distribution, $n$ = \Sexpr{dim(meta.bin)[1]}:
 
 \vspace{-2mm}
 <<echo = FALSE, fig.height = 3.6, message = FALSE>>=

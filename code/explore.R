@@ -23,99 +23,69 @@ if (file.exists(file.path(PATH_RESULTS, file.dat))) {
 	save(data, file =  file.path(PATH_RESULTS, file.dat))
 }
 
-file.dat <- "data.processed.RData"
-if (file.exists(file.path(PATH_RESULTS, file.dat))) {
-	load(file.path(PATH_RESULTS, file.dat))
-} else {
-	data.ext2 = pb.process2(data)
-	save(data.ext2, file =  file.path(PATH_RESULTS, file.dat))
-}
-
-file.bin <- "pb.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-	load(file.path(PATH_RESULTS, file.bin))
-} else {
-	meta.bin <- meta.bin.complete(data.ext, min.study.number = 10, sig.level = 0.1, sm = "RR")
-	save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-file.cont <- "pb.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-	load(file.path(PATH_RESULTS, file.cont))
-} else {
-	meta.cont <- meta.cont.complete(data.ext, min.study.number = 10, sig.level = 0.1)
-	save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
-
-file.meta <- "meta.RData"
-if (file.exists(file.path(PATH_RESULTS, file.meta))) {
-	load(file.path(PATH_RESULTS, file.meta))
-} else {
-	meta <- pb.meta.merge(meta.bin, meta.cont)
-	save(meta, file =  file.path(PATH_RESULTS, file.meta))
-}
-
-load(file.path(PATH_RESULTS, "meta.complete.RData"))
-
-
-#Applying test and adjustment criteria:
-metac.bin <- meta.bin %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac.cont <- meta.cont %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
-metac <- meta %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+load(file.path(PATH_RESULTS, "meta.bin.RData"))
+load(file.path(PATH_RESULTS, "meta.cont.RData"))
+load(file.path(PATH_RESULTS, "meta.surv.RData"))
+load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
 
 
+#Explanation of coding: 0 = (unsig, unsig), 1 = (unsig, sig), 2 = (sig, sig), 3 = (sig, unsig)
+sig.level <- 0.05
+meta.f <- meta.f %>% 
+	mutate(
+		pval.copas = 2*(1-pnorm(abs(est.copas/se.est.copas))),
+		
+		sig.fixef = ifelse(pval.fixef > sig.level, 0, 1),
+		sig.ranef = ifelse(pval.ranef > sig.level, 0, 1),
+		sig.reg.ranef = ifelse(pval.reg > sig.level, 0, 1),
+		sig.copas = ifelse(pval.copas > sig.level, 0, 1),
+		
+		sig.change.ranef.reg = sig.change(sig.before = sig.ranef, sig.after =  sig.reg), #Function to register if significance of estimate has changed after correction
+		sig.change.ranef.copas = sig.change(sig.before = sig.ranef, sig.after =  sig.copas),
+		sig.change.fixef.reg = sig.change(sig.before = sig.fixef, sig.after =  sig.reg),
+		sig.change.fixef.copas = sig.change(sig.before = sig.fixef, sig.after =  sig.copas))
 
 
-################################################################################################################
-################################################################################################################
-#Import data
-rm(list = ls())
-PATH_HOME = path.expand("~") # user home
-PATH = file.path(PATH_HOME, 'Data/PubBias')
-PATH2 = file.path(PATH_HOME, 'PubBias')
-FILE = 'cochrane_2018-06-09.csv'
-PATH_DATA = file.path(PATH, 'data')
-PATH_CODE = file.path(PATH2, 'code')
-PATH_RESULTS = file.path(PATH2, 'results')
-PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+sig.level <- 0.1
+meta.f <- meta.f %>% 
+	mutate(egger.test = ifelse(pval.peter < sig.level, 1, 0),
+				 thompson.test = ifelse(pval.thompson < sig.level, 1, 0),
+				 begg.test = ifelse(pval.begg < sig.level, 1, 0),
+				 
+				 schwarzer.test = ifelse(pval.schwarzer < sig.level, 1, 0),
+				 rucker.test = ifelse(pval.rucker < sig.level, 1, 0),
+				 harbord.test = ifelse(pval.harbord < sig.level, 1, 0),
+				 peter.test = ifelse(pval.peter < sig.level, 1, 0))
 
-file_results = "pb.RData"
+meta.bin <- meta.f %>% filter(outcome.type == "bin")
+meta.cont <- meta.f %>% filter(outcome.type == "cont")
+meta.surv <- meta.f %>% filter(outcome.type == "surv")
 
-source(file.path(PATH_CODE, 'PubBias_functions.R'))
+#Comparison of "original effect sizes":
+effect.diff <- meta.f %>% mutate(
+	est.fixef = ifelse(outcome.type == "bin", exp(est.fixef), est.fixef),
+	est.ranef = ifelse(outcome.type == "bin", exp(est.ranef), est.ranef),
+	est.copas = ifelse(outcome.type == "bin", exp(est.copas), est.copas),
+	est.reg = ifelse(outcome.type == "bin", exp(est.reg.ranef), est.reg.ranef)
+)
 
-
-data = pb.readData(path = PATH_DATA, file = FILE)
-tmp = pb.clean(data)
-data = tmp[[1]]
-aliases = tmp[[2]]
-
-file.bin <- "pb.bin.RData"
-if (file.exists(file.path(PATH_RESULTS, file.bin))) {
-  load(file.path(PATH_RESULTS, file.bin))
-} else { 
-  meta.bin <- meta.bin.complete(data, min.study.number = 10, sig.level = 0.05)
-  save(meta.bin, file =  file.path(PATH_RESULTS, file.bin))
-}
-
-file.cont <- "pb.cont.RData"
-if (file.exists(file.path(PATH_RESULTS, file.cont))) {
-  load(file.path(PATH_RESULTS, file.cont))
-} else { 
-  meta.cont <- meta.cont.complete(data, min.study.number = 10, sig.level = 0.05)
-  save(meta.cont, file =  file.path(PATH_RESULTS, file.cont))
-}
+effect.diff <- effect.diff %>% mutate(
+	est.fixef = ifelse(outcome.type == "bin", est.fixef - 1, est.fixef),
+	est.ranef = ifelse(outcome.type == "bin", est.ranef - 1, est.ranef),
+	est.copas = ifelse(outcome.type == "bin", est.copas - 1, est.copas),
+	est.reg = ifelse(outcome.type == "bin", est.reg.ranef - 1, est.reg.ranef),
+	fixef.ranef = ifelse(abs(est.ranef) > abs(est.fixef), "Reduction", "Amplification"),
+	fixef.copas = ifelse(abs(est.fixef) > abs(est.copas), "Reduction", "Amplification"),
+	fixef.reg = ifelse(abs(est.fixef) > abs(est.reg), "Reduction", "Amplification"),
+	fixef.copas.s = ifelse(sign(est.fixef) == sign(est.copas), "Unchanged", "Reversed"),
+	fixef.reg.s = ifelse(sign(est.fixef) == sign(est.reg), "Unchanged", "Reversed")) 
 
 
 
-meta <- pb.meta.merge(meta.bin, meta.cont)
 
-require(biostatUZH)
-require(tidyverse)
-require(meta)
-require(metasens)
-require(gridExtra)
-require(xtable)
+
 
 ################################################################################################################
 ################################################################################################################
@@ -354,6 +324,7 @@ temp.pval <- data.ext %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.
 temp.pval %>% filter(time.rank < 10) %>% ggplot(aes(x = time.rank, y = pval.single)) + 
   geom_jitter(col = "gray15", size = 0.3, alpha = .25) + 
   theme_bw() + xlab("Time rank") + ylab("P-value") + labs(title = "P-values over (ranked) Time") +geom_smooth(method = "lm")
+
 ########################################################################################################################################
 ########################################################################################################################################
 # Cumulative number of total trials with
@@ -461,28 +432,28 @@ print(arrange(filter(data, file.nr == 21) %>%
           select(comparison.name, study.name), study.name))
 
 
-#Check out metabin and metabias function with one meta-analysis.
-print(data %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% 
-  filter(outcome.measure == "Odds Ratio" | outcome.measure == "Risk Ratio") %>% filter(events1 > 0 & events2 > 0) %>% 
-  mutate(counts = n()) %>% filter(counts > 9) %>% ungroup() %>% distinct(file.nr) %>% select(file.nr), n = 200)
-
-
-ds <- data %>% filter(file.nr == 11) %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% 
-  filter(outcome.measure == "Odds Ratio" | outcome.measure == "Risk Ratio") %>% filter(events1 > 0 & events2 > 0) %>% 
-  mutate(counts = n()) %>% filter(counts == 18)
-print(ds %>% select(effect, events1, events2, study.name, outcome.name, counts), n = 200)
-
-meta.ds <- metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, data = ds, method = "Inverse")
-trimfill.ds <- trimfill(meta.ds)
-funnel(trimfill.ds)
-
-metabias(meta.ds, method = "peters")
-metabias(meta.ds, method = "peters")$statistic
-
-cp <- copas(meta.ds)
-limitmeta(meta.ds)
-
-
+# #Check out metabin and metabias function with one meta-analysis.
+# print(data %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% 
+#   filter(outcome.measure == "Odds Ratio" | outcome.measure == "Risk Ratio") %>% filter(events1 > 0 & events2 > 0) %>% 
+#   mutate(counts = n()) %>% filter(counts > 9) %>% ungroup() %>% distinct(file.nr) %>% select(file.nr), n = 200)
+# 
+# 
+# ds <- data %>% filter(file.nr == 11) %>% group_by(file.nr, outcome.nr, comparison.nr, subgroup.nr) %>% 
+#   filter(outcome.measure == "Odds Ratio" | outcome.measure == "Risk Ratio") %>% filter(events1 > 0 & events2 > 0) %>% 
+#   mutate(counts = n()) %>% filter(counts == 18)
+# print(ds %>% select(effect, events1, events2, study.name, outcome.name, counts), n = 200)
+# 
+# meta.ds <- metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, data = ds, method = "Inverse")
+# trimfill.ds <- trimfill(meta.ds)
+# funnel(trimfill.ds)
+# 
+# metabias(meta.ds, method = "peters")
+# metabias(meta.ds, method = "peters")$statistic
+# 
+# cp <- copas(meta.ds)
+# limitmeta(meta.ds)
+# 
+# 
 
 # #Tasks:
 # #Heterogeneity of outcomes (outcome.nr), possibly in relation with the total number of studies (study name)

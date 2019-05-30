@@ -1,0 +1,364 @@
+rm(list = ls())
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
+FILE = 'cochrane_2018-06-09.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH2, 'code')
+PATH_RESULTS = file.path(PATH2, 'results')
+PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+
+file_results = "pb.RData"
+
+source(file.path(PATH_CODE, 'PubBias_functions.R'))
+
+file.dat <- "data.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+	load(file.path(PATH_RESULTS, file.dat))
+} else {
+	data = pb.readData(path = PATH_DATA, file = FILE)
+	tmp = pb.clean(data)
+	data = tmp[[1]]
+	aliases = tmp[[2]]
+	save(data, file =  file.path(PATH_RESULTS, file.dat))
+}
+
+load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+load(file.path(PATH_RESULTS, "meta.bin.RData"))
+load(file.path(PATH_RESULTS, "meta.cont.RData"))
+load(file.path(PATH_RESULTS, "meta.surv.RData"))
+load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
+
+
+################################################################################################
+################################################################################################
+#PROPORTION OF SIGNIFICANT PUBLICATION BIAS TESTS
+################################################################################################
+################################################################################################
+
+sig.level <- 0.1
+meta.f <- meta.f %>% 
+	mutate(egger.test = ifelse(pval.peter < sig.level, 1, 0),
+				 thompson.test = ifelse(pval.thompson < sig.level, 1, 0),
+				 begg.test = ifelse(pval.begg < sig.level, 1, 0),
+				 
+				 schwarzer.test = ifelse(pval.schwarzer < sig.level, 1, 0),
+				 rucker.test = ifelse(pval.rucker < sig.level, 1, 0),
+				 harbord.test = ifelse(pval.harbord < sig.level, 1, 0),
+				 peter.test = ifelse(pval.peter < sig.level, 1, 0))
+
+meta.bin <- meta.f %>% filter(outcome.type == "bin")
+meta.cont <- meta.f %>% filter(outcome.type == "cont")
+meta.surv <- meta.f %>% filter(outcome.type == "surv")
+
+test.bin <- meta.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																								 schwarzer.test = mean(schwarzer.test),
+																								 rucker.test = mean(rucker.test),
+																								 harbord.test = mean(harbord.test),
+																								 peter.test = mean(peter.test))
+test.bin <- test.bin %>% gather(key = "test.type", value = "mean")
+
+p.bin <- meta.bin %>% ungroup() %>% 
+	select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>%  
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + xlab(label = NULL) + ggtitle("Binary Outcomes") + theme(legend.position = "top") +
+	guides(fill=guide_legend(title=NULL))+
+	annotate("text", x = test.bin$test.type, y = 500, 
+					 label = paste(round(test.bin$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+dat_text <- data.frame(
+	label = paste(c(sum(meta.bin$harbord.test), sum(meta.bin$peter.test), 
+									sum(meta.bin$rucker.test), sum(meta.bin$schwarzer.test)), "< 0.1,",
+								round(c(mean(meta.bin$harbord.test), mean(meta.bin$peter.test), 
+												mean(meta.bin$rucker.test), mean(meta.bin$schwarzer.test)),2)*100, "%"),
+	test.type   = c("pval.harbord", "pval.peter", "pval.rucker", "pval.schwarzer"))
+
+labels <- c(pval.harbord = "Harbord", pval.peter = "Peter", pval.rucker = "Rucker", pval.schwarzer = "Schwarzer")
+
+p.dist.bin <- meta.bin %>% ungroup() %>% 
+	select(pval.harbord, pval.peter, pval.rucker, pval.schwarzer) %>% 
+	gather(key = "test.type", value = "p.value") %>% 
+	ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 100, label = label), color = "black") + 
+	theme(strip.text.x = element_text(size=15))
+
+test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																									 begg.test = mean(begg.test),
+																									 thompson.test = mean(thompson.test))
+
+test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
+
+p.cont <- meta.cont %>% ungroup() %>% 
+	select(egger.test, thompson.test, begg.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>% 
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + xlab(label = NULL) + ggtitle("Continuous Outcomes") + theme(legend.position = "top") +
+	guides(fill=guide_legend(title=NULL))+
+	annotate("text", x = test.cont$test.type, y = 150, 
+					 label = paste(round(test.cont$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+dat_text <- data.frame(
+	label = paste(c(sum(meta.cont$begg.test), sum(meta.cont$egger.test), sum(meta.cont$thompson.test)), "< 0.1,",
+								round(c(mean(meta.cont$begg.test), mean(meta.cont$egger.test), mean(meta.cont$thompson.test)),2)*100, "%"),
+	test.type   = c("pval.begg", "pval.egger", "pval.thompson"))
+
+labels <- c(pval.begg = "Begg Mazumdar", pval.egger = "Egger", pval.thompson = "Thompson Sharp")
+p.dist.cont <- meta.cont %>% ungroup() %>% 
+	select(pval.egger, pval.thompson, pval.begg) %>% 
+	gather(key = "test.type", value = "p.value") %>% 
+	ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + 
+	facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 25, label = label),  color = "black") + 
+	theme(strip.text.x = element_text(size=15))
+
+
+
+test.surv <- meta.surv %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+																									 begg.test = mean(begg.test),
+																									 thompson.test = mean(thompson.test))
+
+test.surv <- test.surv %>% gather(key = "test.type", value = "mean")
+
+p.surv <- meta.surv %>% ungroup() %>% 
+	select(egger.test, thompson.test, begg.test) %>% 
+	gather(key = "test.type", value = "null.hypothesis") %>% 
+	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
+	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+	theme_bw() + xlab(label = NULL) + ggtitle("Continuous Outcomes") + theme(legend.position = "top") +
+	guides(fill=guide_legend(title=NULL))+
+	annotate("text", x = test.surv$test.type, y = 150, 
+					 label = paste(round(test.surv$mean, 2)*100, "% rejected"), 
+					 color = "white")
+
+dat_text <- data.frame(
+	label = paste(c(sum(meta.surv$begg.test), sum(meta.surv$egger.test), sum(meta.surv$thompson.test)), "< 0.1,",
+								round(c(mean(meta.surv$begg.test), mean(meta.surv$egger.test), mean(meta.surv$thompson.test)),2)*100, "%"),
+	test.type   = c("pval.begg", "pval.egger", "pval.thompson"))
+
+labels <- c(pval.begg = "Begg Mazumdar", pval.egger = "Egger", pval.thompson = "Thompson Sharp")
+p.dist.surv <- meta.surv %>% ungroup() %>% 
+	select(pval.egger, pval.thompson, pval.begg) %>% 
+	gather(key = "test.type", value = "p.value") %>% 
+	ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + 
+	facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 25, label = label),  color = "black") + 
+	theme(strip.text.x = element_text(size=15))
+
+#Test agreement
+agree.bin <- meta.bin %>% mutate(n.sig = peter.test + rucker.test + harbord.test + schwarzer.test) %>% 
+	group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
+	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Binary Outcomes")
+
+agree.cont <- meta.cont %>% mutate(n.sig = egger.test + thompson.test + begg.test) %>% 
+	group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
+	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
+
+agree.surv <- meta.surv %>% mutate(n.sig = egger.test + thompson.test + begg.test) %>% 
+	group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
+	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
+
+
+################################################################################################
+################################################################################################
+#CHANGE OF EFFECT SIZES AFTER ADJUSTMENT
+################################################################################################
+################################################################################################
+
+#Comparison of z-scores:
+sig.zcor <- meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+																 z.ranef = est.z.ranef/se.est.z.ranef,
+																 z.reg = est.z.reg/se.est.z.reg,
+																 z.copas = est.z.copas/se.est.z.copas) %>%  
+	select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
+	group_by(method) %>% 
+	summarise(significant = length(which(abs(fisher.z) > 1.96)),
+						p.significant = significant/length(fisher.z))
+sig.zcor <- data.frame(method = sig.zcor$method,
+											 label = paste("n = ", sig.zcor$significant, ", ", round(sig.zcor$p.significant,3)*100, "% significant", sep = ""))
+
+meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+										 z.ranef = est.z.ranef/se.est.z.ranef,
+										 z.reg = est.z.reg/se.est.z.reg,
+										 z.copas = est.z.copas/se.est.z.copas) %>%  
+	select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
+	# filter(abs(fisher.z) < 10) %>% 
+	ggplot(aes(x = abs(fisher.z))) + geom_histogram() + theme_bw() + facet_wrap(~method, ncol = 2) + 
+	geom_vline(xintercept = 1.96, color = "red") + 
+	geom_text(data = sig.zcor, aes(x = 30, y = 500, label = label), position = "dodge")
+
+#Comparison of m.a. with copas correction method applied:
+sig.zcor <- meta.f %>% filter(!is.na(est.z.copas)) %>% 
+	mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+				 z.ranef = est.z.ranef/se.est.z.ranef,
+				 z.reg = est.z.reg/se.est.z.reg,
+				 z.copas = est.z.copas/se.est.z.copas) %>%  
+	select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
+	group_by(method) %>% 
+	summarise(significant = length(which(abs(fisher.z) > 1.96)),
+						p.significant = significant/length(fisher.z))
+sig.zcor <- data.frame(method = sig.zcor$method,
+											 label = paste("n = ", sig.zcor$significant, ", ", round(sig.zcor$p.significant,3)*100, "% significant", sep = ""))
+
+meta.f %>% filter(!is.na(est.z.copas)) %>% 
+	mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+				 z.ranef = est.z.ranef/se.est.z.ranef,
+				 z.reg = est.z.reg/se.est.z.reg,
+				 z.copas = est.z.copas/se.est.z.copas) %>%  
+	select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
+	# filter(abs(fisher.z) < 10) %>% 
+	ggplot(aes(x = abs(fisher.z))) + geom_histogram() + theme_bw() + facet_wrap(~method, ncol = 2) + 
+	geom_vline(xintercept = 1.96, color = "red") + 
+	geom_text(data = sig.zcor, aes(x = 10, y = 125, label = label), position = "dodge")
+
+
+#Comparison of "original effect sizes":
+effect.diff <- meta.f %>% mutate(
+	est.fixef = ifelse(outcome.type == "bin", exp(est.fixef), est.fixef),
+	est.ranef = ifelse(outcome.type == "bin", exp(est.ranef), est.ranef),
+	est.copas = ifelse(outcome.type == "bin", exp(est.copas), est.copas),
+	est.reg = ifelse(outcome.type == "bin", exp(est.reg), est.reg)
+)
+
+effect.diff <- effect.diff %>% mutate(
+	est.fixef = ifelse(outcome.type == "bin", est.fixef - 1, est.fixef),
+	est.ranef = ifelse(outcome.type == "bin", est.ranef - 1, est.ranef),
+	est.copas = ifelse(outcome.type == "bin", est.copas - 1, est.copas),
+	est.reg = ifelse(outcome.type == "bin", est.reg - 1, est.reg),
+	fixef.ranef = ifelse(abs(est.ranef) > abs(est.fixef), "Reduction", "Amplification"),
+	fixef.copas = ifelse(abs(est.fixef) > abs(est.copas), "Reduction", "Amplification"),
+	fixef.reg = ifelse(abs(est.fixef) > abs(est.reg), "Reduction", "Amplification"),
+	fixef.copas.s = ifelse(sign(est.fixef) == sign(est.copas), "Unchanged", "Reversed"),
+	fixef.reg.s = ifelse(sign(est.fixef) == sign(est.reg), "Unchanged", "Reversed")) 
+
+# hist.ranef <- effect.diff %>% ggplot(aes(x = abs(est.fixef - est.ranef))) +
+# 	geom_histogram() + facet_grid(~factor(fixef.ranef)) + xlim(0, 2) + xlab("Effect difference") + 
+# 	theme_bw() + theme(legend.position = "bottom", strip.text.x = element_text(size=15)) + ylim(0, 250)
+
+#Copas selection model:
+copas.miss <- effect.diff %>% group_by(outcome.type) %>% mutate(dif = abs(est.fixef - est.copas)) %>% 
+	filter(dif > 2) %>% mutate(label = round(dif, 1)) %>% arrange(label) %>% select(label, meta.id, outcome.measure.new)
+copas.label <- data.frame(label = paste("missing:", c(paste(copas.miss$label[copas.miss$outcome.type == "bin"], collapse = ", "),
+																											paste(copas.miss$label[copas.miss$outcome.type == "cont"], collapse = ", "),
+																											paste(copas.miss$label[copas.miss$outcome.type == "surv"], collapse = ", "))),
+													outcome.type = c("bin", "cont", "surv"), 
+													outcome.measure = unique(copas.miss$outcome.measure.new)[1:2])
+copas.label$label <- as.character(copas.label$label)
+copas.label$label[2] <- sub("2.8,", "2.8,\n", copas.label$label[2])
+
+effect.diff %>% ggplot(aes(x = change.fixef.copas, fill = outcome.measure)) + 
+	facet_wrap(outcome.type~., scales = "free", labeller = labeller(outcome.type = NULL)) +
+	geom_histogram() + xlim(-2, 2) + xlab("Effect change") + 
+	theme_bw() + theme(legend.position = "bottom", strip.text = element_blank(), legend.title = element_blank())  +
+	geom_text(data = copas.label, 
+						mapping = aes(x = 0, y = c(220, 47.4), label = label, vjust = "center"), position = "dodge") #+ ylim(0, 250)
+
+#Regression model:
+reg.miss <- effect.diff %>% group_by(outcome.type) %>% mutate(dif = abs(est.fixef - est.reg)) %>% 
+	filter(dif > 2) %>% mutate(label = round(dif, 1)) %>% arrange(label) %>% select(label, meta.id, outcome.measure.new)
+reg.label <- data.frame(label = paste("missing:", c(paste(reg.miss$label[reg.miss$outcome.type == "bin"], collapse = ", "),
+																										paste(reg.miss$label[reg.miss$outcome.type == "cont"], collapse = ", "),
+																										paste(reg.miss$label[reg.miss$outcome.type == "surv"], collapse = ", "))),
+												outcome.type = c("bin", "cont", "surv"), 
+												outcome.measure = unique(reg.miss$outcome.measure.new)[1:2])
+reg.label$label <- as.character(reg.label$label)
+reg.label$label[2] <- sub("2.2,","2.2,\n ", reg.label$label[2])
+reg.label$label[2] <- sub("2.6,","2.6,\n ", reg.label$label[2])
+reg.label$label[2] <- sub(", 3.1,",", 3.1,\n ", reg.label$label[2])
+reg.label$label[2] <- sub("4.4, 4.4,", "4.4, 4.4,\n", reg.label$label[2])
+reg.label$label[2] <- sub(", 9.5,", ", 9.5,\n", reg.label$label[2])
+
+reg.label$label[1] <- sub(", 3.3,", ", 3.3,\n", reg.label$label[1])
+reg.label$label[1] <- sub(", 7.6,", ", 7.6,\n", reg.label$label[1])
+
+effect.diff %>% ggplot(aes(x = change.fixef.reg, fill = outcome.measure)) + 
+	facet_wrap(outcome.type~., scales = "free", labeller = labeller(outcome.type = NULL)) +
+	geom_histogram() + xlim(-2, 2) + xlab("Effect change") + 
+	theme_bw() + theme(legend.position = "bottom", strip.text = element_blank(), legend.title = element_blank())  +
+	geom_text(data = reg.label, 
+						mapping = aes(x = 0, y = c(330, 50), label = label, vjust = "center"), position = "dodge") #+ ylim(0, 250)
+
+
+################################################################################################
+################################################################################################
+#CHANGE OF SIGNIFICANT TREATMENT EFFECT AFTER ADJUSTMENT
+################################################################################################
+################################################################################################
+
+#Explanation of coding: 0 = (unsig, unsig), 1 = (unsig, sig), 2 = (sig, sig), 3 = (sig, unsig)
+
+sig.level <- 0.05
+meta.f <- meta.f %>% 
+	mutate(
+		pval.copas = 2*(1-pnorm(abs(est.copas/se.est.copas))),
+		
+		sig.fixef = ifelse(pval.fixef > sig.level, 0, 1),
+		sig.ranef = ifelse(pval.ranef > sig.level, 0, 1),
+		sig.reg = ifelse(pval.reg > sig.level, 0, 1),
+		sig.copas = ifelse(pval.copas > sig.level, 0, 1),
+		
+		sig.change.ranef.reg = sig.change(sig.before = sig.ranef, sig.after =  sig.reg), #Function to register if significance of estimate has changed after correction
+		sig.change.ranef.copas = sig.change(sig.before = sig.ranef, sig.after =  sig.copas),
+		sig.change.fixef.reg = sig.change(sig.before = sig.fixef, sig.after =  sig.reg),
+		sig.change.fixef.copas = sig.change(sig.before = sig.fixef, sig.after =  sig.copas))
+
+
+################################################################################################
+################################################################################################
+#PUBLICATION BIAS TEST RESULTS ANALYSIS
+################################################################################################
+################################################################################################
+
+#Agreement proportions of publication bias tests:
+
+#Binary:
+meta.bin <- meta.bin %>%ungroup() %>%  mutate(egger.schwarzer = ifelse(egger.test == schwarzer.test, "agree", "disagree"),
+																							egger.peter = ifelse(egger.test == peter.test, "agree", "disagree"),
+																							egger.rucker = ifelse(egger.test == rucker.test, "agree", "disagree"),
+																							egger.harbord = ifelse(egger.test == harbord.test, "agree", "disagree"),
+																							schwarzer.peter = ifelse(schwarzer.test == peter.test, "agree", "disagree"),
+																							schwarzer.rucker = ifelse(schwarzer.test == rucker.test, "agree", "disagree"),
+																							schwarzer.harbord = ifelse(schwarzer.test == harbord.test, "agree", "disagree"),
+																							rucker.peter = ifelse(rucker.test == peter.test, "agree", "disagree"),
+																							rucker.harbord = ifelse(rucker.test == harbord.test, "agree", "disagree"),
+																							harbord.peter = ifelse(harbord.test == peter.test, "agree", "disagree"))
+agreement.bin <- meta.bin %>% ungroup() %>% summarise(egger.schwarzer = sum(egger.schwarzer == "agree")/n(),
+																											egger.peter = sum(egger.peter == "agree")/n(),
+																											egger.rucker = sum(egger.rucker == "agree")/n(),
+																											egger.harbord = sum(egger.harbord == "agree")/n(),
+																											schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
+																											schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
+																											schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
+																											rucker.peter = sum(rucker.peter == "agree")/n(),
+																											harbord.peter = sum(harbord.peter == "agree")/n())
+correlation.bin <- meta.bin %>%ungroup() %>%  summarise(egger.schwarzer = cor(pval.egger, pval.schwarzer),
+																												egger.peter = cor(pval.egger, pval.peter),
+																												egger.rucker = cor(pval.egger, pval.rucker),
+																												egger.harbord = cor(pval.egger, pval.harbord),
+																												schwarzer.peter = cor(pval.schwarzer, pval.peter),
+																												schwarzer.rucker = cor(pval.schwarzer, pval.rucker),
+																												schwarzer.harbord = cor(pval.schwarzer, pval.harbord),
+																												rucker.peter = cor(pval.rucker, pval.peter),
+																												harbord.peter = cor(pval.harbord, pval.peter))
+
+binary.tests.agreement <- rbind(agreement.bin, correlation.bin)
+rownames(binary.tests.agreement) <- c("Test Agreement","P-value Correlation")
+
+#Continuous:
+meta.cont <- meta.cont %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
+																								thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
+																								egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"))
+agreement.cont <- meta.cont %>% ungroup() %>%  summarise(thompson.egger = sum(thompson.egger == "agree")/n(),
+																												 thompson.begg = sum(thompson.begg == "agree")/n(),
+																												 egger.begg = sum(egger.begg == "agree")/n())
+correlation.cont <- meta.cont %>% ungroup() %>% summarise(thompson.egger = cor(pval.thompson.cont, pval.egger.cont),
+																													thompson.begg = cor(pval.thompson.cont, pval.begg.cont),
+																													egger.begg = cor(pval.egger.cont, pval.begg.cont))
+
+cont.tests.agreement <- rbind(agreement.cont, correlation.cont)
+rownames(cont.tests.agreement) <- c("Test Agreement","P-value Correlation")
+
