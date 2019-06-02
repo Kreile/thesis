@@ -33,13 +33,13 @@ load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
 #Explanation of coding: 0 = (unsig, unsig), 1 = (unsig, sig), 2 = (sig, sig), 3 = (sig, unsig)
 sig.level <- 0.05
-meta.f <- meta.f %>% 
+meta.f <- meta.f %>% rowwise() %>% 
 	mutate(
 		pval.copas = 2*(1-pnorm(abs(est.copas/se.est.copas))),
 		
 		sig.fixef = ifelse(pval.fixef > sig.level, 0, 1),
 		sig.ranef = ifelse(pval.ranef > sig.level, 0, 1),
-		sig.reg.ranef = ifelse(pval.reg > sig.level, 0, 1),
+		sig.reg = ifelse(pval.reg > sig.level, 0, 1),
 		sig.copas = ifelse(pval.copas > sig.level, 0, 1),
 		
 		sig.change.ranef.reg = sig.change(sig.before = sig.ranef, sig.after =  sig.reg), #Function to register if significance of estimate has changed after correction
@@ -49,8 +49,8 @@ meta.f <- meta.f %>%
 
 
 sig.level <- 0.1
-meta.f <- meta.f %>% 
-	mutate(egger.test = ifelse(pval.peter < sig.level, 1, 0),
+meta.f <- meta.f %>% rowwise() %>% 
+	mutate(egger.test = ifelse(pval.egger < sig.level, 1, 0),
 				 thompson.test = ifelse(pval.thompson < sig.level, 1, 0),
 				 begg.test = ifelse(pval.begg < sig.level, 1, 0),
 				 
@@ -60,7 +60,7 @@ meta.f <- meta.f %>%
 				 peter.test = ifelse(pval.peter < sig.level, 1, 0))
 
 meta.bin <- meta.f %>% filter(outcome.type == "bin")
-meta.cont <- meta.f %>% filter(outcome.type == "cont")
+meta.f <- meta.f %>% filter(outcome.type == "cont")
 meta.surv <- meta.f %>% filter(outcome.type == "surv")
 
 #Comparison of "original effect sizes":
@@ -68,14 +68,14 @@ effect.diff <- meta.f %>% mutate(
 	est.fixef = ifelse(outcome.type == "bin", exp(est.fixef), est.fixef),
 	est.ranef = ifelse(outcome.type == "bin", exp(est.ranef), est.ranef),
 	est.copas = ifelse(outcome.type == "bin", exp(est.copas), est.copas),
-	est.reg = ifelse(outcome.type == "bin", exp(est.reg.ranef), est.reg.ranef)
+	est.reg = ifelse(outcome.type == "bin", exp(est.reg), est.reg)
 )
 
 effect.diff <- effect.diff %>% mutate(
 	est.fixef = ifelse(outcome.type == "bin", est.fixef - 1, est.fixef),
 	est.ranef = ifelse(outcome.type == "bin", est.ranef - 1, est.ranef),
 	est.copas = ifelse(outcome.type == "bin", est.copas - 1, est.copas),
-	est.reg = ifelse(outcome.type == "bin", est.reg.ranef - 1, est.reg.ranef),
+	est.reg = ifelse(outcome.type == "bin", est.reg - 1, est.reg),
 	fixef.ranef = ifelse(abs(est.ranef) > abs(est.fixef), "Reduction", "Amplification"),
 	fixef.copas = ifelse(abs(est.fixef) > abs(est.copas), "Reduction", "Amplification"),
 	fixef.reg = ifelse(abs(est.fixef) > abs(est.reg), "Reduction", "Amplification"),
@@ -90,14 +90,14 @@ effect.diff <- effect.diff %>% mutate(
 
 
 #Significant proportion
-test.bin <- metac.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.bin <- meta.f %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																									schwarzer.test = mean(schwarzer.test),
 																									rucker.test = mean(rucker.test),
 																									harbord.test = mean(harbord.test),
 																									peter.test = mean(peter.test))
 test.bin <- test.bin %>% gather(key = "test.type", value = "mean")
 
-p.bin <- metac.bin %>% ungroup() %>% 
+p.bin <- meta.f %>% ungroup() %>% 
 	select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
 	gather(key = "test.type", value = "null.hypothesis") %>%  
 	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
@@ -108,14 +108,14 @@ p.bin <- metac.bin %>% ungroup() %>%
 					 label = paste(round(test.bin$mean, 2)*100, "% rejected"), 
 					 color = "white")
 
-test.cont <- metac.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.cont <- meta.f %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																										begg.test = mean(begg.test),
-																										thomson.test = mean(thomson.test))
+																										thompson.test = mean(thompson.test))
 
 test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
 
-p.cont <- metac.cont %>% ungroup() %>% 
-	select(egger.test, thomson.test, begg.test) %>% 
+p.cont <- meta.f %>% ungroup() %>% 
+	select(egger.test, thompson.test, begg.test) %>% 
 	gather(key = "test.type", value = "null.hypothesis") %>% 
 	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
 	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
@@ -126,13 +126,13 @@ p.cont <- metac.cont %>% ungroup() %>%
 					 color = "white")
 
 dat_text <- data.frame(
-	label = paste(c(sum(metac.cont$begg.test), sum(metac.cont$egger.test), sum(metac.cont$thomson.test)), "< 0.1,",
-								round(c(mean(metac.cont$begg.test), mean(metac.cont$egger.test), mean(metac.cont$thomson.test)),2)*100, "%"),
-	test.type   = c("pval.begg.cont", "pval.egger.cont", "pval.thomson.cont"))
+	label = paste(c(sum(meta.f$begg.test), sum(meta.f$egger.test), sum(meta.f$thompson.test)), "< 0.1,",
+								round(c(mean(meta.f$begg.test), mean(meta.f$egger.test), mean(meta.f$thompson.test)),2)*100, "%"),
+	test.type   = c("pval.begg.cont", "pval.egger", "pval.thompson.cont"))
 
-labels <- c(pval.begg.cont = "Begg Mazumdar", pval.egger.cont = "Egger", pval.thomson.cont = "Thompson Sharp")
-p.dist.cont <- metac.cont %>% ungroup() %>% 
-	select(pval.egger.cont, pval.thomson.cont, pval.begg.cont) %>% 
+labels <- c(pval.begg.cont = "Begg Mazumdar", pval.egger = "Egger", pval.thompson.cont = "Thompson Sharp")
+p.dist.cont <- meta.f %>% ungroup() %>% 
+	select(pval.egger, pval.thompson.cont, pval.begg.cont) %>% 
 	gather(key = "test.type", value = "p.value") %>% 
 	ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + 
 	facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
@@ -141,15 +141,15 @@ p.dist.cont <- metac.cont %>% ungroup() %>%
 
 
 dat_text <- data.frame(
-	label = paste(c(sum(metac.bin$harbord.test), sum(metac.bin$peter.test), 
-									sum(metac.bin$rucker.test), sum(metac.bin$schwarzer.test)), "< 0.1,",
-								round(c(mean(metac.bin$harbord.test), mean(metac.bin$peter.test), 
-												mean(metac.bin$rucker.test), mean(metac.bin$schwarzer.test)),2)*100, "%"),
+	label = paste(c(sum(meta.f$harbord.test), sum(meta.f$peter.test), 
+									sum(meta.f$rucker.test), sum(meta.f$schwarzer.test)), "< 0.1,",
+								round(c(mean(meta.f$harbord.test), mean(meta.f$peter.test), 
+												mean(meta.f$rucker.test), mean(meta.f$schwarzer.test)),2)*100, "%"),
 	test.type   = c("pval.harbord", "pval.peter", "pval.rucker", "pval.schwarzer"))
 
 labels <- c(pval.harbord = "Harbord", pval.peter = "Peter", pval.rucker = "Rucker", pval.schwarzer = "Schwarzer")
 
-p.dist.bin <- metac.bin %>% ungroup() %>% 
+p.dist.bin <- meta.f %>% ungroup() %>% 
 	select(pval.harbord, pval.peter, pval.rucker, pval.schwarzer) %>% 
 	gather(key = "test.type", value = "p.value") %>% 
 	ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
@@ -158,11 +158,11 @@ p.dist.bin <- metac.bin %>% ungroup() %>%
 
 
 #Test agreement
-agree.bin <- metac.bin %>% mutate(n.sig = peter.test + rucker.test + harbord.test + schwarzer.test) %>% 
+agree.bin <- meta.f %>% mutate(n.sig = peter.test + rucker.test + harbord.test + schwarzer.test) %>% 
 	group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
 	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Binary Outcomes")
 
-agree.cont <- metac.cont %>% mutate(n.sig = egger.test + thomson.test + begg.test) %>% 
+agree.cont <- meta.f %>% mutate(n.sig = egger.test + thompson.test + begg.test) %>% 
 	group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
 	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
 
@@ -172,7 +172,7 @@ agree.cont <- metac.cont %>% mutate(n.sig = egger.test + thomson.test + begg.tes
 ####################################################################################
 ####################################################################################
 #Comparison of all adjusted z-scores:
-sig.zcor <- meta.wcor %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+sig.zcor <- meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 																 z.ranef = est.z.ranef/se.est.z.ranef,
 																 z.reg = est.z.reg/se.est.z.reg,
 																 z.copas = est.z.copas/se.est.z.copas) %>%  
@@ -183,7 +183,7 @@ sig.zcor <- meta.wcor %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 sig.zcor <- data.frame(method = sig.zcor$method,
 											 label = paste("n = ", sig.zcor$significant, ", ", round(sig.zcor$p.significant,3)*100, "% significant", sep = ""))
 
-meta.wcor %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 										 z.ranef = est.z.ranef/se.est.z.ranef,
 										 z.reg = est.z.reg/se.est.z.reg,
 										 z.copas = est.z.copas/se.est.z.copas) %>%  
@@ -194,7 +194,7 @@ meta.wcor %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 	geom_text(data = sig.zcor, aes(x = 30, y = 500, label = label), position = "dodge")
 
 #Comparison of m.a. with copas correction method applied:
-sig.zcor <- meta.wcor %>% filter(!is.na(est.z.copas)) %>% 
+sig.zcor <- meta.f %>% filter(!is.na(est.z.copas)) %>% 
 	mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 				 z.ranef = est.z.ranef/se.est.z.ranef,
 				 z.reg = est.z.reg/se.est.z.reg,
@@ -206,7 +206,7 @@ sig.zcor <- meta.wcor %>% filter(!is.na(est.z.copas)) %>%
 sig.zcor <- data.frame(method = sig.zcor$method,
 											 label = paste("n = ", sig.zcor$significant, ", ", round(sig.zcor$p.significant,3)*100, "% significant", sep = ""))
 
-meta.wcor %>% filter(!is.na(est.z.copas)) %>% 
+meta.f %>% filter(!is.na(est.z.copas)) %>% 
 	mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 				 z.ranef = est.z.ranef/se.est.z.ranef,
 				 z.reg = est.z.reg/se.est.z.reg,
@@ -227,19 +227,19 @@ meta.wcor %>% filter(!is.na(est.z.copas)) %>%
 ####################################################################################
 ####################################################################################
 
-metac.bin <- metac.bin %>% distinct(file.nr, .keep_all = T)
-metac.cont <- metac.cont %>% distinct(file.nr, .keep_all = T)
-metac <- metac %>% distinct(file.nr, .keep_all = T)
+meta.f <- meta.f %>% distinct(file.nr, .keep_all = T)
+meta.f <- meta.f %>% distinct(file.nr, .keep_all = T)
+meta.f <- meta.f %>% distinct(file.nr, .keep_all = T)
 
 #Significant proportion
-test.bin <- metac.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.bin <- meta.f %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																									schwarzer.test = mean(schwarzer.test),
 																									rucker.test = mean(rucker.test),
 																									harbord.test = mean(harbord.test),
 																									peter.test = mean(peter.test))
 test.bin <- test.bin %>% gather(key = "test.type", value = "mean")
 
-p.bin <- metac.bin %>% ungroup() %>% 
+p.bin <- meta.f %>% ungroup() %>% 
 	select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
 	gather(key = "test.type", value = "null.hypothesis") %>%  
 	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
@@ -250,14 +250,14 @@ p.bin <- metac.bin %>% ungroup() %>%
 					 label = paste(round(test.bin$mean, 2)*100, "% rejected"), 
 					 color = "white")
 
-test.cont <- metac.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.cont <- meta.f %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																										begg.test = mean(begg.test),
-																										thomson.test = mean(thomson.test))
+																										thompson.test = mean(thompson.test))
 
 test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
 
-p.cont <- metac.cont %>% ungroup() %>% 
-	select(egger.test, thomson.test, begg.test) %>% 
+p.cont <- meta.f %>% ungroup() %>% 
+	select(egger.test, thompson.test, begg.test) %>% 
 	gather(key = "test.type", value = "null.hypothesis") %>% 
 	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
 	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
@@ -268,13 +268,13 @@ p.cont <- metac.cont %>% ungroup() %>%
 					 color = "white")
 
 dat_text <- data.frame(
-	label = paste(c(sum(metac.cont$begg.test), sum(metac.cont$egger.test), sum(metac.cont$thomson.test)), "< 0.1,",
-								round(c(mean(metac.cont$begg.test), mean(metac.cont$egger.test), mean(metac.cont$thomson.test)),2)*100, "%"),
-	test.type   = c("pval.begg", "pval.egger", "pval.thomson"))
+	label = paste(c(sum(meta.f$begg.test), sum(meta.f$egger.test), sum(meta.f$thompson.test)), "< 0.1,",
+								round(c(mean(meta.f$begg.test), mean(meta.f$egger.test), mean(meta.f$thompson.test)),2)*100, "%"),
+	test.type   = c("pval.begg", "pval.egger", "pval.thompson"))
 
-labels <- c(pval.begg = "Begg Mazumdar", pval.egger = "Egger", pval.thomson = "Thompson Sharp")
-p.dist.cont <- metac.cont %>% ungroup() %>% 
-	select(pval.egger, pval.thomson, pval.begg) %>% 
+labels <- c(pval.begg = "Begg Mazumdar", pval.egger = "Egger", pval.thompson = "Thompson Sharp")
+p.dist.cont <- meta.f %>% ungroup() %>% 
+	select(pval.egger, pval.thompson, pval.begg) %>% 
 	gather(key = "test.type", value = "p.value") %>% 
 	ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + 
 	facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
@@ -283,15 +283,15 @@ p.dist.cont <- metac.cont %>% ungroup() %>%
 
 
 dat_text <- data.frame(
-	label = paste(c(sum(metac.bin$harbord.test), sum(metac.bin$peter.test), 
-									sum(metac.bin$rucker.test), sum(metac.bin$schwarzer.test)), "< 0.1,",
-								round(c(mean(metac.bin$harbord.test), mean(metac.bin$peter.test), 
-												mean(metac.bin$rucker.test), mean(metac.bin$schwarzer.test)),2)*100, "%"),
+	label = paste(c(sum(meta.f$harbord.test), sum(meta.f$peter.test), 
+									sum(meta.f$rucker.test), sum(meta.f$schwarzer.test)), "< 0.1,",
+								round(c(mean(meta.f$harbord.test), mean(meta.f$peter.test), 
+												mean(meta.f$rucker.test), mean(meta.f$schwarzer.test)),2)*100, "%"),
 	test.type   = c("pval.harbord", "pval.peter", "pval.rucker", "pval.schwarzer"))
 
 labels <- c(pval.harbord = "Harbord", pval.peter = "Peter", pval.rucker = "Rucker", pval.schwarzer = "Schwarzer")
 
-p.dist.bin <- metac.bin %>% ungroup() %>% 
+p.dist.bin <- meta.f %>% ungroup() %>% 
 	select(pval.harbord, pval.peter, pval.rucker, pval.schwarzer) %>% 
 	gather(key = "test.type", value = "p.value") %>% 
 	ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
@@ -300,24 +300,24 @@ p.dist.bin <- metac.bin %>% ungroup() %>%
 
 
 #Test agreement
-agree.bin <- metac.bin %>% mutate(n.sig = peter.test + rucker.test + egger.test + harbord.test + schwarzer.test) %>% 
+agree.bin <- meta.f %>% mutate(n.sig = peter.test + rucker.test + egger.test + harbord.test + schwarzer.test) %>% 
 	group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
 	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Binary Outcomes")
 
-agree.cont <- metac.cont %>% mutate(n.sig = egger.test + thomson.test + begg.test) %>% 
+agree.cont <- meta.f %>% mutate(n.sig = egger.test + thompson.test + begg.test) %>% 
 	group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
 	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
 
 
 
-meta.wcor <- meta.wcor %>% distinct(file.nr, .keep_all = T)
+meta.f <- meta.f %>% distinct(file.nr, .keep_all = T)
 
 ####################################################################################
 ####################################################################################
 ####################################################################################
 ####################################################################################
 #Comparison of all adjusted z-scores:
-sig.zcor <- meta.wcor %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+sig.zcor <- meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 																 z.ranef = est.z.ranef/se.est.z.ranef,
 																 z.reg = est.z.reg/se.est.z.reg,
 																 z.copas = est.z.copas/se.est.z.copas) %>%  
@@ -328,7 +328,7 @@ sig.zcor <- meta.wcor %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 sig.zcor <- data.frame(method = sig.zcor$method,
 											 label = paste("n = ", sig.zcor$significant, ", ", round(sig.zcor$p.significant,3)*100, "% significant", sep = ""))
 
-meta.wcor %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 										 z.ranef = est.z.ranef/se.est.z.ranef,
 										 z.reg = est.z.reg/se.est.z.reg,
 										 z.copas = est.z.copas/se.est.z.copas) %>%  
@@ -339,7 +339,7 @@ meta.wcor %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 	geom_text(data = sig.zcor, aes(x = 30, y = 150, label = label), position = "dodge")
 
 #Comparison of m.a. with copas correction method applied:
-sig.zcor <- meta.wcor %>% filter(!is.na(est.z.copas)) %>% 
+sig.zcor <- meta.f %>% filter(!is.na(est.z.copas)) %>% 
 	mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 				 z.ranef = est.z.ranef/se.est.z.ranef,
 				 z.reg = est.z.reg/se.est.z.reg,
@@ -351,7 +351,7 @@ sig.zcor <- meta.wcor %>% filter(!is.na(est.z.copas)) %>%
 sig.zcor <- data.frame(method = sig.zcor$method,
 											 label = paste("n = ", sig.zcor$significant, ", ", round(sig.zcor$p.significant,3)*100, "% significant", sep = ""))
 
-meta.wcor %>% filter(!is.na(est.z.copas)) %>% 
+meta.f %>% filter(!is.na(est.z.copas)) %>% 
 	mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 				 z.ranef = est.z.ranef/se.est.z.ranef,
 				 z.reg = est.z.reg/se.est.z.reg,
@@ -428,14 +428,14 @@ p2 <- meta.bin %>%
 range.pb.difference.bin <- range(test.sig.bin$mean - test.nonsig.bin$mean)
 
 #Test Results: Continuous
-test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.cont <- meta.f %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																									 begg.test = mean(begg.test),
-																									 thomson.test = mean(thomson.test))
+																									 thompson.test = mean(thompson.test))
 
 test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
 
-p.cont <- meta.cont %>% ungroup() %>% 
-	select(egger.test, thomson.test, begg.test) %>% 
+p.cont <- meta.f %>% ungroup() %>% 
+	select(egger.test, thompson.test, begg.test) %>% 
 	gather(key = "test.type", value = "null.hypothesis") %>% 
 	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
 	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
@@ -445,15 +445,15 @@ p.cont <- meta.cont %>% ungroup() %>%
 					 color = "white")
 
 
-test.sig.cont <- meta.cont %>% filter(sig.fixef == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.sig.cont <- meta.f %>% filter(sig.fixef == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																																									begg.test = mean(begg.test),
-																																									thomson.test = mean(thomson.test))
+																																									thompson.test = mean(thompson.test))
 
 test.sig.cont <- test.sig.cont %>% gather(key = "test.type", value = "mean")
 
-p3 <- meta.cont %>% 
+p3 <- meta.f %>% 
 	filter(sig.fixef == 1) %>% ungroup() %>% 
-	select(egger.test, thomson.test, begg.test) %>% 
+	select(egger.test, thompson.test, begg.test) %>% 
 	gather(key = "test.type", value = "null.hypothesis") %>% 
 	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
 	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
@@ -462,15 +462,15 @@ p3 <- meta.cont %>%
 					 label = paste(round(test.sig.cont$mean, 2)*100, "% rejected"), 
 					 color = "white")
 
-test.nonsig.cont <- meta.cont %>% filter(sig.fixef == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.nonsig.cont <- meta.f %>% filter(sig.fixef == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																																										 begg.test = mean(begg.test),
-																																										 thomson.test = mean(thomson.test))
+																																										 thompson.test = mean(thompson.test))
 
 test.nonsig.cont <- test.nonsig.cont %>% gather(key = "test.type", value = "mean")
 
-p4 <- meta.cont %>% 
+p4 <- meta.f %>% 
 	filter(sig.fixef == 0) %>% ungroup() %>% 
-	select(egger.test, thomson.test, begg.test) %>% 
+	select(egger.test, thompson.test, begg.test) %>% 
 	gather(key = "test.type", value = "null.hypothesis") %>% 
 	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
 	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
@@ -487,7 +487,7 @@ p4 <- meta.cont %>%
 
 
 meta.bin <- meta.bin %>% distinct(file.nr, .keep_all = T)
-meta.cont <- meta.cont %>% distinct(file.nr, .keep_all = T)
+meta.f <- meta.f %>% distinct(file.nr, .keep_all = T)
 
 test.bin <- meta.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																								 schwarzer.test = mean(schwarzer.test),
@@ -546,14 +546,14 @@ p2s <- meta.bin %>%
 range.pb.difference.bin <- range(test.sig.bin$mean - test.nonsig.bin$mean)
 
 #Test Results: Continuous
-test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.cont <- meta.f %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																									 begg.test = mean(begg.test),
-																									 thomson.test = mean(thomson.test))
+																									 thompson.test = mean(thompson.test))
 
 test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
 
-p.conts <- meta.cont %>% ungroup() %>% 
-	select(egger.test, thomson.test, begg.test) %>% 
+p.conts <- meta.f %>% ungroup() %>% 
+	select(egger.test, thompson.test, begg.test) %>% 
 	gather(key = "test.type", value = "null.hypothesis") %>% 
 	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
 	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
@@ -563,15 +563,15 @@ p.conts <- meta.cont %>% ungroup() %>%
 					 color = "white")
 
 
-test.sig.cont <- meta.cont %>% filter(sig.fixef == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.sig.cont <- meta.f %>% filter(sig.fixef == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																																									begg.test = mean(begg.test),
-																																									thomson.test = mean(thomson.test))
+																																									thompson.test = mean(thompson.test))
 
 test.sig.cont <- test.sig.cont %>% gather(key = "test.type", value = "mean")
 
-p3s <- meta.cont %>% 
+p3s <- meta.f %>% 
 	filter(sig.fixef == 1) %>% ungroup() %>% 
-	select(egger.test, thomson.test, begg.test) %>% 
+	select(egger.test, thompson.test, begg.test) %>% 
 	gather(key = "test.type", value = "null.hypothesis") %>% 
 	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
 	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
@@ -580,15 +580,15 @@ p3s <- meta.cont %>%
 					 label = paste(round(test.sig.cont$mean, 2)*100, "% rejected"), 
 					 color = "white")
 
-test.nonsig.cont <- meta.cont %>% filter(sig.fixef == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+test.nonsig.cont <- meta.f %>% filter(sig.fixef == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																																										 begg.test = mean(begg.test),
-																																										 thomson.test = mean(thomson.test))
+																																										 thompson.test = mean(thompson.test))
 
 test.nonsig.cont <- test.nonsig.cont %>% gather(key = "test.type", value = "mean")
 
-p4s <- meta.cont %>% 
+p4s <- meta.f %>% 
 	filter(sig.fixef == 0) %>% ungroup() %>% 
-	select(egger.test, thomson.test, begg.test) %>% 
+	select(egger.test, thompson.test, begg.test) %>% 
 	gather(key = "test.type", value = "null.hypothesis") %>% 
 	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
 	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 

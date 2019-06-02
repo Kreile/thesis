@@ -33,7 +33,7 @@ load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
 #Explanation of coding: 0 = (unsig, unsig), 1 = (unsig, sig), 2 = (sig, sig), 3 = (sig, unsig)
 sig.level <- 0.05
-meta.f <- meta.f %>% 
+meta.f <- meta.f %>% rowwise() %>% 
 	mutate(
 		pval.copas = 2*(1-pnorm(abs(est.copas/se.est.copas))),
 		
@@ -49,8 +49,8 @@ meta.f <- meta.f %>%
 
 
 sig.level <- 0.1
-meta.f <- meta.f %>% 
-	mutate(egger.test = ifelse(pval.peter < sig.level, 1, 0),
+meta.f <- meta.f %>% rowwise() %>% 
+	mutate(egger.test = ifelse(pval.egger < sig.level, 1, 0),
 				 thompson.test = ifelse(pval.thompson < sig.level, 1, 0),
 				 begg.test = ifelse(pval.begg < sig.level, 1, 0),
 				 
@@ -328,7 +328,7 @@ temp.pval %>% filter(time.rank < 10) %>% ggplot(aes(x = time.rank, y = pval.sing
 ########################################################################################################################################
 ########################################################################################################################################
 # Cumulative number of total trials with
-data %>% filter(!is.na(fishersz)) %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+data.ext2 %>% filter(!is.na(z)) %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
   ungroup %>% arrange(desc(n)) %>% mutate(trials = cumsum(n * nn)) %>% 
   filter(n < 50) %>% 
   full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>% 
@@ -336,7 +336,7 @@ data %>% filter(!is.na(fishersz)) %>% group_by(file.nr, comparison.nr, outcome.n
   ggplot(aes(x = n, y = trials)) + geom_point(col = "gray15") + 
   theme_bw() + labs(title = "Sum of Trials with Number of Replicates >= n (ignoring subgroups") + ylab("Number of trials") + xlab("n, number of replicates")
 
-data %>% filter(!is.na(fishersz)) %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
+data.ext2 %>% filter(!is.na(z)) %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
   ungroup %>% arrange(desc(n)) %>% mutate(trials = cumsum(n * nn)) %>% 
   filter(n < 50) %>% 
   full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>% 
@@ -351,7 +351,7 @@ data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) 
   ggplot(aes(x = n, y = nn)) + geom_col(col = "gray15", fill = "dodgerblue") +
   theme_bw() + labs(title = "Number of groups with number of reproduction trials = n") + xlab("n") + ylab("Number of groups")
 
-data %>% filter(!is.na(fishersz)) %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+data.ext2 %>% filter(!is.na(z)) %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
   ungroup %>% arrange(desc(nn)) %>% mutate(trials = cumsum(n * nn)) %>%
   ggplot(aes(x = nn, y = trials)) + geom_line(col = "gray15") +
   theme_bw() + labs(title = "Trials Comparing the Same Subject per Review")

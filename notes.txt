@@ -17,16 +17,11 @@ incr = 0.5 is used (default in metabin() function)
 
 - OR said to be more sensitive to false positive pbias - read again..
 
-- Extend pb.meta function to peto odds ratios
-
 - Dissemination bias also used as term for meta-analysis
-
-- Incidence rates and Survival outcomes could also be included into the analysis (Ir n = ~2800, "Rate Ratio", "Rate difference")
 
 
 
 Questions:
-- Meta-analysis with survival outcomes?
 
 Schluss der Introduction: REsearch questions und Hypothesen: Quantifikation von PB und adjustierung und schauen wie sich der EFfekt Šndert.
 
