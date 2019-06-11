@@ -7,7 +7,7 @@ Begg, C.~B. (1988).
   price £22.50.
 \newblock {\em Statistics in Medicine}, {\bf7},  817--818.
 
-\bibitem[Borenstein {\it et~al.}, 2011]{metaanalysis}
+\bibitem[Borenstein {\it et~al.}, 2011]{Intro.meta}
 Borenstein, M., Hedges, L.~V., Higgins, J. P.~T., Rothstein, H.~R., and
   Higgins, D. J. P.~T. (2011).
 \newblock {\em Introduction to Meta-Analysis}.
@@ -29,9 +29,25 @@ Copas, J.~B. and Shi, J.~Q. (2001).
 \newblock A sensitivity analysis for publication bias in systematic reviews.
 \newblock {\em Statistical Methods in Medical Research}, {\bf10},  251--265.
 
+\bibitem[Cox and Oakes, 1984]{Surv}
+Cox, D. and Oakes, D. (1984).
+\newblock {\em Analysis of Survival Data}.
+\newblock Chapman \& Hall.
+
+\bibitem[Cox, 1972]{Cox}
+Cox, D.~R. (1972).
+\newblock Regression models and life-tables.
+\newblock {\em Journal of the Royal Statistical Society: Series B
+  (Methodological)}, {\bf34},  187--202.
+
+\bibitem[DerSimonian and Laird, 1986]{tau.estimator}
+DerSimonian, R. and Laird, N. (1986).
+\newblock Meta-analysis in clinical trials.
+\newblock {\em Controlled Clinical Trials}, {\bf7},  177 -- 188.
+
 \bibitem[Duval and Tweedie, 2000]{trimfill}
 Duval, S. and Tweedie, R. (2000).
-\newblock Trim and fill: A simple funnel-plot?based method of testing and
+\newblock Trim and fill: A simple funnel-plot based method of testing and
   adjusting for publication bias in meta-analysis.
 \newblock {\em Biometrics}, {\bf56},  455--463.
 
@@ -40,23 +56,49 @@ Egger, M., Smith, G.~D., Schneider, M., and Minder, C. (1997).
 \newblock Bias in meta-analysis detected by a simple, graphical test.
 \newblock {\em BMJ}, {\bf315},  629--634.
 
+\bibitem[Fleiss {\it et~al.}, 2013]{mantel.haenszel}
+Fleiss, J.~L., Levin, B., and Paik, M.~C. (2013).
+\newblock {\em Statistical methods for rates and proportions}.
+\newblock John Wiley \& Sons.
+
+\bibitem[Galbraith, 1988]{galbraith}
+Galbraith, R.~F. (1988).
+\newblock A note on graphical presentation of estimated odds ratios from
+  several clinical trials.
+\newblock {\em Statistics in Medicine}, {\bf7},  889--894.
+
 \bibitem[Harbord {\it et~al.}, 2006]{Harbord}
 Harbord, R.~M., Egger, M., and Sterne, J. A.~C. (2006).
 \newblock A modified test for small-study effects in meta-analyses of
   controlled trials with binary endpoints.
 \newblock {\em Statistics in Medicine}, {\bf25},  3443--3457.
 
-\bibitem[Higgins~JPT, 2011]{cochrane.handbook}
-Higgins~JPT, G.~S. (2011).
-\newblock {\em Cochrane Handbook for Systematic Reviews of Interventions}.
-\newblock The Cochrane Collaboration.
+\bibitem[Hedges and Olkin, 1985]{olkin1985dtor}
+Hedges, L.~V. and Olkin, I. (1985).
+\newblock Chapter 11 - combining estimates of correlation coefficients.
+\newblock In Hedges, L.~V. and Olkin, I., editors, {\em Statistical Methods for
+  Meta-Analysis},   223 -- 246. Academic Press, San Diego.
 
-\bibitem[Peters {\it et~al.}, 2006]{Peters}
-Peters, J., Sutton, A., R~Jones, D., Abrams, K., and Rushton, L. (2006).
-\newblock Comparison of two methods to detect publication bias in
-  meta-analysis.
-\newblock {\em JAMA : the journal of the American Medical Association},
-  {\bf295},  676--80.
+\bibitem[Held and Saban{\'e}s~Bov{\'e}, 2014]{held2014}
+Held, L. and Saban{\'e}s~Bov{\'e}, D. (2014).
+\newblock Applied statistical inference.
+\newblock {\em Springer, Berlin Heidelberg, doi}, {\bf10},  978--3.
+
+\bibitem[Kasuya, 2001]{t.test}
+Kasuya, E. (2001).
+\newblock Mann-whitney u test when variances are unequal.
+\newblock {\em Animal Behaviour}, {\bf6},  1247--1249.
+
+\bibitem[Paule and Mandel, 1982]{paulemandel}
+Paule, R.~C. and Mandel, J. (1982).
+\newblock Consensus values and weighting factors.
+\newblock {\em Journal of Research of the National Bureau of Standards},
+  {\bf87},  377--385.
+
+\bibitem[Rosenthal and Rubin, 1982]{fixed.effects.rosenthal}
+Rosenthal, R. and Rubin, D.~B. (1982).
+\newblock Comparing effect sizes of independent studies.
+\newblock {\em Psychological Bulletin}, {\bf92},  500--504.
 
 \bibitem[R{\"u}cker {\it et~al.}, 2011]{limitmeta}
 R{\"u}cker, G., Carpenter, J.~R., and Schwarzer, G. (2011).
@@ -68,9 +110,27 @@ Schwarzer, G., Antes, G., and Schumacher, M. (2007).
 \newblock A test for publication bias in meta-analysis with sparse binary data.
 \newblock {\em Statistics in Medicine}, {\bf26},  721--733.
 
+\bibitem[Schwarzer {\it et~al.}, 2015]{meta.w.R}
+Schwarzer, G., Carpenter, J.~R., and R{\"u}cker, G. (2015).
+\newblock {\em Meta-analysis with R}, volume 4724.
+\newblock Springer.
+
 \bibitem[Thompson and Sharp, 1999]{thompson.sharp}
 Thompson, S.~G. and Sharp, S.~J. (1999).
 \newblock Explaining heterogeneity in meta-analysis: a comparison of methods.
 \newblock {\em Statistics in Medicine}, {\bf18},  2693--2708.
+
+\bibitem[Veroniki {\it et~al.}, 2016]{tau.estimator.evaluation}
+Veroniki, A.~A., Jackson, D., Viechtbauer, W., Bender, R., Bowden, J., Knapp,
+  G., Kuss, O., Higgins, J.~P., Langan, D., and Salanti, G. (2016).
+\newblock Methods to estimate the between-study variance and its uncertainty in
+  meta-analysis.
+\newblock {\em Research Synthesis Methods}, {\bf7},  55--79.
+
+\bibitem[Whitehead and Whitehead, 1991]{whitehead}
+Whitehead, A. and Whitehead, J. (1991).
+\newblock A general parametric approach to the meta-analysis of randomized
+  clinical trials.
+\newblock {\em Statistics in Medicine}, {\bf10},  1665--1677.
 
 \end{thebibliography}

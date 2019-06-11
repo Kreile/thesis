@@ -2,3 +2,9 @@ Benefits of uniform format of s.r.:
 enabling the development of derivative products (e.g. Overviews of reviews, see Chapter 22) and empirical research studies based on multiple systematic reviews
 
 In a recently updated Cochrane methodology review, all five studies reviewed showed that published trials showed an overall greater treatment effect than grey literature trials (Hopewell 2007b)
+
+What data to collect?
+All data that possibly affects treatment effect size shall be included in the review data. This might be intervention or application procedures, population characteristics or compliances (integrity of interventions). In general, the information about the studies should enable replication of the studies and application by practicioners.
+
+Meta-meta-analysis:
+Calculate ratios of treatment effect estimates across potential factors that could introduce bias and then perform a meta (meta) analysis

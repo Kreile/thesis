@@ -1,0 +1,4 @@
+"Studies have also used funnel plot methods to estimate the fraction of meta-analyses in the medical literature a􏰂ected by publication bias: 
+14. Egger M, Davey Smith G, Schneider M, Minder C. Bias in meta-analysis detected by a simple, graphical test.British Medical Journal1997;315:629–634.
+15. Sutton AJ, Duval SJ, Tweedie RL, Abrams KR, Jones DR. Empirical assessment of effect of publication biason meta-analyses.British Medical Journal2000;320:1574–1577.
+16. Sterne JAC, Gavaghan D, Egger M. Publication and related bias in meta-analysis: power of statistical tests andprevalence in the literature.Journal of Clinical Epidemiology2000;53:1119–1129."

@@ -1,190 +1,3 @@
-\documentclass[11pt,a4paper,twoside]{book}\usepackage[]{graphicx}\usepackage[]{color}
-%% maxwidth is the original width if it is less than linewidth
-%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
-\makeatletter
-\def\maxwidth{ %
-  \ifdim\Gin@nat@width>\linewidth
-    \linewidth
-  \else
-    \Gin@nat@width
-  \fi
-}
-\makeatother
-
-\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
-\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
-\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
-\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
-\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
-\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
-\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
-\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
-\let\hlipl\hlkwb
-
-\usepackage{framed}
-\makeatletter
-\newenvironment{kframe}{%
- \def\at@end@of@kframe{}%
- \ifinner\ifhmode%
-  \def\at@end@of@kframe{\end{minipage}}%
-  \begin{minipage}{\columnwidth}%
- \fi\fi%
- \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
- \colorbox{shadecolor}{##1}\hskip-\fboxsep
-     % There is no \\@totalrightmargin, so:
-     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
- \MakeFramed {\advance\hsize-\width
-   \@totalleftmargin\z@ \linewidth\hsize
-   \@setminipage}}%
- {\par\unskip\endMakeFramed%
- \at@end@of@kframe}
-\makeatother
-
-\definecolor{shadecolor}{rgb}{.97, .97, .97}
-\definecolor{messagecolor}{rgb}{0, 0, 0}
-\definecolor{warningcolor}{rgb}{1, 0, 1}
-\definecolor{errorcolor}{rgb}{1, 0, 0}
-\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
-
-\usepackage{alltt}
-\input{header.sty}   % packages, layout and standard macros
-
-
-\usepackage{verbatim}
-\usepackage{tikz}
-\usepackage{amssymb}
-\usetikzlibrary{trees}
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\begin{document}
-\input{title}
-
-
-
-
-\graphicspath{{./figure/}}
-\DeclareGraphicsExtensions{.pdf,.png}
-\setcounter{tocdepth}{1}
-
-
-
-\thispagestyle{empty}
-\begin{center}
-  \vspace*{6cm}{\bfseries\Huge
-  $p$-values:\\[5mm] their use, abuse and proper use \\[5mm]
-  illustrated with seven facets 
-  }
-  \vfill
-  \rm
-
-  \LARGE
-  M\"axli Musterli\\[12mm]
-  
-  \normalsize
-  Version \today
-\end{center}
-\newpage
-\thispagestyle{empty}~
-\newpage
-\pagenumbering{roman}
-
-\thispagestyle{plain}\markboth{Contents}{Contents}
-\tableofcontents
-\setkeys{Gin}{width=.8\textwidth}
-
-\chapter*{Preface}
-\addtocontents{toc}{\protect \vspace*{13.mm}}
-\addcontentsline{toc}{chapter}{\bfseries{Preface}}
-\thispagestyle{plain}\markboth{Preface}{Preface}
-
-Howdy!
-
-\bigskip
-
-\begin{flushright}
-  Max Muster\\
-  June 2018
-\end{flushright}
-
-\addtocontents{toc}{\protect \vspace*{10mm}}
-
-\cleardoublepage
-\pagenumbering{arabic}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% LaTeX file for Chapter 01
-
-
-
-\chapter{Introduction}
-
-Typically, we expect empirical scientific results to be distorted by random noise, such that the results are not equal to the real process that they describe. Additionally, one can reasonably assume that the results are also biased to some extent, as the statistical paradigm of precision versus bias would predict: The smaller the noise part of distortion, the more the result should be distorted by bias. However, the trade-off is not inevitable and can be minimized by scientific rigour and foresightful experimental design. Large efforts have been made both in theory and practice to improve the quality of experiments and their analysis, such as defining experimental settings that prohibit influence of expectations of the researcher (e.g. blinding) or increase sample size in experiments. The introduction of randomized clinical trials is for example seen nowadays as a benchmark in clinical science, heavily improving the reliability of its findings. \\
-It is more and more considered a new scientific field by itself to think of and argue about circumstances that improve the quality of scientific findings. Statistics is in some sense predestined to contribute to it, because probability and chance concepts provide are already at the core of understanding of each empirical science. \\
-There are however issues in which statistics is not thought to be able to contribute much understanding and to offer little help. For example, the selective attention that agents in modern science are paying to new, strong and clear findings in each science is considered merely a psychological, socioeconomic issue. It is often explained by the affinity of humans for stories rather than mere facts and for novelties. This issue, that scientific findings get more attention, and today, are more likely to be published, read and cited, is known for many years now, but has only gained new traction in meta science when the reproducibility crisis emerged in 2003 to 2005. It was the studies of ... that showed that even rigid prosecution of study protocolls did often not lead to reproduction of previous results when experiments were repeated, and struck empirical science in its core. Most reasonably, ... concluded that it was a large missunderstanding of statistical tools such as the p-value in the scientific community that lead to this situation. Although that some measures have been taken since then, and some progress is made, the non-reproducibility of scientific fiendings remain an accute threat to the relevance and reliability of science. Some even argue that certain scientific fields sooner or later will repeat the experience that for example psychology or medicine have made, and are yet to encounter their own reproducibility crisis. \\
-Clearly, reproduction of experimental results is the gold standard of testing empirical science, because it reassures the universality and reliability by which certain procedures or effects appear if measured in the correct experimental context. However, there are also problems there. One can almost never fully exclude chance events to have played a major role in negating or reafirming the experimental findings (which is of course always the case where noise is present in the data). Furthermore, reproduction studies are generally costly and the precise experimental conditions might be hard to reproduce because of lack of information or other reasons. There is another way to assess the strength of scientific results if the experiment has been conducted more than once (however not with the same study protocoll as in reproduction studies): Meta-analyses. In a meta-analyses, results of multiple (fairly identical) experiments (studies) are summarized to a single result. Very often, meta-analyses are not only a synthesis of results, but of evidence, thus reflecting the overall and summarized evidence regarding to a scientific question. It is on purpose that selective attention to positive, strong results in the scientific literature have been mentioned beforehand, because it is now clear how they will affect this second way of reassurance of scientific findigs: The meta-analysis will again lead to irreproducible findings if it is based on a set of results that are all positive since they are easier available and more prominent in the scientific literature. Thus, meta-analyses will in this case not reach their purpose of assessing reliability of science, but worsen the problem by reinforcing the confidence in the overestimated effects in the experiment. However, and this is the main topic in this masters thesis, there are some ways to detect irregularities in the body of results that can provide indirect hints that a selective rather than a random sample out of a hypothetical population of experiments is present. The abundance of the methods to link some features of the sample of experiments to publication bias, as the tendency of scientific literature to include over-proportionally large effects is generally termed, also speaks for the relevance of the topic. A review in 2017 identified alone 147 (!) conceptually differing methods.\\
-This speaks as well for the inevitable difficulties that such methods encounter. First of all, it is most often impossible to estimate the real selection process, that is the rate by which smaller effects go unnoticed because of selective publication and reporting, because the number of missing results in the studies is not known at the first place and impossible to retrieve. Secondly, there is almost no real world data of complete and unbiased meta-analyses, such that evaluations of methods is most often dependent on simulations. So we have, after applying the methods, only indirect information of publication bias, and the extent to what it might influences scientific findings. There are, almost all the time, alternative explanations for the results of the methods that relieve the operators and publishers from the reproval of publication bias. However, given the large body of evidence for publication bias to play a role in science that has been collected in other ways, those can be expelled most of the time, such that those methods can give a quantitative measure of publication bias. Before beginning with the main part of this masters thesis, I want to recall some of the most pointed evidence for publication bias that has been collected for publication bias so far. \\
- 
-
-Meta-analysis is at the core of evidence based medicine because it allows to summarise evidence over multiple studies and provide a more broad view on success and effectivity of clinical treatments. The necessity of meta-analyses is also increased by the abundance of data and publications. Especially when the findings differ or even contradict between studies, meta-analysis is the only way to go if one wants to make decisions based on quantitative and scientific criteria.
-
-\vspace{0mm}
-For this, meta-analyses do not only benefit research, but also clinical practice, and may lead to better health care and prevention. However, the usefulness of meta-analysis does not restrict to clinical science, but to any empirical and quantiative science. 
-
-\vspace{0mm}
-Usually, a meta-analysis is part of a systematic review where researchers decided to summarise all research in a given field or more specifically, that concerns a given question. Meta-analysis can be applied to all studies that are approximately identical in their experimental setup and the way the outcome of the experiments is measured. In systematic reviews where meta-analyses are used, the conclusions are most often strongly based on the results and the interpretation of the meta-analysis.
-
-\vspace{0mm}
-However, there are problems that potentially limit the validity of meta-analysis; the number of studies available can be incomplete or the results of the studies can be biased. Some of those problems can be solved or asserted by special statistical methods. 
-
-\subsection{Small Study Effects or Publication Bias}
-When study sample size decreases, the probability of extreme and missleading results in a study increases. This becomes a problem if results are selectively published, and therefore available, based on their results. When this is the case, one speaks of a small study effect or of ``Publication bias''. 
-
-\vspace{0mm}
-The issue has been discussed extensively in the last years, most often in the context of what has came to be known as the replication crisis. The reasons for small study effects are manifold, but originate most often in the myopical acting of agents in science and the lack of statistical education. Studies are reported by scientists, published by journals and noticed by readers more often if their findigs are positive and find e.g. a substantive difference or effect. When doing a meta-analysis, one again obtains biased results. 
-
-\vspace{0mm}
-The reason why that is less of an issue for larger studies is that extreme results are in general less likely and that due to larger effort, a result is published although there has been no clear and positive findings.
-
-\vspace{0mm}
-While there is generally no way to assert poor study quality, small study effect can in principle be asserted and corrected for statistically. This masters thesis will mainly be about statistical methods to detect and adjust for small study effects. It can furthermore be divided in two parts:
-\begin{itemize}
-\item Methodological part: Collection and discussion of statistical tests and correction methods for small study effects.
-\item Applied part: Application of the methods to studies of the Cochrane Library of systematic Reviews. Subsequent discussion of the implications
-of the results for clinical science.
-\end{itemize}
-
-In contrast to simulation studies, it is not possible to assess critical properties of the methods such as the power of a test, since the truth is not known. But based on the amount of data, one can of course try to make extrapolation to tendencies in clinical science in general. Moreover, it is still interesting to see how the methods behave in general, especially with respect to each other. It may, as an example, be possible to answer the question which statistical test is most conservative and which pooling method is most optimistic on average. Comparison with results from simulations may allow to speculate about the reasons when simulation and real world results diverge.
-
-
-\subsection{Cochrane and the Cochrane Database of Systematic Reviews}
-The Cochrane Organization has specialized on systematic reviews in clinical science. It publishes and maintains a library with a large number of systematic reviews that are available in some countries to the public.
-
-\vspace{0mm}
-The data analyzed in this thesis stems completely from the Cochrane Library of systematic Reviews (cite). 
-
-\vspace{0mm}
-The reviews are arguably of good quality, since the authors are following elaborated guidelines, and there are control-mechanisms within the organisation that should prohibit conflicts of interests. This might further improve the validity and precision of findings and conclusions that have been made based on this data. 
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%<<'child-chapter02', child='chapter02.Rnw'>>=
-%@
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%<<'child-chapter03', child='chapter03.Rnw'>>=
-%@
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 % LaTeX file for Chapter 04
 
 
@@ -628,7 +441,7 @@ with
 \end{align}
 
 $\chi^2$ can be used with a $\chi^2$ distribution with one degree of freedom to obtain a $p$-value. Note that the test is almost equivalent to Egger's small study effect test with $\tau^2 = 0$. Thus, although the copas selection model models publication bias, it is dependent on the small study effects to find the most suitable pair $(a,b)$. \\
-If one applies the model to a single meta-analysis, a sensitivity analysis is suggested. One can observe how $\theta$ and it's confidence intervals change dependent on the underlying selection process. Selection models are in general not recommended for inference \citep(selection.assessment). 
+If one applies the model to a single meta-analysis, a sensitivity analysis is suggested. One can observe how $\theta$ and it's confidence intervals change dependent on the underlying selection process. Selection models are in general not recommended for inference \citep{selection.assessment}. 
 \citet{limitmeta} have shown how the method can be implemented in a simulation for inference purposes. \\
 A range of values of $(a,b)$ are applied, and the test for residual small study effect as described in equation \ref{eq:copas.small.study} is applied. If all obtained $p$-values from the test are above a threshold 0.1, this is interpreted as no evidence, and no need for modelling, and the standard, classical random effects meta-analysis is retained. If none of the $p$-values is above the threshold, a wider range of values for $(a,b)$ is used. When some $p$-values are above, and some below the threshold, the pair $(a,b)$ with the smallest number of missing studies is retained (that is, the least intense underlying selection model is chosen).\\
 Currently, there is no test to detect missspecifications in the model itself, the authors themselves have argued that a nonparametric test of the residuals would lack power.
@@ -653,10 +466,10 @@ where $a$ is a correction factor if $n_t \neq n_c$. The variance of $r$, $s_r^2$
 s_r^2 &= \frac{a^2 s_d^2}{(d^2 + a)^3} \nonumber
 \end{align}
 
-Finally, we can get to a fisher's z-scaled correlation $z$ and it's variance $v_z$ by using
+Finally, we can get to a fisher's z-scaled correlation $z$ and it's variance $s_z^2$ by using
 \begin{align}
-z &= 0.5 \ln(\frac{1 + r}{1 - r}) \nonumber
-v_z &= \frac{1}{n-3}
+z &= 0.5 \ln(\frac{1 + r}{1 - r}) & \nonumber
+s_z^2 &= \frac{1}{n-3}
 \end{align}
 
 
@@ -1088,37 +901,3 @@ v_z &= \frac{1}{n-3}
 % \begin{align} \label{generalized linear model}
 % \mathbf{Y}{_{ij}}|U{_i},\epsilon{_{ij}} = (1,x{_i}^\top)\beta + U{_i} + \epsilon{_{ij}}
 % \end{align}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%<<'child-chapter05', child='chapter05.Rnw'>>=
-%@
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\appendix
-
-% LaTeX file for Chapter 01
-
-
-
-\chapter{Appendix}
-
-Maybe some R code here, probably a \rr{sessionInfo()}
-
-
-
-
-\cleardoublepage
-\phantomsection
-\addtocontents{toc}{\protect \vspace*{10mm}}
-\addcontentsline{toc}{chapter}{\bfseries Bibliography}
-
-
-\bibliographystyle{mywiley} 
-\bibliography{biblio}
-
-\cleardoublepage
-
-\end{document}
-
