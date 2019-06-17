@@ -10,67 +10,66 @@ opts_chunk$set(
 
 \chapter{Methods}
 \section{Introduction and Notation}
-The analysis has already been said to be restricted on clinical or health care interventions. The interventions are restricted to two participant arms of which some measure of sanity or worsening of health is measured and compared. The difference between these two is referred to as the effect of the treatment. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, Cohen's $d$ or Hedges $g$, fisher's z score or pearson correlation. \\
-Let us consider a meta-analysis with $n$ study treatment effects ($n > 1$, but typically small). A study is indexed by $i$, and it's treatment effect by  $\theta_i$. The observed treatment effect is $\hat{\theta}_i$. The pooled treatment effect of a meta-analysis will be denoted as $\theta_M$, and consequently, the observed pooled treatment effect as $\hat{\theta}_M$. Furthermore, each treatment effect is typically measured with some standard error $s_i$ and an estimate of $s_i$ is given by $\hat{s}_i$. \\
-For continuous outcomes, let $m_t$ be the mean of the treatment group, $m_c$ the mean of the control group, and equivalentyl $sd_t$ and $sd_c$ the corresponding standard deviations. $n_t$ and $n_c$ are the total number of participants in the groups.
+The analysis has already been said to be restricted on clinical or health care interventions. The interventions are restricted to comparisons of two treatment arms by some measure of sanity or worsening of health. The difference in this measure between the grouops is referred to as the treatment effect. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, Cohen's $d$ or Hedges $g$, Fisher's z score or Pearsons correlation coefficient. \\
+Let us consider a meta-analysis with $n$ study treatment effects ($n > 1$, but typically small). A study is indexed by $i$, and it's treatment effect by  $\theta_i$. The observed treatment effect is $\hat{\theta}_i$. The pooled treatment effect of a meta-analysis will be denoted as $\theta_M$, and consequently, the observed pooled treatment effect as $\hat{\theta}_M$. Furthermore, each treatment effect is typically measured with some standard error $s_i$ and an estimate of $s_i$ is denoted as $\hat{s}_i$. The $\hat{}$ sign thus indicates if it is an estimate.\\
+For continuous outcomes, let $m_t$ be the mean of the treatment group, $m_c$ the mean of the control group, and equivalently $\textrm{sd}_t$ and $\textrm{sd}_c$ the corresponding standard deviations. $n_t$ and $n_c$ are the total number of participants in the groups.
 In the case of binary outcomes, let $e_t$ be the count of events in the treatment arm $e_c$ the count of events in the control group. The observed counts in a study $i$ are referred to as $e_{t,i}$ and analogously $e_{c,i}$.
 
-\section{Effect Measures and p-values}
+\section{Effect Measures and $p$-values}
 \subsection{Continuous Outcomes}
-For given $(m_t, m_c), (sd_t, sd_c)$ and $(n_t, n_c)$, one can compute mean difference as well as a standardized mean difference (here: Hedges $g$) and  a standard error thereof. Note that the definition of Hedges $g$ and its standard error $s$ varies amongst the literature, the following applies for this report:
+For given $(m_t, m_c), (\textrm{sd}_t, \textrm{sd}_c)$ and $(n_t, n_c)$, one can compute mean difference as well as a standardized mean difference (here: Hedges $g$) and  a standard error thereof. Note that the definition of Hedges $g$ and its standard error $s$ varies among the literature, the following applies for this report:
 
 \begin{align}
-s &= \sqrt{\frac{(n_t - 1)sd_t^2 + (n_c - 1)sd_c^2}{n_t + n_c - 2}} & g &= \frac{m_t - m_c}{s} \label{eq:hedges.g}
+s &= \sqrt{\frac{(n_t - 1)\textrm{sd}_t^2 + (n_c - 1)\textrm{sd}_c^2}{n_t + n_c - 2}} & g &= \frac{m_t - m_c}{s} \label{eq:hedges.g}
 \end{align}
 
 The mean difference $\theta$ and its standard error $s$ can similarly be obtained by
 
 \begin{align}
-\theta &= m_t - m_c & s &= \sqrt{sd_t^2/n_t + sd_c^2/n_t}
+\theta &= m_t - m_c & s &= \sqrt{\textrm{sd}_t^2/n_t + \textrm{sd}_c^2/n_t}
 \end{align}
 
-Both estimators take into account that the two groups might have unequal variances. A p-value to test the null hypothesis that the mean between group is equal is commonly obtained with the students $t$ test. The $t$ statistic is obtained, using $s$ and $g$ from \ref{eq:hedges.g}, by
+Both estimators take into account that the two groups might have unequal variances. A $p$-value to test the null hypothesis that the mean between group is equal is commonly obtained with the students $t$ test. The $t$ statistic is obtained, using $s$ and $g$ from \ref{eq:hedges.g}, by
 
 \begin{align}
 t &= g/(s\sqrt{(1/n_t)+(1/n_c)}) \nonumber
 \end{align}
-and the $p$-value can be obtained with the cumulative student's $t$-distibution $F$ with $n_t + n_c - 2$ degrees of freedom:
+and the $p$-value can be obtained with the cumulative student's $t$-distribution $F$ with $n_t + n_c - 2$ degrees of freedom:
 
 \begin{align}
 p &= 2(1-F(|t|)) \nonumber
 \end{align}
 
-The t-test is known to be less reliable if combined sample size is small ($n < 30$), see for example \citet{t.test}.
+The t-test is known to be not very reliable if combined sample size is small ($n < 30$), see for example \citet{t.test}.
 
 \subsection{Binary Outcomes}
 Two commonly used effect measures for binary outcome data are risk ratios and odds ratios between treatment and control group. 
-The methods presented here can also be found, for example in \citet{Intro.meta}, pg. 34.
-Let $\theta$ be the logarithm to base 10 of the odds ratio. $\hat{\theta}$ and its variance $s^2$ can be obtained by 
+The methods presented here can also be found, for example, in \cite[34]{Intro.meta}.
+Let $\theta$ be the logarithm to base 10 of the odds ratio. $\theta$ and its variance $s^2$ can be obtained by 
 
 \begin{align}
 \hat{\theta} &= \log(\frac{e_t*(n_c - e_c)}{e_c*(n_t - e_t)}) \nonumber \\
 \hat{s}^2 &= 1/e_t + 1/(n_t - e_t) + 1/e_c + 1/(n_c - e_c) \nonumber
 \end{align}
 
-The logarithm of the risk ratio $\theta$ and its variance $s^2$, can be estimated by
+Plugging in the observed counts will give the corresponding estimates. The logarithm of the risk ratio $\theta$ and its variance $s^2$ is similarly defined as
 
 \begin{align}
-\hat{\theta} &= \log(\frac{e_t/n_t}{e_c/n_c}) \label{eq:risk.ratio} \\
-\hat{s^2} &= 1/e_t + 1/n_t + 1/e_c + 1/e_t \label{eq:risk.ratio.variance}
+\theta &= \log(\frac{e_t/n_t}{e_c/n_c}) \label{eq:risk.ratio} \\
+s^2 &= 1/e_t + 1/n_t + 1/e_c + 1/e_t \label{eq:risk.ratio.variance}
 \end{align}
 
-Using likelihood theory, one could show that the estimates are maximum likelihood estimates and that one can use the asymptotic normal distribution of the maximum likelihood estimator to calculate a $p$-value (\citet{held2014}, pg.98). \\
+Using likelihood theory, one could show that the estimators are maximum likelihood estimators and that one can use the asymptotic normal distribution of the maximum likelihood estimator to calculate a $p$-value, e..g. \cite[98]{held2014}. \\
 Thus, with $\Phi$ as the cumulative standard normal distribution, we get
 \begin{align}
 p &= 2*(1-\Phi(|\hat{\theta}/\hat{s}|) \nonumber
 \end{align}
-which summarizes the evidence against $\theta$ being zero (i.e. the true risk/odds ratio being 1). \\
-Binary and continuous effect measures can be converted into each other. In section \ref{sec:transformation.effectsizes} at the end of this chapter, this is readily described.
+, a $p$-value for the corresponding estimates, which summarizes the evidence against $\hat{\theta}$ being zero (i.e. the true risk/odds ratio being 1). \\
+Binary and continuous effect measures can be converted into each other, as described in section \ref{sec:transformation.effectsizes}.
 
 \subsection{Survival Outcomes}
-Time-to-event data with censoring present have to be analyzed by special means. One frequently used method to take into account right-censoring is the Cox proportional hazards regression model \citep{Cox}. Because the method itself is not applied in this thesis, but only the resulting estimates of the parameters are used, the reader is referred to the extensive literature covering this topic (e.g. \citet{Surv}).
-The so-called hazard ratio estimated by cox p.h. regression is the ratio of the instanteneous risk of experiencing the event between the two groups. Because it is a maximum likelihood estimator, one can again use its wald test statistic to test for equal hazards. \\
-Let $\hat{\theta}$ be an estimate of the log hazard ratio and $\hat{s}$ an estimate of the standard error of it. As before
+Time-to-event data with censoring has to be analyzed by special means. One frequently used method to take into account right-censoring is the Cox proportional hazards regression model \citep{Cox}. Because the method itself is not applied in this thesis, but only the resulting estimates of the parameters are used, the reader is referred to the extensive literature covering this topic (e.g. \citet{Surv}). \\
+The so-called hazard ratio estimated by cox p.h. regression is the ratio of the instantaneous risk of experiencing the event between two groups. Because it is a maximum likelihood estimator, one can again use its Wald test statistic to test for equal hazards. Let $\hat{\theta}$ be an estimate of the log hazard ratio and $\hat{s}$ an estimate of the standard error of it. As before
 \begin{align}
 p &= 2*(1-\phi(|\hat{\theta}/\hat{s}|) \nonumber
 \end{align}
@@ -79,28 +78,28 @@ will give a $p$-value for the evidence against the null hypothesis.
 
 
 \section{Fixed and Random Effects Meta-Analysis} \label{sec:meta.analysis}
-The fixed effects meta-analysis estimator of the pooled treatment effect is a mean of the single treatment effect estimators, weighted by their standard errors \cite{fixed.effects.rosenthal}. Let $w_i = 1/s_i^2$ be the weights, and $\theta_M$ be the pooled estimator and $s_M^2$ its variance. Then 
+The fixed effects meta-analysis estimator of the pooled treatment effect is a mean of the single treatment effect estimators, weighted by their standard errors \citep{fixed.effects.rosenthal}. Let $w_i = 1/s_i^2$ be the weights, and $\theta_M$ be the pooled estimator and $s_M^2$ its variance. Then 
 
 \begin{align}
 \theta_M &= \frac{\sum_{i = 1}^n w_i \theta_i}{\sum_{i = 1}^n w_i} &
 s_M^2 &= \frac{1}{\sum_{i = 1}^n w_i} \label{eq:fixed.effects}
 \end{align}
 
-This estimator minimizes the variance, an estimate $\hat{\theta}_M$ can be obtained by plugging in the observed treatment effects and standard errors $\hat{\theta}_i, \hat{s}_i^2$. The underlying idea is that we assume $\hat{\theta}_i \sim N(\theta_M, s_i^2)$, $\theta_M$ being the true effect, such that all $\theta_i$ are disitributed equally. \\
+This estimator minimizes the variance between the effects. An estimate $\hat{\theta}_M$ can be obtained by plugging in the observed treatment effects and variances $\hat{\theta}_i, \hat{s}_i^2$. The underlying idea is that we assume $\theta_i \sim N(\theta_M, s_i^2)$, $\theta_M$ being the true effect, all $\theta_i$ being distributed around an equal mean. \\
 The random effects model \citep{whitehead} assumes instead that 
 \begin{align}
 \theta_i \sim N(\mu_i, s_i^2) &&
 \mu_i \sim N(\theta_M, \tau^2) \label{eq:random.effects} 
 \end{align}
 
-So marginally, we have $\theta_i$ being distributed around a common mean $\theta_M$ with additional variance $\tau^2$:
+Marginally, we have $\theta_i$ being distributed around a common mean $\theta_M$ with additional variance $\tau^2$:
 
 \begin{align}
-\theta_i | \mu_i \sim N(\theta_M, s_i^2 + \tau^2) \label{eq:random.effects.marginal}
+\theta_i | \mu_i \sim N(\theta_M, s_i^2 + \tau^2) \nonumber %\label{eq:random.effects.marginal}
 \end{align}
 
-$\tau^2$ is often referred to as a population variance or between-study variance, whereas $s_i^2$ can be interpreted as sampling error. The pooled treatment effect and its variance is obtained by replacing the weights $w_i$ in equation \ref{eq:fixed.effects} with $w_i = 1/(s_i^2 + \tau^2)$. \\
-The model is clearly superior to the fixed effects model whenever the standard errors of the treatment effects alone are unlikely to fully account for the entire variability between studies. Note that as $\tau^2$ increases, each $\theta_i$ will eventually get equal weights, irrespective of sampling error.\\
+$\tau^2$ is often referred to as a population variance or between-study variance, whereas $s_i^2$ can be interpreted as sampling error. The pooled treatment effect estimate $\theta_M$ of the random effects model and its variance is obtained by replacing the weights $w_i$ in equation \ref{eq:fixed.effects} with $w_i = 1/(s_i^2 + \tau^2)$. \\
+The model is superior to the fixed effects model whenever the standard errors of the treatment effects alone are unlikely to fully account for the entire variability observed between studies. Note that as $\tau^2$ increases, each $\theta_i$ will eventually get equal weights, irrespective of it's sampling error $s_i^2$.\\
 The estimation of $\tau^2$ has been subject to some debate in the statistical literature. Oftentimes, the method of moment estimator of \citet{tau.estimator} is used.
 We use the measure of heterogeneity, $Q$, and divide by $C$ after having subtracted the degrees of freedom $n-1$:
 
@@ -110,12 +109,12 @@ Q &= \sum_{i = 1}^n w_i(y_i - \theta_M)^2 & C &= \sum_{i = 1}^n w_i - \frac{\sum
 \end{align}
 
 Again, $w_i, \theta_i ...$ have to be replaced by their estimates in order to get an estimate $\hat{\tau}^2$. \\
-The Paule-Madel estimator \citep{paulemandel} is considered to have most often better properties than the method of moments estimator \citep{tau.estimator.evaluation}.
-Since we defined $w_i = 1/(s_i^2 + \tau^2)$, it is straightforward that
+The Paule-Mandel estimator \citep{paulemandel} is considered to have most often better properties than the method of moments estimator (e.g. \citet{tau.estimator.evaluation}).
+Since we defined $w_i = 1/(s_i^2 + \tau^2)$, it als holds that
 
-% \begin{align}
-% w_i \textrm{Var}(\theta_i) &= 1 & \textrm{Var}(\sqrt{w_i}\theta_i) = 1 \nolabel
-% \end{align}
+\begin{align}
+w_i \textrm{Var}(\theta_i) &= 1 & \textrm{Var}(\sqrt{w_i}\theta_i) = 1 \nonumber
+\end{align}
 
 For any $w_i$, the variance can be estimated and equated to its expected value:
 
@@ -123,22 +122,23 @@ For any $w_i$, the variance can be estimated and equated to its expected value:
 s^2(w_i\theta_i) &= \frac{\sum_{i = 1}^n w_i(\theta_i - \theta_M)^2}{n-1} & \frac{\sum_{i = 1}^n w_i(\theta_i - \theta_M)^2}{n-1} = 1 \label{eq:paulemandel}
 \end{align}
 
-$\theta_M$ can be estimated using equation \ref{eq:fixed.effects} and the new weights $w_i$, thus, the only problem is to estimate $\tau^2$. It can be obtained through an iterative process, using a newly defined function
+$\theta_M$ can be estimated using equation \ref{eq:fixed.effects}, the only problem is to estimate $\tau^2$. It can be obtained through an iterative process, using a newly defined function
 
 \begin{align}
 F(\tau^2) &= \sum_{i = 1}^n w_i(\theta_i - \theta_M)^2 - (n-1) \nonumber
 \end{align}
 
-In view of equation \ref{eq:paulemandel}, $\tau^2$ must be such that $F(\tau^2) = 0$. We start with a arbitrary $\tau^2$, iteratively add a term $\tau_0^2$ and update $\tau^2$ until $F(\tau^2 + \tau_0^2)$ is close to zero. Using a truncated taylor series expansion, one can obtain the partial derivative after $\tau^2$, which is a reasonable choice for $\tau_0^2$. Using $\tau^2 + \tau_0^2$ for $\hat{w}_i, \hat{theta}$, we can update $F(\tau^2)$ and check convergence to zero. \\
-The estimation of $\tau^2$ is accompained by uncertainity. A common procedure is to test if it is there is significant heterogeneity between the studies (\citet{Intro.meta}, pg. 109). Compute $Q$, as given in \ref{eq:Q.heterogeneity}, based on one of the estimators of $\tau^2$. It is assumed that $Q$ follows a central Chi-squared distribution with $n -1$ degrees of freedom under the null hypothesis of equally distributed effect sizes. Thus, the expected value of $Q$ is $n-1$, and the excess dispersion is $Q - n + 1$. The $p$-value against the null hypothesis of equally distributed effect sizes is, using $F$ as the cumulative distribution function of the Chi-squared distribution with d.f. = $n-1$, $1 - F(Q)$. \\
+In view of equation \ref{eq:paulemandel}, $\tau^2$ must be such that $F(\tau^2) = 0$. Then, we start with a arbitrary $\tau^2$ and repeatedly add a term $\tau_0^2$ to update $\tau^2$ until $F(\tau^2 + \tau_0^2)$ is close to zero (using $\tau^2 + \tau_0^2$ for $\hat{w}_i, \hat{\theta}_M$). Using a truncated Taylor series expansion, one can obtain the partial derivative after $\tau^2$, which is a reasonable choice for $\tau_0^2$. \\
+%Using $\tau^2 + \tau_0^2$ for $\hat{w}_i, \hat{theta}$, we can update $F(\tau^2)$ and check convergence to zero. \\
+The estimation of $\tau^2$ is accompanied by uncertainty. A common procedure is to test if it is there is significant heterogeneity between the studies \cite[109]{Intro.meta}. Compute $Q$, as given in \ref{eq:Q.heterogeneity}, based on one of the estimators of $\tau^2$. It is assumed that $Q$ follows a central Chi-squared distribution with $n -1$ degrees of freedom under the null hypothesis of equally distributed effect sizes. Thus, the expected value of $Q$ is $n-1$, and the excess dispersion is $Q - n + 1$. The $p$-value against the null hypothesis of equally distributed effect sizes is $1 - F(Q)$, using $F$ as the cumulative distribution function of the Chi-squared distribution with d.f. = $n-1$. \\
 An advantage of the $\tau^2$ is that it is directly linked to the variability in the data. Additionally, one can use the $I^2$ statistic to see what portion the between study variance has of the overall variance. It is computed as
 
 \begin{align}
-I^2 &= (Q - n + 1)/Q \label{I2.proportion}
+I^2 &= (Q - n + 1)/Q \nonumber%\label{I2.proportion}
 \end{align}
 
-Large values for $\hat{I}^2$ are of great importance when analysing e.g. small study effects. \\
-Importantly, all proposed methods above assume normality and proper estimation of standard errors. This assumptions are not met for very small sample sizes and very few event counts. An alternative in the latter case is the mantel-haenszel method for risk and odds ratios (see e.g. \citet{mantel.haenszel}). 
+%Large values for $\hat{I}^2$ are of great importance when analyzing e.g. small study effects. \\
+Importantly, all proposed methods above assume normally distributed effect sizes and proper estimates $\hat{s}$ of the true standard error. This assumptions are not met for very small sample sizes and very few event counts. Alternatively, the mantel-haenszel method for risk and odds ratios (see e.g. \citet{mantel.haenszel}) could be used in the latter case. 
 
 
 
@@ -160,9 +160,9 @@ The tests that will be presented on the following pages are a common way to dete
 A test for small study effects will test in some ways if the size of the estimated treatment effect of a study depends on some measure of its size. An association between study size and treatment effect size can be interpreted as an artifact of publication bias.
 
 \subsection{Continuous Outcome Tests}
-For a continuous outcomes that are normally distributed, the sample mean and variance are independent of each other (\citet{meta.w.R}, pg 120). Thus, the estimated standard errors of treatment effects can be used as a proxy for study size, as they should in principle not be tied to the effect size.
+For a continuous outcomes that are normally distributed, the sample mean and variance are independent of each other \cite[120]{meta.w.R}. Thus, the estimated standard errors of treatment effects can be used as a proxy for study size, as they should in principle not be tied to the effect size.
 
-\subsubsection{Begg and Mazumdar: Rank Correlation Test}
+\subsubsection{Begg and Mazumdar: Rank Correlation Test} \label{sec:Begg}
 \citet{begg.ties} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
 A standardized effect size $\theta_i^\star$ can be computed as in \ref{begg.stand.eff}. $s_i^{2\star}$ is the variance of $\theta_i - \theta_M$ as defined in \ref{begg.stand.var}, $\theta_M$ being the fixed effects pooled treatment effect (\ref{eq:fixed.effects}. 
 
@@ -185,7 +185,7 @@ p &= 2*(1-\Phi(|Z|)) \nonumber
 The changes that have to be made int the case of ties are small and can be found in \cite[410]{begg.ties}.
 
 
-\subsubsection{Egger's Test: Weighted Linear Regression Test}
+\subsubsection{Egger's Test: Weighted Linear Regression Test} \label{sec:Egger}
 First, the concept of simple linear regression is introduced. In short, the model assumes a dependent variable $y$ to be a linear function of another explanatory variable $x$:
 
 \begin{align}
@@ -198,7 +198,7 @@ $\epsilon$ is the residual noise term that becomes necessary when $n$ pairs $(x_
 \operatorname*{argmin}_{\beta_0, \beta_1}(\sum_{i = 1}^n y_i - \beta_0 - \beta_1 x_i) \label{eq:least.squares}
 \end{align}
 
-Let $\mathbf{X}$ be a matrix whith the explanatory variables $x$ and $\mathbf{y}$ a corresponding vector for all $y$:
+Let $\mathbf{X}$ be a matrix with the explanatory variables $x$ and $\mathbf{y}$ a corresponding vector for all $y$:
 
 \begin{equation*}
 \mathbf{X} = 
@@ -226,7 +226,7 @@ Let $\mathbf{\beta} = (\beta_0, \beta_1)^\top$. It can be shown that
 \hat{\mathbf{\beta}} &= (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y} \label{eq:regression.parameters}
 \end{align}
 
-Is an estimator of $\mathbf{\beta}$ that mimizes the squared residuals. Let $\hat{\mathbf{y}} = \mathbf{X}\hat{\mathbf{\beta}}$ and $\hat{\mathbf{r}} = \hat{\mathbf{y}} - \mathbf{y}$. The variance estimates $\hat{\sigma}^2$ and $\hat{\mathbf{s}}_\beta^2$ are
+Is an estimator of $\mathbf{\beta}$ that minimizes the squared residuals. Let $\hat{\mathbf{y}} = \mathbf{X}\hat{\mathbf{\beta}}$ and $\hat{\mathbf{r}} = \hat{\mathbf{y}} - \mathbf{y}$. The variance estimates $\hat{\sigma}^2$ and $\hat{\mathbf{s}}_\beta^2$ are
 
 \begin{align}
 \hat{\sigma}^2 &= \frac{1}{n-2}\mathbf{r}^\top \hat{\mathbf{r}} & \hat{\mathbf{s}}_\beta^2 &= \hat{\sigma}^2 (\mathbf{X}^\top \mathbf{X})^{-1} \label{eq:regression.variances}
@@ -247,28 +247,28 @@ p &= 2(1-F(|(\beta_0 - \beta_{H0})/s_{\beta_0}|)) \nonumber
 \end{align}
 
 where $F$ is the cumulative $t$ distribution with $n-2$ degrees of freedom. $p$ will give the evidence against the null hypothesis $\beta_0 = \beta_{H0}$. \\
-The concept is extendable to weigthed linear regression. Weigthed linear regression may be used if the residuals $\mathbf{r}$ have unequal variances, which is equivalent to ascribe different precision to the observed $y$. The least squares equation \ref{eq:least.squares} is extended to
+The concept is extendable to weighted linear regression. Weighted linear regression may be used if the residuals $\mathbf{r}$ have unequal variances, which is equivalent to ascribe different precision to the observed $y$. The least squares equation \ref{eq:least.squares} is extended to
 
 \begin{align}
 \operatorname*{argmin}_{\beta_0, \beta_1}(\sum_{i = 1}^n w_i(y_i - \beta_0 - \beta_1 x_i)) \nonumber
 \end{align}
 
-with positive weigths $w_i$ that penalize large squared residuals for some $i$ more if $w_i$ is larger compared to other $w_i$. \\
-Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weigths on the diagonal and zeros on the off-diagonals. The estimates in \ref{eq:regression.parameters} and \ref{eq:regression.variances} can stil be used if $\mathbf{X}$ is exchanged with $\mathbf{X}^\star =  \mathbf{W} \mathbf{X}$ and $\mathbf{y}$ with $\mathbf{y}^\star = \mathbf{W} \mathbf{y}$. \label{weighted.regression} \\
+with positive weights $w_i$ that penalize large squared residuals for some $i$ more if $w_i$ is larger compared to other $w_i$. \\
+Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weights on the diagonal and zeros on the off-diagonals. The estimates in \ref{eq:regression.parameters} and \ref{eq:regression.variances} can still be used if $\mathbf{X}$ is exchanged with $\mathbf{X}^\star =  \mathbf{W} \mathbf{X}$ and $\mathbf{y}$ with $\mathbf{y}^\star = \mathbf{W} \mathbf{y}$. \label{weighted.regression} \\
 Now it is shown how linear regression can be used to test dependency of effect sizes on study sizes. The simplest application was introduced by \citet{Egger}.
-Let $\theta/s$ be the dependent variable $y$ and $1/s$ the explanatory variable $x$. If plotted, this corresponds to a radial or galbraith plot \citet{galbraith}. The linear regression equation as introduced before in \ref{eq:simple.regression} can be written in two ways:
+Let $\theta/s$ be the dependent variable $y$ and $1/s$ the explanatory variable $x$. If plotted, this corresponds to a radial or Galbraith plot \citet{galbraith}. The linear regression equation as introduced before in \ref{eq:simple.regression} can be written in two ways:
 
 \begin{align}
 \theta/s &= \beta_0 + \beta_1/s + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:radial.plot} 
 \end{align}
 
-\ref{eq:radial.plot} is often provided due to the correspondance to the radial plot. However, it is equivalent to
+\ref{eq:radial.plot} is often provided due to the correspondence to the radial plot. However, it is equivalent to
 
 \begin{align}
 \theta &= \beta_0 + \beta_1 s + \epsilon, & \epsilon \sim N(0, w^{-1}\sigma^2) \label{eq:egger.plot}
 \end{align}
 
-with weigths $w = 1/s^2$. Thus testing $\beta_0$ of \ref{eq:radial.plot} or $\beta_1$ is equivalent. The corresponding $p$-value is then used as evidence for a small study effect. Plugging in  $\theta_i/s_i, 1/s_i$ as $y_i, x_i$ into equation \ref{eq:regression.parameters} and \ref{eq:regression.variances} will give the estimates for $\hat{\beta}_0, \hat{\beta}_1,\hat{s}_{\beta_0}$ and $\hat{s}_{\beta_1}$.
+with weights $w = 1/s^2$. Thus testing $\beta_0$ of \ref{eq:radial.plot} or $\beta_1$ is equivalent. The corresponding $p$-value is then used as evidence for a small study effect. Plugging in  $\theta_i/s_i, 1/s_i$ as $y_i, x_i$ into equation \ref{eq:regression.parameters} and \ref{eq:regression.variances} will give the estimates for $\hat{\beta}_0, \hat{\beta}_1,\hat{s}_{\beta_0}$ and $\hat{s}_{\beta_1}$.
 
 % \begin{align}
 % \hat{\beta_1} &= \frac{\sum_{i = 1}^n (\varphi_i - \bar{\varphi})(\theta^\star_i - \bar{\theta}^\star)}{\sum_{i = 1}^n (\varphi_i - \bar{\varphi})^2} &
@@ -276,7 +276,7 @@ with weigths $w = 1/s^2$. Thus testing $\beta_0$ of \ref{eq:radial.plot} or $\be
 % \end{align}
 
 
-\subsubsection{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test} \label{Thompson}
+\subsubsection{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test} \label{sec:Thompson}
 A method proposed in \citet{thompson.sharp} allows for between study variance $\tau^2$, as introduced before in section \ref{sec:meta.analysis}. It extends the previously seen linear regression approach with $x = 1/s$ and $y = \theta/s$ by introducing weights. The effect size $\theta_i$ is assumed to be distributed as
 
 \begin{align}
@@ -284,18 +284,18 @@ A method proposed in \citet{thompson.sharp} allows for between study variance $\
 \end{align}
 
 $\tau^2$ is estimated as in equation \ref{eq:Tau.definition} (method of moments). %or \ref{eq:paule.mandel}. 
-The weigths are set as $w_i = 1/\sqrt{s_i^2 + \tau^2})$. After adjusting for the weights as described in \ref{weighted.regression}, we can proceed analogous to Egger's test. The p-value for $\beta_{0} \neq 0$ reflects the evidence for a small study effect.
+The weights are set as $w_i = 1/\sqrt{s_i^2 + \tau^2})$. After adjusting for the weights as described in \ref{weighted.regression}, we can proceed analogous to Egger's test. The $p$-value for $\beta_{0} \neq 0$ reflects the evidence for a small study effect.
 
 \subsection{Dichotomous Outcomes Tests}
  
 The issue with dichotomous outcomes is that effect size and variance of effect size are correlated, which can readily be seen in \ref{eq:risk.ratio} and \ref{eq:risk.ratio.variance}. For example, a small number of event counts in one or group will inflate the variance and the effect size. Consequently, the tests above will tend to reject the null-hypothesis too often, i.e. report false positives. A number of solutions to this problem are provided in the literature.
 
 
-\subsubsection{Peters Test: Weighted Linear Regression Test}
+\subsubsection{Peters Test: Weighted Linear Regression Test} \label{sec:Peter}
 Instead of taking the standard error $s$ as explanatory variable $x$ as in Egger's Test, the inverse of the total sample size is used. Additionally, the variances $s_i^2$ are used as weights. Thus, the subsequent test procedure is identical to Egger's test. Peters test is a a small modification of Macaskill's test where the explanatory variable is the sample size instead of its inverse.
 
 
-\subsubsection{Harbord's Test: Score based Test}
+\subsubsection{Harbord's Test: Score based Test} \label{sec:Harbord}
 A rank based alternative to Peters test for binary outcomes is Harbord's test \citep{Harbord}.
 It uses a different treatment effect and variance estimate: the score $\varphi$ of the log-likelihood, evaluated at log odds ratio $\theta_0 = 0$ and its inverse Fisher information $s^2$. Formally,
 
@@ -304,10 +304,10 @@ It uses a different treatment effect and variance estimate: the score $\varphi$ 
 s^2 &= \frac{(e_t + e_c)(e_t + (n_t - e_t))(e_c + (n_c - e_c))((n_t - e_t) + (n_c - e_c))}{(n_t + n_c)^2(n_t + n_c - 1)} \label{harbord.variance}
 \end{align}
 
-It can be shown that they are both good approximations of the log odds ratio and its variance if the real $\theta$ is not too far from zero. The standardized estimator $r_i/v_i$ is also known as peto odds ratio. The obtained scores and variances can be used in Egger's test as treatment effects and variances.
+It can be shown that they are both good approximations of the log odds ratio and its variance if the real $\theta$ is not too far from zero. The standardized estimator $r_i/v_i$ is also known as Pet0 odds ratio. The obtained scores and variances can be used in Egger's test as treatment effects and variances.
 
 
-\subsubsection{Schwarzer's Test: Rank Correlation Test}
+\subsubsection{Schwarzer's Test: Rank Correlation Test} \label{sec:Schwarzer}
 \citet{Schwarzer} developed a test for the correlation between $E_t - \mathbb{E}(E_t)$ and the variance of $E_t$, $E_t$ being a random variable from the non-central hypergeometric distribution, assuming a fixed log odds ratio. \\
 $\mathbb{E}(E_t)$ and variance of $E_t$ are then estimated based on $e_t$. The standardized cell count deviation 
 \begin{align}
@@ -315,7 +315,7 @@ $\mathbb{E}(E_t)$ and variance of $E_t$ are then estimated based on $e_t$. The s
 \end{align}
 and the inverse of $s_i^2$ is then used as before in Begg and Mazumdar's test.
 
-\subsubsection{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}
+\subsubsection{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables} \label{sec:Rucker}
 The correlation between variance and effect size of dichotomous outcome measures can be abolished by the variance stabilizing transformation for binomial random variables. We use that the arcsine function is the variance stabilizing transformation for a proportion. Let
 
 \begin{align}
@@ -339,7 +339,7 @@ Then one can optionally apply Begg and Mazumdar's rank correlation test or Thomp
 
 
 \section{Small study effect and Publication Bias Adjustment}
-There are different approaches to correct for small study effects and publication bias. They can mainly be distinguished by their underlying methods: regression based approaches aim to regress the effect to a study with infinte precision (i.e. very small standard error) or to a summary effect, corrected for publication bias. Selection modells aim to simulate different, hypothetical selection processes and attain a approximate treatment effect by sensitivity analysis:
+There are different approaches to correct for small study effects and publication bias. They can mainly be distinguished by their underlying methods: regression based approaches aim to regress the effect to a study with infinite precision (i.e. very small standard error) or to a summary effect, corrected for publication bias. Selection models aim to simulate different, hypothetical selection processes and attain a approximate treatment effect by sensitivity analysis:
 
 \subsection{Adjustment by Regression}
 \citet{limitmeta} use a random effects model %together with shrinkage procedure 
@@ -351,11 +351,11 @@ regression based tests for small study effects, we have
 \theta_i & = \beta_0 + \beta_1\sqrt{s_i^2 + \tau^2} + \epsilon_i\sqrt{v_i + \tau^2}, \epsilon_i \stackrel{\textrm{iid}}{\sim} N(0,1)  \label{eq:limitmeta.regression}
 \end{align}
 
-The only difference between Thompson and Sharp's variant is $x = \sqrt{s^2 + \tau^2}$ instead of $x = \sqrt{s^2}$. $\beta_{1}$ represents the bias introduced by small study effects, as can be seen when looking at \ref{limitmeta.infinitesample}
+The only difference between Thompson and Sharp's variant is $x = \sqrt{s^2 + \tau^2}$ instead of $x = \sqrt{s^2}$. $\beta_{1}$ represents the bias introduced by small study effects, as illustrated in the following equations:
 
 \begin{align}
-\mathbb{E}((\theta_i - \beta_0)/\sqrt{s_i^2}) \rightarrow \beta_1 \textrm{ if } s_i \rightarrow \infty \label{limitmeta.infinitesample} \\
-\mathbb{E}(theta_i) \rightarrow \beta_0 + \beta_1 \tau \textrm{if} s_i \rightarrow 0
+\mathbb{E}((\theta_i - \beta_0)/\sqrt{s_i^2}) \rightarrow \beta_1 \textrm{ if } s_i \rightarrow \infty \nonumber \\ %\label{limitmeta.infinitesample} \\
+\mathbb{E}(theta_i) \rightarrow \beta_0 + \beta_1 \tau \textrm{if} s_i \rightarrow 0 \nonumber
 \end{align}
 
 After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen before in the simple linear regression framework. Now we have basically two possible estimates at hand:
@@ -364,12 +364,14 @@ After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen 
 \item $\beta_0 + \beta_1 \tau$ the treatment effect of a hypothetical study with infinite precision, corresponding standard error $s_{\beta_0} + s_{\beta_1}$
 \end{itemize}
 
+Simulations in \citet{limitmeta} suggested that the latter estimate is slightly superior with respect to coverage (and mean squared error).
+
 
 
 \subsection{Copas Selection Model}
 
 A method proposed in \cite{Copas1,Copas2,Copas3} 
-assumes that the given sample of treatment effects and standard errors is a selected part of a larger random sample. Selection of studies depends on their effect size and variance. Smaller variance is always accompained by larger selection probability. \\
+assumes that the given sample of treatment effects and standard errors is a selected part of a larger random sample. Selection of studies depends on their effect size and variance. Smaller variance is always accompanied by larger selection probability. \\
 Let $\theta_i$ be the effect size estimate of study $i$. Then 
 
 \begin{align}
@@ -394,9 +396,9 @@ with $\delta \sim N(0,1)$. $z$ is interpreted as the \textit{propensity for sele
 So far, we have, for a study $i$
 
 \begin{align}
-\theta_i = \mu_i + \sigma_i\epsilon_i \\
-\mu_i \sim N(\theta, \tau^2) \\
-z_i = a + b/s_i + \delta_i
+\theta_i = \mu_i + \sigma_i\epsilon_i \nonumber \\ 
+\mu_i \sim N(\theta, \tau^2) \nonumber \\
+z_i = a + b/s_i + \delta_i \nonumber
 \end{align}
 
 where $(\epsilon_i, \delta_i)$ are standard normal residuals. The two models are coupled by introducing a correlation $\rho = cor(\theta_i, z_i)$ by defining $(\epsilon_i, \delta_i)$ as bivariate standard normals. It follows that,
@@ -448,22 +450,22 @@ with
 \end{align}
 
 $\chi^2$ can be used with a $\chi^2$ distribution with one degree of freedom to obtain a $p$-value. Note that the test is almost equivalent to Egger's small study effect test with $\tau^2 = 0$. Thus, although the copas selection model models publication bias, it is dependent on the small study effects to find the most suitable pair $(a,b)$. \\
-If one applies the model to a single meta-analysis, a sensitivity analysis is suggested. One can observe how $\theta$ and it's confidence intervals change dependent on the underlying selection process. Selection models are in general not recommended for inference \citep{selection.assessment}. 
+If one applies the model to a single meta-analysis, a sensitivity analysis is suggested. One can observe how $\theta$ and it's confidence intervals change dependent on the underlying selection process. Selection models are in general not recommended for inference (e.g. \citet{selection.assessment}). 
 \citet{limitmeta} have shown how the method can be implemented in a simulation for inference purposes. \\
 A range of values of $(a,b)$ are applied, and the test for residual small study effect as described in equation \ref{eq:copas.small.study} is applied. If all obtained $p$-values from the test are above a threshold 0.1, this is interpreted as no evidence, and no need for modelling, and the standard, classical random effects meta-analysis is retained. If none of the $p$-values is above the threshold, a wider range of values for $(a,b)$ is used. When some $p$-values are above, and some below the threshold, the pair $(a,b)$ with the smallest number of missing studies is retained (that is, the least intense underlying selection model is chosen).\\
-Currently, there is no test to detect missspecifications in the model itself, the authors themselves have argued that a nonparametric test of the residuals would lack power.
+Currently, there is no test to detect miss-specifications in the model itself, the authors themselves have argued that a non-parametric test of the residuals would lack power.
 
 
 \section{Transformation between effect sizes} \label{sec:transformation.effectsizes}
-Assumon that binary outcomes result from a dichtomozation of originally continuous random variables, in this case, the logistic distribution, a transformation from typical binary effect measures to Cohen's $d$ can be achieved (\citet{Intro.meta}, pg. 47). \\
+Assuming that binary outcomes result from a dichotomization of originally continuous random variables, in this case, the logistic distribution, a transformation from typical binary effect measures to Cohen's $d$ can be achieved \cite[47]{Intro.meta}. \\
 Let $\theta$ be a log odds ratio and $s$ its standard error. Cohen's $d$ and it's variance $s_d^2$ is obtained by
 
 \begin{align}
 d &= \theta \frac{\sqrt{3}}{\pi} & s_d^2 = s^2 \frac{\sqrt{3}}{\pi} \nonumber
 \end{align}
 
-$\frac{\pi}{\sqrt{3}} = 1.81$ is the standard deviation of the logistic distribution $L(\mu, \eta)$ with scale parameter $\eta = 1$, so we just divide the log odds ratio and it's variance throught the standard deviation. The approximation works only well if $e_t$ and $e_c$ are not very small, especially in the case of $s_d^2$. Plugging in the observed log odds ratio $\hat{\theta}$ and $\hat{s}^2$ will give an estimate of Cohen's $d$.\\
-Pearsons correlation can be attained by the formulas (\citet{olkin1985dtor}, \citet{Intro.meta} pg. 48-49)
+$\frac{\pi}{\sqrt{3}} = 1.81$ is the standard deviation of the logistic distribution $L(\mu, \eta)$ with scale parameter $\eta = 1$, so we just divide the log odds ratio and it's variance through the standard deviation. The approximation works only well if $e_t$ and $e_c$ are not very small, especially in the case of $s_d^2$. Plugging in the observed log odds ratio $\hat{\theta}$ and $\hat{s}^2$ will give an estimate of Cohen's $d$.\\
+Pearson's correlation can be attained by the formulas (\citet{olkin1985dtor}, \cite[48]{Intro.meta})
 
 \begin{align}
 r &= \frac{d}{\sqrt{d^2 + a}} & a = (n_c + n_t)^2 / n_c n_t \nonumber
@@ -656,7 +658,7 @@ s_z^2 &= \frac{1}{n-3}
 % \eta_{r} &= \frac{1}{\sum_{i = 1}^n w_{i}^\star} \label{ranef.reciproce.variance}
 % \end{align}
 % 
-% A p-value under the Null-hypothesis of $\Delta = 0$ can be obtained by calculating the $Z$-value (\ref{Zvalue}) and using the distribution function of a standard normal as shown in (\ref{p.value.calculation}), $\Phi$ being the distribution function of a standard normal distribution. 
+% A $p$-value under the Null-hypothesis of $\Delta = 0$ can be obtained by calculating the $Z$-value (\ref{Zvalue}) and using the distribution function of a standard normal as shown in (\ref{p.value.calculation}), $\Phi$ being the distribution function of a standard normal distribution. 
 % 
 % \begin{align}
 % Z &= \frac{\Delta}{\sqrt{\nu}} \label{Zvalue} \\
@@ -692,7 +694,7 @@ s_z^2 &= \frac{1}{n-3}
 % Using $y_{i}^\star$ as dependent, and  $x_{i}$ as explanatory variable in linear regression, one obtains an intercept $\beta_{0}$ and a slope. 
 % 
 % \vspace{0mm}
-% If $\beta_{0} \ne 0$, the null hypothesis of no small study effect may be contested, using that $\beta_{0} \sim t_{n-1}$, $n-1$ being the degrees of freedom of the $t$-distribution. The p-value for $\beta_{0} = 0$ (no reporting bias) is then given by \ref{egger.pvalue}.
+% If $\beta_{0} \ne 0$, the null hypothesis of no small study effect may be contested, using that $\beta_{0} \sim t_{n-1}$, $n-1$ being the degrees of freedom of the $t$-distribution. The $p$-value for $\beta_{0} = 0$ (no reporting bias) is then given by \ref{egger.pvalue}.
 % 
 % \begin{align}
 % p &= 2*(1 - t_{n-1}(\beta_{0}/se(\beta_{0}))) \label{egger.pvalue}
@@ -823,13 +825,13 @@ s_z^2 &= \frac{1}{n-3}
 % y_{i} &= \mu_{i} + \beta s_{i} + \sigma_{i}\epsilon_{i}
 % \end{align}
 % 
-% If we accept $\beta = 0$, then we accept that the selection model has satisfactorily explained any relationship between $y$ and $s$. Only if the value is large enough, typically $p > 0.05$, one concludes that the selection model has explained the observed data. The p-value is obtained by a likelihood ratio test comparing the maximum of the likelihood with the $\beta$ term added and without it, and by a likelihood ratio test.
+% If we accept $\beta = 0$, then we accept that the selection model has satisfactorily explained any relationship between $y$ and $s$. Only if the value is large enough, typically $p > 0.05$, one concludes that the selection model has explained the observed data. The $p$-value is obtained by a likelihood ratio test comparing the maximum of the likelihood with the $\beta$ term added and without it, and by a likelihood ratio test.
 % 
 % \vspace{0mm}
 % To find out if the null-hypothesis of, say, $\mu = 0$ can be rejected, another likelihood ratio test can be performed, this time with imputing $\mu = 0$ and comparing the two maximum likelihoods.
 % 
 % \vspace{0mm}
-% In practice, only a range of values for $a,b$ are reasonable. For those values, the quantities above can be calculated and illustrated. Values for $\mu$ that have p-values over a predefined significance threshold can be used for inference of the effect size. 
+% In practice, only a range of values for $a,b$ are reasonable. For those values, the quantities above can be calculated and illustrated. Values for $\mu$ that have $p$-values over a predefined significance threshold can be used for inference of the effect size. 
 % 
 % \subsection{Adjustment by Regression}
 % There are multiple ways to adjust for small study effects by regression. The general idea is to extrapolate the effect size of a study with a variance of zero based on the given effects and variances. 

@@ -29,6 +29,8 @@ load(file.path(PATH_RESULTS, "meta.cont.RData"))
 load(file.path(PATH_RESULTS, "meta.surv.RData"))
 load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
+data.ext2 <- pb.process2(data)
+
 
 
 #Explanation of coding: 0 = (unsig, unsig), 1 = (unsig, sig), 2 = (sig, sig), 3 = (sig, unsig)
@@ -310,9 +312,9 @@ ranef.fixef.sc.zval <- effect.diff %>% ggplot(aes(x = abs(zval.fixef), y = abs(z
 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
 	ggtitle("Fixed effects and Random effects z statistics") + ylab("Random effects statistic") + xlab("Fixed effects statistic")
 
-effect.diff %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point(size = 0.8) +
-	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
-	ggtitle("Fixed effects and Random effects z statistics") + ylab("Random effects statistic") + xlab("Fixed effects statistic")
+# effect.diff %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point(size = 0.8) +
+# 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
+# 	ggtitle("Fixed effects and Random effects z statistics") + ylab("Random effects statistic") + xlab("Fixed effects statistic")
 
 # trimfill.fixef.sc.zval <- effect.diff %>% ggplot(aes(x = abs(zval.fixef), y = abs(zval.trimfill.fixef))) + geom_point(size = 0.8) +
 # 	geom_abline(slope = 1, color = "red") + geom_smooth(method = "lm", se = FALSE) + theme_bw() + 
@@ -370,4 +372,37 @@ meta.cont %>% filter(missing.trim.cont < 0.5) %>%
 	geom_density(na.rm = T, position = "fill") + 
 	labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
 #--------------------------------------------------------------------------------------------------------------------#
+
+#Median standardized z-scores for various sample size
+p.samplesize.z  <- data.ext2 %>% filter(total1 + total2 > 10 & total1 + total2 < 200) %>% ungroup() %>% 
+  mutate(std.z = abs(z), sample.size = total1 + total2) %>%
+  group_by(sample.size) %>% 
+  summarize(median.effect = median(std.z, na.rm = T)) %>% 
+  ggplot(aes(x = sample.size, y = median.effect)) + geom_point() + 
+  theme_bw() + xlab("sample size") + ylab("median z-score") +
+  xlim(c(10, 100))
+
+  
+p.samplesize.effect <- data %>% filter(total1 + total2 > 10 & total1 + total2 < 200) %>% ungroup() %>% 
+  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  group_by(sample.size) %>% 
+  summarize(median.effect = median(scaled.effect, na.rm = T)) %>% 
+  ggplot(aes(x = sample.size, y = median.effect)) + geom_point() + theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size")
+
+#levels(data$outcome.measure.new) <- c("Mean Difference", "Std. Mean Difference", "Odds Ratio", "Risk Ratio")
+
+p.samplesize.effect.sep <- data %>% filter(total1 + total2 > 10 & total1 + total2 < 100) %>% 
+  filter(outcome.measure.new == "Risk Ratio" | outcome.measure.new == "Odds Ratio" | outcome.measure.new == "Mean Difference" |
+           outcome.measure.new == "Std. Mean Difference") %>% 
+  group_by(outcome.measure.new) %>% 
+  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  group_by(sample.size, outcome.measure.new) %>% 
+  summarize(median.effect = median(scaled.effect, na.rm = T)) %>% 
+  ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure.new)) + geom_point() + facet_wrap(~outcome.measure.new, scales = "free") + 
+  theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size")
+
+
+
+
+
 

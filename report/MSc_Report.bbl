@@ -84,10 +84,27 @@ Held, L. and Saban{\'e}s~Bov{\'e}, D. (2014).
 \newblock Applied statistical inference.
 \newblock {\em Springer, Berlin Heidelberg, doi}, {\bf10},  978--3.
 
+\bibitem[Higgins~JPT, 2011]{cochrane.handbook}
+Higgins~JPT, G.~S. (2011).
+\newblock {\em Cochrane Handbook for Systematic Reviews of Interventions}.
+\newblock The Cochrane Collaboration.
+
+\bibitem[Ioannidis and Trikalinos, 2007]{Ioannidis2007}
+Ioannidis, J.~P. and Trikalinos, T.~A. (2007).
+\newblock The appropriateness of asymmetry tests for publication bias in
+  meta-analyses: a large survey.
+\newblock {\em CMAJ}, {\bf176},  1091--1096.
+
 \bibitem[Kasuya, 2001]{t.test}
 Kasuya, E. (2001).
 \newblock Mann-whitney u test when variances are unequal.
 \newblock {\em Animal Behaviour}, {\bf6},  1247--1249.
+
+\bibitem[McShane {\it et~al.}, 2016]{selection.assessment}
+McShane, B.~B., B{\"o}ckenholt, U., and Hansen, K.~T. (2016).
+\newblock Adjusting for publication bias in meta-analysis: An evaluation of
+  selection methods and some cautionary notes.
+\newblock {\em Perspectives on Psychological Science}, {\bf11},  730--749.
 
 \bibitem[Paule and Mandel, 1982]{paulemandel}
 Paule, R.~C. and Mandel, J. (1982).

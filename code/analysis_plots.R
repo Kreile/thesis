@@ -30,6 +30,8 @@ load(file.path(PATH_RESULTS, "meta.surv.RData"))
 load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
 
+# data.ext2 <- pb.process2(data)
+
 ################################################################################################
 ################################################################################################
 #PROPORTION OF SIGNIFICANT PUBLICATION BIAS TESTS
@@ -96,6 +98,7 @@ p.bin <- meta.bin %>% ungroup() %>%
 	annotate("text", x = test.bin$test.type, y = 500, 
 					 label = paste(round(test.bin$mean, 2)*100, "% rejected"), 
 					 color = "white")
+#--------------------------------------------------------------------------------------------------------------------#
 
 dat_text <- data.frame(
 	label = paste(c(sum(meta.bin$harbord.test), sum(meta.bin$peter.test), 
@@ -109,10 +112,12 @@ labels <- c(pval.harbord = "Harbord", pval.peter = "Peter", pval.rucker = "Rucke
 p.dist.bin <- meta.bin %>% ungroup() %>% 
 	select(pval.harbord, pval.peter, pval.rucker, pval.schwarzer) %>% 
 	gather(key = "test.type", value = "p.value") %>% 
-	ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
-	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 100, label = label), color = "black") + 
+	ggplot(aes(x = p.value)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 170, label = label), color = "black") + 
 	theme(strip.text.x = element_text(size=15))
+#--------------------------------------------------------------------------------------------------------------------#
 
+#Survival Outcomes:
 test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																									 begg.test = mean(begg.test),
 																									 thompson.test = mean(thompson.test))
@@ -129,6 +134,7 @@ p.cont <- meta.cont %>% ungroup() %>%
 	annotate("text", x = test.cont$test.type, y = 150, 
 					 label = paste(round(test.cont$mean, 2)*100, "% rejected"), 
 					 color = "white")
+#--------------------------------------------------------------------------------------------------------------------#
 
 dat_text <- data.frame(
 	label = paste(c(sum(meta.cont$begg.test), sum(meta.cont$egger.test), sum(meta.cont$thompson.test)), "< 0.1,",
@@ -139,13 +145,13 @@ labels <- c(pval.begg = "Begg Mazumdar", pval.egger = "Egger", pval.thompson = "
 p.dist.cont <- meta.cont %>% ungroup() %>% 
 	select(pval.egger, pval.thompson, pval.begg) %>% 
 	gather(key = "test.type", value = "p.value") %>% 
-	ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + 
+	ggplot(aes(x = p.value)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
 	facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
-	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 25, label = label),  color = "black") + 
+	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 50, label = label),  color = "black") + 
 	theme(strip.text.x = element_text(size=15))
+#--------------------------------------------------------------------------------------------------------------------#
 
-
-
+#Survival Outcomes:
 test.surv <- meta.surv %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																									 begg.test = mean(begg.test),
 																									 thompson.test = mean(thompson.test))
@@ -159,44 +165,56 @@ p.surv <- meta.surv %>% ungroup() %>%
 	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
 	theme_bw() + xlab(label = NULL) + ggtitle("Continuous Outcomes") + theme(legend.position = "top") +
 	guides(fill=guide_legend(title=NULL))+
-	annotate("text", x = test.surv$test.type, y = 150, 
+	annotate("text", x = test.surv$test.type, y = 10, 
 					 label = paste(round(test.surv$mean, 2)*100, "% rejected"), 
 					 color = "white")
+#--------------------------------------------------------------------------------------------------------------------#
 
 dat_text <- data.frame(
-	label = paste(c(sum(meta.surv$begg.test), sum(meta.surv$egger.test), sum(meta.surv$thompson.test)), "< 0.1,",
-								round(c(mean(meta.surv$begg.test), mean(meta.surv$egger.test), mean(meta.surv$thompson.test)),2)*100, "%"),
+	label = paste(c(sum(meta.surv$begg.test), sum(meta.surv$egger.test), sum(meta.surv$thompson.test)), 
+	              "< 0.1,",
+								round(c(mean(meta.surv$begg.test), mean(meta.surv$egger.test), mean(meta.surv$thompson.test)),2)*100, 
+								"%"),
 	test.type   = c("pval.begg", "pval.egger", "pval.thompson"))
 
 labels <- c(pval.begg = "Begg Mazumdar", pval.egger = "Egger", pval.thompson = "Thompson Sharp")
 p.dist.surv <- meta.surv %>% ungroup() %>% 
 	select(pval.egger, pval.thompson, pval.begg) %>% 
 	gather(key = "test.type", value = "p.value") %>% 
-	ggplot(aes(x = p.value)) + geom_histogram(bins = 20) + theme_bw() + 
+	ggplot(aes(x = p.value)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
 	facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
-	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 25, label = label),  color = "black") + 
+	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 13, label = label),  color = "black") + 
 	theme(strip.text.x = element_text(size=15))
+#--------------------------------------------------------------------------------------------------------------------#
 
 #Test agreement
 agree.bin <- meta.bin %>% mutate(n.sig = peter.test + rucker.test + harbord.test + schwarzer.test) %>% 
 	group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
-	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Binary Outcomes")
+	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + 
+  xlab("Number of significant tests") + ylab("count") + ggtitle("Binary Outcomes")
+#--------------------------------------------------------------------------------------------------------------------#
 
 agree.cont <- meta.cont %>% mutate(n.sig = egger.test + thompson.test + begg.test) %>% 
 	group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
-	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
+	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + 
+  xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
+#--------------------------------------------------------------------------------------------------------------------#
 
 agree.surv <- meta.surv %>% mutate(n.sig = egger.test + thompson.test + begg.test) %>% 
 	group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
-	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
+	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + 
+  xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
+#--------------------------------------------------------------------------------------------------------------------#
 
 
 ################################################################################################
 ################################################################################################
-#CHANGE OF EFFECT SIZES AFTER ADJUSTMENT
+#CHANGE OF TEST STATISTICS AFTER ADJUSTMENT
 ################################################################################################
 ################################################################################################
 
+
+#HISTOGRAMS: 
 #Comparison of z-scores:
 sig.zcor <- meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 																 z.ranef = est.z.ranef/se.est.z.ranef,
@@ -215,34 +233,36 @@ meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 										 z.copas = est.z.copas/se.est.z.copas) %>%  
 	select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
 	# filter(abs(fisher.z) < 10) %>% 
-	ggplot(aes(x = abs(fisher.z))) + geom_histogram() + theme_bw() + facet_wrap(~method, ncol = 2) + 
-	geom_vline(xintercept = 1.96, color = "red") + 
-	geom_text(data = sig.zcor, aes(x = 30, y = 500, label = label), position = "dodge")
+	ggplot(aes(x = abs(fisher.z))) + geom_histogram(boundary = 0) + theme_bw() + facet_wrap(~method, ncol = 2) + 
+	geom_vline(xintercept = 1.96, color = "red") + xlim(c(0,100)) +
+	geom_text(data = sig.zcor, aes(x = 50, y = 1000, label = label), position = "dodge")
+#--------------------------------------------------------------------------------------------------------------------#
 
-#Comparison of m.a. with copas correction method applied:
-sig.zcor <- meta.f %>% filter(!is.na(est.z.copas)) %>% 
-	mutate(z.fixef = est.z.fixef/se.est.z.fixef,
-				 z.ranef = est.z.ranef/se.est.z.ranef,
-				 z.reg = est.z.reg/se.est.z.reg,
-				 z.copas = est.z.copas/se.est.z.copas) %>%  
-	select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
-	group_by(method) %>% 
-	summarise(significant = length(which(abs(fisher.z) > 1.96)),
-						p.significant = significant/length(fisher.z))
-sig.zcor <- data.frame(method = sig.zcor$method,
-											 label = paste("n = ", sig.zcor$significant, ", ", round(sig.zcor$p.significant,3)*100, "% significant", sep = ""))
+#Comparison of SMD's:
+sig.d <- meta.f %>% mutate(d.fixef = est.d.fixef/se.est.d.fixef,
+                              d.ranef = est.d.ranef/se.est.d.ranef,
+                              d.reg = est.d.reg/se.est.d.reg,
+                              d.copas = est.d.copas/se.est.d.copas) %>%  
+  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+  group_by(method) %>% 
+  summarise(significant = length(which(abs(smd) > 1.96)),
+            p.significant = significant/length(smd))
+sig.d <- data.frame(method = sig.d$method,
+                       label = paste("n = ", sig.d$significant, ", ", round(sig.d$p.significant,3)*100, "% significant", sep = ""))
 
-meta.f %>% filter(!is.na(est.z.copas)) %>% 
-	mutate(z.fixef = est.z.fixef/se.est.z.fixef,
-				 z.ranef = est.z.ranef/se.est.z.ranef,
-				 z.reg = est.z.reg/se.est.z.reg,
-				 z.copas = est.z.copas/se.est.z.copas) %>%  
-	select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
-	# filter(abs(fisher.z) < 10) %>% 
-	ggplot(aes(x = abs(fisher.z))) + geom_histogram() + theme_bw() + facet_wrap(~method, ncol = 2) + 
-	geom_vline(xintercept = 1.96, color = "red") + 
-	geom_text(data = sig.zcor, aes(x = 10, y = 125, label = label), position = "dodge")
-
+meta.f %>% mutate(d.fixef = est.d.fixef/se.est.d.fixef,
+                  d.ranef = est.d.ranef/se.est.d.ranef,
+                  d.reg = est.d.reg/se.est.d.reg,
+                  d.copas = est.d.copas/se.est.d.copas) %>%  
+  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+  # filter(abs(smd) < 10) %>% 
+  ggplot(aes(x = abs(smd))) + geom_histogram(boundary = 0, binwidth = 1) + 
+  theme_bw() + facet_wrap(~method, ncol = 2) + 
+  geom_vline(xintercept = 1.96, color = "red") + #xlim(c(0,100)) +
+  geom_text(data = sig.d, aes(x = 25, y = 1000, label = label), position = "dodge") +
+  scale_colour_manual(name="Line Color",
+                      values=c(myline1="red"))
+#--------------------------------------------------------------------------------------------------------------------#
 
 #Comparison of "original effect sizes":
 effect.diff <- meta.f %>% mutate(
@@ -290,6 +310,7 @@ effect.diff %>% ggplot(aes(x = change.fixef.copas, fill = outcome.measure.new)) 
 	theme_bw() + theme(legend.position = "bottom", strip.text = element_blank(), legend.title = element_blank())  +
 	geom_text(data = copas.label, 
 						mapping = aes(x = 0, y = c(220, 47.4, 10), label = label, vjust = "center"), position = "dodge") #+ ylim(0, 250)
+#--------------------------------------------------------------------------------------------------------------------#
 
 #Regression model:
 reg.miss <- effect.diff %>% group_by(outcome.type) %>% mutate(dif = abs(est.fixef - est.reg)) %>% 
@@ -316,6 +337,86 @@ effect.diff %>% ggplot(aes(x = est.fixef - est.reg, fill = outcome.measure.new))
 	geom_text(data = reg.label, 
 						mapping = aes(x = 0, y = c(330, 50, 10), label = label, vjust = "center"), position = "dodge") #+ ylim(0, 250)
 
+
+################################################################################################
+################################################################################################
+#CHANGE OF EFFECT SIZE AFTER ADJUSTMENT
+################################################################################################
+################################################################################################
+
+#Standardized mean differences (hedges g and cohens d):
+number.outside.smd <- meta.f %>% mutate(copas = est.d.copas, regression = est.d.reg) %>% 
+  select(meta.id, est.d.fixef, est.d.ranef, copas, regression) %>% 
+  gather(key = "method", value = "smd", est.d.fixef:regression) %>% filter(smd > 4)
+
+meta.f %>% mutate(copas = est.d.copas, regression = est.d.reg) %>% 
+  select(est.d.fixef, est.d.ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.smd", copas:regression) %>% 
+  ggplot(aes(y = abs(est.d.fixef), x = abs(adjusted.smd))) + geom_point(alpha = 0.4, size = 0.6) + 
+  facet_wrap(~method, scales = "free") + theme_bw() + 
+  xlab("Adjusted SMD") + ylab("Fixed Effects SMD") + xlim(c(0,4)) + ylim(c(0,4)) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  ggtitle("Fixed effects vs. Adjusted Std. Mean Difference", subtitle = "with linear regression fit")
+
+meta.f %>%   mutate(copas = est.d.copas, regression = est.d.reg) %>% 
+  select(est.d.fixef, est.d.ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.smd", copas:regression) %>% 
+  ggplot(aes(y = abs(est.d.ranef), x = abs(adjusted.smd))) + 
+  geom_point(alpha = 0.4, size = 0.6) + 
+  facet_wrap(~method, scales = "free") + theme_bw() + 
+  xlab("Adjusted SMD") + ylab("Random Effects SMD") + xlim(c(0,4)) + ylim(c(0,4)) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  ggtitle("Random effects vs. Adjusted Std. Mean Difference", subtitle = "with linear regression fit")
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Z-scores:
+number.outside.z <- meta.f %>% mutate(copas = est.z.copas, regression = est.z.reg) %>% 
+  select(meta.id, est.z.fixef, est.z.ranef, copas, regression) %>% 
+  gather(key = "method", value = "smd", est.z.fixef:regression) %>% filter(smd > 4)
+
+meta.f %>% mutate(copas = est.z.copas, regression = est.z.reg) %>% 
+  select(est.z.fixef, est.z.ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.z.score", copas:regression) %>% 
+  ggplot(aes(y = abs(est.z.fixef), x = abs(adjusted.z.score))) + geom_point(alpha = 0.4, size = 0.6) + 
+  facet_wrap(~method, scales = "free") + theme_bw() + 
+  xlab("Adjusted z-score") + ylab("Fixed Effects z-score") + xlim(c(0,1.5)) + ylim(c(0,1.5)) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  ggtitle("Fixed effects vs. Adjusted z-score", subtitle = "with linear regression fit")
+
+
+meta.f %>% mutate(copas = est.z.copas, regression = est.z.reg) %>% 
+  select(est.z.fixef, est.z.ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.z.score", copas:regression) %>% 
+  ggplot(aes(y = abs(est.z.ranef), x = abs(adjusted.z.score))) + 
+  geom_point(alpha = 0.4, size = 0.6) + 
+  facet_wrap(~method, scales = "free") + theme_bw() + 
+  xlab("Adjusted z-score") + ylab("Random Effects z-score") + xlim(c(0,1.5)) + ylim(c(0,1.5)) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  ggtitle("Random effects vs. Adjusted z-score", subtitle = "with linear regression fit")
+#--------------------------------------------------------------------------------------------------------------------#
+
+#log Hazard Ratios:
+meta.surv %>% mutate(copas = est.copas, regression = est.reg) %>% 
+  select(est.fixef, est.ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.log.hazard.ratio", copas:regression) %>% 
+  ggplot(aes(y = abs(est.fixef), x = abs(adjusted.log.hazard.ratio))) + 
+  geom_point(alpha = 0.4, size = 0.6) + 
+  facet_wrap(~method, scales = "free") + theme_bw() + 
+  xlab("Adjusted log hazard ratio") + ylab("Fixed Effects log hazard ratio") + 
+  xlim(c(0.7,1.3)) + ylim(c(0.7,1.3)) + 
+  geom_smooth(method = "lm", se = FALSE, ) + 
+  ggtitle("Fixed effects vs. Adjusted log hazard ratio", subtitle = "with linear regression fit")
+
+meta.surv %>% mutate(copas = est.copas, regression = est.reg) %>% 
+  select(est.fixef, est.ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.log.hazard.ratio", copas:regression)  %>% 
+  ggplot(aes(y = abs(est.ranef), x = abs(adjusted.log.hazard.ratio))) + 
+  geom_point(alpha = 0.4, size = 0.6) + 
+  facet_wrap(~method, scales = "free") + theme_bw() + 
+  xlab("Adjusted log hazard ratio") + ylab("Random Effects log hazard ratio") + 
+  xlim(c(0.7,1.3)) + ylim(c(0.7,1.3)) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  ggtitle("Random effects vs. Adjusted log hazard ratio", subtitle = "with linear regression fit")
 
 ################################################################################################
 ################################################################################################
@@ -395,4 +496,41 @@ correlation.cont <- meta.cont %>% ungroup() %>% summarise(thompson.egger = cor(p
 
 cont.tests.agreement <- rbind(agreement.cont, correlation.cont)
 rownames(cont.tests.agreement) <- c("Test Agreement","P-value Correlation")
+
+
+
+
+
+
+
+
+
+
+
+
+
+# #Comparison of m.a. with copas correction method applied:
+# sig.zcor <- meta.f %>% filter(!is.na(est.z.copas)) %>% 
+# 	mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+# 				 z.ranef = est.z.ranef/se.est.z.ranef,
+# 				 z.reg = est.z.reg/se.est.z.reg,
+# 				 z.copas = est.z.copas/se.est.z.copas) %>%  
+# 	select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
+# 	group_by(method) %>% 
+# 	summarise(significant = length(which(abs(fisher.z) > 1.96)),
+# 						p.significant = significant/length(fisher.z))
+# sig.zcor <- data.frame(method = sig.zcor$method,
+# 											 label = paste("n = ", sig.zcor$significant, ", ", round(sig.zcor$p.significant,3)*100, "% significant", sep = ""))
+# 
+# meta.f %>% filter(!is.na(est.z.copas)) %>% 
+# 	mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+# 				 z.ranef = est.z.ranef/se.est.z.ranef,
+# 				 z.reg = est.z.reg/se.est.z.reg,
+# 				 z.copas = est.z.copas/se.est.z.copas) %>%  
+# 	select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
+# 	# filter(abs(fisher.z) < 10) %>% 
+# 	ggplot(aes(x = abs(fisher.z))) + geom_histogram() + theme_bw() + facet_wrap(~method, ncol = 2) + 
+# 	geom_vline(xintercept = 1.96, color = "red") + 
+# 	geom_text(data = sig.zcor, aes(x = 10, y = 125, label = label), position = "dodge")
+# 
 

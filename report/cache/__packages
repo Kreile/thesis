@@ -12,9 +12,11 @@ stringr
 forcats
 meta
 metasens
-roadoi
 survival
 biostatUZH
 gridExtra
+Matrix
+metafor
 xtable
+roadoi
 bindrcpp

@@ -50,22 +50,22 @@ settings.meta(hakn=TRUE, method.tau="PM", method = "Inverse")
 
 tmp <- data.ext2 %>% filter(outcome.type == "bin") %>% group_by(meta.id) %>% 
 	mutate(n = n()) %>% filter(n >= 10) %>% filter(!all(events1 == 0) & !all(events2 == 0)) 
-
 meta.id.vector <- unique(tmp$meta.id)
 meta.id.vector <- meta.id.vector[-c(which(meta.id.vector == 94519),
                                    which(meta.id.vector == 62301))] #Copas likelihood conv. problems..
-meta.analyses <- list()
-meta.analyses.asd <- list()
-meta.analyses.limitmeta <- list()
-meta.analyses.copas <- list()
-meta.analyses.trimfill <- list()
-meta.tests.harbord <- list()
-meta.tests.peter <- list()
-meta.tests.rucker <- list()
-meta.tests.schwarzer <- list()
-counter <- 0
 
-
+# meta.analyses <- list()
+# meta.analyses.asd <- list()
+# meta.analyses.limitmeta <- list()
+# meta.analyses.copas <- list()
+# meta.analyses.trimfill <- list()
+# meta.tests.harbord <- list()
+# meta.tests.peter <- list()
+# meta.tests.rucker <- list()
+# meta.tests.schwarzer <- list()
+# counter <- 0
+# 
+#
 # for(u in meta.id.vector){
 # 	counter <- counter + 1
 # 	print(c(u, counter))
@@ -102,15 +102,15 @@ meta.tests.peter <- bin.meta.list[[9]]
 meta.tests.rucker <- bin.meta.list[[10]]
 meta.tests.schwarzer <- bin.meta.list[[11]]
 
-bin.meta.list <- list(tmp, meta.id.vector, meta.analyses,
-											meta.analyses.asd,
-											meta.analyses.limitmeta,
-											meta.analyses.copas,
-											meta.analyses.trimfill,
-											meta.tests.harbord,
-											meta.tests.peter,
-											meta.tests.rucker,
-											meta.tests.schwarzer)
+# bin.meta.list <- list(tmp, meta.id.vector, meta.analyses,
+# 											meta.analyses.asd,
+# 											meta.analyses.limitmeta,
+# 											meta.analyses.copas,
+# 											meta.analyses.trimfill,
+# 											meta.tests.harbord,
+# 											meta.tests.peter,
+# 											meta.tests.rucker,
+# 											meta.tests.schwarzer)
 
 #Extract from lists:
 bin.results <- data.frame(
@@ -177,9 +177,8 @@ bin.results <- data.frame(
 tmp <- data.ext2 %>% filter(outcome.type == "cont") %>% group_by(meta.id) %>% 
 	mutate(n = n()) %>% filter(n >= 10) %>% filter(!all(mean1 == 0) & !all(mean2 == 0)) %>% 
 	filter(!all(sd1 == 0) | !all(sd2 == 0)) 
-
 meta.id.vector <- unique(tmp$meta.id)
-meta.id.vector <- meta.id.vector[-c(which(meta.id.vector > 42716 & meta.id.vector < 42725))] #single patient data..
+meta.id.vector <- meta.id.vector[-c(which(meta.id.vector >= 42716 & meta.id.vector <= 42725))] #single patient data..
 
 # meta.analyses <- list()
 # meta.analyses.limitmeta <- list()
@@ -193,16 +192,16 @@ meta.id.vector <- meta.id.vector[-c(which(meta.id.vector > 42716 & meta.id.vecto
 # for(u in meta.id.vector){
 # 	counter <- counter + 1
 # 	print(c(u, counter))
-# 	meta.analyses[[counter]] <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, 
+# 	meta.analyses[[counter]] <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2,
 # 																			 mean.c = mean2, sd.c = sd2, sm = "SMD", studlab = study.name,
 # 																			 data = tmp[tmp$meta.id == u,])
 # 	meta.analyses.limitmeta[[counter]] <- limitmeta(meta.analyses[[counter]])
 # 	meta.analyses.trimfill[[counter]] <- trimfill(meta.analyses[[counter]])
 # 	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
-# 	
-# 	meta.tests.linreg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "linreg")
-# 	meta.tests.begg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "rank")
-# 	meta.tests.mm[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "mm")
+# 
+# 	meta.tests.linreg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "linreg", k.min = 2)
+# 	meta.tests.begg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "rank", k.min = 2)
+# 	meta.tests.mm[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "mm", k.min = 2)
 # }
 
 meta.analyses <- cont.meta.list[[3]]
@@ -213,13 +212,13 @@ meta.tests.linreg <- cont.meta.list[[7]]
 meta.tests.begg <- cont.meta.list[[8]]
 meta.tests.mm <- cont.meta.list[[9]]
 
-cont.meta.list <- list(tmp, meta.id.vector, meta.analyses, 
-											 meta.analyses.limitmeta,
-											 meta.analyses.copas,
-											 meta.analyses.trimfill,
-											 meta.tests.linreg,
-											 meta.tests.begg,
-											 meta.tests.mm)
+# cont.meta.list <- list(tmp, meta.id.vector, meta.analyses, 
+# 											 meta.analyses.limitmeta,
+# 											 meta.analyses.copas,
+# 											 meta.analyses.trimfill,
+# 											 meta.tests.linreg,
+# 											 meta.tests.begg,
+# 											 meta.tests.mm)
 
 #Extract from lists:
 cont.results <- data.frame(
@@ -283,8 +282,8 @@ cont.results <- data.frame(
 
 tmp <- data.ext2 %>% filter(outcome.type == "surv") %>% group_by(meta.id) %>% 
 	mutate(n = n()) %>% filter(n >= 10) 
-
 meta.id.vector <- unique(tmp$meta.id)
+
 # meta.analyses <- list()
 # meta.analyses.limitmeta <- list()
 # meta.analyses.copas <- list()
@@ -303,7 +302,7 @@ meta.id.vector <- unique(tmp$meta.id)
 # 	meta.analyses.limitmeta[[counter]] <- limitmeta(meta.analyses[[counter]])
 # 	meta.analyses.trimfill[[counter]] <- trimfill(meta.analyses[[counter]])
 # 	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
-# 	
+# 
 # 	meta.tests.linreg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "linreg", k.min = 2)
 # 	meta.tests.begg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "rank", k.min = 2)
 # 	meta.tests.mm[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "mm", k.min = 2)
@@ -317,13 +316,13 @@ meta.tests.linreg <- surv.meta.list[[7]]
 meta.tests.begg <- surv.meta.list[[8]]
 meta.tests.mm <- surv.meta.list[[9]]
 
-surv.meta.list <- list(tmp, meta.id.vector, meta.analyses, 
-											 meta.analyses.limitmeta,
-											 meta.analyses.copas,
-											 meta.analyses.trimfill,
-											 meta.tests.linreg,
-											 meta.tests.begg,
-											 meta.tests.mm)
+# surv.meta.list <- list(tmp, meta.id.vector, meta.analyses, 
+# 											 meta.analyses.limitmeta,
+# 											 meta.analyses.copas,
+# 											 meta.analyses.trimfill,
+# 											 meta.tests.linreg,
+# 											 meta.tests.begg,
+# 											 meta.tests.mm)
 
 #Extract from lists:
 surv.results <- data.frame(
@@ -417,7 +416,7 @@ meta.info <- data.ext2 %>%
 						se.max = max(se, na.rm = T))
 
 meta <- merge(meta.results, meta.info, by = c("meta.id"))
-metac <- meta %>% filter(k > 9) %>% filter(n.sig.single > 1) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
+metac <- meta %>% filter(k > 9) %>% filter(n.sig.single > 0) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
 
 # meta %>% filter(n.sig.single != n.sig.single2) %>% mutate(x = n.sig.single - n.sig.single2) %>% 
 # 	select(meta.id, n.sig.single, n.sig.single2, outcome.type, outcome.measure.new, x)
@@ -431,67 +430,64 @@ metac <- meta %>% filter(k > 9) %>% filter(n.sig.single > 1) %>% filter((se.max^
 
 
 
-# tmp <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %>% 
+# tmp <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %>%
 # 	filter(outcome.type != "rate" & !is.na(outcome.type)) # %>% filter(file.nr != 3014 & file.nr != 208)
+# meta.id.vector <- metac$meta.id[-which(metac$outcome.type == "surv")]
+# meta.id.vector <- meta.id.vector[-c(which(meta.id.vector == 157083),
+# 																which(meta.id.vector == 159329),
+# 																# which(meta.id.vector == 12459),
+# 																# which(meta.id.vector == 12465),
+# 																# which(meta.id.vector == 22087),
+# 																which(meta.id.vector == 182298))] #157083 is one study and has total1 = 5 throughout.., 159329 gives issues with copas, 12459, 12465, 22087 (0 non NA cases)
+# 
+# # tmp <- tmp %>% filter(meta.id == 8361 | meta.id == 8363)
+# # tmp <- tmp %>% filter(meta.id == 378)
+# 
+# #Meta-analysis and adjustment part:
+# # meta.id.vector <- unique(tmp$meta.id)
 
-# tmp <- tmp %>% filter(meta.id == 8361 | meta.id == 8363)
-# tmp <- tmp %>% filter(meta.id == 378)
-
-#Meta-analysis and ajustment part:
-# meta.id.vector <- unique(tmp$meta.id)
-meta.id.vector <- metac$meta.id[-which(metac$outcome.type == "surv")]
-meta.id.vector <- meta.id.vector[-c(which(meta.id.vector == 157083),
-																which(meta.id.vector == 159329),
-																# which(meta.id.vector == 12459),
-																# which(meta.id.vector == 12465),
-																# which(meta.id.vector == 22087),
-																which(meta.id.vector == 182298),
-																which(meta.id.vector == 159329),
-																which(meta.id.vector == 159329),
-																which(meta.id.vector == 159329))] #157083 is one study and has total1 = 5 throughout.., 159329 gives issues with copas, 12459, 12465, 22087 (0 non NA cases)
-
-meta.analyses <- list()
-meta.analyses.limitmeta <- list()
-meta.analyses.copas <- list()
-counter <- 0
-
-for(u in meta.id.vector){
-	counter <- counter + 1
-	print(c(u,counter))
-	# meta.analyses[[counter]] <- metacor(cor = cor.pearson, n = total1 + total2, studlab = study.name, data = tmp[tmp$meta.id == u,])
-	meta.analyses[[counter]] <- metagen(TE = cor.pearson, seTE = sqrt(var.cor.pearson), studlab = study.name, tmp[tmp$meta.id == u,])
-	meta.analyses.limitmeta[[counter]] <- limitmeta(meta.analyses[[counter]])
-	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
-}
-
-# meta.analyses <- cor.meta.list[[3]]
-# meta.analyses.limitmeta <- cor.meta.list[[4]]
-# meta.analyses.copas <- cor.meta.list[[5]]
-
-cor.meta.list <- list(tmp, meta.id.vector, meta.analyses, meta.analyses.limitmeta, meta.analyses.copas)
-
-#List extraction:
-correlation.meta.analysis.estimates <- cbind(
-	meta.id = meta.id.vector,
-	est.cor.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.fixed})),
-	est.cor.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.random})),
-	se.est.cor.fixef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.fixed})),
-	se.est.cor.ranef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.random})),
-	
-	est.cor.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$TE.adjust})),
-	se.est.cor.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$seTE.adjust})),
-	
-	est.cor.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[1]})),
-	se.est.cor.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[2]})))
-
-meta.f <- merge(metac, correlation.meta.analysis.estimates, by = c("meta.id"), all = T)
-
-# correlation.meta.analysis.estimates <- data.frame(correlation.meta.analysis.estimates) %>% 
-# 	mutate(est.z.fixef = 0.5 * log( (1 + est.cor.fixef)/(1 - est.cor.fixef) , base = exp(1)),
-# 				 est.z.ranef = 0.5 * log( (1 + est.cor.ranef)/(1 - est.cor.ranef) , base = exp(1)),
-# 				 est.z.reg = 0.5 * log( (1 + est.cor.reg)/(1 - est.cor.reg), base = exp(1)),
-# 				 est.z.copas = 0.5 * log( (1 + est.cor.copas)/(1 - est.cor.copas) , base = exp(1)),
-# 				 se.est.z.fixef = ifelse(total1 + total2 > 4))
+# meta.analyses <- list()
+# meta.analyses.limitmeta <- list()
+# meta.analyses.copas <- list()
+# counter <- 0
+# 
+# for(u in meta.id.vector){
+# 	counter <- counter + 1
+# 	print(c(u,counter))
+# 	# meta.analyses[[counter]] <- metacor(cor = cor.pearson, n = total1 + total2, studlab = study.name, data = tmp[tmp$meta.id == u,])
+# 	meta.analyses[[counter]] <- metagen(TE = cor.pearson, seTE = sqrt(var.cor.pearson), studlab = study.name, tmp[tmp$meta.id == u,])
+# 	meta.analyses.limitmeta[[counter]] <- limitmeta(meta.analyses[[counter]])
+# 	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
+# }
+# 
+# # meta.analyses <- cor.meta.list[[3]]
+# # meta.analyses.limitmeta <- cor.meta.list[[4]]
+# # meta.analyses.copas <- cor.meta.list[[5]]
+# 
+# cor.meta.list <- list(tmp, meta.id.vector, meta.analyses, meta.analyses.limitmeta, meta.analyses.copas)
+# 
+# #List extraction:
+# correlation.meta.analysis.estimates <- cbind(
+# 	meta.id = meta.id.vector,
+# 	est.cor.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.fixed})),
+# 	est.cor.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.random})),
+# 	se.est.cor.fixef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.fixed})),
+# 	se.est.cor.ranef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.random})),
+# 	
+# 	est.cor.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$TE.adjust})),
+# 	se.est.cor.reg = unlist(lapply(meta.analyses.limitmeta, FUN = function(meta.adjust){meta.adjust$seTE.adjust})),
+# 	
+# 	est.cor.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[1]})),
+# 	se.est.cor.copas = unlist(lapply(meta.analyses.copas, FUN = function(meta.adjust){meta.adjust[2]})))
+# 
+# meta.f <- merge(metac, correlation.meta.analysis.estimates, by = c("meta.id"), all = T)
+# 
+# # correlation.meta.analysis.estimates <- data.frame(correlation.meta.analysis.estimates) %>% 
+# # 	mutate(est.z.fixef = 0.5 * log( (1 + est.cor.fixef)/(1 - est.cor.fixef) , base = exp(1)),
+# # 				 est.z.ranef = 0.5 * log( (1 + est.cor.ranef)/(1 - est.cor.ranef) , base = exp(1)),
+# # 				 est.z.reg = 0.5 * log( (1 + est.cor.reg)/(1 - est.cor.reg), base = exp(1)),
+# # 				 est.z.copas = 0.5 * log( (1 + est.cor.copas)/(1 - est.cor.copas) , base = exp(1)),
+# # 				 se.est.z.fixef = ifelse(total1 + total2 > 4))
 
 
 
@@ -512,25 +508,26 @@ metagen.bincont <- function(data){
 # meta.id.vector <- unique(tmp$meta.id)
 meta.id.vector <- metac$meta.id[-which(metac$outcome.type == "surv")]
 # meta.id.vector <- meta.id.vector[-c(which(meta.id.vector == 157083), which(meta.id.vector ==159329))]
-meta.analyses <- list()
-meta.analyses.limitmeta <- list()
-meta.analyses.copas <- list()
-counter <- 0
 
-for(u in meta.id.vector){
-  counter <- counter + 1
-  print(c(u,counter))
-  meta.analyses[[counter]] <- metagen.bincont(tmp[tmp$meta.id == u,])
-  meta.analyses.limitmeta[[counter]] <- limitmeta(meta.analyses[[counter]])
-  meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
-}
+# meta.analyses <- list()
+# meta.analyses.limitmeta <- list()
+# meta.analyses.copas <- list()
+# counter <- 0
+# 
+# for(u in meta.id.vector){
+#   counter <- counter + 1
+#   print(c(u,counter))
+#   meta.analyses[[counter]] <- metagen.bincont(tmp[tmp$meta.id == u,])
+#   meta.analyses.limitmeta[[counter]] <- limitmeta(meta.analyses[[counter]])
+#   meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
+# }
 
 
-# meta.analyses <- zscore.meta.list[[3]]
-# meta.analyses.limitmeta <- zscore.meta.list[[4]]
-# meta.analyses.copas <- zscore.meta.list[[5]]
+meta.analyses <- cohensd.meta.list[[3]]
+meta.analyses.limitmeta <- cohensd.meta.list[[4]]
+meta.analyses.copas <- cohensd.list[[5]]
 
-cohensd.meta.list <- list(tmp, meta.id.vector, meta.analyses, meta.analyses.limitmeta, meta.analyses.copas)
+# cohensd.meta.list <- list(tmp, meta.id.vector, meta.analyses, meta.analyses.limitmeta, meta.analyses.copas)
 
 #List extraction:
 cohensd.meta.analysis.estimates <- cbind(
@@ -555,10 +552,28 @@ meta.f <- merge(meta.f, cohensd.meta.analysis.estimates, by = c("meta.id"), all.
 #Z-SCORE META-ANALYSIS:
 ##########################################################################################
 ##########################################################################################
+tmp.z <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %>%
+  filter(outcome.type != "rate" & !is.na(outcome.type)) %>% filter(total1 + total2 > 3)
 
 # meta.id.vector <- unique(tmp$meta.id)
 meta.id.vector <- metac$meta.id[-which(metac$outcome.type == "surv")]
-meta.id.vector <- meta.id.vector[-c(which(meta.id.vector == 157083), which(meta.id.vector ==159329))]
+meta.id.vector <- meta.id.vector[-c(which(meta.id.vector == 157083), which(meta.id.vector ==159329),
+                                    which(meta.id.vector == 5229), 
+                                    which(meta.id.vector == 100181)
+                                    #which(meta.id.vector ==136563), which(meta.id.vector ==136566)
+                                    )] #5229- total ss = 3
+
+
+# #Check how many results are ommited due to total > 3 criterium, should be 5:
+
+# dim(tmp.z[which(tmp.z$meta.id %in% meta.id.vector),]) #new dataset
+# dim(tmp[which(tmp$meta.id %in% meta.id.vector),]) # 72 results are excluded
+# 
+# #-1 variances are excluded automatically.. 
+# dt <- tmp[which(tmp$meta.id %in% meta.id.vector),]
+# dt %>% filter(total1 + total2 < 4) %>% select(var.z)
+
+
 meta.analyses <- list()
 meta.analyses.limitmeta <- list()
 meta.analyses.copas <- list()
@@ -567,10 +582,16 @@ counter <- 0
 for(u in meta.id.vector){
 	counter <- counter + 1
 	print(c(u,counter))
-	meta.analyses[[counter]] <- metagen(TE = z, seTE = sqrt(var.z), studlab = study.name, tmp[tmp$meta.id == u,])
+	meta.analyses[[counter]] <- metagen(TE = z, seTE = sqrt(var.z), studlab = study.name, tmp.z[tmp.z$meta.id == u,])
 	meta.analyses.limitmeta[[counter]] <- limitmeta(meta.analyses[[counter]])
 	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
 }
+
+
+# mt <- metagen(TE = z, seTE = sqrt(var.z), studlab = study.name, tmp[tmp$meta.id == 100181,])
+# limitmeta(mt)
+# copas(mt)
+# auto.copas(mt, sig.level = .1)
 
 
 # meta.analyses <- zscore.meta.list[[3]]
@@ -578,7 +599,7 @@ for(u in meta.id.vector){
 # meta.analyses.copas <- zscore.meta.list[[5]]
 
 
-zscore.meta.list <- list(tmp, meta.id.vector, meta.analyses, meta.analyses.limitmeta, meta.analyses.copas)
+zscore.meta.list <- list(tmp.z, meta.id.vector, meta.analyses, meta.analyses.limitmeta, meta.analyses.copas)
 
 #List extraction:
 zscore.meta.analysis.estimates <- cbind(
@@ -684,17 +705,17 @@ meta.surv <- meta.f %>% filter(outcome.type == "surv")
 # # abline(lm(abs(z.cum)~study.years))
 
 
-save(meta, file =  file.path(PATH_RESULTS, "meta_analyses_summary_bin_cont_surv.RData"))
-save(meta.f, file =  file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
-save(meta.bin, file =  file.path(PATH_RESULTS, "meta.bin.RData"))
-save(meta.cont, file =  file.path(PATH_RESULTS, "meta.cont.RData"))
-save(meta.surv, file =  file.path(PATH_RESULTS, "meta.surv.RData"))
-save(data, file =  file.path(PATH_RESULTS, "data_used_for_pb.process.RData"))
-save(data.ext2, file =  file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
-save(bin.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_bin.RData"))
-save(cont.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cont.RData"))
-save(surv.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_surv.RData"))
-save(cor.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cor.RData"))
-save(zscore.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_zscore.RData"))
-save(zscore.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cohensd.RData"))
-save(cum.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cum.RData"))
+# save(meta, file =  file.path(PATH_RESULTS, "meta_analyses_summary_bin_cont_surv.RData"))
+# save(meta.f, file =  file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+# save(meta.bin, file =  file.path(PATH_RESULTS, "meta.bin.RData"))
+# save(meta.cont, file =  file.path(PATH_RESULTS, "meta.cont.RData"))
+# save(meta.surv, file =  file.path(PATH_RESULTS, "meta.surv.RData"))
+# save(data, file =  file.path(PATH_RESULTS, "data_used_for_pb.process.RData"))
+# save(data.ext2, file =  file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
+# save(bin.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_bin.RData"))
+# save(cont.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cont.RData"))
+# save(surv.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_surv.RData"))
+# save(cor.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cor.RData"))
+# save(zscore.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_zscore.RData"))
+# save(zscore.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cohensd.RData"))
+# save(cum.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cum.RData"))
