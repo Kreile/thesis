@@ -29,14 +29,13 @@ opts_chunk$set(
 \thispagestyle{empty}
 \begin{center}
   \vspace*{6cm}{\bfseries\Huge
-  $p$-values:\\[5mm] their use, abuse and proper use \\[5mm]
-  illustrated with seven facets 
+  Publication Bias in the Cochrane Database of Systematic Reviews
   }
   \vfill
   \rm
 
   \LARGE
-  M\"axli Musterli\\[12mm]
+  Giuachin Kreiliger\\[12mm]
   
   \normalsize
   Version \today
@@ -55,13 +54,13 @@ opts_chunk$set(
 \addcontentsline{toc}{chapter}{\bfseries{Preface}}
 \thispagestyle{plain}\markboth{Preface}{Preface}
 
-Howdy!
+% Howdy!
 
 \bigskip
 
 \begin{flushright}
-  Max Muster\\
-  June 2018
+  Giuachin Kreiliger\\
+  June 2019
 \end{flushright}
 
 \addtocontents{toc}{\protect \vspace*{10mm}}

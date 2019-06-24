@@ -89,11 +89,16 @@ Higgins~JPT, G.~S. (2011).
 \newblock {\em Cochrane Handbook for Systematic Reviews of Interventions}.
 \newblock The Cochrane Collaboration.
 
-\bibitem[Ioannidis and Trikalinos, 2007]{Ioannidis2007}
-Ioannidis, J.~P. and Trikalinos, T.~A. (2007).
+\bibitem[Ioannidis and Trikalinos, 2007a]{Ioannidis2007}
+Ioannidis, J.~P. and Trikalinos, T.~A. (2007a).
 \newblock The appropriateness of asymmetry tests for publication bias in
   meta-analyses: a large survey.
 \newblock {\em CMAJ}, {\bf176},  1091--1096.
+
+\bibitem[Ioannidis and Trikalinos, 2007b]{excess.significance}
+Ioannidis, J.~P. and Trikalinos, T.~A. (2007b).
+\newblock An exploratory test for an excess of significant findings.
+\newblock {\em Clinical Trials}, {\bf4},  245--253.
 
 \bibitem[Kasuya, 2001]{t.test}
 Kasuya, E. (2001).

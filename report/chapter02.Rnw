@@ -327,25 +327,25 @@ A complete listing of the variables of a result is given in Table \ref{variable}
     \begin{tabular}{l l}
       \textbf{Variable} & \textbf{Description}\\
       \hline
-      \textbf{file.nr} & The number of the file from which the review data has been \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
-      \textbf{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
-      \textbf{file.index} & Internal index of the file in the Cochrane library.\\
-      \textbf{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
+      \texttt{file.nr} & The number of the file from which the review data has been \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
+      \texttt{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
+      \texttt{file.index} & Internal index of the file in the Cochrane library.\\
+      \texttt{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
       %\multicolumn{2}{c}{textbf{Study level variables}}\\ 
       \hline
-      \textbf{study.name} & Name of the study to which the result belongs\\
-      \textbf{study.year} & Year in which the study was published\\
+      \texttt{study.name} & Name of the study to which the result belongs\\
+      \texttt{study.year} & Year in which the study was published\\
       \hline
-      \textbf{comparison.name/.nr} & Specification of the interventions compared in the study  \\ &and a unique number for the comparison\\
-      \textbf{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome\\
-      \textbf{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ &unique number for the subgroup\\
-      \textbf{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
-      \textbf{effect} & Measure of the effect given in the quantity denoted by \\ &``outcome measure''.\\
-      \textbf{se} & Standard error of the measure of the effect,\\
-      \textbf{events1/events2} & The counts of patients with an outcome \textit{if}\\ &measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
-      \textbf{total1/total2} & Number of patients in groups.\\
-      \textbf{mean1/mean2} & Mean of patient measurements \textit{if} outcome is continuous.\\
-      \textbf{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
+      \texttt{comparison.name/.nr} & Specification of the interventions compared in the study  \\ &and a unique number for the comparison\\
+      \texttt{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome\\
+      \texttt{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ &unique number for the subgroup\\
+      \texttt{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
+      \texttt{effect} & Measure of the effect given in the quantity denoted by \\ &\texttt{outcome measure}.\\
+      \texttt{se} & Standard error of the measure of the effect,\\
+      \texttt{events1/events2} & The counts of patients with an outcome \textit{if}\\ &measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
+      \texttt{total1/total2} & Number of patients in groups.\\
+      \texttt{mean1/mean2} & Mean of patient measurements \textit{if} outcome is continuous.\\
+      \texttt{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
     \end{tabular}
   \caption{Dataset variable names and descriptions  \label{variable}}
 
@@ -426,33 +426,33 @@ The information in the previous pages are from a tidied and processed version of
 \subsection{Modification of old variables}
 In some cases, reasonable assumptions led to small changes in the originally provided variables:
 \begin{itemize}
-\item \textbf{study.year}: It was assumed that studies that are declared to have been published before 1920 ($n$ = \Sexpr{length(which(data$study.year < 1920))}) are mis-specified, as well as after 2019 ($n$ = \Sexpr{length(which(data$study.year > 2019))}), so these have been set to NA. 
-\item \textbf{mean1} and \textbf{mean2}: When both ``mean1'' and ``mean2'' are equal to zero or NA, ``outcome.measure.new'' is equal to ``(Std.) Mean Difference'', but a mean difference is given in ``effect'', ``mean1'' is set equal to ``effect'' ($n$ = \Sexpr{length(nomeans.ind)}).
+\item \texttt{study.year}: It was assumed that studies that are declared to have been published before 1920 ($n$ = \Sexpr{length(which(data$study.year < 1920))}) are mis-specified, as well as after 2019 ($n$ = \Sexpr{length(which(data$study.year > 2019))}), so these have been set to NA. 
+\item \texttt{mean1} and \texttt{mean2}: When both \texttt{mean1} and \texttt{mean2} are equal to zero or NA, \texttt{outcome.measure.new} is equal to \texttt{(Std.) Mean Difference}, but a mean difference is given in \texttt{effect}, \texttt{mean1} is set equal to \texttt{effect} ($n$ = \Sexpr{length(nomeans.ind)}).
 \end{itemize}
 
 
 \subsection{Newly Introduced Variables}
 Some new variables are added to the obtained dataset:
 \begin{itemize}
-\item \textbf{outcome.measure.new}: Outcome measure specifications given in ``outcome.measure'' were standardized whenever they were supposed to denote the same outcome measure. An example would be the formally different notations for odds ratios: ``Odds Ratio'', ``odds ratio'', ``OR'', which were all denoted as ``Odds Ratio''.
-\item \textbf{outcome.type}: A simplification of ``outcome.measure.new''. The outcome.type ``bin'' indicates if ``outcome.measure.new'' is either one of ``Risk Ratio'', ''Odds Ratio'', ``Risk difference'' or ``Peto Odds Ratio''. ``cont'' is equivalent to ``outcome.measure.new'' equal to "Std. Mean Difference'' or ``Mean Difference''. ``surv'' equal to ``Hazard Ratio'' and ``rate'' equal to ''Rate Ratio'' or ``Rate Difference''.
-\item \textbf{lrr} and \textbf{var.lrr}: log risk ratio and variance of the log risk ratio for outcome.type ``bin''.
-\item \textbf{smd} and \textbf{var.smd}: Hedges $g$ and the variance of Hedges $g$ for outcome.type ``cont''. If not computable from ``mean1'', ``mean2'', ``sd1'' and ``sd2'', and ``outcome.measure.new'' was equal to ``Std. Mean Difference'', it was set equal to ``effect'' (and ``var.smd'' equal to ``se'' squared, $n$ =  \Sexpr{length(inpute.given.ind)}).
-\item \textbf{smd.ordl} and \textbf{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for outcome.type ``bin''.
-\item \textbf{cor.Pearson} and \textbf{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for outcome.type ``bin'') or $g$ (for outcome.type ``cont'') to $r$ transformation.
-\item \textbf{z} and \textbf{var.z}: Fisher's z score and it's variance obtained from the Pearson correlation $r$ to $z$ transformation.
-\item \textbf{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for outcome.type ``cont'' or Wald test for outcome.type ``bin''.
-\item \textbf{events1c} and \textbf{events2c}: Correction of ``events1'' and ``events2'' zero event counts or event counts = patient number. When no events occurred, 0.5 was added, and when all patients experienced the event, 0.5 was subtracted. When one of ``events'' had zero counts while the other had maximum counts, no adjustment occurred.
-\item \textbf{meta.id}: Meta-analysis ID variable to uniquely identify any potential meta-analysis in the dataset. Consistent to what has been discussed before, all results that share a common comparison, outcome and subgroup (optional, subgroups not given in any case) may be combined in a meta-analysis.
-% \item \textbf{}:
-% \item \textbf{}:
+\item \texttt{outcome.measure.new}: Outcome measure specifications given in \texttt{outcome.measure} were standardized whenever they were supposed to denote the same outcome measure. An example would be the formally different notations for odds ratios: ``Odds Ratio'', ``odds ratio'', ``OR'', which were all denoted as ``Odds Ratio''.
+\item \texttt{outcome.type}: A simplification of \texttt{outcome.measure.new}. The outcome.type ``bin'' indicates if \texttt{outcome.measure.new} is either one of ``Risk Ratio'', ''Odds Ratio'', ``Risk difference'' or ``Peto Odds Ratio''. ``cont'' is equivalent to \texttt{outcome.measure.new} equal to "Std. Mean Difference'' or ``Mean Difference''. ``surv'' equal to ``Hazard Ratio'' and ``rate'' equal to ''Rate Ratio'' or ``Rate Difference''.
+\item \texttt{lrr} and \texttt{var.lrr}: log risk ratio and variance of the log risk ratio for outcome.type ``bin''.
+\item \texttt{smd} and \texttt{var.smd}: Hedges $g$ and the variance of Hedges $g$ for outcome.type ``cont''. If not computable from \texttt{mean1}, \texttt{mean2}, \texttt{sd1} and \texttt{sd2}, and \texttt{outcome.measure.new} was equal to ``Std. Mean Difference'', it was set equal to \texttt{effect} (and \texttt{var.smd} equal to \texttt{se} squared, $n$ =  \Sexpr{length(inpute.given.ind)}).
+\item \texttt{smd.ordl} and \texttt{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for outcome.type ``bin''.
+\item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for outcome.type ``bin'') or $g$ (for outcome.type ``cont'') to $r$ transformation.
+\item \texttt{z} and \texttt{var.z}: Fisher's z score and it's variance obtained from the Pearson correlation $r$ to $z$ transformation.
+\item \texttt{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for outcome.type ``cont'' or Wald test for outcome.type ``bin''.
+\item \texttt{events1c} and \texttt{events2c}: Correction of \texttt{events1} and \texttt{events2} zero event counts or event counts = patient number. When no events occurred, 0.5 was added, and when all patients experienced the event, 0.5 was subtracted. When one of \texttt{events} had zero counts while the other had maximum counts, no adjustment occurred.
+\item \texttt{meta.id}: Meta-analysis ID variable to uniquely identify any potential meta-analysis in the dataset. Consistent to what has been discussed before, all results that share a common comparison, outcome and subgroup (optional, subgroups not given in any case) may be combined in a meta-analysis.
+% \item \texttt{}:
+% \item \texttt{}:
 \end{itemize}
 
 
-\subsection{Eligibility criteria for Publication Bias Test and Adjustment} \
+\subsection{Eligibility criteria for Publication Bias Test and Adjustment} 
 Initially, the analysis is restricted to binary, continuous and survival outcomes. More formally:
 \begin{itemize}
-\item \textbf{Outcome measures}: The analysis has been restricted on the following outcome measures (from ``outcome.measure.new''): ``Odds Ratio'', ``Risk Ratio'', ``Risk difference'', ``Peto Odds Ratio'', ``Std. Mean Difference'', ``Mean Difference'', ``Hazard Ratio'' 
+\item \textbf{Outcome measures}: The analysis has been restricted on the following outcome measures (from \texttt{outcome.measure.new}): ``Odds Ratio'', ``Risk Ratio'', ``Risk difference'', ``Peto Odds Ratio'', ``Std. Mean Difference'', ``Mean Difference'', ``Hazard Ratio'' 
 ($n$ = \Sexpr{length(data.ext2$outcome.type[which(data.ext2$outcome.type == "bin" | data.ext2$outcome.type == "cont" | data.ext2$outcome.type == "surv")])} out of a total of \Sexpr{length(data.ext2$outcome.type)} results)
 \end{itemize}
 
@@ -466,6 +466,7 @@ The suggestions of criteria for eligibility for publication bias tests of \citet
 
 After having excluded meta-analyses with less than ten studies, additional criteria for excluding inconvenient meta-analyses are:
 \begin{itemize}
+\item \textbf{Sensitivity Analyses}: When the same results are used multiple times for different meta-analyses, only one is retained. More precisely, if a study hat the same \texttt{study.name} and same \texttt{effect}, it was considered a duplicate, and the smaller meta-analysis of the two was excluded. The intention is to exclude sensitivity analyses which are operated on subsets of the available results.
 \item \textbf{Zero events}: In the case of binary outcomes, meta-analyses with zero events in any study and any group are excluded ($n$ = \Sexpr{all.zero.events.number} out of meta-analyses with at least ten studies).
 \item \textbf{Missing means and sd's}: In the case of continuous outcomes, meta-analyses with means and sd's in any group being equal to zero are excluded ($n$ = \Sexpr{all.zero.means.number} out of meta-analyses with at least ten studies).
 \item \textbf{Single patient data}: Meta-analyses that are comprised of single patient data are excluded ($n$ = \Sexpr{m.a.singlepatient.number} out of meta-analyses with at least ten studies)
@@ -475,7 +476,7 @@ After having excluded meta-analyses with less than ten studies, additional crite
 
 \subsubsection{Exclusions due to Computational Errors}
 In exceptional cases, the applied meta-analysis methods and publication bias tests and adjustment algorithms failed due to various reasons. Here, those cases are listed and if known, the reasons why computation failed are given.\\
-\textbf{Binary Outcomes}: Out of the meta-analyses that are of ``outcome.type'' bin, and have at least ten studies, two studies hat to be excluded:
+\textbf{Binary Outcomes}: Out of the meta-analyses that are of \texttt{outcome.type} bin, and have at least ten studies, two studies hat to be excluded:
 \begin{itemize}
 \item meta.id = 62301 (file.nr = 1531, comparison.nr = 8, outcome.nr = 6, subgroup.nr = 1):
 %A subgroup analysis for women with increased adverse pregnancy outcomes, where the effect of vitamin C supplements is tested on pre-eclampsia: 
@@ -483,7 +484,7 @@ Largest study (se = 0.1) has risk ratio 1 and smallest study (se = 1) risk ratio
 \item meta.id = 94519 (2519, 14, 1, 2): Largest study (se = 0.05) has risk ratio 0.9 and smallest study (se = 0.4) risk ratio 3. Again Copas publication bias adjustment methods has likelihood optimization issues.
 \end{itemize}
 
-There were no issues with ``outcome.type'' ``cont'' and ``surv''. For the subsequent information, it is important to know that meta-analyses are only repeated with Hedges $g$, Pearson correlation coefficient and Fisher's Z-scores, if the outcome type is not survival and all of the above criteria are met ($n$ = \Sexpr{length(meta.f$n.sig.type[which(meta.f$outcome.type != "surv")])}). \\
+There were no issues with \texttt{outcome.type} ``cont'' and ``surv''. For the subsequent information, it is important to know that meta-analyses are only repeated with Hedges $g$, Pearson correlation coefficient and Fisher's Z-scores, if the outcome type is not survival and all of the above criteria are met ($n$ = \Sexpr{length(meta.f$n.sig.type[which(meta.f$outcome.type != "surv")])}). \\
 \textbf{Pearson Correlation Coefficient}: Three studies had to be excluded when analyzing the Pearson correlation coefficients:
 \begin{itemize}
 \item meta.id = 157083 (file.nr = 5061, comparison.nr = 1, outcome.nr = 5, subgroup.nr = 2): A meta-analysis with all results from the same study, and equal sample size (5 each group). The Copas selection model algorithm issued an error when optimizing the likelihood.
@@ -502,7 +503,6 @@ The dataset that was ultimately tested and adjusted for publication bias compris
 
 
 % \begin{itemize}
-% \item meta.id = 5229 (file.nr = 137, comparison.nr = 1, outcome.nr = 3, subgroup.nr = 1): ``Luken 1979'' (3), ``Miller-Fisher 1978'' (3), ``Müller Forell 1978'' (2).
 % \item meta.id = 136563 (4218, 1, 1, 1): ``Roberts 2010'' (3)
 % \item meta.id = 136566 (4218, 1, 3, 1): ``Roberts 2010'' (3)
 % \end{itemize}

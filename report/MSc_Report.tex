@@ -72,14 +72,13 @@
 \thispagestyle{empty}
 \begin{center}
   \vspace*{6cm}{\bfseries\Huge
-  $p$-values:\\[5mm] their use, abuse and proper use \\[5mm]
-  illustrated with seven facets 
+  Publication Bias in the Cochrane Database of Systematic Reviews
   }
   \vfill
   \rm
 
   \LARGE
-  M\"axli Musterli\\[12mm]
+  Giuachin Kreiliger\\[12mm]
   
   \normalsize
   Version \today
@@ -98,13 +97,13 @@
 \addcontentsline{toc}{chapter}{\bfseries{Preface}}
 \thispagestyle{plain}\markboth{Preface}{Preface}
 
-Howdy!
+% Howdy!
 
 \bigskip
 
 \begin{flushright}
-  Max Muster\\
-  June 2018
+  Giuachin Kreiliger\\
+  June 2019
 \end{flushright}
 
 \addtocontents{toc}{\protect \vspace*{10mm}}
@@ -261,25 +260,25 @@ A complete listing of the variables of a result is given in Table \ref{variable}
     \begin{tabular}{l l}
       \textbf{Variable} & \textbf{Description}\\
       \hline
-      \textbf{file.nr} & The number of the file from which the review data has been \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
-      \textbf{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
-      \textbf{file.index} & Internal index of the file in the Cochrane library.\\
-      \textbf{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
+      \texttt{file.nr} & The number of the file from which the review data has been \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
+      \texttt{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
+      \texttt{file.index} & Internal index of the file in the Cochrane library.\\
+      \texttt{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
       %\multicolumn{2}{c}{textbf{Study level variables}}\\ 
       \hline
-      \textbf{study.name} & Name of the study to which the result belongs\\
-      \textbf{study.year} & Year in which the study was published\\
+      \texttt{study.name} & Name of the study to which the result belongs\\
+      \texttt{study.year} & Year in which the study was published\\
       \hline
-      \textbf{comparison.name/.nr} & Specification of the interventions compared in the study  \\ &and a unique number for the comparison\\
-      \textbf{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome\\
-      \textbf{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ &unique number for the subgroup\\
-      \textbf{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
-      \textbf{effect} & Measure of the effect given in the quantity denoted by \\ &``outcome measure''.\\
-      \textbf{se} & Standard error of the measure of the effect,\\
-      \textbf{events1/events2} & The counts of patients with an outcome \textit{if}\\ &measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
-      \textbf{total1/total2} & Number of patients in groups.\\
-      \textbf{mean1/mean2} & Mean of patient measurements \textit{if} outcome is continuous.\\
-      \textbf{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
+      \texttt{comparison.name/.nr} & Specification of the interventions compared in the study  \\ &and a unique number for the comparison\\
+      \texttt{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome\\
+      \texttt{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ &unique number for the subgroup\\
+      \texttt{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
+      \texttt{effect} & Measure of the effect given in the quantity denoted by \\ &\texttt{outcome measure}.\\
+      \texttt{se} & Standard error of the measure of the effect,\\
+      \texttt{events1/events2} & The counts of patients with an outcome \textit{if}\\ &measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
+      \texttt{total1/total2} & Number of patients in groups.\\
+      \texttt{mean1/mean2} & Mean of patient measurements \textit{if} outcome is continuous.\\
+      \texttt{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
     \end{tabular}
   \caption{Dataset variable names and descriptions  \label{variable}}
 
@@ -453,33 +452,33 @@ The information in the previous pages are from a tidied and processed version of
 \subsection{Modification of old variables}
 In some cases, reasonable assumptions led to small changes in the originally provided variables:
 \begin{itemize}
-\item \textbf{study.year}: It was assumed that studies that are declared to have been published before 1920 ($n$ = 30664) are mis-specified, as well as after 2019 ($n$ = 384), so these have been set to NA. 
-\item \textbf{mean1} and \textbf{mean2}: When both ``mean1'' and ``mean2'' are equal to zero or NA, ``outcome.measure.new'' is equal to ``(Std.) Mean Difference'', but a mean difference is given in ``effect'', ``mean1'' is set equal to ``effect'' ($n$ = 1593).
+\item \texttt{study.year}: It was assumed that studies that are declared to have been published before 1920 ($n$ = 30664) are mis-specified, as well as after 2019 ($n$ = 384), so these have been set to NA. 
+\item \texttt{mean1} and \texttt{mean2}: When both \texttt{mean1} and \texttt{mean2} are equal to zero or NA, \texttt{outcome.measure.new} is equal to \texttt{(Std.) Mean Difference}, but a mean difference is given in \texttt{effect}, \texttt{mean1} is set equal to \texttt{effect} ($n$ = 1593).
 \end{itemize}
 
 
 \subsection{Newly Introduced Variables}
 Some new variables are added to the obtained dataset:
 \begin{itemize}
-\item \textbf{outcome.measure.new}: Outcome measure specifications given in ``outcome.measure'' were standardized whenever they were supposed to denote the same outcome measure. An example would be the formally different notations for odds ratios: ``Odds Ratio'', ``odds ratio'', ``OR'', which were all denoted as ``Odds Ratio''.
-\item \textbf{outcome.type}: A simplification of ``outcome.measure.new''. The outcome.type ``bin'' indicates if ``outcome.measure.new'' is either one of ``Risk Ratio'', ''Odds Ratio'', ``Risk difference'' or ``Peto Odds Ratio''. ``cont'' is equivalent to ``outcome.measure.new'' equal to "Std. Mean Difference'' or ``Mean Difference''. ``surv'' equal to ``Hazard Ratio'' and ``rate'' equal to ''Rate Ratio'' or ``Rate Difference''.
-\item \textbf{lrr} and \textbf{var.lrr}: log risk ratio and variance of the log risk ratio for outcome.type ``bin''.
-\item \textbf{smd} and \textbf{var.smd}: Hedges $g$ and the variance of Hedges $g$ for outcome.type ``cont''. If not computable from ``mean1'', ``mean2'', ``sd1'' and ``sd2'', and ``outcome.measure.new'' was equal to ``Std. Mean Difference'', it was set equal to ``effect'' (and ``var.smd'' equal to ``se'' squared, $n$ =  6938).
-\item \textbf{smd.ordl} and \textbf{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for outcome.type ``bin''.
-\item \textbf{cor.Pearson} and \textbf{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for outcome.type ``bin'') or $g$ (for outcome.type ``cont'') to $r$ transformation.
-\item \textbf{z} and \textbf{var.z}: Fisher's z score and it's variance obtained from the Pearson correlation $r$ to $z$ transformation.
-\item \textbf{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for outcome.type ``cont'' or Wald test for outcome.type ``bin''.
-\item \textbf{events1c} and \textbf{events2c}: Correction of ``events1'' and ``events2'' zero event counts or event counts = patient number. When no events occurred, 0.5 was added, and when all patients experienced the event, 0.5 was subtracted. When one of ``events'' had zero counts while the other had maximum counts, no adjustment occurred.
-\item \textbf{meta.id}: Meta-analysis ID variable to uniquely identify any potential meta-analysis in the dataset. Consistent to what has been discussed before, all results that share a common comparison, outcome and subgroup (optional, subgroups not given in any case) may be combined in a meta-analysis.
-% \item \textbf{}:
-% \item \textbf{}:
+\item \texttt{outcome.measure.new}: Outcome measure specifications given in \texttt{outcome.measure} were standardized whenever they were supposed to denote the same outcome measure. An example would be the formally different notations for odds ratios: ``Odds Ratio'', ``odds ratio'', ``OR'', which were all denoted as ``Odds Ratio''.
+\item \texttt{outcome.type}: A simplification of \texttt{outcome.measure.new}. The outcome.type ``bin'' indicates if \texttt{outcome.measure.new} is either one of ``Risk Ratio'', ''Odds Ratio'', ``Risk difference'' or ``Peto Odds Ratio''. ``cont'' is equivalent to \texttt{outcome.measure.new} equal to "Std. Mean Difference'' or ``Mean Difference''. ``surv'' equal to ``Hazard Ratio'' and ``rate'' equal to ''Rate Ratio'' or ``Rate Difference''.
+\item \texttt{lrr} and \texttt{var.lrr}: log risk ratio and variance of the log risk ratio for outcome.type ``bin''.
+\item \texttt{smd} and \texttt{var.smd}: Hedges $g$ and the variance of Hedges $g$ for outcome.type ``cont''. If not computable from \texttt{mean1}, \texttt{mean2}, \texttt{sd1} and \texttt{sd2}, and \texttt{outcome.measure.new} was equal to ``Std. Mean Difference'', it was set equal to \texttt{effect} (and \texttt{var.smd} equal to \texttt{se} squared, $n$ =  6938).
+\item \texttt{smd.ordl} and \texttt{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for outcome.type ``bin''.
+\item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for outcome.type ``bin'') or $g$ (for outcome.type ``cont'') to $r$ transformation.
+\item \texttt{z} and \texttt{var.z}: Fisher's z score and it's variance obtained from the Pearson correlation $r$ to $z$ transformation.
+\item \texttt{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for outcome.type ``cont'' or Wald test for outcome.type ``bin''.
+\item \texttt{events1c} and \texttt{events2c}: Correction of \texttt{events1} and \texttt{events2} zero event counts or event counts = patient number. When no events occurred, 0.5 was added, and when all patients experienced the event, 0.5 was subtracted. When one of \texttt{events} had zero counts while the other had maximum counts, no adjustment occurred.
+\item \texttt{meta.id}: Meta-analysis ID variable to uniquely identify any potential meta-analysis in the dataset. Consistent to what has been discussed before, all results that share a common comparison, outcome and subgroup (optional, subgroups not given in any case) may be combined in a meta-analysis.
+% \item \texttt{}:
+% \item \texttt{}:
 \end{itemize}
 
 
-\subsection{Eligibility criteria for Publication Bias Test and Adjustment} \
+\subsection{Eligibility criteria for Publication Bias Test and Adjustment} 
 Initially, the analysis is restricted to binary, continuous and survival outcomes. More formally:
 \begin{itemize}
-\item \textbf{Outcome measures}: The analysis has been restricted on the following outcome measures (from ``outcome.measure.new''): ``Odds Ratio'', ``Risk Ratio'', ``Risk difference'', ``Peto Odds Ratio'', ``Std. Mean Difference'', ``Mean Difference'', ``Hazard Ratio'' 
+\item \textbf{Outcome measures}: The analysis has been restricted on the following outcome measures (from \texttt{outcome.measure.new}): ``Odds Ratio'', ``Risk Ratio'', ``Risk difference'', ``Peto Odds Ratio'', ``Std. Mean Difference'', ``Mean Difference'', ``Hazard Ratio'' 
 ($n$ = 456727 out of a total of 463820 results)
 \end{itemize}
 
@@ -493,6 +492,7 @@ The suggestions of criteria for eligibility for publication bias tests of \citet
 
 After having excluded meta-analyses with less than ten studies, additional criteria for excluding inconvenient meta-analyses are:
 \begin{itemize}
+\item \textbf{Sensitivity Analyses}: When the same results are used multiple times for different meta-analyses, only one is retained. More precisely, if a study hat the same \texttt{study.name} and same \texttt{effect}, it was considered a duplicate, and the smaller meta-analysis of the two was excluded. The intention is to exclude sensitivity analyses which are operated on subsets of the available results.
 \item \textbf{Zero events}: In the case of binary outcomes, meta-analyses with zero events in any study and any group are excluded ($n$ = 141 out of meta-analyses with at least ten studies).
 \item \textbf{Missing means and sd's}: In the case of continuous outcomes, meta-analyses with means and sd's in any group being equal to zero are excluded ($n$ = 306 out of meta-analyses with at least ten studies).
 \item \textbf{Single patient data}: Meta-analyses that are comprised of single patient data are excluded ($n$ = 8 out of meta-analyses with at least ten studies)
@@ -502,7 +502,7 @@ After having excluded meta-analyses with less than ten studies, additional crite
 
 \subsubsection{Exclusions due to Computational Errors}
 In exceptional cases, the applied meta-analysis methods and publication bias tests and adjustment algorithms failed due to various reasons. Here, those cases are listed and if known, the reasons why computation failed are given.\\
-\textbf{Binary Outcomes}: Out of the meta-analyses that are of ``outcome.type'' bin, and have at least ten studies, two studies hat to be excluded:
+\textbf{Binary Outcomes}: Out of the meta-analyses that are of \texttt{outcome.type} bin, and have at least ten studies, two studies hat to be excluded:
 \begin{itemize}
 \item meta.id = 62301 (file.nr = 1531, comparison.nr = 8, outcome.nr = 6, subgroup.nr = 1):
 %A subgroup analysis for women with increased adverse pregnancy outcomes, where the effect of vitamin C supplements is tested on pre-eclampsia: 
@@ -510,7 +510,7 @@ Largest study (se = 0.1) has risk ratio 1 and smallest study (se = 1) risk ratio
 \item meta.id = 94519 (2519, 14, 1, 2): Largest study (se = 0.05) has risk ratio 0.9 and smallest study (se = 0.4) risk ratio 3. Again Copas publication bias adjustment methods has likelihood optimization issues.
 \end{itemize}
 
-There were no issues with ``outcome.type'' ``cont'' and ``surv''. For the subsequent information, it is important to know that meta-analyses are only repeated with Hedges $g$, Pearson correlation coefficient and Fisher's Z-scores, if the outcome type is not survival and all of the above criteria are met ($n$ = 0). \\
+There were no issues with \texttt{outcome.type} ``cont'' and ``surv''. For the subsequent information, it is important to know that meta-analyses are only repeated with Hedges $g$, Pearson correlation coefficient and Fisher's Z-scores, if the outcome type is not survival and all of the above criteria are met ($n$ = 0). \\
 \textbf{Pearson Correlation Coefficient}: Three studies had to be excluded when analyzing the Pearson correlation coefficients:
 \begin{itemize}
 \item meta.id = 157083 (file.nr = 5061, comparison.nr = 1, outcome.nr = 5, subgroup.nr = 2): A meta-analysis with all results from the same study, and equal sample size (5 each group). The Copas selection model algorithm issued an error when optimizing the likelihood.
@@ -529,7 +529,6 @@ The dataset that was ultimately tested and adjusted for publication bias compris
 
 
 % \begin{itemize}
-% \item meta.id = 5229 (file.nr = 137, comparison.nr = 1, outcome.nr = 3, subgroup.nr = 1): ``Luken 1979'' (3), ``Miller-Fisher 1978'' (3), ``Müller Forell 1978'' (2).
 % \item meta.id = 136563 (4218, 1, 1, 1): ``Roberts 2010'' (3)
 % \item meta.id = 136566 (4218, 1, 3, 1): ``Roberts 2010'' (3)
 % \end{itemize}
@@ -567,14 +566,6 @@ The dataset that was ultimately tested and adjusted for publication bias compris
 
 % LaTeX file for Chapter 03
 
-%<<echo=FALSE>>=
-% library(knitr)
-% opts_chunk$set(
-%      fig.path='figure/ch03_fig',
-%      self.contained=FALSE,
-%      cache=TRUE
-%  )
-%@
 
 
 
@@ -589,53 +580,13 @@ The dataset that was ultimately tested and adjusted for publication bias compris
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Small study effects}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\section{Small Study Effect and Excess of Singificance Tests}
 
 
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Scale for 'x' is already present. Adding another scale for 'x', which\\\#\# will replace the existing scale.\\\#\# Scale for 'x' is already present. Adding another scale for 'x', which\\\#\# will replace the existing scale.}}\end{kframe}
-\end{knitrout}
-
-The median $z$-score for a given sample size of a trial is shown in Figure \ref{z.samplesize}. It is clearly visible that the absolute value decreases with increasing sample size, i.e. that the effect size is becoming smaller. The trend flattens off after $\sim$ sample size = 400 (not shown). 
--- Appendix --
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
-
-\end{knitrout}
-\caption{Median of the absolute $z$-score plotted against the total sample size.}
-\label{z.samplesize}
-\end{figure}
-
-Only for illustration, the same trend is reproduced in Figure \ref{effect.samplesize.separated} with a similar method, using the original effect size measures ``Odds Ratio'', ``Risk Ratio'', ``Mean Difference'' and ``Std. Mean Difference'' (the most commonly used in the dataset). The ``normalized effect'' is the original effect size, normalized with respect to all other effect sizes of the same measure (i.e. subtraction of mean and division through standard error of the mean).
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
-
-\end{knitrout}
-\caption{Median of the absolute value of the normalized, original effect size plotted against the total sample size.}
-\label{effect.samplesize.separated}
-\end{figure}
-
-%Show absolute effect size depending on scaled time? Chunck 3
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Small Study Effect Tests}
-
-
-The results of the test for small study effects for the meta-analyses fullfilling the criteria from chapter \ref{chapter01}, section \ref{sec:Processing}, are presented in Figures \ref{fig:test.bin}, \ref{fig:test.cont} and \ref{fig:test.surv}. The histogram of the $p$-values appears most often skewed to the right, indicating evidence for small study effects. Because different tests are applied depending on outcome type, the results are displayed separately for binary, continuous and survival outcome types (as previously defined in the dataset variable ``outcome.type'', see chapter \ref{ch:chapter01}, section \ref{sec:Processing}. \\
-For continuous and survival outcomes, the names refer to: 
+The results of the test for small study effects and excess of significance for the meta-analyses fullfilling the criteria from chapter \ref{chapter02}, section \ref{sec:Processing}, are presented in Figure \ref{fig:test}.
+%Figures \ref{fig:test.bin}, \ref{fig:test.cont} and \ref{fig:test.surv}. 
+The histogram of the $p$-values is displayed separately for binary, continuous and survival outcome types (as previously defined in the dataset variable \texttt{outcome.type}, see chapter \ref{ch:chapter02}, section \ref{sec:Processing}. The distributions are (with the exception of Schwarzer's test) skewed to the right, indicating evidence for small study effects. Moreover, the excess significance tests have a mode around $p = 0.4$. Large differences between small study effect tests for binary and continuous outcomes will be subject to discussion. \\
+``Excess significance'' denotes the excess of significance $p$-values from the test of \citet{excess.significance}. For continuous and survival outcomes, the names refer to: 
 
 \begin{itemize}
 \item Egger's test, the weigthed linear regression test as described in section \ref{sec:Egger}
@@ -651,40 +602,349 @@ For binary outcomes, the names refer to:
 \item Schwarzer's test, the rank based test using the expected event counts computed with the hypergeometric distribution (section \ref{sec:Schwarzer})
 \end{itemize}
 
-
-\begin{figure}[!ht]
+\begin{figure}[ht!]
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-13-1} 
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-10-1} 
+
+}
+
+
 
 \end{knitrout}
-\caption{Histogram of the $p$-values for small study effect in binary outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
-\label{fig:test.bin}
+\caption{Histogram of the $p$-values for small study effect in meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+\label{fig:test}
 \end{figure}
+
+The agreement/coinicidence between between small study effect and excess significance tests is often not pronounced, thus, it will be compared by different methods. This is displayed in Table \ref{test.agreement}. The row names indicate which two tests are compared. First, the column ``Test Agreement'' quantifies the overall proportion by which the two tests agree in their rejection or ``acceptance'' of the null-hypothesis. ``Test Agreement'' being equal one thus indicates equivalent results, zero no correspondence whatsoever. The second column, ``Correlation'' gives the correlation between the $p$-values. A positive correlation indicates psotive coincidence of $p$-values, negative correlation coincidence in opposite directions. However, the scale might be different for this agreement measure. The ``R-squared'' value indicates to what extent one $p$-value can be predicted by another, and ignores additive differences between $p$-values (as for correlation), as well as multiplicative constants between them (i.e. $y ~ a + b*x$, $y$ and $x$ being two $p$-values of test-statistics). An R-squared value of 1 indicates perfect fit. Importantly, the order of the variables does not matter for the $p$-values for all indicators (i.e. $p$-values for $x$ and $y$ can be exchanged and the table stays the same). If a test is completely replaceable by another, all values in a row are equal to one. 
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Mon Jun 24 17:05:43 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{lccc}
+  & Test Agreement & p-value Correlation & p-value R-squared \\ 
+  \hline
+\hline
+Excess significance, Schwarzer & 0.83 & -0.02 & 0.00 \\ 
+  Excess significance, Peter & 0.80 & 0.05 & 0.00 \\ 
+  Excess significance, Rucker & 0.82 & 0.12 & 0.02 \\ 
+  Excess significance, Harbord & 0.81 & 0.02 & 0.00 \\ 
+  Peter, Schwarzer & 0.82 & 0.29 & 0.09 \\ 
+  Schwarzer, Rucker & 0.82 & 0.29 & 0.08 \\ 
+  Schwarzer, Harbord & 0.86 & 0.51 & 0.26 \\ 
+  Rucker, Peter & 0.89 & 0.64 & 0.41 \\ 
+  Harbord, Peter & 0.86 & 0.48 & 0.23 \\ 
+   \hline
+Excess significance, Egger & 0.79 & 0.14 & 0.02 \\ 
+  Excess significance, Thompson & 0.80 & 0.16 & 0.02 \\ 
+  Excess significance, Begg & 0.81 & 0.10 & 0.01 \\ 
+  Thompson, Egger & 0.95 & 0.91 & 0.83 \\ 
+  Thompson, Begg & 0.87 & 0.70 & 0.49 \\ 
+  Egger, Begg & 0.86 & 0.65 & 0.42 \\ 
+   \hline
+Excess significance, Egger (survival) & 0.69 & 0.03 & 0.00 \\ 
+  Excess significance, Thompson (survival) & 0.64 & 0.05 & 0.00 \\ 
+  Excess significance, Begg (survival) & 0.62 & 0.18 & 0.03 \\ 
+  Thompson, Egger (survival) & 0.90 & 0.92 & 0.85 \\ 
+  Thompson, Begg (survival) & 0.92 & 0.66 & 0.43 \\ 
+  Egger, Begg (survival) & 0.87 & 0.70 & 0.48 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Agreement in significance proportion, correlation and R-squared of linear regression
+             between the p-values of the publication bias tests. Horizontal lines separate binary, continuous and survival outcomes (order as in table).} 
+\label{test.agreement}
+\end{table}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Small Study Effects Adjustment}
+
+
+\subsection{Change in Effect Size after Adjustment}
+
+If one is interested in the mere change in effect size and if the effect size did decrease or increase after adjustment, one can look at Figure \ref{fig:adjustment.size}. It displays the difference between the meta-analysis pooled treatment effect and the adjusted treatment effect. To compare the overall effect of adjustment for small study effects, the absolute value of the effect size is used. Thus, a negative difference indicates larger adjusted treatment effect size than meta-analysis pooled effect size. For better illustration, some very large and very small differences have been ommitted in the $z$-score and Hedges $g$ histogramms; the missing differences are provided in Table \ref{missing.differences}. Additionally to the histogramms, Table \ref{adjustment.difference} shows the quantiles and means for the various differences.
+%For sake of interpretability, negative effect sizes are changed to positive, such that a negative difference always means that the adjusted treatment effect is larger than the meta-analysis effect. Vice versa, a positive difference will indicate smaller adjusted effects. \\
 
 \begin{figure}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-14-1} 
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-13-1} 
+
+}
+
+
 
 \end{knitrout}
-\caption{Histogram of the $p$-values for the small study effect in continuous outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
-\label{fig:test.cont}
+\caption{Histogram of the treatment effect differences between meta-analysis and adjusted meta-analysis. Negative differences indicate greater adjusted effect sizes than meta-analysis effect sizes. The bins are centered at zero.}
+\label{fig:adjustment.size}
 \end{figure}
+
+
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Mon Jun 24 17:05:45 2019
+\begin{table}[ht]
+\centering
+\begingroup\tiny
+\begin{tabular}{lcccrrrrrrrr}
+  \hline
+meta.id & file.nr & comparison.nr & subgroup.nr & z fixed & z random & z Copas & z regression & g fixed & g random & g Copas & g regression \\ 
+  \hline
+2009 & 2009 & 1 & 1 & 0.31 & 0.36 & 0.31 & 0.43 & 0.70 & 0.70 & 0.70 & 2.48 \\ 
+  2068 & 2068 & 2 & 0 & 0.29 & 0.35 & 0.29 & 0.43 & 0.68 & 0.68 & 0.68 & 2.57 \\ 
+  18658 & 18658 & 2 & 0 & 1.16 & 1.14 & 1.16 & 1.17 & 1.40 & 2.85 & 1.40 & 1.74 \\ 
+  46472 & 46472 & 1 & 1 & 1.79 & 1.44 & 1.79 & 0.66 & 0.12 & 6.97 & 6.97 & 0.79 \\ 
+  52528 & 52528 & 1 & 0 & -0.75 & -0.69 & -0.50 & -0.26 & -1.19 & -1.53 & 0.18 & -0.52 \\ 
+  60546 & 60546 & 1 & 1 & 0.17 & 0.24 & 0.17 & 0.34 & 0.53 & 0.53 & 0.53 & 1.65 \\ 
+  70389 & 70389 & 1 & 1 & -0.08 & -0.07 & 15.58 & -0.04 & -0.13 & -0.13 & -0.13 & -0.05 \\ 
+  73769 & 73769 & 3 & 1 & -0.14 & 0.00 & 214760.42 & -0.04 & -0.01 & -0.12 & 0.01 & 0.04 \\ 
+  79113 & 79113 & 2 & 0 & -0.38 & -0.38 & -0.38 & -0.48 & -0.93 & -0.93 & -2.00 & -3.47 \\ 
+  90138 & 90138 & 3 & 0 & 0.31 & 0.80 & 0.31 & 0.55 & 0.72 & 0.71 & 0.71 & 2.16 \\ 
+  97356 & 97356 & 2 & 0 & -0.08 & -0.33 & -0.08 & -0.17 & -0.42 & -0.35 & -1.58 & -1.82 \\ 
+  98030 & 98030 & 1 & 0 & -0.09 & -0.07 & -0.09 & -0.04 & -0.41 & -0.41 & -1.50 & -2.79 \\ 
+  101436 & 101436 & 1 & 5 & 0.54 & 0.62 & 0.80 & 0.91 & 1.21 & 1.21 & 1.21 & 2.74 \\ 
+  118121 & 118121 & 4 & 1 & 0.25 & 0.23 & 71.80 & -0.03 & 0.44 & 0.44 & 0.44 & 0.14 \\ 
+  119537 & 119537 & 3 & 0 & 0.07 & 0.15 & 0.07 & 0.29 & 0.50 & 0.50 & 1.43 & 1.81 \\ 
+  119818 & 119818 & 3 & 3 & -0.25 & -0.25 & -0.11 & -0.04 & -0.50 & -0.54 & 28.44 & -0.03 \\ 
+  146301 & 146301 & 1 & 0 & 0.14 & 0.26 & 498188.34 & 0.28 & 0.56 & 0.37 & 0.60 & 0.52 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Missing meta-analysis pooled treatment effect and adjusted treatment effects
+             of Figure ef{fig:adjustment.size}. Abbreviations are used for z-score (z) and Hedges g (g)} 
+\label{missing.differences}
+\end{table}
+
+
+
+
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Mon Jun 24 17:05:45 2019
+\begin{table}[ht]
+\centering
+\begingroup\scriptsize
+\begin{tabular}{lcccccc}
+  \hline
+ & 5\% & 25\% & 50\% & 75\% & 95\% & mean \\ 
+  \hline
+z-score: Fixed - Copas & -0.05 & -0.01 & 0.00 & 0.01 & 0.05 & 402.37 \\ 
+  z-score: Random - Copas & -0.04 & 0.00 & 0.00 & 0.00 & 0.01 & 159.98 \\ 
+  z-score: Fixed - Regression & -0.15 & -0.05 & -0.01 & 0.04 & 0.13 & -0.01 \\ 
+  z-score: Random - Regression & -0.18 & -0.07 & -0.02 & 0.03 & 0.16 & -0.02 \\ 
+  Hedges g: Fixed - Copas & -0.09 & -0.01 & 0.00 & 0.01 & 0.05 & -0.02 \\ 
+  Hedges g: Random - Copas & -0.14 & 0.00 & 0.00 & 0.00 & 0.00 & -0.04 \\ 
+  Hedges g: Fixed - Regression & -0.39 & -0.13 & -0.04 & 0.04 & 0.24 & -0.05 \\ 
+  Hedges g: Random - Regression & -0.43 & -0.17 & -0.05 & 0.03 & 0.23 & -0.07 \\ 
+  Log hazard ratio: Fixed - Copas & -0.02 & -0.00 & 0.00 & 0.00 & 0.03 & 0.01 \\ 
+  Log hazard ratio: Random - Copas & -0.00 & 0.00 & 0.00 & 0.00 & 0.03 & 0.01 \\ 
+  Log hazard ratio: Fixed - Regression & -0.15 & -0.01 & 0.07 & 0.14 & 0.21 & 0.06 \\ 
+  Log hazard ratio: Random - Regression & -0.15 & -0.03 & 0.07 & 0.15 & 0.23 & 0.06 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Quantiles and Means of the differences between meta-analysis pooled treatment effects and small study adjusted treatment effects. The row names indicate which outcome measure, meta-analysis and adjustment method is used} 
+\label{adjustment.difference}
+\end{table}
+
+
+
+\subsection{Change in Evidence for Treatment Effects}
+Adjustment for small study effects in meta-analysis will not only provide new effect sizes, but also standard errors thereof. Thus, also the evidence for efficacy of a treatment can be obtained, which is usually summarized in a suitable test statistic or $p$-value. \\
+The wald test statistics $p$-value for fixed and random effects meta-analyses and copas and regression adjusted treatment effects have been calculated. They are shown in Figure \ref{fig:adjustment.stat} for meta-analysis based on $z$-score, Hedges $g$ and log hazard ratio. The $p$-values get larger changing from fixed effects to random effects, and from Copas to regression adjusted $p$-values for $z$-scores and Hedges $g$. Also, they are larger for Hedges $g$ based meta-analyses compared to $z$-score based meta-analyses. Meanwhile, they stay approximately equal for log odds ratios, with the exception of regression adjusted test statistics. Thus, after adjusting for small study effects, the evidence for treatment efficacy shrinks at least partially, which is also indicated by the smaller number of significant $p$-values (0.05 threshold). Note that while $z$-score and Hedges $g$ based meta-analyses use the same data, only with different effect measure transformations, this is not true for meta-analyses based on log odds ratios.\\
+%Interestingly, in contrast to the small study effect tests, there seems to be no large difference between adjusted continuous and binary meta-analysis test statistics --appendix--
+%Figures \ref{fig:adjustment.stat.z} for the adjusted $z$-scores, \ref{fig:adjustment.stat.smd} for the adjusted Hedges $g$ and Cohen's d and \ref{fig:adjustment.stat.log.hazard.ratio} for the adjusted log hazard ratios.
 
 \begin{figure}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-15-1} 
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-16-1} 
+
+}
+
+
 
 \end{knitrout}
-\caption{Histogram of the $p$-values for the small study effect in survival outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
-\label{fig:test.surv}
+\caption{Histogram of the wald test-statistic $p$-value of meta-analysis and adjusted pooled treatment effect, based on different treatment effect measures. The method is indicated in the header, binwidth is set to 0.05. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
+\label{fig:adjustment.stat}
 \end{figure}
 
 
 
-\subsection{}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% \section{Small study effects}
+% <<echo=FALSE, warning=FALSE>>=
+% p.samplesize.z  <- data.ext2 %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% ungroup() %>% 
+%   mutate(std.z = abs(z), sample.size = total1 + total2) %>%
+%   group_by(sample.size) %>% 
+%   summarize(median.effect = median(std.z, na.rm = T)) %>% 
+%   ggplot(aes(x = sample.size, y = median.effect)) + geom_point(size = 0.8) + 
+%   theme_bw() + xlab("sample size") + ylab("median absolute z-score") +
+%   xlim(c(15, 300)) + ylim(c(0, 0.25)) +
+%   scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
+% 
+% p.samplesize.effect.sep <- data %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% 
+%   filter(outcome.measure.new == "Risk Ratio" | 
+%            outcome.measure.new == "Odds Ratio" | 
+%            outcome.measure.new == "Mean Difference" |
+%            outcome.measure.new == "Std. Mean Difference") %>% 
+%   group_by(outcome.measure.new) %>% 
+%   mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+%   group_by(sample.size, outcome.measure.new) %>% 
+%   summarize(median.effect = median(scaled.effect, na.rm = T)) %>% 
+%   ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure.new)) + geom_point(size = .5) + facet_wrap(~outcome.measure.new, scales = "free") + 
+%   theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size") +
+%   xlim(c(15, 300)) +
+%   scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
+% @
+% 
+% The median $z$-score for a given sample size of a trial is shown in Figure \ref{z.samplesize}. It is clearly visible that the absolute value decreases with increasing sample size, i.e. that the effect size is becoming smaller. The trend flattens off after $\sim$ sample size = 400 (not shown). 
+% -- Appendix -- \\
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% plot(p.samplesize.z)
+% @
+% \caption{Median of the absolute $z$-score plotted against the total sample size.}
+% \label{z.samplesize}
+% \end{figure}
+% 
+% Only for illustration, the same trend is reproduced in Figure \ref{effect.samplesize.separated} with a similar method, using the original effect size measures ``Odds Ratio'', ``Risk Ratio'', ``Mean Difference'' and ``Std. Mean Difference'' (the most commonly used in the dataset). The ``normalized effect'' is the original effect size, normalized with respect to all other effect sizes of the same measure (i.e. subtraction of mean and division through standard error of the mean).
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% plot(p.samplesize.effect.sep)
+% @
+% \caption{Median of the absolute value of the normalized, original effect size plotted against the total sample size.}
+% \label{effect.samplesize.separated}
+% \end{figure}
+% 
+% %Show absolute effect size depending on scaled time? Chunck 3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% Since the tests have different properties, the agreement between the tests can be visualized. Here, agreement is specified as classifying the same meta-analysis as significant, based on the 0.1 $p$-value threshold. Again, this is done separately for the different outcome types. The result can be seen in Figure \ref{fig:test.agreement}. In the Figure, the number of agreeing tests is displayed, i.e., how many meta-analyses had only one significant test result etc.
+% 
+% \begin{figure}
+% <<echo = FALSE, fig.height = 5>>=
+% grid.arrange(agree.bin,
+%               agree.cont, 
+%               agree.surv, ncol = 1)
+% @
+% \caption{Barplot for the number of significant test results per meta-analyses, separated for outcome.types}
+% \label{fig:test.agreement}
+% \end{figure}
+
+
+
+% \begin{figure}[!ht]
+% <<echo=FALSE>>=
+% plot(p.dist.bin)
+% @
+% \caption{Histogram of the $p$-values for small study effect in binary outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+% \label{fig:test.bin}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% plot(p.dist.cont)
+% @
+% \caption{Histogram of the $p$-values for the small study effect in continuous outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+% \label{fig:test.cont}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% plot(p.dist.surv)
+% @
+% \caption{Histogram of the $p$-values for the small study effect in survival outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+% \label{fig:test.surv}
+% \end{figure}
+
+
+
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% plot(adjustment.stat.z)
+% @
+% \caption{Histogram of the wald test-statistic of meta-analysis and adjusted pooled treatment effect, based on the z-score. The method is indicated in the header, binwidth is set to 1. The significant proportion based on the threshold of 0.05 is displayed inside the figures (The red line displays the corresponding quantile of the std. normal, 1.96).}
+% \label{fig:adjustment.stat.z}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% plot(adjustment.stat.d)
+% @
+% \caption{Histogram of the wald test-statistic of meta-analysis and adjusted pooled treatment effect, based on Hedges $g$ or Cohen's $d$. The method is indicated in the header, binwidth is set to 1. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
+% \label{fig:adjustment.stat.d}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% plot(adjustment.stat.log.hazard.ratio)
+% @
+% \caption{Histogram of the wald test-statistic of meta-analysis and adjusted pooled treatment effect, based on the $z$-score. The method is indicated in the header, binwidth is set to 1. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
+% \label{fig:adjustment.stat.log.hazard.ratio}
+% \end{figure}
+
 
 
 
@@ -1796,6 +2056,45 @@ s_i^2 = 1/4n_t + +/4n_c \nonumber
 Then one can optionally apply Begg and Mazumdar's rank correlation test or Thompson and Sharp's test using the newly obtained estimates.
 
 
+\section{Excess Significance Test}
+\citet{excess.significance} developped an exploratory test to detect if the proportion of significant findings is larger than expected. Note that significance is here defined as one-sided significance, with the direction of the test being the same for each study. \\
+We assume that the effects are equally distributed around a true mean effect $\theta_M$, which can be estimated as for example by fixed effects Meta-Analysis \ref{eq:fixed.effects}. Let $O$ be the number of significant study results out of $n$ studies and $\alpha$ the significance threshold. Corresponding to the study effect $\theta_i$, we can specify the power $1 - \beta_i$, the probability to accepting a true result. Let $z_{\alpha,i}$ be the $1-\alpha$ quantile of a normal distribution with standard error $\hat{s}_i$. The power of study $i$ can be estimated as:
+
+\begin{align}
+1 - \hat{\beta}_i &= F(z_\alpha) 
+\end{align}
+
+with $F$ being the cumulative distribution of a normal with mean $\hat{\theta}_M$ and standard deviation $\hat{s}_i$. \\
+If we assume no bias in $\theta_i, \theta_M$, the expected number of significant study results is then just
+
+\begin{align}
+E &= \sum_{i = 1}^n (1 - \beta_i) \nonumber
+\end{align}
+
+$E$ can then be compared to $O$ by constructing a test statistic $\chi$:
+
+\begin{align}
+\chi  &= \big( \frac{(O - E)^2}{E} + \frac{(O - E)^2}{n - E}\big) \nonumber
+\end{align}
+
+and consecutively, calculating a $p$-value for the evidence against the null-hypothesis of $O = E$ with a $\chi^2$ distribution with one degree of freedom. Alternatively, one can also use a binomial proportion test, which tests if the probability of significance is the same as expected. A simple Wald test statistic $Z$ is given by:
+
+\begin{align}
+Z = \frac{O/n - E/n}{\sqrt{(O/n(1-O/n))/n}}
+\end{align}
+
+The one sided $p$-value for the alternative hypothesis $O/n > E/n$ is
+
+\begin{align}
+p &= 1 - \Phi(Z) \nonumber
+\end{align}
+
+with $\Phi$ being the cumulative distribution function of a standard normal. \citet{excess.significance} propose it to be more suitable if $n$ is small.
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1808,7 +2107,7 @@ Then one can optionally apply Begg and Mazumdar's rank correlation test or Thomp
 
 
 
-\section{Small study effect and Publication Bias Adjustment}
+\section{Small Study Effect and Publication Bias Adjustment}
 There are different approaches to correct for small study effects and publication bias. They can mainly be distinguished by their underlying methods: regression based approaches aim to regress the effect to a study with infinite precision (i.e. very small standard error) or to a summary effect, corrected for publication bias. Selection models aim to simulate different, hypothetical selection processes and attain a approximate treatment effect by sensitivity analysis:
 
 \subsection{Adjustment by Regression}

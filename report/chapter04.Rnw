@@ -326,6 +326,45 @@ s_i^2 = 1/4n_t + +/4n_c \nonumber
 Then one can optionally apply Begg and Mazumdar's rank correlation test or Thompson and Sharp's test using the newly obtained estimates.
 
 
+\section{Excess Significance Test}
+\citet{excess.significance} developped an exploratory test to detect if the proportion of significant findings is larger than expected. Note that significance is here defined as one-sided significance, with the direction of the test being the same for each study. \\
+We assume that the effects are equally distributed around a true mean effect $\theta_M$, which can be estimated as for example by fixed effects Meta-Analysis \ref{eq:fixed.effects}. Let $O$ be the number of significant study results out of $n$ studies and $\alpha$ the significance threshold. Corresponding to the study effect $\theta_i$, we can specify the power $1 - \beta_i$, the probability to accepting a true result. Let $z_{\alpha,i}$ be the $1-\alpha$ quantile of a normal distribution with standard error $\hat{s}_i$. The power of study $i$ can be estimated as:
+
+\begin{align}
+1 - \hat{\beta}_i &= F(z_\alpha) 
+\end{align}
+
+with $F$ being the cumulative distribution of a normal with mean $\hat{\theta}_M$ and standard deviation $\hat{s}_i$. \\
+If we assume no bias in $\theta_i, \theta_M$, the expected number of significant study results is then just
+
+\begin{align}
+E &= \sum_{i = 1}^n (1 - \beta_i) \nonumber
+\end{align}
+
+$E$ can then be compared to $O$ by constructing a test statistic $\chi$:
+
+\begin{align}
+\chi  &= \big( \frac{(O - E)^2}{E} + \frac{(O - E)^2}{n - E}\big) \nonumber
+\end{align}
+
+and consecutively, calculating a $p$-value for the evidence against the null-hypothesis of $O = E$ with a $\chi^2$ distribution with one degree of freedom. Alternatively, one can also use a binomial proportion test, which tests if the probability of significance is the same as expected. A simple Wald test statistic $Z$ is given by:
+
+\begin{align}
+Z = \frac{O/n - E/n}{\sqrt{(O/n(1-O/n))/n}}
+\end{align}
+
+The one sided $p$-value for the alternative hypothesis $O/n > E/n$ is
+
+\begin{align}
+p &= 1 - \Phi(Z) \nonumber
+\end{align}
+
+with $\Phi$ being the cumulative distribution function of a standard normal. \citet{excess.significance} propose it to be more suitable if $n$ is small.
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -338,7 +377,7 @@ Then one can optionally apply Begg and Mazumdar's rank correlation test or Thomp
 
 
 
-\section{Small study effect and Publication Bias Adjustment}
+\section{Small Study Effect and Publication Bias Adjustment}
 There are different approaches to correct for small study effects and publication bias. They can mainly be distinguished by their underlying methods: regression based approaches aim to regress the effect to a study with infinite precision (i.e. very small standard error) or to a summary effect, corrected for publication bias. Selection models aim to simulate different, hypothetical selection processes and attain a approximate treatment effect by sensitivity analysis:
 
 \subsection{Adjustment by Regression}

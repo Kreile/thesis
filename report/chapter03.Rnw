@@ -1,13 +1,5 @@
 % LaTeX file for Chapter 03
 
-%<<echo=FALSE>>=
-% library(knitr)
-% opts_chunk$set(
-%      fig.path='figure/ch03_fig',
-%      self.contained=FALSE,
-%      cache=TRUE
-%  )
-%@
 
 <<'preamble03',include=FALSE, echo=FALSE>>=
 library(knitr)
@@ -55,7 +47,7 @@ load(file.path(PATH_RESULTS, "meta.cont.RData"))
 load(file.path(PATH_RESULTS, "meta.surv.RData"))
 load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
-data.ext2 <- pb.process2(data)
+# data.ext2 <- pb.process2(data)
 @
 
 
@@ -67,69 +59,15 @@ data.ext2 <- pb.process2(data)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Small study effects}
-<<echo=FALSE, warning=FALSE>>=
-p.samplesize.z  <- data.ext2 %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% ungroup() %>% 
-  mutate(std.z = abs(z), sample.size = total1 + total2) %>%
-  group_by(sample.size) %>% 
-  summarize(median.effect = median(std.z, na.rm = T)) %>% 
-  ggplot(aes(x = sample.size, y = median.effect)) + geom_point(size = 0.8) + 
-  theme_bw() + xlab("sample size") + ylab("median absolute z-score") +
-  xlim(c(15, 300)) + ylim(c(0, 0.25)) +
-  scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
-
-p.samplesize.effect.sep <- data %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% 
-  filter(outcome.measure.new == "Risk Ratio" | 
-           outcome.measure.new == "Odds Ratio" | 
-           outcome.measure.new == "Mean Difference" |
-           outcome.measure.new == "Std. Mean Difference") %>% 
-  group_by(outcome.measure.new) %>% 
-  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
-  group_by(sample.size, outcome.measure.new) %>% 
-  summarize(median.effect = median(scaled.effect, na.rm = T)) %>% 
-  ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure.new)) + geom_point(size = .5) + facet_wrap(~outcome.measure.new, scales = "free") + 
-  theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size") +
-  xlim(c(15, 300)) +
-  scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
-@
-
-The median $z$-score for a given sample size of a trial is shown in Figure \ref{z.samplesize}. It is clearly visible that the absolute value decreases with increasing sample size, i.e. that the effect size is becoming smaller. The trend flattens off after $\sim$ sample size = 400 (not shown). 
--- Appendix --
-
-\begin{figure}
-<<echo=FALSE, warning=FALSE>>=
-plot(p.samplesize.z)
-@
-\caption{Median of the absolute $z$-score plotted against the total sample size.}
-\label{z.samplesize}
-\end{figure}
-
-Only for illustration, the same trend is reproduced in Figure \ref{effect.samplesize.separated} with a similar method, using the original effect size measures ``Odds Ratio'', ``Risk Ratio'', ``Mean Difference'' and ``Std. Mean Difference'' (the most commonly used in the dataset). The ``normalized effect'' is the original effect size, normalized with respect to all other effect sizes of the same measure (i.e. subtraction of mean and division through standard error of the mean).
-
-\begin{figure}
-<<echo=FALSE>>=
-plot(p.samplesize.effect.sep)
-@
-\caption{Median of the absolute value of the normalized, original effect size plotted against the total sample size.}
-\label{effect.samplesize.separated}
-\end{figure}
-
-%Show absolute effect size depending on scaled time? Chunck 3
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Small Study Effect Tests}
+\section{Small Study Effect and Excess of Singificance Tests}
 <<echo=FALSE, warning=FALSE>>=
 sig.level <- 0.1
 meta.f <- meta.f %>% 
 	mutate(egger.test = ifelse(pval.egger < sig.level, 1, 0),
 				 thompson.test = ifelse(pval.thompson < sig.level, 1, 0),
 				 begg.test = ifelse(pval.begg < sig.level, 1, 0),
+				 
+				 tes.d.test = ifelse(pval.d.tes < sig.level, 1, 0),
 				 
 				 schwarzer.test = ifelse(pval.schwarzer < sig.level, 1, 0),
 				 rucker.test = ifelse(pval.rucker < sig.level, 1, 0),
@@ -161,23 +99,23 @@ p.bin <- meta.bin %>% ungroup() %>%
 #--------------------------------------------------------------------------------------------------------------------#
 
 dat_text <- data.frame(
-	label = paste(c(sum(meta.bin$harbord.test), sum(meta.bin$peter.test), 
-									sum(meta.bin$rucker.test), sum(meta.bin$schwarzer.test)), "< 0.1,",
-								round(c(mean(meta.bin$harbord.test), mean(meta.bin$peter.test), 
-												mean(meta.bin$rucker.test), mean(meta.bin$schwarzer.test)),2)*100, "%"),
-	test.type   = c("pval.harbord", "pval.peter", "pval.rucker", "pval.schwarzer"))
+  label = paste(c(sum(meta.bin$harbord.test), sum(meta.bin$peter.test), 
+                  sum(meta.bin$rucker.test), sum(meta.bin$schwarzer.test), sum(meta.bin$tes.d.test, na.rm = T)), "< 0.1,",
+                round(c(mean(meta.bin$harbord.test), mean(meta.bin$peter.test), 
+                        mean(meta.bin$rucker.test), mean(meta.bin$schwarzer.test), mean(meta.bin$tes.d.test, na.rm = T)),2)*100, "%"),
+  test.type   = c("pval.harbord", "pval.peter", "pval.rucker", "pval.schwarzer", "pval.d.tes"))
 
-labels <- c(pval.harbord = "Harbord", pval.peter = "Peter", pval.rucker = "Rucker", pval.schwarzer = "Schwarzer")
+labels <- c(pval.harbord = "Harbord", pval.peter = "Peter", pval.rucker = "Rucker", pval.schwarzer = "Schwarzer", pval.d.tes = "Excess Significance")
 
 p.dist.bin <- meta.bin %>% ungroup() %>% 
-	select(pval.harbord, pval.peter, pval.rucker, pval.schwarzer) %>% 
-	gather(key = "test.type", value = "p.value") %>% 
-	ggplot(aes(x = p.value)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
-	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 300, label = label), color = "black") + 
-	theme(strip.text.x = element_text(size=10))
+  select(pval.harbord, pval.peter, pval.rucker, pval.schwarzer, pval.d.tes) %>% 
+  gather(key = "test.type", value = "p.value") %>% 
+  ggplot(aes(x = p.value)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+  geom_text(data = dat_text, mapping = aes(x = 0.5, y = 250, label = label), color = "black") + 
+  theme(strip.text.x = element_text(size=7)) + ggtitle("Binary Outcomes")
 #--------------------------------------------------------------------------------------------------------------------#
 
-#Survival Outcomes:
+#Continuous Outcomes:
 test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
 																									 begg.test = mean(begg.test),
 																									 thompson.test = mean(thompson.test))
@@ -197,18 +135,18 @@ p.cont <- meta.cont %>% ungroup() %>%
 #--------------------------------------------------------------------------------------------------------------------#
 
 dat_text <- data.frame(
-	label = paste(c(sum(meta.cont$begg.test), sum(meta.cont$egger.test), sum(meta.cont$thompson.test)), "< 0.1,",
-								round(c(mean(meta.cont$begg.test), mean(meta.cont$egger.test), mean(meta.cont$thompson.test)),2)*100, "%"),
-	test.type   = c("pval.begg", "pval.egger", "pval.thompson"))
+  label = paste(c(sum(meta.cont$begg.test), sum(meta.cont$egger.test), sum(meta.cont$thompson.test), sum(meta.cont$tes.d.test, na.rm = T)), "< 0.1,",
+                round(c(mean(meta.cont$begg.test), mean(meta.cont$egger.test), mean(meta.cont$thompson.test), mean(meta.cont$tes.d.test, na.rm = T)),2)*100, "%"),
+  test.type   = c("pval.begg", "pval.egger", "pval.thompson", "pval.d.tes"))
 
-labels <- c(pval.begg = "Begg Mazumdar", pval.egger = "Egger", pval.thompson = "Thompson Sharp")
+labels <- c(pval.begg = "Begg Mazumdar", pval.egger = "Egger", pval.thompson = "Thompson Sharp", pval.d.tes = "Excess significance")
 p.dist.cont <- meta.cont %>% ungroup() %>% 
-	select(pval.egger, pval.thompson, pval.begg) %>% 
-	gather(key = "test.type", value = "p.value") %>% 
-	ggplot(aes(x = p.value)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
-	facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
-	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 90, label = label),  color = "black") + 
-	theme(strip.text.x = element_text(size=10))
+  select(pval.egger, pval.thompson, pval.begg, pval.d.tes) %>% 
+  gather(key = "test.type", value = "p.value") %>% 
+  ggplot(aes(x = p.value)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
+  facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+  geom_text(data = dat_text, mapping = aes(x = 0.5, y = 60, label = label),  color = "black") + 
+  theme(strip.text.x = element_text(size=7)) + ggtitle("Continuous Outcomes")
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Survival Outcomes:
@@ -227,24 +165,20 @@ p.surv <- meta.surv %>% ungroup() %>%
 	guides(fill=guide_legend(title=NULL))+
 	annotate("text", x = test.surv$test.type, y = 10, 
 					 label = paste(round(test.surv$mean, 2)*100, "% rejected"), 
-					 color = "white")
+					 color = "white") 
 #--------------------------------------------------------------------------------------------------------------------#
 
 dat_text <- data.frame(
-	label = paste(c(sum(meta.surv$begg.test), sum(meta.surv$egger.test), sum(meta.surv$thompson.test)), 
-	              "< 0.1,",
-								round(c(mean(meta.surv$begg.test), mean(meta.surv$egger.test), mean(meta.surv$thompson.test)),2)*100, 
-								"%"),
-	test.type   = c("pval.begg", "pval.egger", "pval.thompson"))
-
-labels <- c(pval.begg = "Begg Mazumdar", pval.egger = "Egger", pval.thompson = "Thompson Sharp")
+  label = paste(c(sum(meta.surv$begg.test), sum(meta.surv$egger.test), sum(meta.surv$thompson.test), sum(meta.surv$tes.d.test, na.rm = T)), "< 0.1,",
+                round(c(mean(meta.surv$begg.test), mean(meta.surv$egger.test), mean(meta.surv$thompson.test), mean(meta.surv$tes.d.test, na.rm = T)),2)*100, "%"),
+  test.type   = c("pval.begg", "pval.egger", "pval.thompson", "pval.d.tes"))
 p.dist.surv <- meta.surv %>% ungroup() %>% 
-	select(pval.egger, pval.thompson, pval.begg) %>% 
+	select(pval.egger, pval.thompson, pval.begg, pval.d.tes) %>% 
 	gather(key = "test.type", value = "p.value") %>% 
 	ggplot(aes(x = p.value)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
 	facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
-	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 11, label = label),  color = "black") + 
-	theme(strip.text.x = element_text(size=10))
+	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 10, label = label),  color = "black") + 
+	theme(strip.text.x = element_text(size=7)) + ggtitle("Survival Outcomes")
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Test agreement
@@ -265,10 +199,143 @@ agree.surv <- meta.surv %>% mutate(n.sig = egger.test + thompson.test + begg.tes
 	ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + 
   xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
 #--------------------------------------------------------------------------------------------------------------------#
+
+
+################################################################################################
+################################################################################################
+#PUBLICATION BIAS TEST AGREEMENT
+################################################################################################
+################################################################################################
+
+#Agreement proportions of publication bias tests:
+
+#Binary:
+meta.bin <- meta.bin %>%ungroup() %>%  mutate(tes.d.schwarzer = ifelse(tes.d.test == schwarzer.test, "agree", "disagree"),
+																							tes.d.peter = ifelse(tes.d.test == peter.test, "agree", "disagree"),
+																							tes.d.rucker = ifelse(tes.d.test == rucker.test, "agree", "disagree"),
+																							tes.d.harbord = ifelse(tes.d.test == harbord.test, "agree", "disagree"),
+																							schwarzer.peter = ifelse(schwarzer.test == peter.test, "agree", "disagree"),
+																							schwarzer.rucker = ifelse(schwarzer.test == rucker.test, "agree", "disagree"),
+																							schwarzer.harbord = ifelse(schwarzer.test == harbord.test, "agree", "disagree"),
+																							rucker.peter = ifelse(rucker.test == peter.test, "agree", "disagree"),
+																							rucker.harbord = ifelse(rucker.test == harbord.test, "agree", "disagree"),
+																							harbord.peter = ifelse(harbord.test == peter.test, "agree", "disagree"))
+agreement.bin <- meta.bin %>% ungroup() %>% summarise(tes.d.schwarzer = sum(tes.d.schwarzer == "agree")/n(),
+																											tes.d.peter = sum(tes.d.peter == "agree")/n(),
+																											tes.d.rucker = sum(tes.d.rucker == "agree")/n(),
+																											tes.d.harbord = sum(tes.d.harbord == "agree")/n(),
+																											schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
+																											schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
+																											schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
+																											rucker.peter = sum(rucker.peter == "agree")/n(),
+																											harbord.peter = sum(harbord.peter == "agree")/n())
+correlation.bin <- meta.bin %>%ungroup() %>%  summarise(tes.d.schwarzer = cor(pval.d.tes, pval.schwarzer),
+																												tes.d.peter = cor(pval.d.tes, pval.peter),
+																												tes.d.rucker = cor(pval.d.tes, pval.rucker),
+																												tes.d.harbord = cor(pval.d.tes, pval.harbord),
+																												schwarzer.peter = cor(pval.schwarzer, pval.peter),
+																												schwarzer.rucker = cor(pval.schwarzer, pval.rucker),
+																												schwarzer.harbord = cor(pval.schwarzer, pval.harbord),
+																												rucker.peter = cor(pval.rucker, pval.peter),
+																												harbord.peter = cor(pval.harbord, pval.peter))
+rsquared.bin <- meta.bin %>%ungroup() %>%  summarise(tes.d.schwarzer = summary(lm(pval.d.tes~ pval.schwarzer))$r.squared,
+                                                        tes.d.peter = summary(lm(pval.d.tes~ pval.peter))$r.squared,
+                                                        tes.d.rucker = summary(lm(pval.d.tes~ pval.rucker))$r.squared,
+                                                        tes.d.harbord = summary(lm(pval.d.tes~ pval.harbord))$r.squared,
+                                                        schwarzer.peter = summary(lm(pval.schwarzer~ pval.peter))$r.squared,
+                                                        schwarzer.rucker = summary(lm(pval.schwarzer~ pval.rucker))$r.squared,
+                                                        schwarzer.harbord = summary(lm(pval.schwarzer~ pval.harbord))$r.squared,
+                                                        rucker.peter = summary(lm(pval.rucker~ pval.peter))$r.squared,
+                                                        harbord.peter = summary(lm(pval.harbord~ pval.peter))$r.squared)
+
+binary.tests.agreement <- rbind(agreement.bin, correlation.bin, rsquared.bin)
+rownames(binary.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
+colnames(binary.tests.agreement) <- c("Excess significance, Schwarzer", "Excess significance, Peter",
+                                      "Excess significance, Rucker", "Excess significance, Harbord",
+                                      "Peter, Schwarzer", "Schwarzer, Rucker", "Schwarzer, Harbord",
+                                      "Rucker, Peter", "Harbord, Peter")
+#--------------------------------------------------------------------------------------------------------------------#
+
+
+#Continuous:
+meta.cont <- meta.cont %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
+																								thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
+																								egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
+																								tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
+																								thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
+																								tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
+agreement.cont <- meta.cont %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
+																												 thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
+																												 tes.d.begg = sum(tes.d.begg == "agree")/n(),
+																												 thompson.egger = sum(thompson.egger == "agree")/n(),
+																												 thompson.begg = sum(thompson.begg == "agree")/n(),
+																												 egger.begg = sum(egger.begg == "agree")/n())
+correlation.cont <- meta.cont %>% ungroup() %>% summarise(tes.d.egger = cor(pval.egger, pval.d.tes),
+																													thompson.tes.d = cor(pval.thompson, pval.d.tes),
+																													tes.d.begg = cor(pval.d.tes, pval.begg),
+																													thompson.egger = cor(pval.thompson, pval.egger),
+																													thompson.begg = cor(pval.thompson, pval.begg),
+																													egger.begg = cor(pval.egger, pval.begg))
+rsquared.cont <- meta.cont %>% ungroup() %>% summarise(tes.d.egger = summary(lm(pval.egger~ pval.d.tes))$r.squared,
+                                                          thompson.tes.d = summary(lm(pval.thompson~ pval.d.tes))$r.squared,
+                                                          tes.d.begg = summary(lm(pval.d.tes~ pval.begg))$r.squared,
+                                                          thompson.egger = summary(lm(pval.thompson~ pval.egger))$r.squared,
+                                                          thompson.begg = summary(lm(pval.thompson~ pval.begg))$r.squared,
+                                                          egger.begg = summary(lm(pval.egger~ pval.begg))$r.squared)
+
+cont.tests.agreement <- rbind(agreement.cont, correlation.cont, rsquared.cont)
+rownames(cont.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
+colnames(cont.tests.agreement) <- c( "Excess significance, Egger", "Excess significance, Thompson", 
+                                     "Excess significance, Begg","Thompson, Egger", "Thompson, Begg", "Egger, Begg")
+
+#--------------------------------------------------------------------------------------------------------------------#
+
+
+#Survival:
+meta.surv <- meta.surv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
+                                                thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
+                                                egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
+                                                tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
+                                                thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
+                                                tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
+agreement.surv <- meta.surv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
+                                                         thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
+                                                         tes.d.begg = sum(tes.d.begg == "agree")/n(),
+                                                         thompson.egger = sum(thompson.egger == "agree")/n(),
+                                                         thompson.begg = sum(thompson.begg == "agree")/n(),
+                                                         egger.begg = sum(egger.begg == "agree")/n())
+correlation.surv <- meta.surv %>% ungroup() %>% summarise(tes.d.egger = cor(pval.egger, pval.d.tes),
+																													thompson.tes.d = cor(pval.thompson, pval.d.tes),
+																													tes.d.begg = cor(pval.d.tes, pval.begg),
+																													thompson.egger = cor(pval.thompson, pval.egger),
+																													thompson.begg = cor(pval.thompson, pval.begg),
+																													egger.begg = cor(pval.egger, pval.begg))
+rsquared.surv <- meta.surv %>% ungroup() %>% summarise(tes.d.egger = summary(lm(pval.egger~ pval.d.tes))$r.squared,
+                                                          thompson.tes.d = summary(lm(pval.thompson~ pval.d.tes))$r.squared,
+                                                          tes.d.begg = summary(lm(pval.d.tes~ pval.begg))$r.squared,
+                                                          thompson.egger = summary(lm(pval.thompson~ pval.egger))$r.squared,
+                                                          thompson.begg = summary(lm(pval.thompson~ pval.begg))$r.squared,
+                                                          egger.begg = summary(lm(pval.egger~ pval.begg))$r.squared)
+
+surv.tests.agreement <- rbind(agreement.surv, correlation.surv, rsquared.surv)
+rownames(surv.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
+colnames(surv.tests.agreement) <- c("Excess significance, Egger (survival)", "Excess significance, Thompson (survival)", 
+                                    "Excess significance, Begg (survival)", "Thompson, Egger (survival)", 
+                                    "Thompson, Begg (survival)", "Egger, Begg (survival)")
+
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Merging:
+test.agreement <- rbind(t(binary.tests.agreement), t(cont.tests.agreement), t(surv.tests.agreement))
+
+#--------------------------------------------------------------------------------------------------------------------#
+
 @
 
-The results of the test for small study effects for the meta-analyses fullfilling the criteria from chapter \ref{chapter01}, section \ref{sec:Processing}, are presented in Figures \ref{fig:test.bin}, \ref{fig:test.cont} and \ref{fig:test.surv}. The histogram of the $p$-values appears most often skewed to the right, indicating evidence for small study effects. Because different tests are applied depending on outcome type, the results are displayed separately for binary, continuous and survival outcome types (as previously defined in the dataset variable ``outcome.type'', see chapter \ref{ch:chapter01}, section \ref{sec:Processing}. \\
-For continuous and survival outcomes, the names refer to: 
+The results of the test for small study effects and excess of significance for the meta-analyses fullfilling the criteria from chapter \ref{chapter02}, section \ref{sec:Processing}, are presented in Figure \ref{fig:test}.
+%Figures \ref{fig:test.bin}, \ref{fig:test.cont} and \ref{fig:test.surv}. 
+The histogram of the $p$-values is displayed separately for binary, continuous and survival outcome types (as previously defined in the dataset variable \texttt{outcome.type}, see chapter \ref{ch:chapter02}, section \ref{sec:Processing}. The distributions are (with the exception of Schwarzer's test) skewed to the right, indicating evidence for small study effects. Moreover, the excess significance tests have a mode around $p = 0.4$. Large differences between small study effect tests for binary and continuous outcomes will be subject to discussion. \\
+``Excess significance'' denotes the excess of significance $p$-values from the test of \citet{excess.significance}. For continuous and survival outcomes, the names refer to: 
 
 \begin{itemize}
 \item Egger's test, the weigthed linear regression test as described in section \ref{sec:Egger}
@@ -284,35 +351,646 @@ For binary outcomes, the names refer to:
 \item Schwarzer's test, the rank based test using the expected event counts computed with the hypergeometric distribution (section \ref{sec:Schwarzer})
 \end{itemize}
 
-
-\begin{figure}[!ht]
-<<echo=FALSE>>=
-plot(p.dist.bin)
+\begin{figure}[ht!]
+<<echo=FALSE, fig.height = 9>>=
+grid.arrange(p.dist.bin,
+             p.dist.cont,
+             p.dist.surv, ncol = 1)
 @
-\caption{Histogram of the $p$-values for small study effect in binary outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
-\label{fig:test.bin}
+\caption{Histogram of the $p$-values for small study effect in meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+\label{fig:test}
 \end{figure}
 
-\begin{figure}
-<<echo=FALSE>>=
-plot(p.dist.cont)
+The agreement/coinicidence between between small study effect and excess significance tests is often not pronounced, thus, it will be compared by different methods. This is displayed in Table \ref{test.agreement}. The row names indicate which two tests are compared. First, the column ``Test Agreement'' quantifies the overall proportion by which the two tests agree in their rejection or ``acceptance'' of the null-hypothesis. ``Test Agreement'' being equal one thus indicates equivalent results, zero no correspondence whatsoever. The second column, ``Correlation'' gives the correlation between the $p$-values. A positive correlation indicates psotive coincidence of $p$-values, negative correlation coincidence in opposite directions. However, the scale might be different for this agreement measure. The ``R-squared'' value indicates to what extent one $p$-value can be predicted by another, and ignores additive differences between $p$-values (as for correlation), as well as multiplicative constants between them (i.e. $y ~ a + b*x$, $y$ and $x$ being two $p$-values of test-statistics). An R-squared value of 1 indicates perfect fit. Importantly, the order of the variables does not matter for the $p$-values for all indicators (i.e. $p$-values for $x$ and $y$ can be exchanged and the table stays the same). If a test is completely replaceable by another, all values in a row are equal to one. 
+
+<<echo=FALSE, results='asis'>>=
+print(xtable(test.agreement, align = "lccc", caption = "Agreement in significance proportion, correlation and R-squared of linear regression
+             between the p-values of the publication bias tests. Horizontal lines separate binary, continuous and survival outcomes (order as in table).",
+             label = "test.agreement"), hline = c(0,0,9, 15, 21), size = "footnotesize")
 @
-\caption{Histogram of the $p$-values for the small study effect in continuous outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
-\label{fig:test.cont}
-\end{figure}
-
-\begin{figure}
-<<echo=FALSE>>=
-plot(p.dist.surv)
-@
-\caption{Histogram of the $p$-values for the small study effect in survival outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
-\label{fig:test.surv}
-\end{figure}
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Small Study Effects Adjustment}
-When adjusting for small study effects, the newly obtained test statistics, as well as the corrected effect size is of interest. The former is displayed in Figures \ref{fig:adjustment.z} for the adjusted $z$-scores, \ref{fig:adjustment.smd} for the adjusted Hedges $g$ and Cohen's $d$ and \ref{fig:adjustment.log.hazard.ratio} for the adjusted log hazard ratios.
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+#HISTOGRAMS:  
+
+#Comparison of treatment effect p-values:
+sig.zcor <- meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+                              z.ranef = est.z.ranef/se.est.z.ranef,
+                              z.reg = est.z.reg/se.est.z.reg,
+                              z.copas = est.z.copas/se.est.z.copas) %>%  
+  select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
+  mutate(p.fisher.z = 2*(1-pnorm(abs(fisher.z)))) %>% 
+  group_by(method) %>% 
+  summarise(significant = length(which(abs(fisher.z) > 1.96)),
+            p.significant = significant/length(fisher.z))
+sig.zcor <- data.frame(method = sig.zcor$method,
+                       label = paste(round(sig.zcor$p.significant,3)*100, "% significant", ", (n = ", sig.zcor$significant, ")", sep = ""))
+
+method_names <- c(
+  z.fixef = "Fixed Effects",
+  z.ranef = "Random Effects",
+  z.reg = "Regression",
+  z.copas = "Copas"
+)
+
+adjustment.p.z <- meta.f %>% 
+  mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+         z.ranef = est.z.ranef/se.est.z.ranef,
+         z.reg = est.z.reg/se.est.z.reg,
+         z.copas = est.z.copas/se.est.z.copas) %>%  
+  select(z.fixef, z.ranef, z.reg, z.copas) %>% 
+  gather(key = "method", value = "fisher.z") %>% 
+  mutate(method = factor(method, levels = c("z.fixef", "z.ranef", "z.reg", "z.copas"))) %>% 
+  mutate(p.fisher.z = 2*(1-pnorm(abs(fisher.z)))) %>% 
+  ggplot(aes(x = p.fisher.z)) + 
+  geom_histogram(boundary = 0, bins = 20) + 
+  theme_bw() + 
+  facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
+  geom_text(data = sig.zcor, aes(x = 0.5, y = 750, label = label), position = "dodge") + 
+  xlab(expression(paste(italic(p),"-value of test statistic of the ", italic(z),"-score"))) +
+  ggtitle(expression(paste(italic(z), " Score ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Comparison of SMD's:
+sig.d <- meta.f %>% mutate(d.fixef = est.d.fixef/se.est.d.fixef,
+                           d.ranef = est.d.ranef/se.est.d.ranef,
+                           d.reg = est.d.reg/se.est.d.reg,
+                           d.copas = est.d.copas/se.est.d.copas) %>%  
+  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+  mutate(p.smd = 2*(1-pnorm(abs(smd)))) %>% 
+  group_by(method) %>% 
+  summarise(significant = length(which(abs(smd) > 1.96)),
+            p.significant = significant/length(smd))
+sig.d <- data.frame(method = sig.d$method,
+                    label = paste(round(sig.d$p.significant,3)*100, "% significant", ", (n = ", sig.d$significant, ")", sep = ""))
+
+method_names <- c(
+  d.fixef = "Fixed Effects",
+  d.ranef = "Random Effects",
+  d.reg = "Regression",
+  d.copas = "Copas"
+)
+
+adjustment.p.d <- meta.f %>% 
+  mutate(d.fixef = est.d.fixef/se.est.d.fixef,
+         d.ranef = est.d.ranef/se.est.d.ranef,
+         d.reg = est.d.reg/se.est.d.reg,
+         d.copas = est.d.copas/se.est.d.copas) %>%  
+  select(d.fixef, d.ranef, d.reg, d.copas) %>% 
+  gather(key = "method", value = "smd") %>% 
+  mutate(method = factor(method, levels = c("d.fixef", "d.ranef", "d.reg", "d.copas"))) %>% 
+  mutate(p.smd = 2*(1-pnorm(abs(smd)))) %>% 
+  ggplot(aes(x = p.smd)) + 
+  geom_histogram(boundary = 0, bins = 20) + 
+  theme_bw() + 
+  facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
+  geom_text(data = sig.d, aes(x = 0.5, y = 750, label = label), position = "dodge") + 
+  xlab(expression(paste(italic(p),"-value of test statistic of Hedges ", italic(g)))) +
+  ggtitle(expression(paste("Hedges ", italic(g), " ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Comparison of log hazard ratios:
+sig.d <- meta.f %>% filter(outcome.type == "surv") %>% 
+  mutate(d.fixef = est.fixef/se.est.fixef,
+         d.ranef = est.ranef/se.est.ranef,
+         d.reg = est.reg/se.est.reg,
+         d.copas = est.copas/se.est.copas) %>%  
+  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+  group_by(method) %>% 
+  summarise(significant = length(which(abs(smd) > 1.96)),
+            p.significant = (significant + sum(is.na(smd)))/(length(smd)))
+sig.d <- data.frame(method = sig.d$method,
+                    label = paste(round(sig.d$p.significant,3)*100, "% significant", ", (n = ", sig.d$significant, ")", sep = ""))
+
+method_names <- c(
+  d.fixef = "Fixed Effects",
+  d.ranef = "Random Effects",
+  d.reg = "Regression",
+  d.copas = "Copas"
+)
+
+adjustment.p.log.hazard.ratio <- meta.f %>% filter(outcome.type == "surv") %>% 
+  mutate(d.fixef = est.fixef/se.est.fixef,
+         d.ranef = est.ranef/se.est.ranef,
+         d.reg = est.reg/se.est.reg,
+         d.copas = est.copas/se.est.copas) %>%  
+  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+  mutate(method = factor(method, levels = c("d.fixef", "d.ranef", "d.reg", "d.copas"))) %>% 
+  mutate(p.smd = 2*(1-pnorm(abs(smd)))) %>% 
+  ggplot(aes(x = p.smd)) + 
+  geom_histogram(boundary = 0, bins = 20) + 
+  theme_bw() + 
+  facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
+  geom_text(data = sig.d, aes(x = 0.00003, y = 20, label = label), position = "dodge") + 
+  xlab(expression(paste(italic(p),"-value of test statistic of Hedges ", italic(g)))) +
+  ggtitle(expression(paste("Log hazard ratio ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
+#--------------------------------------------------------------------------------------------------------------------#
+
+
+#Meta-Analysis and adjusted treatment effect estimate difference:
+
+#Z-score:
+diff.z.fixef <- meta.f %>% 
+  mutate(fixef = est.z.fixef, ranef = est.z.ranef,
+                  copas = est.z.copas, regression = est.z.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(fixef) ~  abs(copas),
+                           sign(copas) != sign(fixef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(fixef) ~  abs(regression),
+                                sign(regression) != sign(fixef) ~ -abs(regression)),
+    fixef = abs(fixef),
+    ranef = abs(ranef)) %>% 
+  select(fixef, ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.z.score", copas:regression) %>% 
+  mutate(difference = fixef - adjusted.z.score) %>% 
+  filter(difference > -.75 & difference < .75) %>% 
+  ggplot(aes(x = difference)) + geom_histogram(binwidth = 0.1, center = 0) +
+  facet_wrap(~method) + theme_bw() + 
+  xlab(expression(paste("Fixed effects - adjusted ", z, "-score")))
+#--------------------------------------------------------------------------------------------------------------------#
+
+diff.z.ranef <- meta.f %>% 
+  mutate(fixef = est.z.fixef, ranef = est.z.ranef,
+         copas = est.z.copas, regression = est.z.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(ranef) ~  abs(copas),
+                           sign(copas) != sign(ranef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(ranef) ~  abs(regression),
+                                sign(regression) != sign(ranef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  select(fixef, ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.z.score", copas:regression) %>% 
+  mutate(difference = ranef - adjusted.z.score) %>% 
+  filter(difference > -.75 & difference < .75) %>% 
+  ggplot(aes(x = difference)) + geom_histogram(binwidth = 0.1, center = 0) +
+  facet_wrap(~method) + theme_bw() + 
+  xlab(expression(paste("Random effects - adjusted ", z, "-score")))
+#--------------------------------------------------------------------------------------------------------------------#
+
+#SMD:
+diff.d.fixef <- meta.f %>% 
+  mutate(fixef = est.d.fixef, ranef = est.d.ranef,
+         copas = est.d.copas, regression = est.d.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(fixef) ~  abs(copas),
+                           sign(copas) != sign(fixef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(fixef) ~  abs(regression),
+                                sign(regression) != sign(fixef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  select(fixef, ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.smd", copas:regression) %>% 
+  mutate(difference = fixef - adjusted.smd) %>% 
+  filter(difference > -1 & difference < 1) %>% 
+  ggplot(aes(x = difference)) + geom_histogram(binwidth = 0.1, center = 0) +
+  facet_wrap(~method) + theme_bw() + 
+  xlab(expression(paste("Fixed effects - adjusted Hedges ", g)))
+#--------------------------------------------------------------------------------------------------------------------#
+
+diff.d.ranef <- meta.f  %>% 
+  mutate(fixef = est.d.fixef, ranef = est.d.ranef,
+         copas = est.d.copas, regression = est.d.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(ranef) ~  abs(copas),
+                           sign(copas) != sign(ranef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(ranef) ~  abs(regression),
+                                sign(regression) != sign(ranef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  gather(key = "method", value = "adjusted.smd", copas:regression) %>% 
+  mutate(difference = ranef - adjusted.smd) %>% 
+  filter(difference > -1 & difference < 1) %>% 
+  ggplot(aes(x = difference)) + geom_histogram(binwidth = 0.1, center = 0) +
+  facet_wrap(~method) + theme_bw() + 
+  xlab(expression(paste("Random effects - adjusted Hedges ", g)))
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Log hazard ratios:
+diff.log.hazard.ratio.fixef <- meta.surv %>% 
+  mutate(fixef = est.fixef, ranef = est.ranef,
+         copas = est.copas, regression = est.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(fixef) ~  abs(copas),
+                           sign(copas) != sign(fixef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(fixef) ~  abs(regression),
+                                sign(regression) != sign(fixef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  gather(key = "method", value = "adjusted.log.hazard.ratio", copas:regression)  %>% 
+  ggplot(aes(x = (fixef - adjusted.log.hazard.ratio))) + 
+  geom_histogram(binwidth = 0.1, center = 0) +
+  facet_wrap(~method) + theme_bw() + xlab("Fixed effects - adjusted log hazard ratio")
+#--------------------------------------------------------------------------------------------------------------------#
+
+diff.log.hazard.ratio.ranef <- meta.surv %>% 
+  mutate(fixef = est.fixef, ranef = est.ranef,
+         copas = est.copas, regression = est.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(ranef) ~  abs(copas),
+                           sign(copas) != sign(ranef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(ranef) ~  abs(regression),
+                                sign(regression) != sign(ranef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  gather(key = "method", value = "adjusted.log.hazard.ratio", copas:regression)  %>% 
+  ggplot(aes(x = (ranef - adjusted.log.hazard.ratio))) + 
+  geom_histogram(binwidth = 0.1, center = 0) +
+  facet_wrap(~method) + theme_bw() + xlab("Random effects - adjusted log hazard ratio")
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Quantile and mean table of differences:
+adjustment.diff <- meta.f %>% 
+  transmute(est.d.copas.f = case_when(sign(est.d.copas) == sign(est.d.fixef) ~  abs(est.d.copas),
+                           sign(est.d.copas) != sign(est.d.fixef) ~ -abs(est.d.copas)),
+         est.d.reg.f = case_when(sign(est.d.reg) == sign(est.d.fixef) ~  abs(est.d.reg),
+                                sign(est.d.reg) != sign(est.d.fixef) ~ -abs(est.d.reg)),
+         est.d.copas.r = case_when(sign(est.d.copas) == sign(est.d.ranef) ~  abs(est.d.copas),
+                                   sign(est.d.copas) != sign(est.d.ranef) ~ -abs(est.d.copas)),
+         est.d.reg.r = case_when(sign(est.d.reg) == sign(est.d.ranef) ~  abs(est.d.reg),
+                                 sign(est.d.reg) != sign(est.d.ranef) ~ -abs(est.d.reg)),
+         
+         est.z.copas.f = case_when(sign(est.z.copas) == sign(est.z.fixef) ~  abs(est.z.copas),
+                                   sign(est.z.copas) != sign(est.z.fixef) ~ -abs(est.z.copas)),
+         est.z.reg.f = case_when(sign(est.z.reg) == sign(est.z.fixef) ~  abs(est.z.reg),
+                                 sign(est.z.reg) != sign(est.z.fixef) ~ -abs(est.z.reg)),
+         est.z.copas.r = case_when(sign(est.z.copas) == sign(est.z.ranef) ~  abs(est.z.copas),
+                                   sign(est.z.copas) != sign(est.z.ranef) ~ -abs(est.z.copas)),
+         est.z.reg.r = case_when(sign(est.z.reg) == sign(est.z.ranef) ~  abs(est.z.reg),
+                                 sign(est.z.reg) != sign(est.z.ranef) ~ -abs(est.z.reg)),
+         
+         est.z.fixef = abs(est.z.fixef),
+         est.z.ranef = abs(est.z.ranef),
+         est.d.fixef = abs(est.d.fixef),
+         est.d.ranef = abs(est.d.ranef)) %>% 
+
+  transmute(copas.z.f = est.z.copas.f - est.z.fixef,
+            copas.z.r = est.z.copas.r - est.z.ranef,
+            reg.z.f = est.z.reg.f - est.z.fixef,
+            reg.z.r = est.z.reg.r - est.z.ranef,
+            
+            copas.d.f = est.d.copas.f - est.d.fixef,
+            copas.d.r = est.d.copas.r - est.d.ranef,
+            reg.d.f = est.d.reg.f - est.d.fixef,
+            reg.d.r = est.d.reg.r - est.d.ranef) 
+
+m.adjustment.diff <- as.matrix(adjustment.diff)
+
+adjustmend.diff.surv <- meta.surv %>% 
+  transmute(est.copas.f = case_when(sign(est.copas) == sign(est.fixef) ~  abs(est.copas),
+                                     sign(est.copas) != sign(est.fixef) ~ -abs(est.copas)),
+            est.copas.r = case_when(sign(est.copas) == sign(est.ranef) ~  abs(est.copas),
+                                     sign(est.copas) != sign(est.ranef) ~ -abs(est.copas)),
+            
+            est.reg.f = case_when(sign(est.reg) == sign(est.fixef) ~  abs(est.reg),
+                                     sign(est.reg) != sign(est.fixef) ~ -abs(est.reg)),
+            est.reg.r = case_when(sign(est.reg) == sign(est.ranef) ~  abs(est.reg),
+                                     sign(est.reg) != sign(est.ranef) ~ -abs(est.reg)),
+            
+            est.fixef = abs(est.fixef),
+            est.ranef = abs(est.ranef)) %>% 
+  
+  transmute(copas.surv.f = est.copas.f - est.fixef,
+            copas.surv.r = est.copas.r - est.ranef,
+            
+            reg.surv.f = est.reg.f - est.fixef,
+            reg.surv.r = est.reg.r - est.ranef) 
+
+m.adjustment.diff.surv <- as.matrix(adjustmend.diff.surv)
+  
+
+
+
+adjustment.diff.quantile.table <- apply(m.adjustment.diff, 2, 
+                                        FUN = function(column){quantile(x = column, 
+                                              probs = c(0.05, 0.25, 0.5, 0.75, 0.95), na.rm = T)})
+adjustment.diff.mean <- apply(m.adjustment.diff, 2, FUN = function(column) mean(column, na.rm = T))
+adjustment.diff.table <- rbind(adjustment.diff.quantile.table, mean = adjustment.diff.mean)
+
+adjustment.diff.quantile.table.surv <- apply(m.adjustment.diff.surv, 2, 
+                                             FUN = function(column){quantile(x = column, 
+                                                   probs = c(0.05, 0.25, 0.5, 0.75, 0.95), na.rm = T)})
+adjustment.diff.mean.surv <- apply(m.adjustment.diff.surv, 2, FUN = function(column) mean(column, na.rm = T))
+adjustment.diff.table.surv <- rbind(adjustment.diff.quantile.table.surv, mean = adjustment.diff.mean.surv)
+  
+adjustment.diff.table <- cbind(adjustment.diff.table, adjustment.diff.table.surv)
+
+adjustment.diff.table <- round(t(adjustment.diff.table), 3)
+
+rownames(adjustment.diff.table) <- c(paste("z-score:", c("Fixed - Copas", "Random - Copas", "Fixed - Regression", "Random - Regression")),
+                                     paste("Hedges g:", c("Fixed - Copas", "Random - Copas", "Fixed - Regression", "Random - Regression")),
+                                     paste("Log hazard ratio:", c("Fixed - Copas", "Random - Copas", "Fixed - Regression", "Random - Regression")))
+
+
+
+#--------------------------------------------------------------------------------------------------------------------#
+#Meta-Analysis and adjusted treatment effect estimate difference, missing values:
+
+#Z-score:
+missing.z.fixef <- meta.f %>% 
+  mutate(fixef = est.z.fixef, ranef = est.z.ranef,
+         copas = est.z.copas, regression = est.z.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(fixef) ~  abs(copas),
+                           sign(copas) != sign(fixef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(fixef) ~  abs(regression),
+                                sign(regression) != sign(fixef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  select(meta.id, fixef, ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.z.score", copas:regression) %>% 
+  mutate(difference = fixef - adjusted.z.score) %>% 
+  filter(difference < -.75 | difference > .75) %>% 
+  select(meta.id)
+
+
+
+
+#--------------------------------------------------------------------------------------------------------------------#
+
+missing.z.ranef <- meta.f %>% 
+  mutate(fixef = est.z.fixef, ranef = est.z.ranef,
+         copas = est.z.copas, regression = est.z.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(ranef) ~  abs(copas),
+                           sign(copas) != sign(ranef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(ranef) ~  abs(regression),
+                                sign(regression) != sign(ranef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  select(meta.id, fixef, ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.z.score", copas:regression) %>% 
+  mutate(difference = ranef - adjusted.z.score) %>% 
+  filter(difference < -.75 | difference > .75) %>% 
+  select(meta.id)
+  
+  
+  
+#--------------------------------------------------------------------------------------------------------------------#
+
+#SMD:
+missing.d.fixef <- meta.f %>% 
+  mutate(fixef = est.d.fixef, ranef = est.d.ranef,
+         copas = est.d.copas, regression = est.d.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(fixef) ~  abs(copas),
+                           sign(copas) != sign(fixef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(fixef) ~  abs(regression),
+                                sign(regression) != sign(fixef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  select(meta.id, fixef, ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.smd", copas:regression) %>% 
+  mutate(difference = fixef - adjusted.smd) %>% 
+  filter(difference < -1 | difference > 1) %>% select(meta.id)
+  
+  
+#--------------------------------------------------------------------------------------------------------------------#
+
+missing.d.ranef <- meta.f %>% 
+  mutate(fixef = est.d.fixef, ranef = est.d.ranef,
+         copas = est.d.copas, regression = est.d.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(ranef) ~  abs(copas),
+                           sign(copas) != sign(ranef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(ranef) ~  abs(regression),
+                                sign(regression) != sign(ranef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  select(meta.id, fixef, ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.smd", copas:regression) %>% 
+  mutate(difference = ranef - adjusted.smd) %>% 
+  filter(difference < -1 | difference > 1) %>% select(meta.id)
+
+missing.differences <- rbind(missing.z.fixef, missing.z.ranef, missing.d.fixef, missing.d.ranef)
+missing.differences <- missing.differences %>% distinct(meta.id)
+
+missing.differences <- merge(meta.f[,
+        c("meta.id", "file.nr", "comparison.nr", "subgroup.nr",
+          "est.z.ranef", "est.z.fixef", "est.z.copas", "est.z.reg", 
+          "est.d.fixef", "est.d.ranef", "est.d.copas", "est.d.reg")],
+        missing.differences, by = "meta.id")
+
+missing.differences <- round(missing.differences, 2)
+
+missing.differences <- missing.differences %>% mutate(meta.id = as.character(meta.id), file.nr = as.character(meta.id),
+                                                      comparison.nr = as.character(comparison.nr), subgroup.nr = as.character(subgroup.nr))
+
+colnames(missing.differences) <- c("meta.id", "file.nr", "comparison.nr", "subgroup.nr",
+                                   "z fixed", "z random", "z Copas", "z regression",
+                                   "g fixed", "g random", "g Copas", "g regression")
+@
+
+\subsection{Change in Effect Size after Adjustment}
+
+If one is interested in the mere change in effect size and if the effect size did decrease or increase after adjustment, one can look at Figure \ref{fig:adjustment.size}. It displays the difference between the meta-analysis pooled treatment effect and the adjusted treatment effect. To compare the overall effect of adjustment for small study effects, the absolute value of the effect size is used. Thus, a negative difference indicates larger adjusted treatment effect size than meta-analysis pooled effect size. For better illustration, some very large and very small differences have been ommitted in the $z$-score and Hedges $g$ histogramms; the missing differences are provided in Table \ref{missing.differences}. Additionally to the histogramms, Table \ref{adjustment.difference} shows the quantiles and means for the various differences.
+%For sake of interpretability, negative effect sizes are changed to positive, such that a negative difference always means that the adjusted treatment effect is larger than the meta-analysis effect. Vice versa, a positive difference will indicate smaller adjusted effects. \\
+
+\begin{figure}
+<<echo=FALSE, fig.height = 9, warning=FALSE>>=
+grid.arrange(diff.z.fixef, diff.z.ranef,
+             diff.d.fixef, diff.d.ranef,
+             diff.log.hazard.ratio.fixef, diff.log.hazard.ratio.ranef, ncol = 2)
+@
+\caption{Histogram of the treatment effect differences between meta-analysis and adjusted meta-analysis. Negative differences indicate greater adjusted effect sizes than meta-analysis effect sizes. The bins are centered at zero.}
+\label{fig:adjustment.size}
+\end{figure}
+
+
+
+<<echo=FALSE, results='asis'>>=
+print(xtable(missing.differences, 
+             caption = "Missing meta-analysis pooled treatment effect and adjusted treatment effects
+             of Figure \ref{fig:adjustment.size}. Abbreviations are used for z-score (z) and Hedges g (g)", label = "missing.differences", align = "llcccrrrrrrrr"), 
+      include.rownames = F, size = "tiny")
+@
+
+
+
+
+<<echo=FALSE, results='asis'>>=
+print(xtable(adjustment.diff.table, label = "adjustment.difference", caption = "Quantiles and Means of the differences between meta-analysis pooled treatment effects and small study adjusted treatment effects. The row names indicate which outcome measure, meta-analysis and adjustment method is used", align = "lcccccc"), include.rownames = T, size = "scriptsize"#, sanitize.text.function=function(x){x}
+      )
+@
+
+
+\subsection{Change in Evidence for Treatment Effects}
+Adjustment for small study effects in meta-analysis will not only provide new effect sizes, but also standard errors thereof. Thus, also the evidence for efficacy of a treatment can be obtained, which is usually summarized in a suitable test statistic or $p$-value. \\
+The wald test statistics $p$-value for fixed and random effects meta-analyses and copas and regression adjusted treatment effects have been calculated. They are shown in Figure \ref{fig:adjustment.stat} for meta-analysis based on $z$-score, Hedges $g$ and log hazard ratio. The $p$-values get larger changing from fixed effects to random effects, and from Copas to regression adjusted $p$-values for $z$-scores and Hedges $g$. Also, they are larger for Hedges $g$ based meta-analyses compared to $z$-score based meta-analyses. Meanwhile, they stay approximately equal for log odds ratios, with the exception of regression adjusted test statistics. Thus, after adjusting for small study effects, the evidence for treatment efficacy shrinks at least partially, which is also indicated by the smaller number of significant $p$-values (0.05 threshold). Note that while $z$-score and Hedges $g$ based meta-analyses use the same data, only with different effect measure transformations, this is not true for meta-analyses based on log odds ratios.\\
+%Interestingly, in contrast to the small study effect tests, there seems to be no large difference between adjusted continuous and binary meta-analysis test statistics --appendix--
+%Figures \ref{fig:adjustment.stat.z} for the adjusted $z$-scores, \ref{fig:adjustment.stat.smd} for the adjusted Hedges $g$ and Cohen's d and \ref{fig:adjustment.stat.log.hazard.ratio} for the adjusted log hazard ratios.
+
+\begin{figure}
+<<echo=FALSE, fig.height = 9, warning=FALSE>>=
+grid.arrange(adjustment.p.z,
+             adjustment.p.d,
+             adjustment.p.log.hazard.ratio, ncol = 1)
+@
+\caption{Histogram of the wald test-statistic $p$-value of meta-analysis and adjusted pooled treatment effect, based on different treatment effect measures. The method is indicated in the header, binwidth is set to 0.05. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
+\label{fig:adjustment.stat}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% \section{Small study effects}
+% <<echo=FALSE, warning=FALSE>>=
+% p.samplesize.z  <- data.ext2 %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% ungroup() %>% 
+%   mutate(std.z = abs(z), sample.size = total1 + total2) %>%
+%   group_by(sample.size) %>% 
+%   summarize(median.effect = median(std.z, na.rm = T)) %>% 
+%   ggplot(aes(x = sample.size, y = median.effect)) + geom_point(size = 0.8) + 
+%   theme_bw() + xlab("sample size") + ylab("median absolute z-score") +
+%   xlim(c(15, 300)) + ylim(c(0, 0.25)) +
+%   scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
+% 
+% p.samplesize.effect.sep <- data %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% 
+%   filter(outcome.measure.new == "Risk Ratio" | 
+%            outcome.measure.new == "Odds Ratio" | 
+%            outcome.measure.new == "Mean Difference" |
+%            outcome.measure.new == "Std. Mean Difference") %>% 
+%   group_by(outcome.measure.new) %>% 
+%   mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+%   group_by(sample.size, outcome.measure.new) %>% 
+%   summarize(median.effect = median(scaled.effect, na.rm = T)) %>% 
+%   ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure.new)) + geom_point(size = .5) + facet_wrap(~outcome.measure.new, scales = "free") + 
+%   theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size") +
+%   xlim(c(15, 300)) +
+%   scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
+% @
+% 
+% The median $z$-score for a given sample size of a trial is shown in Figure \ref{z.samplesize}. It is clearly visible that the absolute value decreases with increasing sample size, i.e. that the effect size is becoming smaller. The trend flattens off after $\sim$ sample size = 400 (not shown). 
+% -- Appendix -- \\
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% plot(p.samplesize.z)
+% @
+% \caption{Median of the absolute $z$-score plotted against the total sample size.}
+% \label{z.samplesize}
+% \end{figure}
+% 
+% Only for illustration, the same trend is reproduced in Figure \ref{effect.samplesize.separated} with a similar method, using the original effect size measures ``Odds Ratio'', ``Risk Ratio'', ``Mean Difference'' and ``Std. Mean Difference'' (the most commonly used in the dataset). The ``normalized effect'' is the original effect size, normalized with respect to all other effect sizes of the same measure (i.e. subtraction of mean and division through standard error of the mean).
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% plot(p.samplesize.effect.sep)
+% @
+% \caption{Median of the absolute value of the normalized, original effect size plotted against the total sample size.}
+% \label{effect.samplesize.separated}
+% \end{figure}
+% 
+% %Show absolute effect size depending on scaled time? Chunck 3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% Since the tests have different properties, the agreement between the tests can be visualized. Here, agreement is specified as classifying the same meta-analysis as significant, based on the 0.1 $p$-value threshold. Again, this is done separately for the different outcome types. The result can be seen in Figure \ref{fig:test.agreement}. In the Figure, the number of agreeing tests is displayed, i.e., how many meta-analyses had only one significant test result etc.
+% 
+% \begin{figure}
+% <<echo = FALSE, fig.height = 5>>=
+% grid.arrange(agree.bin,
+%               agree.cont, 
+%               agree.surv, ncol = 1)
+% @
+% \caption{Barplot for the number of significant test results per meta-analyses, separated for outcome.types}
+% \label{fig:test.agreement}
+% \end{figure}
+
+
+
+% \begin{figure}[!ht]
+% <<echo=FALSE>>=
+% plot(p.dist.bin)
+% @
+% \caption{Histogram of the $p$-values for small study effect in binary outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+% \label{fig:test.bin}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% plot(p.dist.cont)
+% @
+% \caption{Histogram of the $p$-values for the small study effect in continuous outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+% \label{fig:test.cont}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE>>=
+% plot(p.dist.surv)
+% @
+% \caption{Histogram of the $p$-values for the small study effect in survival outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+% \label{fig:test.surv}
+% \end{figure}
+
+
+
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% plot(adjustment.stat.z)
+% @
+% \caption{Histogram of the wald test-statistic of meta-analysis and adjusted pooled treatment effect, based on the z-score. The method is indicated in the header, binwidth is set to 1. The significant proportion based on the threshold of 0.05 is displayed inside the figures (The red line displays the corresponding quantile of the std. normal, 1.96).}
+% \label{fig:adjustment.stat.z}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% plot(adjustment.stat.d)
+% @
+% \caption{Histogram of the wald test-statistic of meta-analysis and adjusted pooled treatment effect, based on Hedges $g$ or Cohen's $d$. The method is indicated in the header, binwidth is set to 1. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
+% \label{fig:adjustment.stat.d}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% plot(adjustment.stat.log.hazard.ratio)
+% @
+% \caption{Histogram of the wald test-statistic of meta-analysis and adjusted pooled treatment effect, based on the $z$-score. The method is indicated in the header, binwidth is set to 1. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
+% \label{fig:adjustment.stat.log.hazard.ratio}
+% \end{figure}
+
 
 
 

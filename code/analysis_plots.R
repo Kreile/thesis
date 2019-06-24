@@ -206,6 +206,125 @@ agree.surv <- meta.surv %>% mutate(n.sig = egger.test + thompson.test + begg.tes
   xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
 #--------------------------------------------------------------------------------------------------------------------#
 
+################################################################################################
+################################################################################################
+#CHANGE OF P VALUES AFTER ADJUSTMENT
+################################################################################################
+################################################################################################
+
+#Comparison of z-scores:
+sig.zcor <- meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+                              z.ranef = est.z.ranef/se.est.z.ranef,
+                              z.reg = est.z.reg/se.est.z.reg,
+                              z.copas = est.z.copas/se.est.z.copas) %>%  
+  select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
+  mutate(p.fisher.z = 2*(1-pnorm(abs(fisher.z)))) %>% 
+  group_by(method) %>% 
+  summarise(significant = length(which(abs(fisher.z) > 1.96)),
+            p.significant = significant/length(fisher.z))
+sig.zcor <- data.frame(method = sig.zcor$method,
+                       label = paste(round(sig.zcor$p.significant,3)*100, "% significant", ", (n = ", sig.zcor$significant, ")", sep = ""))
+
+method_names <- c(
+  z.fixef = "Fixed Effects",
+  z.ranef = "Random Effects",
+  z.reg = "Regression",
+  z.copas = "Copas"
+)
+
+adjustment.p.z <- meta.f %>% 
+  mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+         z.ranef = est.z.ranef/se.est.z.ranef,
+         z.reg = est.z.reg/se.est.z.reg,
+         z.copas = est.z.copas/se.est.z.copas) %>%  
+  select(z.fixef, z.ranef, z.reg, z.copas) %>% 
+  gather(key = "method", value = "fisher.z") %>% 
+  mutate(method = factor(method, levels = c("z.fixef", "z.ranef", "z.reg", "z.copas"))) %>% 
+  mutate(p.fisher.z = 2*(1-pnorm(abs(fisher.z)))) %>% 
+  ggplot(aes(x = p.fisher.z)) + 
+  geom_histogram(boundary = 0, bins = 20) + 
+  theme_bw() + 
+  facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
+  geom_text(data = sig.zcor, aes(x = 0.5, y = 750, label = label), position = "dodge") + 
+  xlab(expression(paste(italic(p),"-value of test statistic of the ", italic(z),"-score"))) +
+  ggtitle(expression(paste(italic(z), " Score ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Comparison of SMD's:
+sig.d <- meta.f %>% mutate(d.fixef = est.d.fixef/se.est.d.fixef,
+                           d.ranef = est.d.ranef/se.est.d.ranef,
+                           d.reg = est.d.reg/se.est.d.reg,
+                           d.copas = est.d.copas/se.est.d.copas) %>%  
+  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+  mutate(p.smd = 2*(1-pnorm(abs(smd)))) %>% 
+  group_by(method) %>% 
+  summarise(significant = length(which(abs(smd) > 1.96)),
+            p.significant = significant/length(smd))
+sig.d <- data.frame(method = sig.d$method,
+                    label = paste(round(sig.d$p.significant,3)*100, "% significant", ", (n = ", sig.d$significant, ")", sep = ""))
+
+method_names <- c(
+  d.fixef = "Fixed Effects",
+  d.ranef = "Random Effects",
+  d.reg = "Regression",
+  d.copas = "Copas"
+)
+
+adjustment.p.d <- meta.f %>% 
+  mutate(d.fixef = est.d.fixef/se.est.d.fixef,
+         d.ranef = est.d.ranef/se.est.d.ranef,
+         d.reg = est.d.reg/se.est.d.reg,
+         d.copas = est.d.copas/se.est.d.copas) %>%  
+  select(d.fixef, d.ranef, d.reg, d.copas) %>% 
+  gather(key = "method", value = "smd") %>% 
+  mutate(method = factor(method, levels = c("d.fixef", "d.ranef", "d.reg", "d.copas"))) %>% 
+  mutate(p.smd = 2*(1-pnorm(abs(smd)))) %>% 
+  ggplot(aes(x = p.smd)) + 
+  geom_histogram(boundary = 0, bins = 20) + 
+  theme_bw() + 
+  facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
+  geom_text(data = sig.d, aes(x = 0.5, y = 750, label = label), position = "dodge") + 
+  xlab(expression(paste(italic(p),"-value of test statistic of Hedges ", italic(g)))) +
+  ggtitle(expression(paste("Hedges ", italic(g), " ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Comparison of log hazard ratios:
+sig.d <- meta.f %>% filter(outcome.type == "surv") %>% 
+  mutate(d.fixef = est.fixef/se.est.fixef,
+         d.ranef = est.ranef/se.est.ranef,
+         d.reg = est.reg/se.est.reg,
+         d.copas = est.copas/se.est.copas) %>%  
+  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+  group_by(method) %>% 
+  summarise(significant = length(which(abs(smd) > 1.96)),
+            p.significant = (significant + sum(is.na(smd)))/(length(smd)))
+sig.d <- data.frame(method = sig.d$method,
+                    label = paste(round(sig.d$p.significant,3)*100, "% significant", ", (n = ", sig.d$significant, ")", sep = ""))
+
+method_names <- c(
+  d.fixef = "Fixed Effects",
+  d.ranef = "Random Effects",
+  d.reg = "Regression",
+  d.copas = "Copas"
+)
+
+adjustment.p.log.hazard.ratio <- meta.f %>% filter(outcome.type == "surv") %>% 
+  mutate(d.fixef = est.fixef/se.est.fixef,
+         d.ranef = est.ranef/se.est.ranef,
+         d.reg = est.reg/se.est.reg,
+         d.copas = est.copas/se.est.copas) %>%  
+  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+  mutate(method = factor(method, levels = c("d.fixef", "d.ranef", "d.reg", "d.copas"))) %>% 
+  mutate(p.smd = 2*(1-pnorm(abs(smd)))) %>% 
+  ggplot(aes(x = p.smd)) + 
+  geom_histogram(boundary = 0, bins = 20) + 
+  theme_bw() + 
+  facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
+  geom_text(data = sig.d, aes(x = 0.0002, y = 30, label = label), position = "dodge") + 
+  xlab(expression(paste(italic(p),"-value of test statistic of Hedges ", italic(g)))) +
+  ggtitle(expression(paste("Log hazard ratio", italic(p),"-value of Meta-Analysis and Adjustment Method")))
+#--------------------------------------------------------------------------------------------------------------------#
+
 
 ################################################################################################
 ################################################################################################
@@ -225,7 +344,14 @@ sig.zcor <- meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 	summarise(significant = length(which(abs(fisher.z) > 1.96)),
 						p.significant = significant/length(fisher.z))
 sig.zcor <- data.frame(method = sig.zcor$method,
-											 label = paste("n = ", sig.zcor$significant, ", ", round(sig.zcor$p.significant,3)*100, "% significant", sep = ""))
+											 label = paste(round(sig.zcor$p.significant,3)*100, "% significant", ", (n = ", sig.zcor$significant, ")", sep = ""))
+
+method_names <- c(
+  z.fixef = "Fixed Effects",
+  z.ranef = "Random Effects",
+  z.reg = "Regression",
+  z.copas = "Copas"
+)
 
 meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 										 z.ranef = est.z.ranef/se.est.z.ranef,
@@ -233,7 +359,9 @@ meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
 										 z.copas = est.z.copas/se.est.z.copas) %>%  
 	select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
 	# filter(abs(fisher.z) < 10) %>% 
-	ggplot(aes(x = abs(fisher.z))) + geom_histogram(boundary = 0) + theme_bw() + facet_wrap(~method, ncol = 2) + 
+	ggplot(aes(x = abs(fisher.z))) + 
+  geom_histogram(boundary = 0, binwidth = 1) + 
+  theme_bw() + facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) + 
 	geom_vline(xintercept = 1.96, color = "red") + xlim(c(0,100)) +
 	geom_text(data = sig.zcor, aes(x = 50, y = 1000, label = label), position = "dodge")
 #--------------------------------------------------------------------------------------------------------------------#
@@ -248,20 +376,169 @@ sig.d <- meta.f %>% mutate(d.fixef = est.d.fixef/se.est.d.fixef,
   summarise(significant = length(which(abs(smd) > 1.96)),
             p.significant = significant/length(smd))
 sig.d <- data.frame(method = sig.d$method,
-                       label = paste("n = ", sig.d$significant, ", ", round(sig.d$p.significant,3)*100, "% significant", sep = ""))
+                       label = paste(round(sig.d$p.significant,3)*100, "% significant", ", (n = ", sig.d$significant, ")", sep = ""))
+
+method_names <- c(
+  d.fixef = "Fixed Effects",
+  d.ranef = "Random Effects",
+  d.reg = "Regression",
+  d.copas = "Copas"
+)
 
 meta.f %>% mutate(d.fixef = est.d.fixef/se.est.d.fixef,
                   d.ranef = est.d.ranef/se.est.d.ranef,
                   d.reg = est.d.reg/se.est.d.reg,
                   d.copas = est.d.copas/se.est.d.copas) %>%  
   select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
-  # filter(abs(smd) < 10) %>% 
+  filter(abs(smd) < 100) %>% 
   ggplot(aes(x = abs(smd))) + geom_histogram(boundary = 0, binwidth = 1) + 
-  theme_bw() + facet_wrap(~method, ncol = 2) + 
+  theme_bw() + facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) + 
   geom_vline(xintercept = 1.96, color = "red") + #xlim(c(0,100)) +
-  geom_text(data = sig.d, aes(x = 25, y = 1000, label = label), position = "dodge") +
+  geom_text(data = sig.d, aes(x = 50, y = 600, label = label), position = "dodge") +
   scale_colour_manual(name="Line Color",
                       values=c(myline1="red"))
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Comparison of log hazard ratios:
+sig.d <- meta.f %>% filter(outcome.type == "surv") %>% 
+  mutate(d.fixef = est.fixef/se.est.fixef,
+                           d.ranef = est.ranef/se.est.ranef,
+                           d.reg = est.reg/se.est.reg,
+                           d.copas = est.copas/se.est.copas) %>%  
+  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+  group_by(method) %>% 
+  summarise(significant = length(which(abs(smd) > 1.96)),
+            p.significant = significant/length(smd))
+sig.d <- data.frame(method = sig.d$method,
+                    label = paste(round(sig.d$p.significant,3)*100, "% significant", ", (n = ", sig.d$significant, ")", sep = ""))
+
+method_names <- c(
+  d.fixef = "Fixed Effects",
+  d.ranef = "Random Effects",
+  d.reg = "Regression",
+  d.copas = "Copas"
+)
+
+meta.f %>% filter(outcome.type == "surv") %>% 
+  mutate(d.fixef = est.fixef/se.est.fixef,
+         d.ranef = est.ranef/se.est.ranef,
+         d.reg = est.reg/se.est.reg,
+         d.copas = est.copas/se.est.copas) %>%  
+  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+  filter(abs(smd) < 100) %>% 
+  ggplot(aes(x = abs(smd))) + geom_histogram(boundary = 0, binwidth = 1) + 
+  theme_bw() + facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) + 
+  geom_vline(xintercept = 1.96, color = "red") + #xlim(c(0,100)) +
+  geom_text(data = sig.d, aes(x = 32, y = 10, label = label), position = "dodge") +
+  scale_colour_manual(name="Line Color",
+                      values=c(myline1="red"))
+#--------------------------------------------------------------------------------------------------------------------#
+
+
+#Meta-Analysis and adjusted treatment effect estimate difference:
+
+#Z-score:
+diff.z.fixef <- meta.f %>% 
+  mutate(fixef = est.z.fixef, ranef = est.z.ranef,
+         copas = est.z.copas, regression = est.z.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(fixef) ~  abs(copas),
+                           sign(copas) != sign(fixef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(fixef) ~  abs(regression),
+                                sign(regression) != sign(fixef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  select(fixef, ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.z.score", copas:regression) %>% 
+  mutate(difference = fixef - adjusted.z.score) %>% 
+  filter(difference > -.75 & difference < .75) %>% 
+  ggplot(aes(x = difference)) + geom_histogram(binwidth = 0.1, center = 0) +
+  facet_wrap(~method) + theme_bw() + 
+  xlab(expression(paste("Fixed effects - adjusted ", z, "-score")))
+#--------------------------------------------------------------------------------------------------------------------#
+
+diff.z.ranef <- meta.f %>% 
+  mutate(fixef = est.z.fixef, ranef = est.z.ranef,
+         copas = est.z.copas, regression = est.z.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(ranef) ~  abs(copas),
+                           sign(copas) != sign(ranef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(ranef) ~  abs(regression),
+                                sign(regression) != sign(ranef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  select(fixef, ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.z.score", copas:regression) %>% 
+  mutate(difference = ranef - adjusted.z.score) %>% 
+  filter(difference > -.75 & difference < .75) %>% 
+  ggplot(aes(x = difference)) + geom_histogram(binwidth = 0.1, center = 0) +
+  facet_wrap(~method) + theme_bw() + 
+  xlab(expression(paste("Random effects - adjusted ", z, "-score")))
+#--------------------------------------------------------------------------------------------------------------------#
+
+#SMD:
+diff.d.fixef <- meta.f %>% 
+  mutate(fixef = est.d.fixef, ranef = est.d.ranef,
+         copas = est.d.copas, regression = est.d.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(fixef) ~  abs(copas),
+                           sign(copas) != sign(fixef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(fixef) ~  abs(regression),
+                                sign(regression) != sign(fixef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  select(fixef, ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.smd", copas:regression) %>% 
+  mutate(difference = fixef - adjusted.smd) %>% 
+  filter(difference > -1 & difference < 1) %>% 
+  ggplot(aes(x = difference)) + geom_histogram(binwidth = 0.1, center = 0) +
+  facet_wrap(~method) + theme_bw() + 
+  xlab(expression(paste("Fixed effects - adjusted Hedges ", g)))
+#--------------------------------------------------------------------------------------------------------------------#
+
+diff.d.ranef <- meta.f  %>% 
+  mutate(fixef = est.d.fixef, ranef = est.d.ranef,
+         copas = est.d.copas, regression = est.d.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(ranef) ~  abs(copas),
+                           sign(copas) != sign(ranef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(ranef) ~  abs(regression),
+                                sign(regression) != sign(ranef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  gather(key = "method", value = "adjusted.smd", copas:regression) %>% 
+  mutate(difference = ranef - adjusted.smd) %>% 
+  filter(difference > -1 & difference < 1) %>% 
+  ggplot(aes(x = difference)) + geom_histogram(binwidth = 0.1, center = 0) +
+  facet_wrap(~method) + theme_bw() + 
+  xlab(expression(paste("Random effects - adjusted Hedges ", g)))
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Log hazard ratios:
+diff.log.hazard.ratio.fixef <- meta.surv %>% 
+  mutate(fixef = est.fixef, ranef = est.ranef,
+         copas = est.copas, regression = est.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(fixef) ~  abs(copas),
+                           sign(copas) != sign(fixef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(fixef) ~  abs(regression),
+                                sign(regression) != sign(fixef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  gather(key = "method", value = "adjusted.log.hazard.ratio", copas:regression)  %>% 
+  ggplot(aes(x = (fixef - adjusted.log.hazard.ratio))) + 
+  geom_histogram(binwidth = 0.1, center = 0) +
+  facet_wrap(~method) + theme_bw() + xlab("Fixed effects - adjusted log hazard ratio")
+#--------------------------------------------------------------------------------------------------------------------#
+
+diff.log.hazard.ratio.ranef <- meta.surv %>% 
+  mutate(fixef = est.fixef, ranef = est.ranef,
+         copas = est.copas, regression = est.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(ranef) ~  abs(copas),
+                           sign(copas) != sign(ranef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(ranef) ~  abs(regression),
+                                sign(regression) != sign(ranef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  gather(key = "method", value = "adjusted.log.hazard.ratio", copas:regression)  %>% 
+  ggplot(aes(x = (ranef - adjusted.log.hazard.ratio))) + 
+  geom_histogram(binwidth = 0.1, center = 0) +
+  facet_wrap(~method) + theme_bw() + xlab("Random effects - adjusted log hazard ratio")
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Comparison of "original effect sizes":
@@ -451,51 +728,136 @@ meta.f <- meta.f %>% rowwise() %>%
 #Agreement proportions of publication bias tests:
 
 #Binary:
-meta.bin <- meta.bin %>%ungroup() %>%  mutate(egger.schwarzer = ifelse(egger.test == schwarzer.test, "agree", "disagree"),
-																							egger.peter = ifelse(egger.test == peter.test, "agree", "disagree"),
-																							egger.rucker = ifelse(egger.test == rucker.test, "agree", "disagree"),
-																							egger.harbord = ifelse(egger.test == harbord.test, "agree", "disagree"),
+meta.bin <- meta.bin %>%ungroup() %>%  mutate(tes.d.schwarzer = ifelse(tes.d.test == schwarzer.test, "agree", "disagree"),
+																							tes.d.peter = ifelse(tes.d.test == peter.test, "agree", "disagree"),
+																							tes.d.rucker = ifelse(tes.d.test == rucker.test, "agree", "disagree"),
+																							tes.d.harbord = ifelse(tes.d.test == harbord.test, "agree", "disagree"),
 																							schwarzer.peter = ifelse(schwarzer.test == peter.test, "agree", "disagree"),
 																							schwarzer.rucker = ifelse(schwarzer.test == rucker.test, "agree", "disagree"),
 																							schwarzer.harbord = ifelse(schwarzer.test == harbord.test, "agree", "disagree"),
 																							rucker.peter = ifelse(rucker.test == peter.test, "agree", "disagree"),
 																							rucker.harbord = ifelse(rucker.test == harbord.test, "agree", "disagree"),
 																							harbord.peter = ifelse(harbord.test == peter.test, "agree", "disagree"))
-agreement.bin <- meta.bin %>% ungroup() %>% summarise(egger.schwarzer = sum(egger.schwarzer == "agree")/n(),
-																											egger.peter = sum(egger.peter == "agree")/n(),
-																											egger.rucker = sum(egger.rucker == "agree")/n(),
-																											egger.harbord = sum(egger.harbord == "agree")/n(),
+agreement.bin <- meta.bin %>% ungroup() %>% summarise(tes.d.schwarzer = sum(tes.d.schwarzer == "agree")/n(),
+																											tes.d.peter = sum(tes.d.peter == "agree")/n(),
+																											tes.d.rucker = sum(tes.d.rucker == "agree")/n(),
+																											tes.d.harbord = sum(tes.d.harbord == "agree")/n(),
 																											schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
 																											schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
 																											schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
 																											rucker.peter = sum(rucker.peter == "agree")/n(),
 																											harbord.peter = sum(harbord.peter == "agree")/n())
-correlation.bin <- meta.bin %>%ungroup() %>%  summarise(egger.schwarzer = cor(pval.egger, pval.schwarzer),
-																												egger.peter = cor(pval.egger, pval.peter),
-																												egger.rucker = cor(pval.egger, pval.rucker),
-																												egger.harbord = cor(pval.egger, pval.harbord),
+correlation.bin <- meta.bin %>%ungroup() %>%  summarise(tes.d.schwarzer = cor(pval.d.tes, pval.schwarzer),
+																												tes.d.peter = cor(pval.d.tes, pval.peter),
+																												tes.d.rucker = cor(pval.d.tes, pval.rucker),
+																												tes.d.harbord = cor(pval.d.tes, pval.harbord),
 																												schwarzer.peter = cor(pval.schwarzer, pval.peter),
 																												schwarzer.rucker = cor(pval.schwarzer, pval.rucker),
 																												schwarzer.harbord = cor(pval.schwarzer, pval.harbord),
 																												rucker.peter = cor(pval.rucker, pval.peter),
 																												harbord.peter = cor(pval.harbord, pval.peter))
+rsquared.bin <- meta.bin %>%ungroup() %>%  summarise(tes.d.schwarzer = summary(lm(pval.d.tes~ pval.schwarzer))$r.squared,
+                                                        tes.d.peter = summary(lm(pval.d.tes~ pval.peter))$r.squared,
+                                                        tes.d.rucker = summary(lm(pval.d.tes~ pval.rucker))$r.squared,
+                                                        tes.d.harbord = summary(lm(pval.d.tes~ pval.harbord))$r.squared,
+                                                        schwarzer.peter = summary(lm(pval.schwarzer~ pval.peter))$r.squared,
+                                                        schwarzer.rucker = summary(lm(pval.schwarzer~ pval.rucker))$r.squared,
+                                                        schwarzer.harbord = summary(lm(pval.schwarzer~ pval.harbord))$r.squared,
+                                                        rucker.peter = summary(lm(pval.rucker~ pval.peter))$r.squared,
+                                                        harbord.peter = summary(lm(pval.harbord~ pval.peter))$r.squared)
 
-binary.tests.agreement <- rbind(agreement.bin, correlation.bin)
-rownames(binary.tests.agreement) <- c("Test Agreement","P-value Correlation")
+binary.tests.agreement <- rbind(agreement.bin, correlation.bin, rsquared.bin)
+rownames(binary.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
+colnames(binary.tests.agreement) <- c("Excess significance  - Schwarzer", "Excess significance - Peter",
+                                      "Excess significance  - Rucker", "Excess significance - Harbord",
+                                      "Peter - Schwarzer", "Schwarzer - Rucker", "Schwarzer - Harbord",
+                                      "Rucker - Peter", "Harbord - Peter")
+#--------------------------------------------------------------------------------------------------------------------#
+
 
 #Continuous:
 meta.cont <- meta.cont %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
 																								thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
-																								egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"))
+																								egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
+																								tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
+																								thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
+																								tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
 agreement.cont <- meta.cont %>% ungroup() %>%  summarise(thompson.egger = sum(thompson.egger == "agree")/n(),
 																												 thompson.begg = sum(thompson.begg == "agree")/n(),
-																												 egger.begg = sum(egger.begg == "agree")/n())
+																												 egger.begg = sum(egger.begg == "agree")/n(),
+																												 tes.d.egger = sum(tes.d.egger == "agree")/n(),
+																												 thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
+																												 tes.d.begg = sum(tes.d.begg == "agree")/n())
 correlation.cont <- meta.cont %>% ungroup() %>% summarise(thompson.egger = cor(pval.thompson, pval.egger),
 																													thompson.begg = cor(pval.thompson, pval.begg),
-																													egger.begg = cor(pval.egger, pval.begg))
+																													egger.begg = cor(pval.egger, pval.begg),
+																													tes.d.egger = cor(pval.egger, pval.d.tes),
+																													thompson.tes.d = cor(pval.thompson, pval.d.tes),
+																													tes.d.begg = cor(pval.d.tes, pval.begg))
+rsquared.cont <- meta.cont %>% ungroup() %>% summarise(thompson.egger = summary(lm(pval.thompson~ pval.egger))$r.squared,
+                                                          thompson.begg = summary(lm(pval.thompson~ pval.begg))$r.squared,
+                                                          egger.begg = summary(lm(pval.egger~ pval.begg))$r.squared,
+                                                          tes.d.egger = summary(lm(pval.egger~ pval.d.tes))$r.squared,
+                                                          thompson.tes.d = summary(lm(pval.thompson~ pval.d.tes))$r.squared,
+                                                          tes.d.begg = summary(lm(pval.d.tes~ pval.begg))$r.squared)
 
-cont.tests.agreement <- rbind(agreement.cont, correlation.cont)
-rownames(cont.tests.agreement) <- c("Test Agreement","P-value Correlation")
+cont.tests.agreement <- rbind(agreement.cont, correlation.cont, rsquared.cont)
+rownames(cont.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
+colnames(cont.tests.agreement) <- c("Thompson - Egger", "Thompson - Begg", "Egger - Begg", "Excess significance - Egger",
+                                    "Thompson - Excess significance", "Excess significance - Begg")
+
+#--------------------------------------------------------------------------------------------------------------------#
+
+
+#Survival:
+meta.surv <- meta.surv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
+                                                thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
+                                                egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
+                                                tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
+                                                thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
+                                                tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
+agreement.surv <- meta.surv %>% ungroup() %>%  summarise(thompson.egger = sum(thompson.egger == "agree")/n(),
+                                                         thompson.begg = sum(thompson.begg == "agree")/n(),
+                                                         egger.begg = sum(egger.begg == "agree")/n(),
+                                                         tes.d.egger = sum(tes.d.egger == "agree")/n(),
+                                                         thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
+                                                         tes.d.begg = sum(tes.d.begg == "agree")/n())
+correlation.surv <- meta.surv %>% ungroup() %>% summarise(thompson.egger = cor(pval.thompson, pval.egger),
+                                                          thompson.begg = cor(pval.thompson, pval.begg),
+                                                          egger.begg = cor(pval.egger, pval.begg),
+                                                          tes.d.egger = cor(pval.egger, pval.d.tes),
+                                                          thompson.tes.d = cor(pval.thompson, pval.d.tes),
+                                                          tes.d.begg = cor(pval.d.tes, pval.begg))
+rsquared.surv <- meta.surv %>% ungroup() %>% summarise(thompson.egger = summary(lm(pval.thompson~ pval.egger))$r.squared,
+                                                       thompson.begg = summary(lm(pval.thompson~ pval.begg))$r.squared,
+                                                       egger.begg = summary(lm(pval.egger~ pval.begg))$r.squared,
+                                                       tes.d.egger = summary(lm(pval.egger~ pval.d.tes))$r.squared,
+                                                       thompson.tes.d = summary(lm(pval.thompson~ pval.d.tes))$r.squared,
+                                                       tes.d.begg = summary(lm(pval.d.tes~ pval.begg))$r.squared)
+
+surv.tests.agreement <- rbind(agreement.surv, correlation.surv, rsquared.surv)
+rownames(surv.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
+colnames(surv.tests.agreement) <- c("Thompson - Egger", "Thompson - Begg", "Egger - Begg", "Excess significance - Egger",
+                                    "Thompson - Excess significance", "Excess significance - Begg")
+
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Merging:
+test.agreement <- rbind(t(binary.tests.agreement), t(cont.tests.agreement), t(surv.tests.agreement))
+print(xtable(test.agreement, align = "lccc", caption = "Agreement in significance proportion, correlation and R-squared of linear regression
+             between the p-values of the publication bias tests. Horizontal lines separate binary, continuous and survival outcomes (order as in table).",
+             label = "test.agreement"), hline = c(0,0,9, 15, 21), size = "footnotesize")
+#--------------------------------------------------------------------------------------------------------------------#
+
+
+
+
+
+#Number of missing studies, according to copas:
+hist(meta.f$missing.copas / meta.f$n)
+
+
+
 
 
 
