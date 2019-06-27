@@ -15,31 +15,31 @@
 \contentsline {subsubsection}{The Publication Bias Test and Adjustment Dataset}{11}{section*.11}
 \contentsline {chapter}{\numberline {3}Results}{13}{chapter.3}
 \contentsline {section}{\numberline {3.1}Small Study Effect and Excess of Singificance Tests}{13}{section.3.1}
-\contentsline {section}{\numberline {3.2}Small Study Effects Adjustment}{14}{section.3.2}
-\contentsline {subsection}{\numberline {3.2.1}Change in Effect Size after Adjustment}{14}{subsection.3.2.1}
-\contentsline {subsection}{\numberline {3.2.2}Change in Evidence for Treatment Effects}{15}{subsection.3.2.2}
-\contentsline {chapter}{\numberline {4}Methods}{19}{chapter.4}
-\contentsline {section}{\numberline {4.1}Introduction and Notation}{19}{section.4.1}
-\contentsline {section}{\numberline {4.2}Effect Measures and $p$-values}{19}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Continuous Outcomes}{19}{subsection.4.2.1}
-\contentsline {subsection}{\numberline {4.2.2}Binary Outcomes}{20}{subsection.4.2.2}
-\contentsline {subsection}{\numberline {4.2.3}Survival Outcomes}{20}{subsection.4.2.3}
-\contentsline {section}{\numberline {4.3}Fixed and Random Effects Meta-Analysis}{21}{section.4.3}
-\contentsline {section}{\numberline {4.4}Small Study Effects Tests}{22}{section.4.4}
-\contentsline {subsection}{\numberline {4.4.1}Continuous Outcome Tests}{23}{subsection.4.4.1}
-\contentsline {subsubsection}{Begg and Mazumdar: Rank Correlation Test}{23}{section*.18}
-\contentsline {subsubsection}{Egger's Test: Weighted Linear Regression Test}{23}{section*.19}
-\contentsline {subsubsection}{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{25}{section*.20}
-\contentsline {subsection}{\numberline {4.4.2}Dichotomous Outcomes Tests}{25}{subsection.4.4.2}
-\contentsline {subsubsection}{Peters Test: Weighted Linear Regression Test}{25}{section*.21}
-\contentsline {subsubsection}{Harbord's Test: Score based Test}{25}{section*.22}
-\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{25}{section*.23}
-\contentsline {subsubsection}{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{26}{section*.24}
-\contentsline {section}{\numberline {4.5}Excess Significance Test}{26}{section.4.5}
-\contentsline {section}{\numberline {4.6}Small Study Effect and Publication Bias Adjustment}{27}{section.4.6}
-\contentsline {subsection}{\numberline {4.6.1}Adjustment by Regression}{27}{subsection.4.6.1}
-\contentsline {subsection}{\numberline {4.6.2}Copas Selection Model}{27}{subsection.4.6.2}
-\contentsline {section}{\numberline {4.7}Transformation between effect sizes}{29}{section.4.7}
-\contentsline {chapter}{\numberline {A}Appendix}{31}{appendix.A}
+\contentsline {section}{\numberline {3.2}Small Study Effects Adjustment}{17}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Change in Effect Size after Adjustment}{17}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}Change in Evidence for Treatment Effects}{17}{subsection.3.2.2}
+\contentsline {chapter}{\numberline {4}Methods}{21}{chapter.4}
+\contentsline {section}{\numberline {4.1}Introduction and Notation}{21}{section.4.1}
+\contentsline {section}{\numberline {4.2}Effect Measures and $p$-values}{21}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Continuous Outcomes}{21}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Binary Outcomes}{22}{subsection.4.2.2}
+\contentsline {subsection}{\numberline {4.2.3}Survival Outcomes}{22}{subsection.4.2.3}
+\contentsline {section}{\numberline {4.3}Fixed and Random Effects Meta-Analysis}{23}{section.4.3}
+\contentsline {section}{\numberline {4.4}Small Study Effects Tests}{24}{section.4.4}
+\contentsline {subsection}{\numberline {4.4.1}Continuous Outcome Tests}{25}{subsection.4.4.1}
+\contentsline {subsubsection}{Begg and Mazumdar: Rank Correlation Test}{25}{section*.20}
+\contentsline {subsubsection}{Egger's Test: Weighted Linear Regression Test}{25}{section*.21}
+\contentsline {subsubsection}{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{27}{section*.22}
+\contentsline {subsection}{\numberline {4.4.2}Dichotomous Outcomes Tests}{27}{subsection.4.4.2}
+\contentsline {subsubsection}{Peters Test: Weighted Linear Regression Test}{27}{section*.23}
+\contentsline {subsubsection}{Harbord's Test: Score based Test}{27}{section*.24}
+\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{27}{section*.25}
+\contentsline {subsubsection}{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{28}{section*.26}
+\contentsline {subsection}{\numberline {4.4.3}Excess Significance Test}{28}{subsection.4.4.3}
+\contentsline {section}{\numberline {4.5}Small Study Effect and Publication Bias Adjustment}{29}{section.4.5}
+\contentsline {subsection}{\numberline {4.5.1}Adjustment by Regression}{29}{subsection.4.5.1}
+\contentsline {subsection}{\numberline {4.5.2}Copas Selection Model}{29}{subsection.4.5.2}
+\contentsline {section}{\numberline {4.6}Transformation between effect sizes}{31}{section.4.6}
+\contentsline {chapter}{\numberline {A}Appendix}{33}{appendix.A}
 \vspace *{10mm}
-\contentsline {chapter}{\bfseries Bibliography}{33}{section*.25}
+\contentsline {chapter}{\bfseries Bibliography}{35}{section*.27}

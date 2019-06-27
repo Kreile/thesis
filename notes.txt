@@ -25,9 +25,6 @@ incr = 0.5 is used (default in metabin() function)
 
 Questions:
 
-- Wieso bei tau^2>0.1 asine statt harbord?
-- Copas inference: mit f.e. oder r.e. austauschen? †berhaupt zu gebrauchen, da nicht zur inferenz empfohlen?
-- Generell fixed oder random effects m.a. (auch in protokoll)?
-- Hypothesis: Publication bias mit Small study effect austauschen..
+- Chapter reference
 
 

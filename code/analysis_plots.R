@@ -729,82 +729,109 @@ meta.f <- meta.f %>% rowwise() %>%
 
 #Binary:
 meta.bin <- meta.bin %>%ungroup() %>%  mutate(tes.d.schwarzer = ifelse(tes.d.test == schwarzer.test, "agree", "disagree"),
-																							tes.d.peter = ifelse(tes.d.test == peter.test, "agree", "disagree"),
-																							tes.d.rucker = ifelse(tes.d.test == rucker.test, "agree", "disagree"),
-																							tes.d.harbord = ifelse(tes.d.test == harbord.test, "agree", "disagree"),
-																							schwarzer.peter = ifelse(schwarzer.test == peter.test, "agree", "disagree"),
-																							schwarzer.rucker = ifelse(schwarzer.test == rucker.test, "agree", "disagree"),
-																							schwarzer.harbord = ifelse(schwarzer.test == harbord.test, "agree", "disagree"),
-																							rucker.peter = ifelse(rucker.test == peter.test, "agree", "disagree"),
-																							rucker.harbord = ifelse(rucker.test == harbord.test, "agree", "disagree"),
-																							harbord.peter = ifelse(harbord.test == peter.test, "agree", "disagree"))
+                                              tes.d.peter = ifelse(tes.d.test == peter.test, "agree", "disagree"),
+                                              tes.d.rucker = ifelse(tes.d.test == rucker.test, "agree", "disagree"),
+                                              tes.d.harbord = ifelse(tes.d.test == harbord.test, "agree", "disagree"),
+                                              schwarzer.peter = ifelse(schwarzer.test == peter.test, "agree", "disagree"),
+                                              schwarzer.rucker = ifelse(schwarzer.test == rucker.test, "agree", "disagree"),
+                                              schwarzer.harbord = ifelse(schwarzer.test == harbord.test, "agree", "disagree"),
+                                              rucker.peter = ifelse(rucker.test == peter.test, "agree", "disagree"),
+                                              rucker.harbord = ifelse(rucker.test == harbord.test, "agree", "disagree"),
+                                              harbord.peter = ifelse(harbord.test == peter.test, "agree", "disagree"))
 agreement.bin <- meta.bin %>% ungroup() %>% summarise(tes.d.schwarzer = sum(tes.d.schwarzer == "agree")/n(),
-																											tes.d.peter = sum(tes.d.peter == "agree")/n(),
-																											tes.d.rucker = sum(tes.d.rucker == "agree")/n(),
-																											tes.d.harbord = sum(tes.d.harbord == "agree")/n(),
-																											schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
-																											schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
-																											schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
-																											rucker.peter = sum(rucker.peter == "agree")/n(),
-																											harbord.peter = sum(harbord.peter == "agree")/n())
-correlation.bin <- meta.bin %>%ungroup() %>%  summarise(tes.d.schwarzer = cor(pval.d.tes, pval.schwarzer),
-																												tes.d.peter = cor(pval.d.tes, pval.peter),
-																												tes.d.rucker = cor(pval.d.tes, pval.rucker),
-																												tes.d.harbord = cor(pval.d.tes, pval.harbord),
-																												schwarzer.peter = cor(pval.schwarzer, pval.peter),
-																												schwarzer.rucker = cor(pval.schwarzer, pval.rucker),
-																												schwarzer.harbord = cor(pval.schwarzer, pval.harbord),
-																												rucker.peter = cor(pval.rucker, pval.peter),
-																												harbord.peter = cor(pval.harbord, pval.peter))
-rsquared.bin <- meta.bin %>%ungroup() %>%  summarise(tes.d.schwarzer = summary(lm(pval.d.tes~ pval.schwarzer))$r.squared,
-                                                        tes.d.peter = summary(lm(pval.d.tes~ pval.peter))$r.squared,
-                                                        tes.d.rucker = summary(lm(pval.d.tes~ pval.rucker))$r.squared,
-                                                        tes.d.harbord = summary(lm(pval.d.tes~ pval.harbord))$r.squared,
-                                                        schwarzer.peter = summary(lm(pval.schwarzer~ pval.peter))$r.squared,
-                                                        schwarzer.rucker = summary(lm(pval.schwarzer~ pval.rucker))$r.squared,
-                                                        schwarzer.harbord = summary(lm(pval.schwarzer~ pval.harbord))$r.squared,
-                                                        rucker.peter = summary(lm(pval.rucker~ pval.peter))$r.squared,
-                                                        harbord.peter = summary(lm(pval.harbord~ pval.peter))$r.squared)
+                                                      tes.d.peter = sum(tes.d.peter == "agree")/n(),
+                                                      tes.d.rucker = sum(tes.d.rucker == "agree")/n(),
+                                                      tes.d.harbord = sum(tes.d.harbord == "agree")/n(),
+                                                      schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
+                                                      schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
+                                                      schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
+                                                      rucker.peter = sum(rucker.peter == "agree")/n(),
+                                                      harbord.peter = sum(harbord.peter == "agree")/n())
+correlation.bin <- meta.bin %>%ungroup() %>%  summarise(tes.d.schwarzer = cor(stat.d.tes, stat.schwarzer),
+                                                        tes.d.peter = cor(stat.d.tes, stat.peter),
+                                                        tes.d.rucker = cor(stat.d.tes, stat.rucker),
+                                                        tes.d.harbord = cor(stat.d.tes, stat.harbord),
+                                                        schwarzer.peter = cor(stat.schwarzer, stat.peter),
+                                                        schwarzer.rucker = cor(stat.schwarzer, stat.rucker),
+                                                        schwarzer.harbord = cor(stat.schwarzer, stat.harbord),
+                                                        rucker.peter = cor(stat.rucker, stat.peter),
+                                                        harbord.peter = cor(stat.harbord, stat.peter))
+# rsquared.bin <- meta.bin %>%ungroup() %>%  summarise(tes.d.schwarzer = summary(lm(stat.d.tes~ stat.schwarzer))$r.squared,
+#                                                         tes.d.peter = summary(lm(stat.d.tes~ stat.peter))$r.squared,
+#                                                         tes.d.rucker = summary(lm(stat.d.tes~ stat.rucker))$r.squared,
+#                                                         tes.d.harbord = summary(lm(stat.d.tes~ stat.harbord))$r.squared,
+#                                                         schwarzer.peter = summary(lm(stat.schwarzer~ stat.peter))$r.squared,
+#                                                         schwarzer.rucker = summary(lm(stat.schwarzer~ stat.rucker))$r.squared,
+#                                                         schwarzer.harbord = summary(lm(stat.schwarzer~ stat.harbord))$r.squared,
+#                                                         rucker.peter = summary(lm(stat.rucker~ stat.peter))$r.squared,
+#                                                         harbord.peter = summary(lm(stat.harbord~ stat.peter))$r.squared)
+meta.bin <- meta.bin %>%ungroup() %>%  mutate(tes.d.schwarzer = ifelse(tes.d.test + schwarzer.test > 1, "agree", "disagree"),
+                                              tes.d.peter = ifelse(tes.d.test + peter.test > 1, "agree", "disagree"),
+                                              tes.d.rucker = ifelse(tes.d.test + rucker.test > 1, "agree", "disagree"),
+                                              tes.d.harbord = ifelse(tes.d.test + harbord.test > 1, "agree", "disagree"),
+                                              schwarzer.peter = ifelse(schwarzer.test + peter.test > 1, "agree", "disagree"),
+                                              schwarzer.rucker = ifelse(schwarzer.test + rucker.test > 1, "agree", "disagree"),
+                                              schwarzer.harbord = ifelse(schwarzer.test + harbord.test > 1, "agree", "disagree"),
+                                              rucker.peter = ifelse(rucker.test + peter.test > 1, "agree", "disagree"),
+                                              rucker.harbord = ifelse(rucker.test + harbord.test > 1, "agree", "disagree"),
+                                              harbord.peter = ifelse(harbord.test + peter.test > 1, "agree", "disagree"))
+agreement.bin <- meta.bin %>% ungroup() %>% summarise(tes.d.schwarzer = sum(tes.d.schwarzer == "agree")/sum(schwarzer.test),
+                                                      tes.d.peter = sum(tes.d.peter == "agree")/sum(peter.test),
+                                                      tes.d.rucker = sum(tes.d.rucker == "agree")/n(),
+                                                      tes.d.harbord = sum(tes.d.harbord == "agree")/n(),
+                                                      schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
+                                                      schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
+                                                      schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
+                                                      rucker.peter = sum(rucker.peter == "agree")/n(),
+                                                      harbord.peter = sum(harbord.peter == "agree")/n())
 
 binary.tests.agreement <- rbind(agreement.bin, correlation.bin, rsquared.bin)
 rownames(binary.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
-colnames(binary.tests.agreement) <- c("Excess significance  - Schwarzer", "Excess significance - Peter",
-                                      "Excess significance  - Rucker", "Excess significance - Harbord",
-                                      "Peter - Schwarzer", "Schwarzer - Rucker", "Schwarzer - Harbord",
-                                      "Rucker - Peter", "Harbord - Peter")
+colnames(binary.tests.agreement) <- c("Excess significance, Schwarzer", "Excess significance, Peter",
+                                      "Excess significance, Rucker", "Excess significance, Harbord",
+                                      "Peter, Schwarzer", "Schwarzer, Rucker", "Schwarzer, Harbord",
+                                      "Rucker, Peter", "Harbord, Peter")
 #--------------------------------------------------------------------------------------------------------------------#
 
 
 #Continuous:
 meta.cont <- meta.cont %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
-																								thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
-																								egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
-																								tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
-																								thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
-																								tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
-agreement.cont <- meta.cont %>% ungroup() %>%  summarise(thompson.egger = sum(thompson.egger == "agree")/n(),
-																												 thompson.begg = sum(thompson.begg == "agree")/n(),
-																												 egger.begg = sum(egger.begg == "agree")/n(),
-																												 tes.d.egger = sum(tes.d.egger == "agree")/n(),
-																												 thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
-																												 tes.d.begg = sum(tes.d.begg == "agree")/n())
-correlation.cont <- meta.cont %>% ungroup() %>% summarise(thompson.egger = cor(pval.thompson, pval.egger),
-																													thompson.begg = cor(pval.thompson, pval.begg),
-																													egger.begg = cor(pval.egger, pval.begg),
-																													tes.d.egger = cor(pval.egger, pval.d.tes),
-																													thompson.tes.d = cor(pval.thompson, pval.d.tes),
-																													tes.d.begg = cor(pval.d.tes, pval.begg))
-rsquared.cont <- meta.cont %>% ungroup() %>% summarise(thompson.egger = summary(lm(pval.thompson~ pval.egger))$r.squared,
-                                                          thompson.begg = summary(lm(pval.thompson~ pval.begg))$r.squared,
-                                                          egger.begg = summary(lm(pval.egger~ pval.begg))$r.squared,
-                                                          tes.d.egger = summary(lm(pval.egger~ pval.d.tes))$r.squared,
-                                                          thompson.tes.d = summary(lm(pval.thompson~ pval.d.tes))$r.squared,
-                                                          tes.d.begg = summary(lm(pval.d.tes~ pval.begg))$r.squared)
+                                                thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
+                                                egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
+                                                tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
+                                                thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
+                                                tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
+agreement.cont <- meta.cont %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
+                                                         thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
+                                                         tes.d.begg = sum(tes.d.begg == "agree")/n(),
+                                                         thompson.egger = sum(thompson.egger == "agree")/n(),
+                                                         thompson.begg = sum(thompson.begg == "agree")/n(),
+                                                         egger.begg = sum(egger.begg == "agree")/n())
+correlation.cont <- meta.cont %>% ungroup() %>% summarise(tes.d.egger = cor(stat.egger, stat.d.tes),
+                                                          thompson.tes.d = cor(stat.thompson, stat.d.tes),
+                                                          tes.d.begg = cor(stat.d.tes, stat.begg),
+                                                          thompson.egger = cor(stat.thompson, stat.egger),
+                                                          thompson.begg = cor(stat.thompson, stat.begg),
+                                                          egger.begg = cor(stat.egger, stat.begg))
+rsquared.cont <- meta.cont %>% ungroup() %>% summarise(tes.d.egger = summary(lm(stat.egger~ stat.d.tes))$r.squared,
+                                                       thompson.tes.d = summary(lm(stat.thompson~ stat.d.tes))$r.squared,
+                                                       tes.d.begg = summary(lm(stat.d.tes~ stat.begg))$r.squared,
+                                                       thompson.egger = summary(lm(stat.thompson~ stat.egger))$r.squared,
+                                                       thompson.begg = summary(lm(stat.thompson~ stat.begg))$r.squared,
+                                                       egger.begg = summary(lm(stat.egger~ stat.begg))$r.squared)
+agreement.sig.cont <- meta.cont %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/sum(egger.test),
+                                                             thompson.tes.d = sum(thompson.tes.d == "agree")/sum(thompsom.test),
+                                                             tes.d.begg = sum(tes.d.begg == "agree")/sum(begg.test),
+                                                             thompson.egger = sum(thompson.egger == "agree")/sum(egger.test),
+                                                             thompson.begg = sum(thompson.begg == "agree")/sum(thompson.test),
+                                                             egger.begg = sum(egger.begg == "agree")/sum(egger.test))
+
+
 
 cont.tests.agreement <- rbind(agreement.cont, correlation.cont, rsquared.cont)
 rownames(cont.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
-colnames(cont.tests.agreement) <- c("Thompson - Egger", "Thompson - Begg", "Egger - Begg", "Excess significance - Egger",
-                                    "Thompson - Excess significance", "Excess significance - Begg")
+colnames(cont.tests.agreement) <- c( "Excess significance, Egger", "Excess significance, Thompson", 
+                                     "Excess significance, Begg","Thompson, Egger", "Thompson, Begg", "Egger, Begg")
 
 #--------------------------------------------------------------------------------------------------------------------#
 
@@ -816,47 +843,78 @@ meta.surv <- meta.surv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson
                                                 tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
                                                 thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
                                                 tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
-agreement.surv <- meta.surv %>% ungroup() %>%  summarise(thompson.egger = sum(thompson.egger == "agree")/n(),
-                                                         thompson.begg = sum(thompson.begg == "agree")/n(),
-                                                         egger.begg = sum(egger.begg == "agree")/n(),
-                                                         tes.d.egger = sum(tes.d.egger == "agree")/n(),
+agreement.surv <- meta.surv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
                                                          thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
-                                                         tes.d.begg = sum(tes.d.begg == "agree")/n())
-correlation.surv <- meta.surv %>% ungroup() %>% summarise(thompson.egger = cor(pval.thompson, pval.egger),
-                                                          thompson.begg = cor(pval.thompson, pval.begg),
-                                                          egger.begg = cor(pval.egger, pval.begg),
-                                                          tes.d.egger = cor(pval.egger, pval.d.tes),
-                                                          thompson.tes.d = cor(pval.thompson, pval.d.tes),
-                                                          tes.d.begg = cor(pval.d.tes, pval.begg))
-rsquared.surv <- meta.surv %>% ungroup() %>% summarise(thompson.egger = summary(lm(pval.thompson~ pval.egger))$r.squared,
-                                                       thompson.begg = summary(lm(pval.thompson~ pval.begg))$r.squared,
-                                                       egger.begg = summary(lm(pval.egger~ pval.begg))$r.squared,
-                                                       tes.d.egger = summary(lm(pval.egger~ pval.d.tes))$r.squared,
-                                                       thompson.tes.d = summary(lm(pval.thompson~ pval.d.tes))$r.squared,
-                                                       tes.d.begg = summary(lm(pval.d.tes~ pval.begg))$r.squared)
+                                                         tes.d.begg = sum(tes.d.begg == "agree")/n(),
+                                                         thompson.egger = sum(thompson.egger == "agree")/n(),
+                                                         thompson.begg = sum(thompson.begg == "agree")/n(),
+                                                         egger.begg = sum(egger.begg == "agree")/n())
+correlation.surv <- meta.surv %>% ungroup() %>% summarise(tes.d.egger = cor(stat.egger, stat.d.tes),
+                                                          thompson.tes.d = cor(stat.thompson, stat.d.tes),
+                                                          tes.d.begg = cor(stat.d.tes, stat.begg),
+                                                          thompson.egger = cor(stat.thompson, stat.egger),
+                                                          thompson.begg = cor(stat.thompson, stat.begg),
+                                                          egger.begg = cor(stat.egger, stat.begg))
+# rsquared.surv <- meta.surv %>% ungroup() %>% summarise(tes.d.egger = summary(lm(stat.egger~ stat.d.tes))$r.squared,
+#                                                           thompson.tes.d = summary(lm(stat.thompson~ stat.d.tes))$r.squared,
+#                                                           tes.d.begg = summary(lm(stat.d.tes~ stat.begg))$r.squared,
+#                                                           thompson.egger = summary(lm(stat.thompson~ stat.egger))$r.squared,
+#                                                           thompson.begg = summary(lm(stat.thompson~ stat.begg))$r.squared,
+#                                                           egger.begg = summary(lm(stat.egger~ stat.begg))$r.squared)
+meta.surv <- meta.surv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test + egger.test > 1, "agree", "disagree"),
+                                                thompson.begg = ifelse(thompson.test + begg.test > 1, "agree", "disagree"),
+                                                egger.begg = ifelse(egger.test + begg.test > 1, "agree", "disagree"),
+                                                tes.d.egger = ifelse(tes.d.test + egger.test > 1, "agree", "disagree"),
+                                                thompson.tes.d = ifelse(thompson.test +tes.d.test > 1, "agree", "disagree"),
+                                                tes.d.begg = ifelse(tes.d.test + begg.test > 1, "agree", "disagree"))
+agreement.sig.surv <- meta.surv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/sum(tes.d.test),
+                                                             thompson.tes.d = sum(thompson.tes.d == "agree")/sum(tes.d.test),
+                                                             tes.d.begg = sum(tes.d.begg == "agree")/sum(tes.d.test),
+                                                             thompson.egger = sum(thompson.egger == "agree")/sum(egger.test),
+                                                             thompson.begg = sum(thompson.begg == "agree")/sum(thompson.test),
+                                                             egger.begg = sum(egger.begg == "agree")/sum(egger.test))
 
 surv.tests.agreement <- rbind(agreement.surv, correlation.surv, rsquared.surv)
 rownames(surv.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
-colnames(surv.tests.agreement) <- c("Thompson - Egger", "Thompson - Begg", "Egger - Begg", "Excess significance - Egger",
-                                    "Thompson - Excess significance", "Excess significance - Begg")
+colnames(surv.tests.agreement) <- c("Excess significance, Egger (survival)", "Excess significance, Thompson (survival)", 
+                                    "Excess significance, Begg (survival)", "Thompson, Egger (survival)", 
+                                    "Thompson, Begg (survival)", "Egger, Begg (survival)")
 
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Merging:
 test.agreement <- rbind(t(binary.tests.agreement), t(cont.tests.agreement), t(surv.tests.agreement))
-print(xtable(test.agreement, align = "lccc", caption = "Agreement in significance proportion, correlation and R-squared of linear regression
-             between the p-values of the publication bias tests. Horizontal lines separate binary, continuous and survival outcomes (order as in table).",
-             label = "test.agreement"), hline = c(0,0,9, 15, 21), size = "footnotesize")
+
 #--------------------------------------------------------------------------------------------------------------------#
-
-
-
-
 
 #Number of missing studies, according to copas:
 hist(meta.f$missing.copas / meta.f$n)
 
+#--------------------------------------------------------------------------------------------------------------------#
 
+#Correlations btw. teststatistics:
+cor.data <- meta.f %>% select(stat.rucker, stat.harbord, stat.peter, stat.schwarzer, stat.d.tes, 
+                              stat.egger, stat.thompson, stat.begg)
+colnames(cor.data) <- c("Rucker", "Harbord", "Peter", "Schwarzer", "Excess s.",  "Egger", "Thompson",
+                        "Begg")
+
+panel.pts.new <- function (x, y, corr = NULL, col.regions, cor.method, ...) 
+{
+  
+  plot.xy(xy.coords(x, y), type = "p", ...)
+  box(col = "lightgray")
+  rect(xleft = -1.96, ybottom = -1.96, xright = 1.96, ytop = 1.96, density = NULL, angle = 45,
+       col = NA, border = "white", lty = 1, lwd = 1.2, 
+       ...)
+  if (!is.null(corr)) 
+    return()
+  
+}
+
+corrgram(cor.data, 
+         upper.panel=panel.pts.new, lower.panel=panel.cor, 
+         cex.labels = 1, cex = .5, cex.cor = 2,
+         text.panel=panel.txt, cor.method = "spearman")
 
 
 

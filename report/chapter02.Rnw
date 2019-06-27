@@ -13,7 +13,7 @@ opts_chunk$set(
 library(knitr)
 opts_chunk$set(fig.path='figure/ch02_fig',
                echo=TRUE, message=FALSE,
-               fig.width=8, fig.height=3,
+               fig.width=8.1, fig.height=3,
                out.width='\\textwidth-3cm',
                message=FALSE, fig.align='center',
                background="gray98", tidy=FALSE, #tidy.opts=list(width.cutoff=60),
@@ -271,7 +271,7 @@ meta.data <- data.ext2[which(data.ext2$meta.id %in% meta.id.vector),]
 
 
 
-\chapter{The Cochrane Dataset} 
+\chapter{The Cochrane Dataset} \label{ch:dataset}
 
 
 \section{Cochrane Systematic Reviews}

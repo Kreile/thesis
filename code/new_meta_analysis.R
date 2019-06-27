@@ -632,39 +632,39 @@ tmp.z <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %
   filter(outcome.type != "rate" & !is.na(outcome.type)) %>% filter(total1 + total2 > 3)
 
 meta.id.vector <- metac$meta.id
+# 
+# excess.significance.z <- list()
+# excess.significance.d <- list()
+# 
+# counter <- 0
+# for(u in meta.id.vector){
+#   counter <- counter + 1
+#   print(c(u,counter))
+#   excess.significance.z[[counter]] <- tes.z(tmp.z[tmp.z$meta.id == u,])
+# 
+#   excess.significance.d[[counter]] <- tes.d(tmp[tmp$meta.id == u,])
+# 
+#   print(c(u, (tes.d(tmp[tmp$meta.id == u,])[4])))
+#   if(is.na(tes.d(tmp[tmp$meta.id == u,])[4])) break
+# }
+# 
+# excess.sig.list <- list(meta.id.vector, tmp.z, tmp, excess.significance.z, excess.significance.d)
 
-excess.significance.z <- list()
-excess.significance.d <- list()
-
-counter <- 0
-for(u in meta.id.vector){
-  counter <- counter + 1
-  print(c(u,counter))
-  excess.significance.z[[counter]] <- tes.z(tmp.z[tmp.z$meta.id == u,])
-
-  excess.significance.d[[counter]] <- tes.d(tmp[tmp$meta.id == u,])
-
-  print(c(u, (tes.d(tmp[tmp$meta.id == u,])[4])))
-  if(is.na(tes.d(tmp[tmp$meta.id == u,])[4])) break
-}
-
-excess.sig.list <- list(meta.id.vector, tmp.z, tmp, excess.significance.z, excess.significance.d)
-
-# excess.significance.z <- excess.sig.list[[4]]
-# excess.significance.d <- excess.sig.list[[5]]
+excess.significance.z <- excess.sig.list[[4]]
+excess.significance.d <- excess.sig.list[[5]]
 
 #List extraction:
 excess.significance.results <- cbind(
   meta.id = meta.id.vector,
   pval.z.tes.org = unlist(lapply(excess.significance.z, FUN = function(object){object[3]})),
   pval.z.tes = unlist(lapply(excess.significance.z, FUN = function(object){object[4]})),
-  stat.z.tes = unlist(lapply(excess.significance.z, FUN = function(object){object[3]})),
+  stat.z.tes = unlist(lapply(excess.significance.z, FUN = function(object){object[2]})),
   excess.z = unlist(lapply(excess.significance.z, FUN = function(object){object[5]})) - 
     unlist(lapply(excess.significance.z, FUN = function(object){object[6]})),
   
   pval.d.tes.org = unlist(lapply(excess.significance.d, FUN = function(object){object[3]})),
   pval.d.tes = unlist(lapply(excess.significance.d, FUN = function(object){object[4]})),
-  stat.d.tes = unlist(lapply(excess.significance.d, FUN = function(object){object[3]})),
+  stat.d.tes = unlist(lapply(excess.significance.d, FUN = function(object){object[2]})),
   excess.d = unlist(lapply(excess.significance.d, FUN = function(object){object[5]})) - 
     unlist(lapply(excess.significance.d, FUN = function(object){object[6]}))
   )
@@ -791,6 +791,6 @@ save(meta.surv, file =  file.path(PATH_RESULTS, "meta.surv.RData"))
 # save(cor.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cor.RData"))
 # save(zscore.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_zscore.RData"))
 # save(cohensd.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cohensd.RData"))
-save(excess.sig.list, file =  file.path(PATH_RESULTS, "excess_significance_list.RData"))
+# save(excess.sig.list, file =  file.path(PATH_RESULTS, "excess_significance_list.RData"))
 
 # save(cum.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cum.RData"))

@@ -8,7 +8,7 @@ opts_chunk$set(
 ) 
 @
 
-\chapter{Methods}
+\chapter{Methods} 
 \section{Introduction and Notation}
 The analysis has already been said to be restricted on clinical or health care interventions. The interventions are restricted to comparisons of two treatment arms by some measure of sanity or worsening of health. The difference in this measure between the grouops is referred to as the treatment effect. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, Cohen's $d$ or Hedges $g$, Fisher's z score or Pearsons correlation coefficient. \\
 Let us consider a meta-analysis with $n$ study treatment effects ($n > 1$, but typically small). A study is indexed by $i$, and it's treatment effect by  $\theta_i$. The observed treatment effect is $\hat{\theta}_i$. The pooled treatment effect of a meta-analysis will be denoted as $\theta_M$, and consequently, the observed pooled treatment effect as $\hat{\theta}_M$. Furthermore, each treatment effect is typically measured with some standard error $s_i$ and an estimate of $s_i$ is denoted as $\hat{s}_i$. The $\hat{}$ sign thus indicates if it is an estimate.\\
@@ -326,7 +326,7 @@ s_i^2 = 1/4n_t + +/4n_c \nonumber
 Then one can optionally apply Begg and Mazumdar's rank correlation test or Thompson and Sharp's test using the newly obtained estimates.
 
 
-\section{Excess Significance Test}
+\subsection{Excess Significance Test} \label{sec:excess.significance}
 \citet{excess.significance} developped an exploratory test to detect if the proportion of significant findings is larger than expected. Note that significance is here defined as one-sided significance, with the direction of the test being the same for each study. \\
 We assume that the effects are equally distributed around a true mean effect $\theta_M$, which can be estimated as for example by fixed effects Meta-Analysis \ref{eq:fixed.effects}. Let $O$ be the number of significant study results out of $n$ studies and $\alpha$ the significance threshold. Corresponding to the study effect $\theta_i$, we can specify the power $1 - \beta_i$, the probability to accepting a true result. Let $z_{\alpha,i}$ be the $1-\alpha$ quantile of a normal distribution with standard error $\hat{s}_i$. The power of study $i$ can be estimated as:
 
