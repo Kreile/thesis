@@ -680,13 +680,19 @@ meta.f <- merge(meta.f, excess.significance.results, by = c("meta.id"), all.x = 
 #Inpute random effect estimate for missing copas:
 copas.names <- c("est.copas", "se.est.copas", "est.z.copas", "se.est.z.copas", "est.d.copas", "se.est.d.copas")
 ranef.names <- c("est.ranef", "se.est.ranef", "est.z.ranef", "se.est.z.ranef", "est.d.ranef", "se.est.d.ranef")
+missing.names <- paste(copas.names, ".missing", sep = "")
+missing <- c()
 
 for(u in 1:length(copas.names)){
+  missing.count <- 0
   for(k in 1:dim(meta.f)[1]){
     if(is.na(meta.f[k, copas.names[u]])){
+      missing.count <- missing.count + 1
       meta.f[k, copas.names[u]] <- meta.f[k, ranef.names[u]]
     }
   }
+  missing[u] <- missing.count
+  meta.f[, missing.names[u]] <- missing.count
 }
 
 

@@ -1,5 +1,6 @@
 \documentclass[11pt,a4paper,twoside]{book}
 \input{header.sty}   % packages, layout and standard macros
+\input{newCommands.tex}
 
 
 \usepackage{verbatim}

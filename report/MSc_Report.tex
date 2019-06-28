@@ -50,6 +50,7 @@
 
 \usepackage{alltt}
 \input{header.sty}   % packages, layout and standard macros
+\input{newCommands.tex}
 
 
 \usepackage{verbatim}
@@ -235,7 +236,7 @@ In Table \ref{barbiturate.row}, two results from a systematic review about effec
 The comparison variable specifies \textit{what kind} of treatments or interventions are compared, the outcome variable \textit{how} it is compared, and the subgroup variable (not indicated in table) if the result belongs to a certain subgroup. Here, the result is of a binary type, so the counts of events in the barbiturate treatment group and the total number of participants are given in columns ``Events'' and ``Total'' and the number of events in the control group ``Events\_c'' and participants ``Total\_c''. A event is here death at the end of follow up.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Jun 27 15:14:56 2019
+% Fri Jun 28 14:09:15 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -319,7 +320,7 @@ The review comprises five studies in total. Three of them compared barbiturate t
 We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. Thus, it is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Jun 27 15:14:57 2019
+% Fri Jun 28 14:09:15 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -356,7 +357,7 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
 Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years. For continuous outcomes, the cases have been counted were no treatment effect and standard error is available: neither mean values and standard deviations, nor mean differences and standard error. Also Study years before 1920 and after 2019 are declared as missing, as well as sample sizes below zero.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Jun 27 15:14:57 2019
+% Fri Jun 28 14:09:15 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -380,7 +381,7 @@ The studies that are included in the reviews and have been published are most of
 The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.) abundances are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 30 \% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (> 65\%).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Jun 27 15:14:57 2019
+% Fri Jun 28 14:09:15 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -414,7 +415,7 @@ The dataset is divided in meta-analyses with identical experimental setup. The s
 Table \ref{repr.groups} shows the number of meta-analysis with size $\geq n$ results. Practically, this number of meta analyses can be performed, with each having at least $n$ results:
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Jun 27 15:14:57 2019
+% Fri Jun 28 14:09:15 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -673,7 +674,7 @@ With decreasing mean, the difference gets more negative, and vice versa, such th
 The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. We expect that some proportion of the meta-analysis will only be significant for a certain test, and this is indeed observed in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Jun 27 15:14:57 2019
+% Fri Jun 28 16:35:30 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -699,7 +700,7 @@ Count & Binary Outcomes & Continuous and Survival \\
 
 When only looking at small study effect tests, 29.1\% of binary outcome tests and 26.5\% of survival and continuous outcome tests had at least one significant result. After applying the bonferroni correction for multiple testing, this shrinks to 10.9\& for binary and 12.1\% for continuous and survival outcomes. \\
 When comparing significant findings for small study effect tests and excess significance tests, we will only do so with Harbord's or Egger's test. 22.4\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, 28\% for continuous and survival outcomes. Again, the numbers change to 13.3\% for binary outcomes and 17.2\% for continuous and survival outcomes after applying the bonferroni correction. \\
-3\% have significant Harbord's test result and significant excesss significance test result  (1.1\% with bonferroni). Of the continuous outcomes, we have 6.1 \% with Egger's test and 1.8 with Bonferroni correction. 
+3\% have significant Harbord's test result and significant excesss significance test result  (1.1\% with bonferroni). Of the continuous outcomes, we have 6.1\% with Egger's test and 1.8\% with Bonferroni correction. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -712,8 +713,11 @@ When comparing significant findings for small study effect tests and excess sign
 
 \subsection{Change in Effect Size after Adjustment}
 
-If one is interested in the mere change in effect size and if the effect size did decrease or increase after adjustment, one can look at Figure \ref{fig:adjustment.size}. It displays the difference between the meta-analysis pooled treatment effect and the adjusted treatment effect. To compare the overall effect of adjustment for small study effects, the absolute value of the effect size is used. Thus, a negative difference indicates larger adjusted treatment effect size than meta-analysis pooled effect size. For better illustration, some very large and very small differences have been ommitted in the $z$-score and Hedges $g$ histogramms; the missing differences are provided in Table \ref{missing.differences}. Additionally to the histogramms, Table \ref{adjustment.difference} shows the quantiles and means for the various differences.
-%For sake of interpretability, negative effect sizes are changed to positive, such that a negative difference always means that the adjusted treatment effect is larger than the meta-analysis effect. Vice versa, a positive difference will indicate smaller adjusted effects. \\
+There are two possibilities when adjusting the pooled treatment effect of meta-analyses for publication bias. The absolute size of the treatment effect can be smaller, or larger after adjustment. Additionally, it is of interest by how much the treatment effect is diminishued or increased. \\
+Figure \ref{fig:adjustment.size} displays the difference between the meta-analysis pooled treatment effect $\theta_M$ and the adjusted treatment effect $\theta_\textrm{Adj.}$ for the copas and regression adjustment methods and fixed and random effects meta-analysis. The treatment effects are mirrored on the positive side, such that a positive difference indicates that the effect size was smaller after adjustment (and analogously, larger if the difference is negative). For better illustration, some very large and very small differences have been ommitted in the $z$-score and Hedges $g$ histogramms; the missing differences are provided in Table \ref{missing.differences}. Additionally to the histogramms, Table \ref{adjustment.difference} shows the quantiles and means for the various differences.\\
+Copas estimates are equal to random effect in 1331 for $z$-score based analysis, 1144 for Hedges $g$ based analysis (and 1056 for analysis based on original effect measures). \\
+We see in Figure \ref{fig:adjustment.size} that bot reduction and amplification of original effect size occurs frequently. Nevertheless, there are more adjustments towards smaller effects for $z$-scores and Hedges $g$, regardless of the reference meta-analysis method. Survival outcomes, and $z$-scores meta-analyses and copas adjustment differences are exception to this. The larger proportion of reduction is mostly also reflected in the means and medians in Table \ref{adjustment.difference}. They are mostly around zero or larger, although not to a large extent. There is more extensive downward correction of effect sizes if random effects meta-analysis is used as the reference. 
+
 
 \begin{figure}
 \begin{knitrout}
@@ -733,7 +737,7 @@ If one is interested in the mere change in effect size and if the effect size di
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Jun 27 15:12:39 2019
+% Fri Jun 28 16:35:32 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -771,7 +775,7 @@ meta.id & file.nr & comparison.nr & subgroup.nr & z fixed & z random & z Copas &
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Jun 27 15:12:39 2019
+% Fri Jun 28 16:35:32 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -779,18 +783,18 @@ meta.id & file.nr & comparison.nr & subgroup.nr & z fixed & z random & z Copas &
   \hline
  & 5\% & 25\% & 50\% & 75\% & 95\% & mean \\ 
   \hline
-z-score: Fixed - Copas & -0.05 & -0.01 & 0.00 & 0.01 & 0.05 & 402.37 \\ 
-  z-score: Random - Copas & -0.04 & 0.00 & 0.00 & 0.00 & 0.01 & 159.98 \\ 
-  z-score: Fixed - Regression & -0.15 & -0.05 & -0.01 & 0.04 & 0.13 & -0.01 \\ 
-  z-score: Random - Regression & -0.18 & -0.07 & -0.02 & 0.03 & 0.16 & -0.02 \\ 
-  Hedges g: Fixed - Copas & -0.09 & -0.01 & 0.00 & 0.01 & 0.05 & -0.02 \\ 
-  Hedges g: Random - Copas & -0.14 & 0.00 & 0.00 & 0.00 & 0.00 & -0.04 \\ 
-  Hedges g: Fixed - Regression & -0.39 & -0.13 & -0.04 & 0.04 & 0.24 & -0.05 \\ 
-  Hedges g: Random - Regression & -0.43 & -0.17 & -0.05 & 0.03 & 0.23 & -0.07 \\ 
-  Log hazard ratio: Fixed - Copas & -0.02 & -0.00 & 0.00 & 0.00 & 0.03 & 0.01 \\ 
-  Log hazard ratio: Random - Copas & -0.00 & 0.00 & 0.00 & 0.00 & 0.03 & 0.01 \\ 
-  Log hazard ratio: Fixed - Regression & -0.15 & -0.01 & 0.07 & 0.14 & 0.21 & 0.06 \\ 
-  Log hazard ratio: Random - Regression & -0.15 & -0.03 & 0.07 & 0.15 & 0.23 & 0.06 \\ 
+z-score: Fixed - Copas & -0.05 & -0.01 & -0.00 & 0.01 & 0.05 & -402.37 \\ 
+  z-score: Random - Copas & -0.01 & 0.00 & 0.00 & 0.00 & 0.04 & -159.98 \\ 
+  z-score: Fixed - Regression & -0.13 & -0.04 & 0.01 & 0.05 & 0.15 & 0.01 \\ 
+  z-score: Random - Regression & -0.16 & -0.03 & 0.02 & 0.07 & 0.18 & 0.02 \\ 
+  Hedges g: Fixed - Copas & -0.05 & -0.01 & 0.00 & 0.01 & 0.09 & 0.02 \\ 
+  Hedges g: Random - Copas & -0.00 & 0.00 & 0.00 & 0.00 & 0.14 & 0.04 \\ 
+  Hedges g: Fixed - Regression & -0.24 & -0.04 & 0.04 & 0.13 & 0.39 & 0.05 \\ 
+  Hedges g: Random - Regression & -0.23 & -0.03 & 0.05 & 0.17 & 0.43 & 0.07 \\ 
+  Log hazard ratio: Fixed - Copas & -0.03 & 0.00 & 0.00 & 0.00 & 0.02 & -0.01 \\ 
+  Log hazard ratio: Random - Copas & -0.03 & 0.00 & 0.00 & 0.00 & 0.00 & -0.01 \\ 
+  Log hazard ratio: Fixed - Regression & -0.21 & -0.14 & -0.07 & 0.01 & 0.15 & -0.06 \\ 
+  Log hazard ratio: Random - Regression & -0.23 & -0.15 & -0.07 & 0.03 & 0.15 & -0.06 \\ 
    \hline
 \end{tabular}
 \endgroup

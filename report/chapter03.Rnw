@@ -450,7 +450,7 @@ print(xtable(number.sig.tests, caption = "Counts Number of significant test resu
 
 When only looking at small study effect tests, \Sexpr{mean.min.bin}\% of binary outcome tests and \Sexpr{mean.min.else}\% of survival and continuous outcome tests had at least one significant result. After applying the bonferroni correction for multiple testing, this shrinks to \Sexpr{mean.min.bin.b}\& for binary and \Sexpr{mean.min.else.b}\% for continuous and survival outcomes. \\
 When comparing significant findings for small study effect tests and excess significance tests, we will only do so with Harbord's or Egger's test. \Sexpr{mean.min.bin2}\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, \Sexpr{mean.min.else2}\% for continuous and survival outcomes. Again, the numbers change to \Sexpr{mean.min.bin2.b}\% for binary outcomes and \Sexpr{mean.min.else2.b}\% for continuous and survival outcomes after applying the bonferroni correction. \\
-\Sexpr{both.bin}\% have significant Harbord's test result and significant excesss significance test result  (\Sexpr{both.bin.b}\% with bonferroni). Of the continuous outcomes, we have \Sexpr{both.else} \% with Egger's test and \Sexpr{both.else.b} with Bonferroni correction. 
+\Sexpr{both.bin}\% have significant Harbord's test result and significant excesss significance test result  (\Sexpr{both.bin.b}\% with bonferroni). Of the continuous outcomes, we have \Sexpr{both.else}\% with Egger's test and \Sexpr{both.else.b}\% with Bonferroni correction. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -707,15 +707,15 @@ adjustment.diff <- meta.f %>%
          est.d.fixef = abs(est.d.fixef),
          est.d.ranef = abs(est.d.ranef)) %>% 
 
-  transmute(copas.z.f = est.z.copas.f - est.z.fixef,
-            copas.z.r = est.z.copas.r - est.z.ranef,
-            reg.z.f = est.z.reg.f - est.z.fixef,
-            reg.z.r = est.z.reg.r - est.z.ranef,
+  transmute(copas.z.f = est.z.fixef - est.z.copas.f,
+            copas.z.r = est.z.ranef - est.z.copas.r,
+            reg.z.f = est.z.fixef - est.z.reg.f,
+            reg.z.r = est.z.ranef - est.z.reg.r,
             
-            copas.d.f = est.d.copas.f - est.d.fixef,
-            copas.d.r = est.d.copas.r - est.d.ranef,
-            reg.d.f = est.d.reg.f - est.d.fixef,
-            reg.d.r = est.d.reg.r - est.d.ranef) 
+            copas.d.f = est.d.fixef - est.d.copas.f,
+            copas.d.r = est.d.ranef - est.d.copas.r,
+            reg.d.f = est.d.fixef - est.d.reg.f,
+            reg.d.r = est.d.ranef - est.d.reg.r) 
 
 m.adjustment.diff <- as.matrix(adjustment.diff)
 
@@ -733,11 +733,11 @@ adjustmend.diff.surv <- meta.surv %>%
             est.fixef = abs(est.fixef),
             est.ranef = abs(est.ranef)) %>% 
   
-  transmute(copas.surv.f = est.copas.f - est.fixef,
-            copas.surv.r = est.copas.r - est.ranef,
+  transmute(copas.surv.f = est.fixef - est.copas.f,
+            copas.surv.r = est.ranef - est.copas.r,
             
-            reg.surv.f = est.reg.f - est.fixef,
-            reg.surv.r = est.reg.r - est.ranef) 
+            reg.surv.f =  est.fixef - est.reg.f,
+            reg.surv.r = est.ranef - est.reg.r) 
 
 m.adjustment.diff.surv <- as.matrix(adjustmend.diff.surv)
   
@@ -858,12 +858,19 @@ missing.differences <- missing.differences %>% mutate(meta.id = as.character(met
 colnames(missing.differences) <- c("meta.id", "file.nr", "comparison.nr", "subgroup.nr",
                                    "z fixed", "z random", "z Copas", "z regression",
                                    "g fixed", "g random", "g Copas", "g regression")
+
+adjustment.smaller.reg.z.f <- round(length(which(adjustment.diff$reg.z.f > 0))/length(which(!is.na(adjustment.diff$reg.z.f)))*100, 1)
+
+adjustment.smaller.reg.z.r <- round(length(which(adjustment.diff$reg.z.r > 0))/length(which(!is.na(adjustment.diff$reg.z.r)))*100, 1)
 @
 
 \subsection{Change in Effect Size after Adjustment}
 
-If one is interested in the mere change in effect size and if the effect size did decrease or increase after adjustment, one can look at Figure \ref{fig:adjustment.size}. It displays the difference between the meta-analysis pooled treatment effect and the adjusted treatment effect. To compare the overall effect of adjustment for small study effects, the absolute value of the effect size is used. Thus, a negative difference indicates larger adjusted treatment effect size than meta-analysis pooled effect size. For better illustration, some very large and very small differences have been ommitted in the $z$-score and Hedges $g$ histogramms; the missing differences are provided in Table \ref{missing.differences}. Additionally to the histogramms, Table \ref{adjustment.difference} shows the quantiles and means for the various differences.
-%For sake of interpretability, negative effect sizes are changed to positive, such that a negative difference always means that the adjusted treatment effect is larger than the meta-analysis effect. Vice versa, a positive difference will indicate smaller adjusted effects. \\
+There are two possibilities when adjusting the pooled treatment effect of meta-analyses for publication bias. The absolute size of the treatment effect can be smaller, or larger after adjustment. Additionally, it is of interest by how much the treatment effect is diminishued or increased. \\
+Figure \ref{fig:adjustment.size} displays the difference between the meta-analysis pooled treatment effect $\theta_M$ and the adjusted treatment effect $\theta_\textrm{Adj.}$ for the copas and regression adjustment methods and fixed and random effects meta-analysis. The treatment effects are mirrored on the positive side, such that a positive difference indicates that the effect size was smaller after adjustment (and analogously, larger if the difference is negative). For better illustration, some very large and very small differences have been ommitted in the $z$-score and Hedges $g$ histogramms; the missing differences are provided in Table \ref{missing.differences}. Additionally to the histogramms, Table \ref{adjustment.difference} shows the quantiles and means for the various differences.\\
+Copas estimates are equal to random effect in \Sexpr{meta.f$se.est.z.copas.missing[1]} for $z$-score based analysis, \Sexpr{meta.f$se.est.d.copas.missing[1]} for Hedges $g$ based analysis (and \Sexpr{meta.f$se.est.copas.missing[1]} for analysis based on original effect measures). \\
+We see in Figure \ref{fig:adjustment.size} that bot reduction and amplification of original effect size occurs frequently. Nevertheless, there are more adjustments towards smaller effects for $z$-scores and Hedges $g$, regardless of the reference meta-analysis method. Survival outcomes, and $z$-scores meta-analyses and copas adjustment differences are exception to this. The larger proportion of reduction is mostly also reflected in the means and medians in Table \ref{adjustment.difference}. They are mostly around zero or larger, although not to a large extent. There is more extensive downward correction of effect sizes if random effects meta-analysis is used as the reference. 
+
 
 \begin{figure}
 <<echo=FALSE, fig.height = 9, warning=FALSE>>=
