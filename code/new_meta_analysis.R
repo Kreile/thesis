@@ -632,26 +632,26 @@ tmp.z <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %
   filter(outcome.type != "rate" & !is.na(outcome.type)) %>% filter(total1 + total2 > 3)
 
 meta.id.vector <- metac$meta.id
-# 
-# excess.significance.z <- list()
-# excess.significance.d <- list()
-# 
-# counter <- 0
-# for(u in meta.id.vector){
-#   counter <- counter + 1
-#   print(c(u,counter))
-#   excess.significance.z[[counter]] <- tes.z(tmp.z[tmp.z$meta.id == u,])
-# 
-#   excess.significance.d[[counter]] <- tes.d(tmp[tmp$meta.id == u,])
-# 
-#   print(c(u, (tes.d(tmp[tmp$meta.id == u,])[4])))
-#   if(is.na(tes.d(tmp[tmp$meta.id == u,])[4])) break
-# }
-# 
-# excess.sig.list <- list(meta.id.vector, tmp.z, tmp, excess.significance.z, excess.significance.d)
 
-excess.significance.z <- excess.sig.list[[4]]
-excess.significance.d <- excess.sig.list[[5]]
+excess.significance.z <- list()
+excess.significance.d <- list()
+
+counter <- 0
+for(u in meta.id.vector){
+  counter <- counter + 1
+  print(c(u,counter))
+  excess.significance.z[[counter]] <- tes.z(tmp.z[tmp.z$meta.id == u,])
+
+  excess.significance.d[[counter]] <- tes.d(tmp[tmp$meta.id == u,])
+
+  print(c(u, (tes.d(tmp[tmp$meta.id == u,])[4])))
+  if(is.na(tes.d(tmp[tmp$meta.id == u,])[4])) break
+}
+
+excess.sig.list <- list(meta.id.vector, tmp.z, tmp, excess.significance.z, excess.significance.d)
+
+# excess.significance.z <- excess.sig.list[[4]]
+# excess.significance.d <- excess.sig.list[[5]]
 
 #List extraction:
 excess.significance.results <- cbind(
@@ -676,6 +676,22 @@ meta.f <- merge(meta.f, excess.significance.results, by = c("meta.id"), all.x = 
 #Round-up:
 ##########################################################################################
 ##########################################################################################
+
+meta.f$se.est.copas.na <- ifelse(is.na(meta.f$se.est.copas), 1, 0)
+meta.f$se.est.z.copas.na <- ifelse(is.na(meta.f$se.est.z.copas), 1, 0)
+meta.f$se.est.d.copas.na <- ifelse(is.na(meta.f$se.est.d.copas), 1, 0)
+
+meta.f$se.est.reg.na <- ifelse(is.na(meta.f$se.est.reg), 1, 0)
+meta.f$se.est.z.reg.na <- ifelse(is.na(meta.f$se.est.z.reg), 1, 0)
+meta.f$se.est.d.reg.na <- ifelse(is.na(meta.f$se.est.d.reg), 1, 0)
+
+meta.f$est.copas.na <- ifelse(is.na(meta.f$est.copas), 1, 0)
+meta.f$est.z.copas.na <- ifelse(is.na(meta.f$est.z.copas), 1, 0)
+meta.f$est.d.copas.na <- ifelse(is.na(meta.f$est.d.copas), 1, 0)
+
+meta.f$est.reg.na <- ifelse(is.na(meta.f$est.reg), 1, 0)
+meta.f$est.z.reg.na <- ifelse(is.na(meta.f$est.z.reg), 1, 0)
+meta.f$est.d.reg.na <- ifelse(is.na(meta.f$est.d.reg), 1, 0)
 
 #Inpute random effect estimate for missing copas:
 copas.names <- c("est.copas", "se.est.copas", "est.z.copas", "se.est.z.copas", "est.d.copas", "se.est.d.copas")
@@ -800,3 +816,10 @@ save(meta.surv, file =  file.path(PATH_RESULTS, "meta.surv.RData"))
 # save(excess.sig.list, file =  file.path(PATH_RESULTS, "excess_significance_list.RData"))
 
 # save(cum.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cum.RData"))
+
+
+
+
+# meta.f <- meta.f %>% mutate(side2 = ifelse(sign(est.z.fixef) == -1,  1, 0))
+# meta.f %>% filter(!is.na(side1)) %>% filter(side1 != side2) %>% select(side1, side2)
+# meta.f %>% filter(!is.na(side1))

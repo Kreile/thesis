@@ -1,0 +1,1118 @@
+
+
+
+
+
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% \section{Small study effects}
+% <<echo=FALSE, warning=FALSE>>=
+  % p.samplesize.z  <- data.ext2 %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% ungroup() %>% 
+%   mutate(std.z = abs(z), sample.size = total1 + total2) %>%
+%   group_by(sample.size) %>% 
+%   summarize(median.effect = median(std.z, na.rm = T)) %>% 
+%   ggplot(aes(x = sample.size, y = median.effect)) + geom_point(size = 0.8) + 
+  %   theme_bw() + xlab("sample size") + ylab("median absolute z-score") +
+  %   xlim(c(15, 300)) + ylim(c(0, 0.25)) +
+  %   scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
+% 
+% p.samplesize.effect.sep <- data %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% 
+%   filter(outcome.measure.new == "Risk Ratio" | 
+             %            outcome.measure.new == "Odds Ratio" | 
+             %            outcome.measure.new == "Mean Difference" |
+             %            outcome.measure.new == "Std. Mean Difference") %>% 
+           %   group_by(outcome.measure.new) %>% 
+           %   mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+           %   group_by(sample.size, outcome.measure.new) %>% 
+           %   summarize(median.effect = median(scaled.effect, na.rm = T)) %>% 
+           %   ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure.new)) + geom_point(size = .5) + facet_wrap(~outcome.measure.new, scales = "free") + 
+             %   theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size") +
+             %   xlim(c(15, 300)) +
+             %   scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
+           % @
+             % 
+           % The median $z$-score for a given sample size of a trial is shown in Figure \ref{z.samplesize}. It is clearly visible that the absolute value decreases with increasing sample size, i.e. that the effect size is becoming smaller. The trend flattens off after $\sim$ sample size = 400 (not shown). 
+           % -- Appendix -- \\
+           % 
+           % \begin{figure}
+           % <<echo=FALSE, warning=FALSE>>=
+             % plot(p.samplesize.z)
+           % @
+             % \caption{Median of the absolute $z$-score plotted against the total sample size.}
+           % \label{z.samplesize}
+           % \end{figure}
+           % 
+           % Only for illustration, the same trend is reproduced in Figure \ref{effect.samplesize.separated} with a similar method, using the original effect size measures ``Odds Ratio'', ``Risk Ratio'', ``Mean Difference'' and ``Std. Mean Difference'' (the most commonly used in the dataset). The ``normalized effect'' is the original effect size, normalized with respect to all other effect sizes of the same measure (i.e. subtraction of mean and division through standard error of the mean).
+           % 
+           % \begin{figure}
+           % <<echo=FALSE>>=
+             % plot(p.samplesize.effect.sep)
+           % @
+             % \caption{Median of the absolute value of the normalized, original effect size plotted against the total sample size.}
+           % \label{effect.samplesize.separated}
+           % \end{figure}
+           % 
+           % %Show absolute effect size depending on scaled time? Chunck 3
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           % Since the tests have different properties, the agreement between the tests can be visualized. Here, agreement is specified as classifying the same meta-analysis as significant, based on the 0.1 $p$-value threshold. Again, this is done separately for the different outcome types. The result can be seen in Figure \ref{fig:test.agreement}. In the Figure, the number of agreeing tests is displayed, i.e., how many meta-analyses had only one significant test result etc.
+           % 
+           % \begin{figure}
+           % <<echo = FALSE, fig.height = 5>>=
+             % grid.arrange(agree.bin,
+                            %               agree.cont, 
+                            %               agree.surv, ncol = 1)
+           % @
+             % \caption{Barplot for the number of significant test results per meta-analyses, separated for outcome.types}
+           % \label{fig:test.agreement}
+           % \end{figure}
+           
+           
+           
+           % \begin{figure}[!ht]
+           % <<echo=FALSE>>=
+             % plot(p.dist.bin)
+           % @
+             % \caption{Histogram of the $p$-values for small study effect in binary outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+           % \label{fig:test.bin}
+           % \end{figure}
+           % 
+           % \begin{figure}
+           % <<echo=FALSE>>=
+             % plot(p.dist.cont)
+           % @
+             % \caption{Histogram of the $p$-values for the small study effect in continuous outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+           % \label{fig:test.cont}
+           % \end{figure}
+           % 
+           % \begin{figure}
+           % <<echo=FALSE>>=
+             % plot(p.dist.surv)
+           % @
+             % \caption{Histogram of the $p$-values for the small study effect in survival outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+           % \label{fig:test.surv}
+           % \end{figure}
+           
+           
+           
+           % \begin{figure}
+           % <<echo=FALSE, warning=FALSE>>=
+             % plot(adjustment.stat.z)
+           % @
+             % \caption{Histogram of the wald test-statistic of meta-analysis and adjusted pooled treatment effect, based on the z-score. The method is indicated in the header, binwidth is set to 1. The significant proportion based on the threshold of 0.05 is displayed inside the figures (The red line displays the corresponding quantile of the std. normal, 1.96).}
+           % \label{fig:adjustment.stat.z}
+           % \end{figure}
+           % 
+           % \begin{figure}
+           % <<echo=FALSE, warning=FALSE>>=
+             % plot(adjustment.stat.d)
+           % @
+             % \caption{Histogram of the wald test-statistic of meta-analysis and adjusted pooled treatment effect, based on Hedges $g$ or Cohen's $d$. The method is indicated in the header, binwidth is set to 1. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
+               % \label{fig:adjustment.stat.d}
+               % \end{figure}
+               % 
+               % \begin{figure}
+               % <<echo=FALSE, warning=FALSE>>=
+               % plot(adjustment.stat.log.hazard.ratio)
+               % @
+               % \caption{Histogram of the wald test-statistic of meta-analysis and adjusted pooled treatment effect, based on the $z$-score. The method is indicated in the header, binwidth is set to 1. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
+               % \label{fig:adjustment.stat.log.hazard.ratio}
+               % \end{figure}
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               % 
+               % <<echo=FALSE, warning=FALSE>>=
+               % #Test Results: Binary
+               % test.bin <- meta.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+               %                                                           schwarzer.test = mean(schwarzer.test),
+               %                                                           rucker.test = mean(rucker.test),
+               %                                                           harbord.test = mean(harbord.test),
+               %                                                           peter.test = mean(peter.test))
+               % test.bin <- test.bin %>% gather(key = "test.type", value = "mean")
+               % 
+               % p.bin <- meta.bin %>% ungroup() %>% 
+               %   select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+               %   gather(key = "test.type", value = "null.hypothesis") %>%  
+               %   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+               %   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+               %   theme_bw() + xlab(label = NULL) +
+               %   annotate("text", x = test.bin$test.type, y = 1000, 
+               %            label = paste(round(test.bin$mean, 2)*100, "% rejected"), 
+               %            color = "white")
+               % 
+               % 
+               % 
+               % test.sig.bin <- meta.bin %>% filter(sig.fixef.bin == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+               %                                                               schwarzer.test = mean(schwarzer.test),
+               %                                                               rucker.test = mean(rucker.test),
+               %                                                               harbord.test = mean(harbord.test),
+               %                                                               peter.test = mean(peter.test))
+               % test.sig.bin <- test.sig.bin %>% gather(key = "test.type", value = "mean")
+               % 
+               % p1 <- meta.bin %>% ungroup() %>% filter(sig.fixef.bin == 1) %>% 
+               % select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+               %   gather(key = "test.type", value = "null.hypothesis") %>% 
+               %   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+               %   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+               %   theme_bw() + ggtitle("Significant Pooled Effects")+ xlab(label = NULL) + theme(legend.position="none") +
+               %   annotate("text", x = test.sig.bin$test.type, y = 1750, 
+               %            label = paste(round(test.sig.bin$mean, 2)*100, "% rejected"), 
+               %            color = "white")
+               % 
+               % test.nonsig.bin <- meta.bin %>% filter(sig.fixef.bin == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+               %                                                                                                 schwarzer.test = mean(schwarzer.test),
+               %                                                                                                 rucker.test = mean(rucker.test),
+               %                                                                                                 harbord.test = mean(harbord.test),
+               %                                                                                                 peter.test = mean(peter.test))
+               % test.nonsig.bin <- test.nonsig.bin %>% gather(key = "test.type", value = "mean")
+               % 
+               % p2 <- meta.bin %>% 
+               %   filter(sig.fixef.bin == 0) %>% ungroup() %>% 
+               %   select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+               %   gather(key = "test.type", value = "null.hypothesis") %>% 
+               %   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+               %   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+               %   theme_bw() + ggtitle("Non-significant Pooled Effects")+ xlab(label = NULL) +theme(legend.position="none") +
+               %   annotate("text", x = test.nonsig.bin$test.type, y = 650, 
+               %            label = paste(round(test.nonsig.bin$mean, 2)*100, "% rejected"), 
+               %            color = "white")
+               % 
+               % range.pb.difference.bin <- range(test.sig.bin$mean - test.nonsig.bin$mean)
+               % 
+               % #Test Results: Continuous
+               % test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+               %                                                             begg.test = mean(begg.test),
+               %                                                             thomson.test = mean(thomson.test))
+               % 
+               % test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
+               % 
+               % p.cont <- meta.cont %>% ungroup() %>% 
+               %   select(egger.test, thomson.test, begg.test) %>% 
+               %   gather(key = "test.type", value = "null.hypothesis") %>% 
+               %   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+               %   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+               %   theme_bw() + xlab(label = NULL) +
+               %   annotate("text", x = test.cont$test.type, y = 750, 
+               %            label = paste(round(test.cont$mean, 2)*100, "% rejected"), 
+               %            color = "white")
+               % 
+               % 
+               % test.sig.cont <- meta.cont %>% filter(sig.fixef.cont == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+               %                                                                                                 begg.test = mean(begg.test),
+               %                                                                                                 thomson.test = mean(thomson.test))
+               % 
+               % test.sig.cont <- test.sig.cont %>% gather(key = "test.type", value = "mean")
+               % 
+               % p3 <- meta.cont %>% 
+               %   filter(sig.fixef.cont == 1) %>% ungroup() %>% 
+               %   select(egger.test, thomson.test, begg.test) %>% 
+               %   gather(key = "test.type", value = "null.hypothesis") %>% 
+               %   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+               %   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+               %   theme_bw() + ggtitle("Significant Pooled Effects")+ xlab(label = NULL) + theme(legend.position="none") +
+               %   annotate("text", x = test.sig.cont$test.type, y = 600, 
+               %            label = paste(round(test.sig.cont$mean, 2)*100, "% rejected"), 
+               %            color = "white")
+               % 
+               % test.nonsig.cont <- meta.cont %>% filter(sig.fixef.cont == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+               %                                                                                                    begg.test = mean(begg.test),
+               %                                                                                                    thomson.test = mean(thomson.test))
+               % 
+               % test.nonsig.cont <- test.nonsig.cont %>% gather(key = "test.type", value = "mean")
+               % 
+               % p4 <- meta.cont %>% 
+               %   filter(sig.fixef.cont == 0) %>% ungroup() %>% 
+               %   select(egger.test, thomson.test, begg.test) %>% 
+               %   gather(key = "test.type", value = "null.hypothesis") %>% 
+               %   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
+               %   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+               %   theme_bw() + ggtitle("Non-significant Pooled Effects")+ xlab(label = NULL) + theme(legend.position="none") +
+               %   annotate("text", x = test.nonsig.cont$test.type, y = 100, 
+               %            label = paste(round(test.nonsig.cont$mean, 2)*100, "% rejected"), 
+               %            color = "white")
+               % 
+               % range.pb.difference.cont <- range(test.sig.cont$mean - test.nonsig.cont$mean)
+               % 
+               % ########################################################################################################################################
+               % ########################################################################################################################################
+               % 
+               % #Agreement proportions of publication bias tests:
+               % 
+               % #Binary:
+               % n.bin <- dim(meta.bin)[1]
+               % meta.bin <- meta.bin %>%ungroup() %>%  mutate(egger.schwarzer = ifelse(egger.test == schwarzer.test, "agree", "disagree"),
+               %                                         egger.peter = ifelse(egger.test == peter.test, "agree", "disagree"),
+               %                                         egger.rucker = ifelse(egger.test == rucker.test, "agree", "disagree"),
+               %                                         egger.harbord = ifelse(egger.test == harbord.test, "agree", "disagree"),
+               %                                         schwarzer.peter = ifelse(schwarzer.test == peter.test, "agree", "disagree"),
+               %                                         schwarzer.rucker = ifelse(schwarzer.test == rucker.test, "agree", "disagree"),
+               %                                         schwarzer.harbord = ifelse(schwarzer.test == harbord.test, "agree", "disagree"),
+               %                                         rucker.peter = ifelse(rucker.test == peter.test, "agree", "disagree"),
+               %                                         rucker.harbord = ifelse(rucker.test == harbord.test, "agree", "disagree"),
+               %                                         harbord.peter = ifelse(harbord.test == peter.test, "agree", "disagree"))
+               % 
+               % agreement.bin <- meta.bin %>% ungroup() %>% summarise(egger.schwarzer = sum(egger.schwarzer == "agree")/n(),
+               %                                             egger.peter = sum(egger.peter == "agree")/n(),
+               %                                             egger.rucker = sum(egger.rucker == "agree")/n(),
+               %                                             egger.harbord = sum(egger.harbord == "agree")/n(),
+               %                                             schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
+               %                                             schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
+               %                                             schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
+               %                                             rucker.peter = sum(rucker.peter == "agree")/n(),
+               %                                             harbord.peter = sum(harbord.peter == "agree")/n())
+               % 
+               % correlation.bin <- meta.bin %>%ungroup() %>%  summarise(egger.schwarzer = cor(pval.egger.bin, pval.schwarzer.bin),
+               %                                               egger.peter = cor(pval.egger.bin, pval.peter.bin),
+               %                                               egger.rucker = cor(pval.egger.bin, pval.rucker.bin),
+               %                                               egger.harbord = cor(pval.egger.bin, pval.harbord.bin),
+               %                                               schwarzer.peter = cor(pval.schwarzer.bin, pval.peter.bin),
+               %                                               schwarzer.rucker = cor(pval.schwarzer.bin, pval.rucker.bin),
+               %                                               schwarzer.harbord = cor(pval.schwarzer.bin, pval.harbord.bin),
+               %                                               rucker.peter = cor(pval.rucker.bin, pval.peter.bin),
+               %                                               harbord.peter = cor(pval.harbord.bin, pval.peter.bin))
+               % 
+               % binary.tests.agreement <- rbind(agreement.bin, correlation.bin)
+               % rownames(binary.tests.agreement) <- c("Test Agreement","P-value Correlation")
+               % 
+               % 
+               % #Continuous:
+               % n.cont <- dim(meta.cont)[1]
+               % meta.cont <- meta.cont %>% ungroup() %>% mutate(thomson.egger = ifelse(thomson.test == egger.test, "agree", "disagree"),
+               %                                           thomson.begg = ifelse(thomson.test == begg.test, "agree", "disagree"),
+               %                                           egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"))
+               % 
+               % agreement.cont <- meta.cont %>% ungroup() %>%  summarise(thomson.egger = sum(thomson.egger == "agree")/n(),
+               %                                               thomson.begg = sum(thomson.begg == "agree")/n(),
+               %                                               egger.begg = sum(egger.begg == "agree")/n())
+               % 
+               % correlation.cont <- meta.cont %>% ungroup() %>% summarise(thomson.egger = cor(pval.thomson.cont, pval.egger.cont),
+               %                                                 thomson.begg = cor(pval.thomson.cont, pval.begg.cont),
+               %                                                 egger.begg = cor(pval.egger.cont, pval.begg.cont))
+               % 
+               % cont.tests.agreement <- rbind(agreement.cont, correlation.cont)
+               % rownames(cont.tests.agreement) <- c("Test Agreement","P-value Correlation")
+               % 
+               % ########################################################################################################################################
+               % ########################################################################################################################################
+               % 
+               % 
+               % #Trimfill missing studies fractions statistics:
+               % trimfill.cont.mean <- meta.cont %>% ungroup %>% summarise(mean = mean(missing.trim.cont)) %>% select(mean)
+               % trimfill.cont.median <- meta.cont %>% ungroup %>% summarise(median = median(missing.trim.cont)) %>% select(median)
+               % 
+               % trimfill.bin.mean <- meta.bin %>% ungroup %>% summarise(mean = mean(missing.trim.bin)) %>% select(mean)
+               % trimfill.bin.median <- meta.bin %>% ungroup %>% summarise(median = median(missing.trim.bin)) %>% select(median)
+               % 
+               % ########################################################################################################################################
+               % ########################################################################################################################################
+               % 
+               % change.ranef.bin <- meta.bin %>% ungroup() %>% 
+               %   select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change") %>% 
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
+               %   group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
+               % 	mutate(n = n/sum(n)) 
+               % 
+               % p.change.ranef.bin <- meta.bin %>% ungroup() %>% 
+               %   select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change") %>%  
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
+               %   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + ggtitle("Binary outcomes")+ 
+               %   theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
+               %   annotate("text", x = change.ranef.bin[change.ranef.bin$sig.change == 3,]$correction.method, y = 1000, 
+               %          label = paste(round(change.ranef.bin[change.ranef.bin$sig.change == 3,]$n*100, 2), "% changed to nonsig."), 
+               %          color = "white")
+               % 
+               % change.ranef.cont <- meta.cont %>% ungroup() %>% 
+               %   select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change") %>% 
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%   
+               %   group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
+               % 	mutate(n = n/sum(n))
+               % 
+               % p.change.ranef.cont <- meta.cont %>% ungroup() %>% 
+               %   select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change") %>%  
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
+               %   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + ggtitle("Continuous outcomes") +
+               %   theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
+               %   annotate("text", x = change.ranef.cont[change.ranef.cont$sig.change == 3,]$correction.method, y = 500, 
+               %          label = paste(round(change.ranef.cont[change.ranef.cont$sig.change == 3,]$n*100, 2), "% changed to nonsig."), 
+               %          color = "white")
+               % 
+               % change.ranef <- meta %>% ungroup() %>% 
+               %   select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change") %>% 
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%   
+               %   group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
+               % 	mutate(n = n/sum(n))
+               % 
+               % p.ranef.change <- meta %>% ungroup() %>% 
+               %   select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change") %>%  
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
+               %   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
+               %   theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
+               %   annotate("text", x = change.ranef[change.ranef$sig.change == 3,]$correction.method, y = 1500, 
+               %          label = paste(round(change.ranef[change.ranef$sig.change == 3,]$n*100, 2), "changed to nonsig."), 
+               %          color = "white")
+               % # Significance after correction plots, separated for meta-analyses with significant publication bias test.
+               % #Fixed effects meta-analysis significance
+               % #Binary outcomes:
+               % change.fixef.bin <- meta.bin %>% ungroup() %>% 
+               %   select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change") %>% 
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%   
+               %   group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
+               % 	mutate(n = n/sum(n))
+               % 
+               % p.change.fixef.bin <- meta.bin %>% ungroup() %>% 
+               %   select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change") %>%  
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%   
+               %   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + ggtitle("Binary outcomes")+  
+               %   theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
+               %   annotate("text", x = change.fixef.bin[change.fixef.bin$sig.change == 3,]$correction.method, y = 800, 
+               %          label = paste(round(change.fixef.bin[change.fixef.bin$sig.change == 3,]$n*100, 2), "changed to nonsig."), 
+               %          color = "white")
+               % 
+               % #Continuous outcomes:
+               % change.fixef.cont <- meta.cont %>% ungroup() %>% 
+               %   select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change") %>% 
+               %   mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
+               %   group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
+               % 	mutate(n = n/sum(n))
+               % 
+               % p.change.fixef.cont <- meta.cont %>% ungroup() %>% 
+               %   select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change") %>%  
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
+               %   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + ggtitle("Continuous outcomes")+ 
+               %   theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
+               %   annotate("text", x = change.fixef.cont[change.fixef.cont$sig.change == 3,]$correction.method, y = 300, 
+               %          label = paste(round(change.fixef.cont[change.fixef.cont$sig.change == 3,]$n*100, 2), "changed to nonsig."), 
+               %          color = "white")
+               % 
+               % #Overall:
+               % change.fixef <- meta %>% ungroup() %>% select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change") %>% 
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
+               % 	group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
+               % 	mutate(n = n/sum(n))
+               % 
+               % p.fixef.change <- meta %>% ungroup() %>% 
+               %   select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change") %>%  
+               %   mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
+               %   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
+               %   theme_bw() + xlab(label = NULL) + guides(fill=guide_legend(title=NULL)) +
+               % 	scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
+               %   annotate("text", x = change.fixef[change.fixef$sig.change == 3,]$correction.method, y = 1500, 
+               %          label = paste(round(change.fixef[change.fixef$sig.change == 3,]$n*100, 2), "% changed to nonsig."), 
+               %          color = "white")
+               % 
+               % #Separated for meta-analyses with significant publication bias test.
+               % change.fixef.bias <- meta %>% 
+               %   select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
+               %   filter(thomson.test == 1) %>% 
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
+               % 	group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
+               % 	mutate(n = n/sum(n))
+               % 
+               % p.change.fixef.bias <- meta %>% 
+               %   select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
+               %   filter(thomson.test == 1) %>% 
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
+               %   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
+               %   theme_bw() + xlab(label = NULL) + guides(fill=guide_legend(title=NULL)) +
+               % 	scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
+               %   annotate("text", x = change.fixef.bias[change.fixef.bias$sig.change == 3,]$correction.method, y = 250, 
+               %            label = paste(round(change.fixef.bias[change.fixef.bias$sig.change == 3,]$n*100, 2), "% changed to nonsig."), 
+               %            color = "white")
+               % 
+               % change.fixef.unbias <- meta %>% 
+               %   select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
+               %   filter(thomson.test == 0) %>% 
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
+               % 	group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>%  
+               % 	mutate(n = n/sum(n))
+               % 
+               % p.change.fixef.unbias <- meta %>% 
+               %   select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
+               %   gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
+               %   filter(thomson.test == 0) %>% 
+               % 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
+               %   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
+               %   theme_bw() + xlab(label = NULL) + guides(fill=guide_legend(title=NULL)) +
+               % 	scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
+               %   annotate("text", x = change.fixef.unbias[change.fixef.unbias$sig.change == 3,]$correction.method, y = 1300, 
+               %            label = paste(round(change.fixef.unbias[change.fixef.unbias$sig.change == 3,]$n*100, 2), "% changed to nonsig."), 
+               %            color = "white")
+               % 
+               % 
+               % ########################################################################################################################################
+               % ########################################################################################################################################
+               % 
+               % p.missing.copas <- meta %>% ggplot(aes(x = missing.copas/n)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20)
+               % p.missing.trim <- meta %>% ggplot(aes(x = missing.trim)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20)
+               % @
+               % 
+               % There are tests that can be applied to find out if small study effects are present in the meta analysis. For the precise description, see the methods section. Application of the tests is only recommended if there are ten or more studies \citep{cochrane.handbook} that can be used, so all meta-analyses with less than ten studies have been excluded.
+               % 
+               % \vspace{0mm}
+               % There are modifications to make tests more appropriate in case of binary outcomes, therefore the results have been separated in continuous and dichotomous outcome test results. In Figure \ref{bias.results.cont} the proportion of test results that led to rejection of the null hypothesis of no small study effect based on the 5 \% level are shown for continuous outcomes ($n$ = \Sexpr{n.cont})
+               % The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measures ($n$ = \Sexpr{n.bin}). The amount of studies varies from 5\% (Schwarzer's Test) to 13 \% (Egger's Test) for binary outcomes and 9\% (Begg and Mazumdar's Test) to 25 \% (Egger's Test) for continuous outcomes. 
+% 
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+  % plot(p.cont)
+% @
+  % \caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (continuous outcomes).}
+% \label{bias.results.cont}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+  % plot(p.bin)
+% @
+  % \caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (dichotomous outcomes).}
+% \label{bias.results.bin}
+% \end{figure}
+% 
+% There is no substantive change in the fraction of positive test results, depending on if the pooled treatment effect size estimate is significant or not. Most substantively, the fraction of positive Egger Test results increases for significant pooled treatment effects by \Sexpr{range.pb.difference.bin[2]} (the minimal increase is \Sexpr{range.pb.difference.bin[1]} for Schwarzer's Test).
+                                                                                                                                                                                                                                                                                                                      % 
+                                                                                                                                                                                                                                                                                                                      % %Show plots of significant meta-analyses separated? Chunck 4
+                                                                                                                                                                                                                                                                                                                      % 
+                                                                                                                                                                                                                                                                                                                      % Furthermore one can look if the frequencies of tests that reject the null hypotheses change over time (mean publication year of the studies included in the meta analyses). The proportion of the test results are shown in Figure \ref{pub.bias.time.overtime}. The Figure suggests that the frequency of publication bias remains constant over time. The mean publication years have been restricted such that at least 180 meta-analyses are available per year, such that random fluctuation is restricted to some extent. The significance threshold for the $p$-values used is 0.05, and the small study effect test used is Thomson's test (with the arcsine variance stabilizing transformation function used in the case of binary outcomes).
+                                                                                                                                                                                                                                                                                                                      % 
+                                                                                                                                                                                                                                                                                                                      % \begin{figure}
+                                                                                                                                                                                                                                                                                                                      % <<echo=FALSE, warning=FALSE>>=
+                                                                                                                                                                                                                                                                                                                        % meta %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
+                                                                                                                                                                                                                                                                                                                      %   ggplot(aes(x = mean.publication.year, fill = factor(thomson.test), stat(count))) + geom_density(na.rm = T, position = "fill") + 
+                                                                                                                                                                                                                                                                                                                        %   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
+                                                                                                                                                                                                                                                                                                                      % @
+                                                                                                                                                                                                                                                                                                                        % \caption{Proportion of test results where the null hypothesis of no small study effect is rejected over time (mean publication.year).}
+                                                                                                                                                                                                                                                                                                                      % \label{pub.bias.overtime}
+                                                                                                                                                                                                                                                                                                                      % \end{figure}
+                                                                                                                                                                                                                                                                                                                      % 
+                                                                                                                                                                                                                                                                                                                      % 
+                                                                                                                                                                                                                                                                                                                      % The agreement of the tests, i.e. the proportion of meta-analyses where the rest results are equal between tests, is shown in Table \ref{agreement.bin} and Table \ref{agreement.cont}, again separated for outcome types. Agreement in tests for binary outcomes is better than continuous outcomes, with some variation between tests (binary outcomes: 83 to 91\%). Correlation varies more between tests, both for continuous and binary outcome tests.
+% 
+% <<results = 'asis', echo = FALSE, warning = FALSE>>=
+  % print(xtable(x = t(binary.tests.agreement), caption = "Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (dichotomous outcomes)", label = "agreement.bin",  align = "lll", digits = 2), include.rownames = T, size = "footnotesize")
+% @
+  % 
+% 
+% <<results = 'asis', echo = FALSE, warning = FALSE>>=
+  % print(xtable(x = t(cont.tests.agreement), caption = "Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (continuous outcomes)", label = "agreement.cont",  align = "lll", digits = 2), include.rownames = T, size = "footnotesize")
+% @
+  % 
+% \vspace{0mm}
+% Test performance depends on the sample size, despite having restricted sample size to a minimum of 10 studies. The p-values of the Thompson and Sharp tests are shown with respect to the sample size of the meta-analysis in Figure \ref{pvalues.samplesize}. %(Suggests that 10 is likely too small)
+% In the case of binary outcomes, the arcsine variance stabilizing function has been applied prior to use of Thompson and Sharp's test. A trend towards more rejections for larger sample sizes can be seen.
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% meta %>% filter(n < 40) %>% ggplot(aes(stat(count), x = n, fill = factor(thomson.test))) + 
+%   geom_density(position = "fill")
+% @
+% \caption{P-values of Thomson and Sharp's test for small study effects and their corresponding sample size.}
+% \label{pvalues.samplesize}
+% \end{figure}
+% 
+% 
+% 
+% \vspace{0mm}
+% One can use the proportion of added studies by the trim-and-fill method from the overall number of studies to further investigate the extent of small study effects. The mean fraction of trimmed comparisons for binary outcomes is \Sexpr{round(trimfill.bin.mean,2)} and the median \Sexpr{round(trimfill.bin.median,2)}. 
+% % A histogram with those fractions is shown in Figure \ref{trimfill.cont} for continuous outcomes and \ref{trimfill.bin} for dichotomous outcomes. In both cases, the method very commonly adds supposedly unpublished studies to the meta-analyses. 
+% In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the relationship between fraction of added studies by trim-and-fill and the hypothesis test decisions of the small study effects tests is shown for continuous and dichotomous outcomes. In the case of Peters test dor dichotomous outcomes, there is less agreement with the trim-and fill method than in the case of Thomson and Sharp's test for continuos outcomes in the sense that the fraction of meta-analyses with rejected null hypothesises increases more clearly when there are more studies added by trim-and-fill. 
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% meta.bin %>% filter(missing.trim.bin < 0.5) %>% 
+%   ggplot(aes(x = missing.trim.bin, fill = factor(peter.test), stat(count))) + 
+%   geom_density(na.rm = T, position = "fill") + 
+%   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
+% @
+% \caption{Fraction of added studies for small study effect correction by trim and fill and the corresponding small study effect test decision (based on 5\% significance level) of Peters test and dichotomous outcomes}
+% \label{trimfill.pvalues.bin}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+% meta.cont %>% filter(missing.trim.cont < 0.5) %>% 
+%   ggplot(aes(x = missing.trim.cont, fill = factor(thomson.test), stat(count))) + 
+%   geom_density(na.rm = T, position = "fill") + 
+%   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
+% @
+% \caption{Fraction of added studies for small study effect correction by trim and fill and the corresponding small study effect test decision (based on 5\% significance level) of Thomson and Sharp's test and continuous outcomes}
+% \label{trimfill.pvalues.cont}
+% \end{figure}
+% 
+% 
+% \subsection{Small Study Effect Correction}
+% Multiple methods are available to correct for the effects of small study effects in order to get an unbiased estimate. Three of them will be applied to the meta-analyses shown previously that have ten or more study results and are therefore eligible for testing for publication bias. 
+% 
+% \vspace{0mm}
+% The extent to what the results of the meta-analysis results are changed can be investigated. Because statistical significance is often used to decide if there is a treatment effect, a non-significant corrected effect size estimate can indicate that an observed treatment effect has been accepted because of small study effects. Therefore, the cases have been counted in which 
+% \begin{enumerate}
+% \item Significance or non-significance of pooled estimate of meta-analysis did not change after correction for small study effects.
+% \item Significance of pooled estimate of meta-analysis did change to non-significance after correction for small study effects.
+% \item Non-significance of pooled estimate of meta-analysis did change to significance after correction for small study effects.
+% \end{enumerate}
+% 
+% The results of this can be seen in Figure \ref{significance.change.fixed} for all three methods, comparing the significance of the corrected pooled effect size estimate with the significance of the pooled effect size estimate of the fixed effects meta-analysis. The same for significance of random effects meta-analysis is shown in Figure \ref{significance.change.random}. The significance threshold was chosen such that the $p$-value had to be < 0.05 for rejection of the null hypothesis of no treatment effect. The correction methods were trim-and-fill, copas selection model and regression with random effects and shrinkage of within-study-variance methods. More details to the applied correction methods and their application are in the methods section \ref{methods}. Notably, the correction methods has been applied to all meta-analyses, thus also for such that had no significant small study effect test result. 
+% 
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+  % plot(p.fixef.change)
+% @
+  % \caption{Change in signficance of fixed effects meta-analysis pooled estimate after correction.}
+% \label{significance.change.fixed}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+  % plot(p.ranef.change)
+% @
+  % \caption{Change in signficance of random effects meta-analysis pooled estimate after correction.}
+% \label{significance.change.random}
+% \end{figure}
+% 
+% Since it has been previously seen in Figure \ref{test.results} that the results of small study effects vary considerably between continuous outcomes, the results in significance change from fixed effects meta-analysis can be seen separately in Figure \ref{significance.change.fixed.sep} for continuous and binary outcomes. The change in significance from random effects meta-analysis to significance of corrected estimate can be seen in Figure \ref{significance.change.fixed.sep}
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+  % grid.arrange(p.change.fixef.bin, p.change.fixef.cont, ncol = 1)
+% @
+  % \caption{Change in signficance of fixed effects meta-analysis pooled estimate after correction, separated for continuous and binary outcomes.}
+% \label{significance.change.fixed.sep}
+% \end{figure}
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+  % grid.arrange(p.change.ranef.bin, p.change.ranef.cont, ncol = 1)
+% @
+  % \caption{Change in signficance of random effects meta-analysis pooled estimate after correction, separated for continuous and binary outcomes.}
+% \label{significance.change.random}
+% \end{figure}
+% 
+% Because the real amount of publication bias in the dataset is not known, the correction method can also be applied only to meta-analyses that have publication bias according to the small study effect tests in the previous section. Because the test developed by \citet{thomson.sharp} has been applied to both binary and continuous outcome meta-analyses (in the case of binary outcomes to arcsine variance stabilized proportions), it is used as a criterium to distinguish biased from unbiased meta-analyses. The proportions of significance tests of pooled treatment effects that turned from significant to non-significant, non-significant to significant etc. are shown in Figure \ref{significance.change.fixed.sep}. Fixed effects meta-analysis has been used to determine signficance of the uncorrected estimate.
+% 
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+  % grid.arrange(p.change.fixef.bias, p.change.fixef.unbias, ncol = 1)
+% @
+  % \caption{Change in signficance of random effects meta-analysis pooled estimate after correction, separated for continuous and binary outcomes.}
+% \label{significance.change.random}
+% \end{figure}
+% 
+% Similarly, the number of missing studies per meta-analysis, i.e. those which have not been included because of small study effects, are estimated by the copas and trim-and-fill method and their empirical distribution is shown in histograms in Figure \ref{missing.studies.distribution}. For visualisation, the fraction of unpublished studies from the total fraction of available studies is shown.
+% 
+% \begin{figure}
+% <<echo=FALSE, warning=FALSE>>=
+  % grid.arrange(p.missing.copas, p.missing.trim, ncol = 1)
+% @
+  % \caption{Fraction of missing studies estimated of the number of total studies included in the meta-analysis for copas selection and trim-and-fill method.}
+% \label{missing.studies.distribution}
+% \end{figure}
+% 
+% 
+% 
+% 
+% % # <<results = 'asis', Echo = FALSE>>=
+  % % # rejection.bin <- meta.bin %>% summarize(egger.rejection = mean(egger.test),
+  % % #                                             schwarzer.rejection = mean(schwarzer.test),
+  % % #                                             rucker.rejection = mean(rucker.test),
+  % % #                                             harbord.rejection = mean(harbord.test),
+  % % #                                             peter.rejection = mean(peter.test))
+  % % # print(xtable(rejection.bin), label = "bias.results", caption = "Cumulative number of groups with number of reproduction trials >= n", align = "llll", digits = 0), include.rownames = F, size = "footnotesize")
+  % % # @
+  % 
+% 
+% 
+% 
+% 
+% 
+% % 
+  % % For continuous outcomes, three tests are available: Eggers (based on linear regression), Thompson and Sharp (weighted linear regression) and Begg and Mazumdar (rank based) test. The following three figures show the distribution of p-values of the corresponding tests. Note that only meta analyses with more than 10 comparisons have been included. 
+% % 
+  % % \vspace{0mm}
+% % Since each histogram of p-values has 20 bins, the content of the bin with the smallest p-values is equal to the number of meta-analyses whose reporting bias test reports a p-value < 0.05. The fraction of those analyses in which we would reject the null-hypothesis based on the 5 \% threshold can therefore be assessed by eye, and would be for example for Eggers test somewhat less than one third of all analyses. 
+% % 
+  % % \begin{figure}
+% % <<echo=FALSE>>=
+  % % data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
+  % %   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
+  % %   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
+  % %   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  % %   mutate(n = n()) %>% filter(n > 9) %>% 
+  % %   summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+                                  % %                             method = "linreg")$p.val) %>% 
+  % %   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+  % %   theme_bw() + labs(title = "Eggers Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+% % @
+  % % \caption{Histogram of p-values for Eggers reporting bias test (linear regression based) for continuous outcome meta analysis.}
+% % \label{egger.cont}
+% % \end{figure}
+% % 
+  % % 
+  % % \begin{figure}
+% % <<echo=FALSE>>=
+  % % data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
+  % %   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
+  % %   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
+  % %   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  % %   mutate(n = n()) %>% filter(n > 9) %>% 
+  % %   summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+                                  % %                             method = "mm")$p.val) %>% 
+  % %   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+  % %   theme_bw() + labs(title = "Thomson Sharp Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+% % @
+  % % \caption{Histogram of p-values for Thompsom and Sharp reporting bias test (weighted linear regression based) for continuous outcome meta analysis.}
+% % \label{thomson.cont}
+% % \end{figure}
+% % 
+  % % \begin{figure}
+% % <<echo=FALSE>>=
+  % % data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
+  % %   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
+  % %   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
+  % %   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  % %   mutate(n = n()) %>% filter(n > 9) %>% 
+  % %   summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
+                                  % %                             method = "rank")$p.val) %>% 
+  % %   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+  % %   theme_bw() + labs(title = "Begg and Mazumdar Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+% % @
+  % % \caption{Histogram of p-values for Begg and Mazumdar reporting bias test (rank based) for continuous outcome meta analysis.}
+% % \label{begg.cont}
+% % \end{figure}
+% % 
+  % % 
+  % % For binary outcomes, Peters and Harbords reporting bias test have been chosen. Also here, only meta-analyses with more than 10 comparisons are included.
+% % 
+  % % \begin{figure}
+% % <<echo=FALSE>>=
+  % % data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
+  % %   filter(events1 > 0 | events2 > 0) %>% 
+  % %   filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
+  % %   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  % %   mutate(n = n()) %>% filter(n > 9) %>% 
+  % %   summarize(pval = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "peters")$p.val) %>% 
+  % %   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+  % %   theme_bw() + labs(title = "Peters Reporting Bias Test P-values for Binary Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+% % @
+  % % \caption{Histogram of p-values for Peters reporting bias test (rank based) for continuous outcome meta analysis.}
+% % \label{peters.bin}
+% % \end{figure}
+% % 
+  % % 
+  % % \begin{figure}
+% % <<echo=FALSE>>=
+  % % data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
+  % %   filter(events1 > 0 | events2 > 0) %>% 
+  % %   filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
+  % %   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
+  % %   mutate(n = n()) %>% filter(n > 9) %>% 
+  % %   summarize(pval = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "score")$p.val) %>% 
+  % %   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
+  % %   theme_bw() + labs(title = "Harbord Reporting Bias Test P-values for Binary Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
+% % @
+  % % \caption{Histogram of p-values for Harbord reporting bias test (rank based) for continuous outcome meta analysis.}
+% % \label{harbord.bin}
+% % \end{figure}
+% 
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %Chunck 1
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% % Since most of the times the study publication year is available for a given result, the fraction of significant treatment effects found is shown over time in Figure \ref{study.significance.overtime}. The $p$-value was chosen to be 0.05  only times where a reasonbly large number of effect estimates is available is shown in order to reduce random fluctuation ($n$ > 800). 
+% % 
+  % % \begin{figure}
+% % <<echo=FALSE, warning=FALSE>>=
+  % % data.ext %>% filter(!is.na(sig.type)) %>%  ggplot(aes(x = study.year, fill = factor(sig.type), stat(count))) + geom_density(na.rm = T, position = "fill") + 
+  % %   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))+ scale_x_continuous(limits = c(1970, 2017))
+% % @
+  % % \caption{Mean of the absolute value of the normalized effect size plotted against the total sample size.}
+% % \label{study.significance.overtime}
+% % \end{figure}
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %Chunck 2
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% % The separation of studies can also be made based on the significance of heterogeneity between them when pooling them by means of a meta-analysis. Significant heterogeneity between studies corresponds to a rejection of the null-hypothesis that all the study treatment effect estimates share the same underlying distribution. The test used to assess heterogeneity was based on the between-study heterogeneity estimate $Q$ estimated as \citet{tau.estimator} suggested. This is shown in Figure \ref{primary.secondary.significance.sep.sig}.
+% % 
+  % % \begin{figure}
+% % <<echo=FALSE, warning=FALSE>>=
+  % % grid.arrange(sig.meta.Q1, nonsig.meta.Q, ncol= 1)
+% % @
+  % % \caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis, separated by significance of study treatment effect estimate. The fractions have been calculated
+    % % by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
+% % \label{primary.secondary.significance.sep.sig}
+% % \end{figure}
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %Chunck 3
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% % A second way to analyse meta-analyses is a cumulative meta-analysis that should reveal shifts in treatment effect sizes over time. This can again be done for the entire dataset, i.e. for all effect estimates and their ordering in time. It is important to scale the effect estimates here with respect to the estimates of the replication studies that are about the same subject, have the same outcome measure, etc. Also, only effect estimates that can be compared to other estimates before are included, i.e. only study results with one or more replica are included. Time needs to be scaled and normalized in order to compare multiple time-trends in effect size to each other and gain insights in the overall trend. This is done in Figure \ref{effects.overtime.separated}, separared for odds rati, risk ratio, and mean and standardized difference outcome measures. In order to reduce the spread over time of effect sizes, only studies between 1970 and 2019 were included, as well as studies with a minimal group size of 12 participants (each group).
+% % 
+  % % \begin{figure}
+% % <<echo=FALSE>>=
+  % % data.ext %>% filter(outcome.measure.new == "Mean Difference" | outcome.measure.new == "Std. Mean Difference" | 
+                            % %                 outcome.measure.new == "Risk Ratio" | outcome.measure.new == "Odds Ratio") %>% 
+  % %   filter(total1 > 11 & total2 > 11) %>% filter(!is.na(study.year) & study.year > 1970 & study.year < 2019) %>% 
+  % %   group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 1) %>% 
+  % %   mutate(scaled.effect = abs(scale(effect)), scaled.time = scale(study.year)) %>% 
+  % %   ggplot(aes(x = scaled.time, y = scaled.effect)) + geom_point(size = .5, alpha = 0.2)  + facet_wrap(~outcome.measure.new) +
+  % %   geom_smooth() + theme_bw() +  ylab("absolute scaled effect")  + ylab("scaled time")
+% % @
+  % % \caption{Absolute values of scaled effect sizes over scaled time, separated for outcome measures.}
+% % \label{effects.overtime.separated}
+% % \end{figure}
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %Chunck 4
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% % The same plots can be shown separately for meta-analyses with significant and non-significant pooled effect sizes. This is done in Figure \ref{bias.results.cont.sep} for continuous outcomes and \ref{bias.results.bin.sep} for binary outcomes.
+% % 
+  % % \begin{figure}
+% % <<echo=FALSE, warning=FALSE>>=
+  % % grid.arrange(p3, p4, ncol = 2)
+% % @
+  % % \caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (continuous outcomes).}
+% % \label{bias.results.cont.sep}
+% % \end{figure}
+% % 
+  % % \begin{figure}
+% % <<echo=FALSE, warning=FALSE>>=
+  % % grid.arrange(p1, p2, ncol = 2)
+% % @
+  % % \caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (dichotomous outcomes).}
+% % \label{bias.results.bin.sep}
+% % \end{figure}
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %Chunck 5
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% % #Proportion of significant pooled estimates based on proportion of single pooled estimates
+  % % mly %>% filter(NA.sig.type == 0) %>% ggplot(aes(x = mean.sig.type)) + geom_histogram()
+% % 
+  % % mly %>% filter(NA.sig.type == 0) %>% ggplot(aes(x = mean.sig.type, fill = factor(sig.ranef), stat(count))) + 
+  % %   geom_density(na.rm = T, position = "fill") + 
+  % %   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
+% % 
+  % % mly %>% filter(NA.sig.type == 0) %>% ggplot(aes(x = mean.sig.type, fill = factor(sig.ranef), stat(count))) + 
+  % %   geom_histogram(position = "fill")
+% % 
+  % % mly %>% filter(NA.sig.type == 0) %>% ggplot(aes(x = mean.sig.type, fill = factor(sig.ranef))) + 
+  % %   geom_histogram()
+% 
+% % \begin{figure}
+% % <<echo=FALSE, warning=FALSE>>=
+  % % plot(p.secondary.over.meansig)
+% % @
+  % % \caption{Fraction of significant meta-analysis, dependent on the fraction of significant single results.}
+% % \label{secondary.significance.over.meansig}
+% % \end{figure}
+% 
+% 
+
+
+
+
+
+
+
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %Chunck 6
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% #Agreement proportions of publication bias tests:
+% 
+% #Binary:
+% meta.bin <- meta.bin %>%ungroup() %>%  mutate(tes.d.schwarzer = ifelse(tes.d.test == schwarzer.test, "agree", "disagree"),
+                                                %                                               tes.d.peter = ifelse(tes.d.test == peter.test, "agree", "disagree"),
+                                                %                                               tes.d.rucker = ifelse(tes.d.test == rucker.test, "agree", "disagree"),
+                                                %                                               tes.d.harbord = ifelse(tes.d.test == harbord.test, "agree", "disagree"),
+                                                %                                               schwarzer.peter = ifelse(schwarzer.test == peter.test, "agree", "disagree"),
+                                                %                                               schwarzer.rucker = ifelse(schwarzer.test == rucker.test, "agree", "disagree"),
+                                                %                                               schwarzer.harbord = ifelse(schwarzer.test == harbord.test, "agree", "disagree"),
+                                                %                                               rucker.peter = ifelse(rucker.test == peter.test, "agree", "disagree"),
+                                                %                                               rucker.harbord = ifelse(rucker.test == harbord.test, "agree", "disagree"),
+                                                %                                               harbord.peter = ifelse(harbord.test == peter.test, "agree", "disagree"))
+% agreement.bin <- meta.bin %>% ungroup() %>% summarise(tes.d.schwarzer = sum(tes.d.schwarzer == "agree")/n(),
+                                                        %                                                       tes.d.peter = sum(tes.d.peter == "agree")/n(),
+                                                        %                                                       tes.d.rucker = sum(tes.d.rucker == "agree")/n(),
+                                                        %                                                       tes.d.harbord = sum(tes.d.harbord == "agree")/n(),
+                                                        %                                                       schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
+                                                        %                                                       schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
+                                                        %                                                       schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
+                                                        %                                                       rucker.peter = sum(rucker.peter == "agree")/n(),
+                                                        %                                                       harbord.peter = sum(harbord.peter == "agree")/n())
+% correlation.bin <- meta.bin %>%ungroup() %>%  summarise(tes.d.schwarzer = cor(stat.d.tes, stat.schwarzer),
+                                                          %                                                         tes.d.peter = cor(stat.d.tes, stat.peter),
+                                                          %                                                         tes.d.rucker = cor(stat.d.tes, stat.rucker),
+                                                          %                                                         tes.d.harbord = cor(stat.d.tes, stat.harbord),
+                                                          %                                                         schwarzer.peter = cor(stat.schwarzer, stat.peter),
+                                                          %                                                         schwarzer.rucker = cor(stat.schwarzer, stat.rucker),
+                                                          %                                                         schwarzer.harbord = cor(stat.schwarzer, stat.harbord),
+                                                          %                                                         rucker.peter = cor(stat.rucker, stat.peter),
+                                                          %                                                         harbord.peter = cor(stat.harbord, stat.peter))
+% # rsquared.bin <- meta.bin %>%ungroup() %>%  summarise(tes.d.schwarzer = summary(lm(stat.d.tes~ stat.schwarzer))$r.squared,
+                                                         % #                                                         tes.d.peter = summary(lm(stat.d.tes~ stat.peter))$r.squared,
+                                                         % #                                                         tes.d.rucker = summary(lm(stat.d.tes~ stat.rucker))$r.squared,
+                                                         % #                                                         tes.d.harbord = summary(lm(stat.d.tes~ stat.harbord))$r.squared,
+                                                         % #                                                         schwarzer.peter = summary(lm(stat.schwarzer~ stat.peter))$r.squared,
+                                                         % #                                                         schwarzer.rucker = summary(lm(stat.schwarzer~ stat.rucker))$r.squared,
+                                                         % #                                                         schwarzer.harbord = summary(lm(stat.schwarzer~ stat.harbord))$r.squared,
+                                                         % #                                                         rucker.peter = summary(lm(stat.rucker~ stat.peter))$r.squared,
+                                                         % #                                                         harbord.peter = summary(lm(stat.harbord~ stat.peter))$r.squared)
+                                                         % meta.bin <- meta.bin %>%ungroup() %>%  mutate(tes.d.schwarzer = ifelse(tes.d.test + schwarzer.test > 1, "agree", "disagree"),
+                                                                                                         %                                               tes.d.peter = ifelse(tes.d.test + peter.test > 1, "agree", "disagree"),
+                                                                                                         %                                               tes.d.rucker = ifelse(tes.d.test + rucker.test > 1, "agree", "disagree"),
+                                                                                                         %                                               tes.d.harbord = ifelse(tes.d.test + harbord.test > 1, "agree", "disagree"),
+                                                                                                         %                                               schwarzer.peter = ifelse(schwarzer.test + peter.test > 1, "agree", "disagree"),
+                                                                                                         %                                               schwarzer.rucker = ifelse(schwarzer.test + rucker.test > 1, "agree", "disagree"),
+                                                                                                         %                                               schwarzer.harbord = ifelse(schwarzer.test + harbord.test > 1, "agree", "disagree"),
+                                                                                                         %                                               rucker.peter = ifelse(rucker.test + peter.test > 1, "agree", "disagree"),
+                                                                                                         %                                               rucker.harbord = ifelse(rucker.test + harbord.test > 1, "agree", "disagree"),
+                                                                                                         %                                               harbord.peter = ifelse(harbord.test + peter.test > 1, "agree", "disagree"))
+                                                         % agreement.bin <- meta.bin %>% ungroup() %>% summarise(tes.d.schwarzer = sum(tes.d.schwarzer == "agree")/sum(schwarzer.test),
+                                                                                                                 %                                                       tes.d.peter = sum(tes.d.peter == "agree")/sum(peter.test),
+                                                                                                                 %                                                       tes.d.rucker = sum(tes.d.rucker == "agree")/n(),
+                                                                                                                 %                                                       tes.d.harbord = sum(tes.d.harbord == "agree")/n(),
+                                                                                                                 %                                                       schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
+                                                                                                                 %                                                       schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
+                                                                                                                 %                                                       schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
+                                                                                                                 %                                                       rucker.peter = sum(rucker.peter == "agree")/n(),
+                                                                                                                 %                                                       harbord.peter = sum(harbord.peter == "agree")/n())
+                                                         % 
+                                                         % binary.tests.agreement <- rbind(agreement.bin, correlation.bin, rsquared.bin)
+                                                         % rownames(binary.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
+                                                         % colnames(binary.tests.agreement) <- c("Excess significance, Schwarzer", "Excess significance, Peter",
+                                                                                                 %                                       "Excess significance, Rucker", "Excess significance, Harbord",
+                                                                                                 %                                       "Peter, Schwarzer", "Schwarzer, Rucker", "Schwarzer, Harbord",
+                                                                                                 %                                       "Rucker, Peter", "Harbord, Peter")
+                                                         % #--------------------------------------------------------------------------------------------------------------------#
+                                                         % 
+                                                         % 
+                                                         % #Continuous:
+                                                         % meta.cont <- meta.cont %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
+                                                                                                           %                                                 thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
+                                                                                                           %                                                 egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
+                                                                                                           %                                                 tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
+                                                                                                           %                                                 thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
+                                                                                                           %                                                 tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
+                                                         % agreement.cont <- meta.cont %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
+                                                                                                                    %                                                          thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
+                                                                                                                    %                                                          tes.d.begg = sum(tes.d.begg == "agree")/n(),
+                                                                                                                    %                                                          thompson.egger = sum(thompson.egger == "agree")/n(),
+                                                                                                                    %                                                          thompson.begg = sum(thompson.begg == "agree")/n(),
+                                                                                                                    %                                                          egger.begg = sum(egger.begg == "agree")/n())
+                                                         % correlation.cont <- meta.cont %>% ungroup() %>% summarise(tes.d.egger = cor(stat.egger, stat.d.tes),
+                                                                                                                     %                                                           thompson.tes.d = cor(stat.thompson, stat.d.tes),
+                                                                                                                     %                                                           tes.d.begg = cor(stat.d.tes, stat.begg),
+                                                                                                                     %                                                           thompson.egger = cor(stat.thompson, stat.egger),
+                                                                                                                     %                                                           thompson.begg = cor(stat.thompson, stat.begg),
+                                                                                                                     %                                                           egger.begg = cor(stat.egger, stat.begg))
+                                                         % rsquared.cont <- meta.cont %>% ungroup() %>% summarise(tes.d.egger = summary(lm(stat.egger~ stat.d.tes))$r.squared,
+                                                                                                                  %                                                        thompson.tes.d = summary(lm(stat.thompson~ stat.d.tes))$r.squared,
+                                                                                                                  %                                                        tes.d.begg = summary(lm(stat.d.tes~ stat.begg))$r.squared,
+                                                                                                                  %                                                        thompson.egger = summary(lm(stat.thompson~ stat.egger))$r.squared,
+                                                                                                                  %                                                        thompson.begg = summary(lm(stat.thompson~ stat.begg))$r.squared,
+                                                                                                                  %                                                        egger.begg = summary(lm(stat.egger~ stat.begg))$r.squared)
+                                                         % agreement.sig.cont <- meta.cont %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/sum(egger.test),
+                                                                                                                        %                                                              thompson.tes.d = sum(thompson.tes.d == "agree")/sum(thompsom.test),
+                                                                                                                        %                                                              tes.d.begg = sum(tes.d.begg == "agree")/sum(begg.test),
+                                                                                                                        %                                                              thompson.egger = sum(thompson.egger == "agree")/sum(egger.test),
+                                                                                                                        %                                                              thompson.begg = sum(thompson.begg == "agree")/sum(thompson.test),
+                                                                                                                        %                                                              egger.begg = sum(egger.begg == "agree")/sum(egger.test))
+                                                         % 
+                                                         % 
+                                                         % 
+                                                         % cont.tests.agreement <- rbind(agreement.cont, correlation.cont, rsquared.cont)
+                                                         % rownames(cont.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
+                                                         % colnames(cont.tests.agreement) <- c( "Excess significance, Egger", "Excess significance, Thompson",
+                                                                                                %                                      "Excess significance, Begg","Thompson, Egger", "Thompson, Begg", "Egger, Begg")
+                                                         % 
+                                                         % #--------------------------------------------------------------------------------------------------------------------#
+                                                         % 
+                                                         % 
+                                                         % #Survival:
+                                                         % meta.surv <- meta.surv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
+                                                                                                           %                                                 thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
+                                                                                                           %                                                 egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
+                                                                                                           %                                                 tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
+                                                                                                           %                                                 thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
+                                                                                                           %                                                 tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
+                                                         % agreement.surv <- meta.surv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
+                                                                                                                    %                                                          thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
+                                                                                                                    %                                                          tes.d.begg = sum(tes.d.begg == "agree")/n(),
+                                                                                                                    %                                                          thompson.egger = sum(thompson.egger == "agree")/n(),
+                                                                                                                    %                                                          thompson.begg = sum(thompson.begg == "agree")/n(),
+                                                                                                                    %                                                          egger.begg = sum(egger.begg == "agree")/n())
+                                                         % correlation.surv <- meta.surv %>% ungroup() %>% summarise(tes.d.egger = cor(stat.egger, stat.d.tes),
+                                                                                                                     %                                                           thompson.tes.d = cor(stat.thompson, stat.d.tes),
+                                                                                                                     %                                                           tes.d.begg = cor(stat.d.tes, stat.begg),
+                                                                                                                     %                                                           thompson.egger = cor(stat.thompson, stat.egger),
+                                                                                                                     %                                                           thompson.begg = cor(stat.thompson, stat.begg),
+                                                                                                                     %                                                           egger.begg = cor(stat.egger, stat.begg))
+                                                         % # rsquared.surv <- meta.surv %>% ungroup() %>% summarise(tes.d.egger = summary(lm(stat.egger~ stat.d.tes))$r.squared,
+                                                                                                                    % #                                                           thompson.tes.d = summary(lm(stat.thompson~ stat.d.tes))$r.squared,
+                                                                                                                    % #                                                           tes.d.begg = summary(lm(stat.d.tes~ stat.begg))$r.squared,
+                                                                                                                    % #                                                           thompson.egger = summary(lm(stat.thompson~ stat.egger))$r.squared,
+                                                                                                                    % #                                                           thompson.begg = summary(lm(stat.thompson~ stat.begg))$r.squared,
+                                                                                                                    % #                                                           egger.begg = summary(lm(stat.egger~ stat.begg))$r.squared)
+                                                                                                                    % meta.surv <- meta.surv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test + egger.test > 1, "agree", "disagree"),
+                                                                                                                                                                      %                                                 thompson.begg = ifelse(thompson.test + begg.test > 1, "agree", "disagree"),
+                                                                                                                                                                      %                                                 egger.begg = ifelse(egger.test + begg.test > 1, "agree", "disagree"),
+                                                                                                                                                                      %                                                 tes.d.egger = ifelse(tes.d.test + egger.test > 1, "agree", "disagree"),
+                                                                                                                                                                      %                                                 thompson.tes.d = ifelse(thompson.test +tes.d.test > 1, "agree", "disagree"),
+                                                                                                                                                                      %                                                 tes.d.begg = ifelse(tes.d.test + begg.test > 1, "agree", "disagree"))
+                                                                                                                    % agreement.sig.surv <- meta.surv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/sum(tes.d.test),
+                                                                                                                                                                                   %                                                              thompson.tes.d = sum(thompson.tes.d == "agree")/sum(tes.d.test),
+                                                                                                                                                                                   %                                                              tes.d.begg = sum(tes.d.begg == "agree")/sum(tes.d.test),
+                                                                                                                                                                                   %                                                              thompson.egger = sum(thompson.egger == "agree")/sum(egger.test),
+                                                                                                                                                                                   %                                                              thompson.begg = sum(thompson.begg == "agree")/sum(thompson.test),
+                                                                                                                                                                                   %                                                              egger.begg = sum(egger.begg == "agree")/sum(egger.test))
+                                                                                                                    % 
+                                                                                                                    % surv.tests.agreement <- rbind(agreement.surv, correlation.surv, rsquared.surv)
+                                                                                                                    % rownames(surv.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
+                                                                                                                    % colnames(surv.tests.agreement) <- c("Excess significance, Egger (survival)", "Excess significance, Thompson (survival)",
+                                                                                                                                                          %                                     "Excess significance, Begg (survival)", "Thompson, Egger (survival)",
+                                                                                                                                                          %                                     "Thompson, Begg (survival)", "Egger, Begg (survival)")
+                                                                                                                    % 
+                                                                                                                    % #--------------------------------------------------------------------------------------------------------------------#
+                                                                                                                    % 
+                                                                                                                    % #Merging:
+                                                                                                                    % test.agreement <- rbind(t(binary.tests.agreement), t(cont.tests.agreement), t(surv.tests.agreement))
+                                                                                                                    % 
+                                                                                                                    % #--------------------------------------------------------------------------------------------------------------------#
+                                                                                                                    % 
+                                                                                                                    % 
+                                                                                                                    % 
+                                                                                                                    % 
+                                                                                                                    % The agreement/coinicidence between between small study effect and excess significance tests is often not pronounced, thus, it will be compared by different methods. The results of it are displayed in Table \ref{test.agreement}. \\
+                                                                                                                    % The row names indicate which two tests are compared. First, the column ``Test Agreement'' quantifies the overall proportion by which the two tests agree in their dichotomous classification of $p$-values with respect to the 0.1 threshold, i.e. rejection or ``acceptance'' of the null-hypothesis. A ``Test Agreement'' equal to one thus indicates equivalent results, zero no correspondence whatsoever. The second column, ``Correlation'' gives the correlation between the test statistics. A positive correlation indicates positive correlation of $p$-values, negative correlation correlation in opposite directions. Notably, for a high correlation, the scales must not be equal. The ``R-squared'' value indicates to what extent one test-statistic can be predicted by another, and ignores additive differences between $p$-values (as for correlation), as well as multiplicative constants between them (i.e. $y ~ a + b*x$, $y$ and $x$ being two test-statistics). An R-squared value of 1 indicates complete predictability. \\
+                                                                                                                    % %Importantly, the order of the variables does not matter for the test-statistics for all indicators (i.e. test-statistics for $x$ and $y$ can be exchanged and the table stays the same). If a test is completely replaceable by another, all values in a row are equal to one. \\
+                                                                                                                    % The analysis is again done separately for the outcome types. Overall, the test agreement is always above 0.62, and excluding survival outcomes, even above 0.79 (survival outcomes have only 39 test results, and thus more stochastic variation). Correlation ranges from near perfect (Thompson, Egger continuous, 0.91) to negative correlation (Excess significance, Thompson survival: -0.17). The R-squared values also indicate that some tests are similar, while others are not.
+                                                                                                                    % 
+                                                                                                                    % <<echo=FALSE, results='asis'>>=
+                                                                                                                      % print(xtable(test.agreement, align = "lccc", caption = "Agreement in significance proportion, correlation and R-squared of linear regression
+                                                                                                                                     %              between the p-values of the publication bias tests. Horizontal lines separate binary, continuous and survival outcomes (order as in table).",
+                                                                                                                                     %              label = "test.agreement"), hline = c(0,0,9, 15, 21), size = "footnotesize")
+                                                                                                                    % @
+                                                                                                                      % 
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % %Chunck 1
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % 
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % %Chunck 1
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % 
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % %Chunck 1
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % 
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % %Chunck 1
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % 
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % %Chunck 1
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                                                                                                    % 
+                                                                                                                    

@@ -888,7 +888,13 @@ test.agreement <- rbind(t(binary.tests.agreement), t(cont.tests.agreement), t(su
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Number of missing studies, according to copas:
-hist(meta.f$missing.copas / meta.f$n)
+
+
+hist(meta.f$missing.copas / meta.f$k)
+
+
+
+
 
 #--------------------------------------------------------------------------------------------------------------------#
 

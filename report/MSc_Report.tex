@@ -124,11 +124,11 @@
 
 Typically, we expect empirical scientific results to be distorted by random noise, such that the results are not equal to the real process that they describe. Additionally, one can reasonably assume that the results are also biased to some extent, as the statistical paradigm of precision versus bias would predict: The smaller the noise part of distortion, the more the result should be distorted by bias. However, the trade-off is not inevitable and can be minimized by scientific rigor and foresightfull experimental design. Large efforts have been made both in theory and practice to improve the quality of experiments and their analysis, such as defining experimental settings that prohibit influence of expectations of the researcher (e.g. blinding) or increase sample size in experiments. The introduction of randomized clinical trials is for example seen nowadays as a benchmark in clinical science, heavily improving the reliability of its findings. \\
 It is more and more considered a new scientific field by itself to think of and argue about circumstances that improve the quality of scientific findings. Statistics is in some sense predestined to contribute to it, because probability and chance concepts are key to understanding of any empirical science. \\
-There are also issues, in which statistics is not thought to be able to contribute much to understanding and to be of little help for solving them. For example, the selective attention that the agents in science are paying to new, strong and clear findings in each science is considered merely a psychological and social%, socioeconomic 
+There are also issues, in which statistics is not thought to be able to contribute much to understanding and to be of little help for solving them. For example, the selective attention that the agents in science are paying to new, strong and clear findings in each science is considered merely a psychological and social %, socioeconomic 
 issue. It is often explained by the affinity of humans for stories rather than mere facts and for novelties. The issue that scientific findings get more attention and are more likely to be published, read and cited is known for many years, but has gained new traction in meta science when the so-called reproducibility crisis emerged in (2003 to 2005). Studies such as ... showed that even rigid prosecution of study protocols did often not lead to reproduction of previous results when experiments were repeated, which struck empirical science in its core. Most reasonably, some concluded that it was a large misunderstanding of statistical tools such as the p-value in the scientific community that lead to this situation (...). Although that some measures have been taken since then, and some progress is made, the non-reproducibility of scientific findings remain an acute threat to the relevance and reliability of science. Some even argue that certain scientific fields sooner or later will repeat the experience that for example psychology or medicine have made, and are yet to encounter their own reproducibility crisis (...). \\
 Clearly, reproduction of experimental results is the gold standard of testing empirical science, because it reassures the universality and reliability by which certain procedures or effects appear if measured in the correct experimental context. However, there are also problems there. One can almost never fully exclude chance events to have played a major role in negating or reaffirming the experimental findings (which is of course always the case where noise is present in the data). Furthermore, reproduction studies are generally costly and the precise experimental conditions might be hard to reproduce because of lack of information or other reasons. \\
 There is another way to assess the strength of scientific results if the experiment has been conducted more than once (however not with exactly identical protocol as in reproduction studies): Meta-analyses. In a meta-analyses, results of multiple (fairly identical) experiments (studies) are summarized to a single result. Very often, meta-analyses are not only regarded to be a synthesis of results, but of evidence, thus reflecting the overall and summarized evidence regarding to a scientific question. It is on purpose that selective attention to positive, strong results in the scientific literature have been mentioned beforehand, because it is clear how they will affect this second way of reassurance of scientific findings: The meta-analysis will again lead to irreproducible findings if it is based on a set of results that is itself biased. Thus, meta-analysis will in this case not reach its purpose of assessing reliability of science, but worsen the problem by reinforcing the confidence in the overestimated over-optimistic effects. However, and this is the main topic in this masters thesis, there are some ways to detect irregularities in the body of results that can provide indirect hints that a selective rather than a random sample from a hypothetical population of experiments is present. The abundance of the methods to link some features of the sample of experiments to publication bias, as the tendency of scientific literature to over-proportionally include large effects is generally called, also speaks for the relevance of the topic. A review in 2017 (...) for example identified 147 (!) conceptually differing methods.\\
-This speaks as well for the inevitable difficulties that such methods encounter. First of all, it is most often impossible to estimate the real selection process, that is the rate by which smaller effects go unnoticed because of selective publication and reporting, because the number of missing results in the studies is not known at the first place and impossible to retrieve. Secondly, there is almost no real world data of complete and unbiased meta-analyses, such that evaluations of methods is dependent on simulations. So we have, after applying the methods, only indirect information of publication bias, and the extent to what it might influences scientific findings. Almost all the time, alternative explanations for the results of the methods might relieve the operators and publishers from the reproval of publication bias. However, given the large body of evidence for publication bias collected in other ways, those can probably be expelled most of the time, such that those methods indeed give a quantitative measure of publication bias. \\
+This speaks as well for the inevitable difficulties that such methods encounter. First of all, it is most often impossible to estimate the real selection process, that is the rate by which smaller effects go unnoticed because of selective publication and reporting, because the number of missing results in the studies is not known at the first place and impossible to retrieve. Secondly, there is almost no real world data of complete and unbiased meta-analyses, such that evaluations of methods is dependent on simulations. So we have, after applying the methods, only indirect information of publication bias, and the extent to what it might influences scientific findings. Almost all the time, alternative explanations for the results of the methods might relieve the operators and publishers from the reproval of publication bias. However, given the large body of evidence for publication bias collected from other sources (...), in many cases, the results from these methods indeed give a quantitative measure of publication bias.\\
 In this masters thesis, the answers for two questions are investigated: What is the extent and effect of publication bias in clinical science? For this purpose, a dataset from the Cochrane Organization is analysed with commonly used techniques to detect and adjust for publication bias (more precisely, small study effects, as it will be seen later). The discussion of the results of the analysis will result in the light of the literature to publication bias. 
 %Because the extent of the analysis that is operated here is, to my knowledge, unmatched so far, this dataset
 
@@ -236,7 +236,7 @@ In Table \ref{barbiturate.row}, two results from a systematic review about effec
 The comparison variable specifies \textit{what kind} of treatments or interventions are compared, the outcome variable \textit{how} it is compared, and the subgroup variable (not indicated in table) if the result belongs to a certain subgroup. Here, the result is of a binary type, so the counts of events in the barbiturate treatment group and the total number of participants are given in columns ``Events'' and ``Total'' and the number of events in the control group ``Events\_c'' and participants ``Total\_c''. A event is here death at the end of follow up.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jun 28 14:09:15 2019
+% Mon Jul  1 17:02:14 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -309,7 +309,7 @@ Results are part of studies that are again part of a (systematic) review. This s
     child [missing] {}		
     child { node {Comparison 1  }};
 \end{tikzpicture}
-\caption{Structure of a hypothetical review with two different comparisons\label{review.structure}}
+\caption{Structure of a hypothetical review with two different comparisons}
 \label{review.structure}
 \end{figure}
 
@@ -320,7 +320,7 @@ The review comprises five studies in total. Three of them compared barbiturate t
 We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. Thus, it is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jun 28 14:09:15 2019
+% Mon Jul  1 17:02:14 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -357,7 +357,7 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
 Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years. For continuous outcomes, the cases have been counted were no treatment effect and standard error is available: neither mean values and standard deviations, nor mean differences and standard error. Also Study years before 1920 and after 2019 are declared as missing, as well as sample sizes below zero.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jun 28 14:09:15 2019
+% Mon Jul  1 17:02:14 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -376,16 +376,16 @@ Missing mean values and mean differences & 984 \\
 \end{table}
 
 
-The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = 1983). The median of the publication years is 2003, the mean 2001.03 and the quartiles are 1996 and 2008. Only a handful ($n = 18$) have been published in 2018, none in 2019. \\
+The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = 1982, 95\% quantile = 2013,). The median of the publication years is 2003, the mean 2001 and the quartiles are 1996 and 2008. Only a handful ($n = 18$) have been published in 2018, none in 2019. \\
 %No information is available concerning unpublished results and studies.
 The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.) abundances are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 30 \% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (> 65\%).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jun 28 14:09:15 2019
+% Mon Jul  1 17:02:14 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
-\begin{tabular}{lll}
+\begin{tabular}{lrr}
   \hline
 Outcome measure & n & Percentage \\ 
   \hline
@@ -408,18 +408,18 @@ Risk Ratio & 232583 & 50.1\% \\
 
 
 
-The sample sizes among results vary to some extent. There are 5\% of treatment group sample sizes that are smaller than 8, the 5\% quantile. The first quartile is 22, the median 48, the mean 302.03 and the third quartile 119. The large difference between median and mean is caused by very large groups with over 2,000,000 participants. Analogously, the quantiles of the total sample size are: 5\% quantile = 15, first quartile = 44, median = 94 and third quartile = 229. The mean is 617.81. \\
-The mean and median number of results per review are 12.42 and 7. There are 417 reviews with five or fewer results, and the quartiles are 16 and 102. Similarly, the number of reviews with a maximum of two studies included is 836, the mean study number is 12.42, the median 7 and the interquartile range 4 and 15. The discrepancy between mean and median is due to large reviews with a high number of studies and results, most extreme in \citet{largest.review} which is a systematic review about antibiotic prophylaxis for preventing infection after cesarean section, with 95 studies and 1497 results in total. \\
-For results to be suitable for usage in meta-analysis, they have to be identical with respect to comparison and outcome. More specifically, the studies in the dataset that have the same comparison, outcome and subgroup can be pooled in a meta-analysis, since their research subject and experimental setup can be considered sufficiently homogeneous. Importantly, this distinction is also used by the Cochrane Organization itself, i.e. the meta-analyses are identical to the meta-analyses done in the systematic reviews.\\%Another approach that is not made here is to analyze all subgroups together, which is possible if enough studies are given.
+The sample sizes among results vary to some extent. There are 5\% of treatment group sample sizes that are smaller than 8, the 5\% quantile and 95\% smaller than 551. The first quartile is 22, the median 48, the mean 302.03 and the third quartile 119. The large difference between median and mean is caused by very large groups with over 2,000,000 participants. Analogously, the quantiles of the total sample size are: 5\% quantile = 15, first quartile = 44, median = 94, third quartile = 229 and 95\% = 1044. The mean is 617.81. \\
+The mean and median number of results per review are 12.42 and 7. There are 417 reviews with five or fewer results, and the quartiles are 16 and 102. Similarly, the number of reviews with a maximum of two studies included is 836, the mean study number is 12.42, the median 7 and the interquartile range 4 and 15 and the 95\% quantile 40. The discrepancy between mean and median is due to large reviews with a high number of studies and results, most extreme in \citet{largest.review} which is a systematic review about antibiotic prophylaxis for preventing infection after cesarean section, with 95 studies and 1497 results in total.\\
+For results to be suitable for usage in meta-analysis, they have to be identical with respect to comparison and outcome. More specifically, the studies in the dataset that have the same comparison, outcome and subgroup can be pooled in a meta-analysis, since their research subject and experimental setup can be considered sufficiently homogeneous. Importantly, this distinction is also used by the Cochrane Organization itself, i.e. the meta-analyses are identical to the meta-analyses done in the systematic reviews.\\ %Another approach that is not made here is to analyze all subgroups together, which is possible if enough studies are given.
 The dataset is divided in meta-analyses with identical experimental setup. The size of a meta-analysis denotes how many results are included in a group.
-Table \ref{repr.groups} shows the number of meta-analysis with size $\geq n$ results. Practically, this number of meta analyses can be performed, with each having at least $n$ results:
+Table \ref{repr.groups} shows the number of meta-analysis with size $\geq n$ results. Practically, this number of meta analyses can be performed, with each having at least $n$ results.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jun 28 14:09:15 2019
+% Mon Jul  1 17:02:14 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
-\begin{tabular}{lll}
+\begin{tabular}{lrr}
   \hline
 n & Number of groups & Cumulative sum of groups \\ 
   \hline
@@ -441,7 +441,7 @@ n & Number of groups & Cumulative sum of groups \\
    \hline
 \end{tabular}
 \endgroup
-\caption{Cumulative number of groups with number of reproduction trials >= n} 
+\caption{Cumulative number of groups with number of reproduction trials $\geq$ n} 
 \label{repr.groups}
 \end{table}
 
@@ -581,15 +581,17 @@ The dataset that was ultimately tested and adjusted for publication bias compris
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Small Study Effect and Excess of Singificance Tests}
+\section{Small Study Effect and Excess of Significance Tests} \label{sec:publication.bias.tests}
 
 
-The meta-analyses fullfilling the criteria from chapter \ref{ch:dataset}, section \ref{sec:Processing}, are analysed with small study effects tests and excess significance tests. The $p$-values for all meta-analyses can be displayed in histograms. Because the tests are methodologically different, the results of each testing method is displayed separately. Furthermore, the outcome types (as defined previously by the variable \texttt{outcome.type}) are also kept separated.\\
-The histograms in Figure \ref{fig:test} show that the distributions are (with the exception of Schwarzer's test) skewed to the right for all outcome types, indicating evidence for small study effects and excess significance. Moreover, the excess significance tests have a mode around $p = 0.4$. The large differences between small study effect tests for binary and continuous outcomes will be subject to discussion.\\
-``Excess significance'' denotes the excess of significance $p$-values from the test of \citet{excess.significance}, see \ref{sex:excess.significance}. For continuous and survival outcomes, the names refer to: 
+
+
+The meta-analyses fulfilling the criteria from chapter \ref{ch:dataset}, section \ref{sec:Processing}, are analysed with small study effects tests and excess significance tests. We will apply the tests on the original effect size measures, i.e. risk ratios, Hedges $g$ or log hazard ratios. Different tests are applied depending on if the outcomes are of type binary or continuous or survival.\\
+Thus, we apply multiple tests on the same data. The results can then be displayed separately to compare the different tests. A histogram of $p$-values will summarize the overall evidence against the null-hypothesis of no publication bias, as displayed in Figure \ref{fig:test}. \\
+``Excess significance'' denotes the excess of significant $p$-values testing method from \citet{excess.significance}, see \ref{sec:excess.significance}. For continuous and survival outcomes, the names refer to: 
 
 \begin{itemize}
-\item Egger's test, the weigthed linear regression test as described in section \ref{sec:Egger}
+\item Egger's test, the weighted linear regression test as described in section \ref{sec:Egger}
 \item Thompson and Sharp's test, the weighted linear regression test adjusted for between-study heterogeneity, section \ref{sec:Thompson}
 \item Begg and Mazumdar's test, the rank test described in section \ref{sec:Begg}
 \end{itemize}
@@ -613,14 +615,13 @@ For binary outcomes, the names refer to:
 
 
 \end{knitrout}
-\caption{Histogram of the $p$-values for small study effect in meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+\caption{Histogram of the $p$-values for small study effect in meta-analyses. The testing method is indicated in the header, bin width is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
 \label{fig:test}
 \end{figure}
 
 %Agreement table -> Chunck 1
-
-It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects/excess significance for the same meta-analyses. Especially between small study effects and excess significance tests, we expect some disagreement between tests. A simple method to check the coincidence of test results is to compare scatterplots and empirical spearman correlations between test statistics. This is done in Figure \ref{fig:test.agreement}. \\
-Here, there is no separation between survival and continuous outcomes. The upper left rectangle is displaying binary outcomes and the lower right about continuous and survival outcomes.
+The histograms in Figure \ref{fig:test} show that the distributions are (with the exception of Schwarzer's test) skewed to the right for all outcome types, indicating evidence for small study effects and excess significance, respectively. Moreover, the excess significance tests have a mode around $p = 0.4$. There is some discrepancy between continuous and binary data test results; the evidence for small study effects in continuous data is clearly larger. Survival outcome type results are quite different with very few evidence for small study effects and excess significance. Note that the sample size of survival outcomes is small ($n$ = 39).\\
+It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects/excess significance for the same meta-analyses. A simple method to check the coincidence of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between survival and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and survival outcomes results.
 
 \begin{figure}
 \begin{knitrout}
@@ -633,28 +634,28 @@ Here, there is no separation between survival and continuous outcomes. The upper
 
 
 \end{knitrout}
-\caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colours indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.96.}
+\caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots outside are statistically significant using the 0.1 threshold).}
 \label{fig:test.agreement}
 \end{figure}
 
-The observed patterns on the scatterplots differ: Excess significance and small study effect test statistics do usually not align with each other, forming rather randomly scattered bulks of points. Regression based tests as Egger and Thompson which are methodically almost identical are closely aligned, which is also reflected in large correlation coefficients. In general, small study effect tests align, but the extent to which they align differs. Harbord's test statistic has similar correlation coefficients with all other small study effect test statistics for binary outcomes, while the correlation coefficients between them is varying.\\
-Because scatterplots and correlation coefficients can be missleading, also a Tukey mean-difference or Bland-Altmann plot is shown for three scenarios in Figure \ref{fig:mean.diff.test}:
+The observed patterns on the scatterplots differ: Excess significance and small study effect test statistics do usually not align with each other, forming rather randomly scattered bulks of points. Regression based tests as Egger and Thompson which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. In general, small study effect tests align on the diagonal, but the extent to which they align differs. Continuous and survival outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics .\\
+Because scatterplots and correlation coefficients can be misleading, also a Tukey mean-difference or Bland-Altman of transformed $p$-values plot is shown for four scenarios in Figure \ref{fig:mean.diff.test}:
 \begin{itemize}
 \item For Egger's and Thompson's tests, which is supposedly the most similar test and should show the least deviations and systematic errors
-\item For Harbord's and Rucker's tests
+\item For Egger's and excess significance tests
+\item For Harbord's and R\"ucker's tests
 \item For Harbord's and excess significance tests
 \end{itemize}
 
-This can be justified since all tests are supposed to measure the evidence for publication bias. For the plots, the $p$-values of the tests are transformed on the entire continuous scale by a logit transformation. The mean $p$-value ((logit($p$-value 1) + logit($p$-value 2))/2) is then displayed against the differnec between the $p$-value. If no systematic errors and biases exist between the measurement methods, then 
+This can be justified since all tests are supposed to measure the evidence for publication bias. For the plots, the $p$-values of the tests are transformed on the entire continuous scale by a logit transformation $f(x)  = \log\frac{p}{1-p}$). The mean $p$-value (($f$($p$-value no. 1) + $f$($p$-value no. 2))/2) is then displayed against the difference between the $f$($p$-value). If no systematic errors and biases exist between the measurement methods, then 
 
 \begin{itemize}
-\item the mean of the differences (systematic error) should be around zero
-\item the points should scatter independent of the mean of the $p$-values
+\item the mean of the differences should be around zero (systematic error) 
+\item the points should scatter independently on the $y$-axis and no general increase or decrease with the mean of the transformed $p$-values should be visible
 \end{itemize}
 
-The last criterium seems not to be given when comparing Harbords and Excess significance tests. 
--- In the appendix, it can be seen that this is reproducible with the remainig small study effect tests (not there yet) -- 
-With decreasing mean, the difference gets more negative, and vice versa, such that one would predict that the excess significance $p$-values are more ``extreme'' in both directions. This finding suggests that correspondence between the tests is poor. The confidence intervals can be used as limits of agreement, which gives, after back-transformation, around 0.9 for Egger and Thompson test, and around 0.99 for Harbord and Rucker.
+Although this is not formally tested, the last criterium seems not to be given when comparing small study effect and excess significance tests. With decreasing mean, the difference gets more negative, and vice versa, such that one would predict that the excess significance $p$-values are more ``extreme'' in both directions. -- In the appendix, it can be seen that this is reproducible with the remaining small study effect tests (not there yet) -- However, the systematic error between the compared tests is close to zero, and small study effect tests do probably not show bias when compared to each other. \\
+The confidence intervals can be used as limits of agreement, which gives, after back-transformation, around 0.9 for Egger's and Thompson's test, and around 0.99 for Harbord's and R\"ucker's tests. This suggests that correspondence between the tests is not very good in general. 
 
 \begin{figure}
 \begin{knitrout}
@@ -674,7 +675,7 @@ With decreasing mean, the difference gets more negative, and vice versa, such th
 The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. We expect that some proportion of the meta-analysis will only be significant for a certain test, and this is indeed observed in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jun 28 16:35:30 2019
+% Mon Jul  1 17:11:00 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -682,12 +683,12 @@ The previous results suggest that the results will also differ substantially aft
   \hline
 Count & Binary Outcomes & Continuous and Survival \\ 
   \hline
-  0 & 65.9 \% & 68.4 \% \\ 
-    1 & 16.4 \% & 9.6 \% \\ 
-    2 & 8.6 \% & 9.1 \% \\ 
-    3 & 5.6 \% & 10.6 \% \\ 
-    4 & 2.9 \% & 2.3 \% \\ 
-    5 & 0.6 \% & NA \% \\ 
+0 & 66.1 \% & 72.5 \% \\ 
+  1 & 16.1 \% & 7.5 \% \\ 
+  2 & 8.8 \% & 8 \% \\ 
+  3 & 5.7 \% & 10.5 \% \\ 
+  4 & 3 \% & 1.5 \% \\ 
+  5 & 0.4 \% & - \\ 
    \hline
 \end{tabular}
 \endgroup
@@ -698,9 +699,10 @@ Count & Binary Outcomes & Continuous and Survival \\
 \end{table}
 
 
-When only looking at small study effect tests, 29.1\% of binary outcome tests and 26.5\% of survival and continuous outcome tests had at least one significant result. After applying the bonferroni correction for multiple testing, this shrinks to 10.9\& for binary and 12.1\% for continuous and survival outcomes. \\
-When comparing significant findings for small study effect tests and excess significance tests, we will only do so with Harbord's or Egger's test. 22.4\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, 28\% for continuous and survival outcomes. Again, the numbers change to 13.3\% for binary outcomes and 17.2\% for continuous and survival outcomes after applying the bonferroni correction. \\
-3\% have significant Harbord's test result and significant excesss significance test result  (1.1\% with bonferroni). Of the continuous outcomes, we have 6.1\% with Egger's test and 1.8\% with Bonferroni correction. 
+Here, it is difficult to say if continuous and survival or binary outcome types show better agreement, since more tests are applied in the binary case, and the continuous and survival outcome type tests have in general more positive findings. Very few meta-analyses are significant, irrespective of the test used, but around 67\% of the dataset is not significant, no matter which test is used. \\
+When only looking at small study effect tests, 29.1\% of binary outcome tests and 26.2\% of survival and continuous outcome tests had at least one significant result. This also suggests that the overlap between small study effect tests and excess significance is small. After applying the Bonferroni correction for multiple testing, this shrinks to 10.9\% for binary and 12.1\% for continuous and survival outcomes. \\
+To compare significant findings for small study effect tests and excess significance tests, we limit ourselves to comparison with Harbord's or Egger's test. 22.4\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, 23.4\% for continuous and survival outcomes. The numbers change to 13.4\% for binary outcomes and 13.4\% for continuous and survival outcomes after applying the Bonferroni correction. \\
+2.7\% have significant Harbord's test result and significant excess significance test result  (1.1\% with Bonferroni). Of the continuous outcomes, we have 3.3\% with Egger's test and 0.8\% with Bonferroni correction. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -711,13 +713,19 @@ When comparing significant findings for small study effect tests and excess sign
 \section{Small Study Effects Adjustment}
 
 
-\subsection{Change in Effect Size after Adjustment}
+\subsection{Change in Effect Size after Adjustment} \label{sec:change.size}
 
-There are two possibilities when adjusting the pooled treatment effect of meta-analyses for publication bias. The absolute size of the treatment effect can be smaller, or larger after adjustment. Additionally, it is of interest by how much the treatment effect is diminishued or increased. \\
-Figure \ref{fig:adjustment.size} displays the difference between the meta-analysis pooled treatment effect $\theta_M$ and the adjusted treatment effect $\theta_\textrm{Adj.}$ for the copas and regression adjustment methods and fixed and random effects meta-analysis. The treatment effects are mirrored on the positive side, such that a positive difference indicates that the effect size was smaller after adjustment (and analogously, larger if the difference is negative). For better illustration, some very large and very small differences have been ommitted in the $z$-score and Hedges $g$ histogramms; the missing differences are provided in Table \ref{missing.differences}. Additionally to the histogramms, Table \ref{adjustment.difference} shows the quantiles and means for the various differences.\\
-Copas estimates are equal to random effect in 1331 for $z$-score based analysis, 1144 for Hedges $g$ based analysis (and 1056 for analysis based on original effect measures). \\
-We see in Figure \ref{fig:adjustment.size} that bot reduction and amplification of original effect size occurs frequently. Nevertheless, there are more adjustments towards smaller effects for $z$-scores and Hedges $g$, regardless of the reference meta-analysis method. Survival outcomes, and $z$-scores meta-analyses and copas adjustment differences are exception to this. The larger proportion of reduction is mostly also reflected in the means and medians in Table \ref{adjustment.difference}. They are mostly around zero or larger, although not to a large extent. There is more extensive downward correction of effect sizes if random effects meta-analysis is used as the reference. 
+Since there's evidence for publication bias when applying small study effect and excess significance tests, we apply small study effect adjustment methods to correct for small study effect tests. \\
+We will see that consequences of adjustment can be; 
+\begin{itemize}
+\item first, the absolute size of the treatment effect can be smaller than the classical meta-analysis treatment effect, which is expected if publication bias
+is the cause for the small study effect.
+\item secondly, the effect can be larger than before in meta-analysis. In this case, the small study effect must be not due to publication bias for large effects (``true'' publication bias), but due to bias for small effects (``negative publication bias'').
+\end{itemize}
 
+In section \ref{sec:comparison.tests.adjustment}, it will be followed up on the latter point. For now, we will examine the extent and the frequencies of the two scenarios. \\
+To compare the effects of adjustment between meta-analyses, the outcome measures are transformed to Hedges $g$ (standardized mean differences) and Fisher's $z$-score (see section \ref{sec:transformation.effectsizes} for details). The effect of adjustment can additionally be compared to either random or fixed effects meta-analysis. \\
+Figure \ref{fig:adjustment.size} displays the difference $\delta$ between the observed meta-analysis pooled treatment effect and the adjusted treatment effect, $\hat{\theta}_M - \hat{\theta}_\textrm{Adj.}$. The absolute value $|\hat{\theta}_M|$ is taken and the sign of $\hat{\theta}_\textrm{Adj.}$ is adjusted accordingly such that all effects are mirrored to one side. $\delta > 0$ is equivalent to $\hat{\theta}_\textrm{Adj} < \hat{\theta}_M$, a reduction of the original effect size. For better illustration, some very large and very small differences have been omitted in the $z$-score and Hedges $g$ histograms; they are shown in Table \ref{missing.differences}. Table \ref{adjustment.difference} shows the quantiles and means for the various differences and additional information.\\
 
 \begin{figure}
 \begin{knitrout}
@@ -734,81 +742,70 @@ We see in Figure \ref{fig:adjustment.size} that bot reduction and amplification 
 \label{fig:adjustment.size}
 \end{figure}
 
-
-
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jun 28 16:35:32 2019
-\begin{table}[ht]
-\centering
-\begingroup\tiny
-\begin{tabular}{lcccrrrrrrrr}
-  \hline
-meta.id & file.nr & comparison.nr & subgroup.nr & z fixed & z random & z Copas & z regression & g fixed & g random & g Copas & g regression \\ 
-  \hline
-2009 & 2009 & 1 & 1 & 0.31 & 0.36 & 0.31 & 0.43 & 0.70 & 0.70 & 0.70 & 2.48 \\ 
-  2068 & 2068 & 2 & 0 & 0.29 & 0.35 & 0.29 & 0.43 & 0.68 & 0.68 & 0.68 & 2.57 \\ 
-  18658 & 18658 & 2 & 0 & 1.16 & 1.14 & 1.16 & 1.17 & 1.40 & 2.85 & 1.40 & 1.74 \\ 
-  46472 & 46472 & 1 & 1 & 1.79 & 1.44 & 1.79 & 0.66 & 0.12 & 6.97 & 6.97 & 0.79 \\ 
-  52528 & 52528 & 1 & 0 & -0.75 & -0.69 & -0.50 & -0.26 & -1.19 & -1.53 & 0.18 & -0.52 \\ 
-  60546 & 60546 & 1 & 1 & 0.17 & 0.24 & 0.17 & 0.34 & 0.53 & 0.53 & 0.53 & 1.65 \\ 
-  70389 & 70389 & 1 & 1 & -0.08 & -0.07 & 15.58 & -0.04 & -0.13 & -0.13 & -0.13 & -0.05 \\ 
-  73769 & 73769 & 3 & 1 & -0.14 & 0.00 & 214760.42 & -0.04 & -0.01 & -0.12 & 0.01 & 0.04 \\ 
-  79113 & 79113 & 2 & 0 & -0.38 & -0.38 & -0.38 & -0.48 & -0.93 & -0.93 & -2.00 & -3.47 \\ 
-  90138 & 90138 & 3 & 0 & 0.31 & 0.80 & 0.31 & 0.55 & 0.72 & 0.71 & 0.71 & 2.16 \\ 
-  97356 & 97356 & 2 & 0 & -0.08 & -0.33 & -0.08 & -0.17 & -0.42 & -0.35 & -1.58 & -1.82 \\ 
-  98030 & 98030 & 1 & 0 & -0.09 & -0.07 & -0.09 & -0.04 & -0.41 & -0.41 & -1.50 & -2.79 \\ 
-  101436 & 101436 & 1 & 5 & 0.54 & 0.62 & 0.80 & 0.91 & 1.21 & 1.21 & 1.21 & 2.74 \\ 
-  118121 & 118121 & 4 & 1 & 0.25 & 0.23 & 71.80 & -0.03 & 0.44 & 0.44 & 0.44 & 0.14 \\ 
-  119537 & 119537 & 3 & 0 & 0.07 & 0.15 & 0.07 & 0.29 & 0.50 & 0.50 & 1.43 & 1.81 \\ 
-  119818 & 119818 & 3 & 3 & -0.25 & -0.25 & -0.11 & -0.04 & -0.50 & -0.54 & 28.44 & -0.03 \\ 
-  146301 & 146301 & 1 & 0 & 0.14 & 0.26 & 498188.34 & 0.28 & 0.56 & 0.37 & 0.60 & 0.52 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Missing meta-analysis pooled treatment effect and adjusted treatment effects
-             of Figure ef{fig:adjustment.size}. Abbreviations are used for z-score (z) and Hedges g (g)} 
-\label{missing.differences}
-\end{table}
-
-
-
-
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jun 28 16:35:32 2019
+% Mon Jul  1 17:11:03 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
-\begin{tabular}{lcccccc}
+\begin{tabular}{lcccccccccr}
   \hline
- & 5\% & 25\% & 50\% & 75\% & 95\% & mean \\ 
+ & 5\% & 25\% & 50\% & 75\% & 95\% & mean & = 0 (\%) & $>$= 0 (\%) & $>$ 0 (\%) & No adj. est. (\%) \\ 
   \hline
-z-score: Fixed - Copas & -0.05 & -0.01 & -0.00 & 0.01 & 0.05 & -402.37 \\ 
-  z-score: Random - Copas & -0.01 & 0.00 & 0.00 & 0.00 & 0.04 & -159.98 \\ 
-  z-score: Fixed - Regression & -0.13 & -0.04 & 0.01 & 0.05 & 0.15 & 0.01 \\ 
-  z-score: Random - Regression & -0.16 & -0.03 & 0.02 & 0.07 & 0.18 & 0.02 \\ 
-  Hedges g: Fixed - Copas & -0.05 & -0.01 & 0.00 & 0.01 & 0.09 & 0.02 \\ 
-  Hedges g: Random - Copas & -0.00 & 0.00 & 0.00 & 0.00 & 0.14 & 0.04 \\ 
-  Hedges g: Fixed - Regression & -0.24 & -0.04 & 0.04 & 0.13 & 0.39 & 0.05 \\ 
-  Hedges g: Random - Regression & -0.23 & -0.03 & 0.05 & 0.17 & 0.43 & 0.07 \\ 
-  Log hazard ratio: Fixed - Copas & -0.03 & 0.00 & 0.00 & 0.00 & 0.02 & -0.01 \\ 
-  Log hazard ratio: Random - Copas & -0.03 & 0.00 & 0.00 & 0.00 & 0.00 & -0.01 \\ 
-  Log hazard ratio: Fixed - Regression & -0.21 & -0.14 & -0.07 & 0.01 & 0.15 & -0.06 \\ 
-  Log hazard ratio: Random - Regression & -0.23 & -0.15 & -0.07 & 0.03 & 0.15 & -0.06 \\ 
+z: Fixed - Copas & -0.05 & -0.01 & -0.00 & 0.01 & 0.05 & -271.73 & 4.76 & 48.67 & 43.91 & 71.54 \\ 
+  z: Random - Copas & -0.00 & 0.00 & 0.00 & 0.00 & 0.04 & -263.62 & 71.65 & 89.42 & 17.77 & 71.54 \\ 
+  z: Fixed - Regression & -0.13 & -0.03 & 0.01 & 0.05 & 0.14 & 0.01 & 0.00 & 52.44 & 52.44 & 0.17 \\ 
+  z: Random - Regression & -0.15 & -0.03 & 0.02 & 0.07 & 0.18 & 0.02 & 0.00 & 57.64 & 57.64 & 0.17 \\ 
+  g: Fixed - Copas & -0.05 & -0.01 & 0.00 & 0.01 & 0.09 & 0.02 & 22.76 & 59.14 & 36.38 & 60.96 \\ 
+  g: Random - Copas & -0.00 & 0.00 & 0.00 & 0.00 & 0.14 & 0.03 & 63.29 & 87.49 & 24.20 & 60.96 \\ 
+  g: Fixed - Regression & -0.23 & -0.04 & 0.03 & 0.13 & 0.38 & 0.05 & 0.00 & 61.96 & 61.96 & 0.00 \\ 
+  g: Random - Regression & -0.24 & -0.03 & 0.05 & 0.16 & 0.42 & 0.06 & 0.00 & 64.06 & 64.06 & 0.00 \\ 
+  Log h.r.: Fixed - Copas & -0.02 & 0.00 & 0.00 & 0.00 & 0.02 & -0.00 & 46.15 & 35.90 & 82.05 & 56.41 \\ 
+  Log h.r.: Random - Copas & -0.02 & 0.00 & 0.00 & 0.00 & 0.00 & -0.01 & 61.54 & 17.95 & 79.49 & 56.41 \\ 
+  Log h.r.: Fixed - Regression & -0.20 & -0.13 & -0.06 & 0.02 & 0.14 & -0.05 & 0.00 & 33.33 & 33.33 & 0.00 \\ 
+  Log h.r.: Random - Regression & -0.22 & -0.14 & -0.07 & 0.03 & 0.14 & -0.06 & 0.00 & 33.33 & 33.33 & 0.00 \\ 
    \hline
 \end{tabular}
 \endgroup
-\caption{Quantiles and Means of the differences between meta-analysis pooled treatment effects and small study adjusted treatment effects. The row names indicate which outcome measure, meta-analysis and adjustment method is used} 
+\caption{Quantiles and Means of the differences between meta-analysis pooled treatment effects and small study adjusted treatment effects. The column with the names ``> 0'' give the percentages of estimates larger than zero or larger or equal zero. The column ``No adj. est.'' gives the percentage of missing estimates due to non-significant publication bias test (for Copas) and computational errors. The row names indicate which outcome measure, meta-analysis method and adjustment method is used. Abbreviations are used for z-score (= z) and Hedges g (= g).} 
 \label{adjustment.difference}
 \end{table}
 
 
 
-\subsection{Change in Evidence for Treatment Effects}
-Adjustment for small study effects in meta-analysis will not only provide new effect sizes, but also standard errors thereof. Thus, also the evidence for efficacy of a treatment can be obtained, which is usually summarized in a suitable test statistic or $p$-value. \\
-The wald test statistics $p$-value for fixed and random effects meta-analyses and copas and regression adjusted treatment effects have been calculated. They are shown in Figure \ref{fig:adjustment.stat} for meta-analysis based on $z$-score, Hedges $g$ and log hazard ratio. The $p$-values get larger changing from fixed effects to random effects, and from Copas to regression adjusted $p$-values for $z$-scores and Hedges $g$. Also, they are larger for Hedges $g$ based meta-analyses compared to $z$-score based meta-analyses. Meanwhile, they stay approximately equal for log odds ratios, with the exception of regression adjusted test statistics. Thus, after adjusting for small study effects, the evidence for treatment efficacy shrinks at least partially, which is also indicated by the smaller number of significant $p$-values (0.05 threshold). Note that while $z$-score and Hedges $g$ based meta-analyses use the same data, only with different effect measure transformations, this is not true for meta-analyses based on log odds ratios.\\
-%Interestingly, in contrast to the small study effect tests, there seems to be no large difference between adjusted continuous and binary meta-analysis test statistics --appendix--
+
+Adjustment leads most often to reduction of treatment effect estimates, as can be seen by the size of the bins of the right part of the histograms in Figure \ref{fig:adjustment.sue}. The difference between the bins on the right and left side of the zero-centered bin is however not very large in general. The seeming exception of the Copas selection model in the case with $z$-scores and fixed effects reference requires closer examination: Copas selection model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Thus, when comparing Copas with Fixed effects, we compare most often random effects with fixed effects estimates. The effect of adjustment by Copas can therefore only be seen when comparing random effects estimates with fixed effect estimates: we can see in Table \ref{adjustment.difference} that we have, for $z$-score, 18.4\% reduced effect sizes compared to 10.3\% (= 100\% - 89.69\%) increased effect sizes. Thus, the Copas selection model also has a larger proportion of reduced effect sizes compared to amplified.\\
+%This resolves the case for the seeming exception and for Hedges $g$'s, 24.4\% and 12.46\% (Table \ref{adjustment.difference}. 
+Also, there are more reduced effect sizes if random effects meta-analysis is used as a reference effect size. When Hedge's $g$ is used as an effect measure, there are (substantially) more reduced effect sizes. \\
+The means in Table \ref{adjustment.difference} suggest that the average reduction is small (the means of Copas in the first two rows for $z$-score are caused by one very large value, see Table \ref{missing.differences}). To recall some other findings out of Table \ref{adjustment.difference}: 5\% or 90 cases have their $z$-score reduced by more than 0.15 by regression adjustment (and 5\% or 90 increased by -0.13, fixed effects reference). Also, Hedges $g$ is reduced by 0.39 compared to fixed effects estimates in 5\% or 90 meta-analyses (or increased by 0.24).
+
+
+
+\subsection{Change in Evidence for Treatment Effects} \label{sec:change.evidence}
+Adjustment for small study effects in meta-analysis will not only provide new effect sizes, but also standard errors thereof. Thus, also the evidence for efficacy of a treatment can be obtained, which is usually summarized in a suitable test statistic or $p$-value. It is of interest if and how the evidence for treatment effects changes if adjusted for publication bias.\\
+The Wald test statistics $p$-value for fixed and random effects meta-analyses and Copas and regression adjusted treatment effects have been calculated. They are shown in Figure \ref{fig:adjustment.stat} for meta-analysis based on $z$-score, Hedges $g$ and log hazard ratios. \\
+It can be seen that evidence for a treatment effect decreases after adjusting for publication bias. It does so more for Hedge's $g$ compared to $z$-scores, and for regression adjustment compared to Copas selection model. 
+%Also, the evidence decreases for random effects meta-analyses compared to fixed effects meta-analyses. 
+In the case of log-hazard ratio adjustment, the adjustment has only negligible impact on the $p$-values. \\
+Also, Copas selection method has a very small impact on the evidence compared to random effects meta-analysis, at least using $z$-scores (again, we should rely on comparisons to random effects meta-analysis to evaluate Copas method). \\ 
+% Interestingly, in contrast to the small study effect tests, there seems to be no large difference between adjusted continuous and binary meta-analysis test statistics --appendix--
 %Figures \ref{fig:adjustment.stat.z} for the adjusted $z$-scores, \ref{fig:adjustment.stat.smd} for the adjusted Hedges $g$ and Cohen's d and \ref{fig:adjustment.stat.log.hazard.ratio} for the adjusted log hazard ratios.
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-17-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Histogram of the Wald test-statistic $p$-value of meta-analysis and adjusted pooled treatment effect, based on different treatment effect measures. The method is indicated in the header, bin width is set to 0.05. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
+\label{fig:adjustment.stat}
+\end{figure}
+
+The Copas selection model also gives an estimate of the number of missing studies. It finds that 0 are missing, which corresponds to 0\% from all \ensuremath{2.8945\times 10^{4}} analysed studies. Figure \ref{fig:copas.missing} shows a histogram of the overall fraction of missing studies. Note that we have excluded 0 out of 1806, for which no Copas selection model estimate, but a random effects estimate was retained because the algorithm initially found no evidence for small study effects.
 
 \begin{figure}
 \begin{knitrout}
@@ -821,99 +818,157 @@ The wald test statistics $p$-value for fixed and random effects meta-analyses an
 
 
 \end{knitrout}
-\caption{Histogram of the wald test-statistic $p$-value of meta-analysis and adjusted pooled treatment effect, based on different treatment effect measures. The method is indicated in the header, binwidth is set to 0.05. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
-\label{fig:adjustment.stat}
+\caption{Histogram of the fraction of missing studies from the total number of studies in a meta-analyses (only data shown where Copas estimate was obtained, thus \\$n =$ 0)}
+\label{fig:copas.missing}
 \end{figure}
 
+We can see that in some occasions, the method finds more than half of all studies are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}. The discrepancy between mean and median may indicate that the estimate of 0\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie 0 meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for 0, more than 30\% of missing studies.
 
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Mon Jul  1 17:11:05 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{lrrrrrrr}
+  \hline
+ & = 0 & 5\% & 25\% & 50\% & 75\% & 95\% & mean \\ 
+  \hline
+Missing fraction & 323 & 0 & 0 & 0.1 & 0.3 & 1.0 & 0.2 \\ 
+  Missing study number & 323 & 0 & 0 & 1.4 & 5.2 & 17.9 & 4.2 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Fraction of missing studies and estimates of missing studies with their zero counts (``= 0''), quantiles and means.} 
+\label{copas.missing}
+\end{table}
 
 
 
 
 
 
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Mon Jul  1 17:11:05 2019
+\begin{table}[ht]
+\centering
+\begingroup\tiny
+\begin{tabular}{lcccrrrrrrrr}
+  \hline
+meta.id & file.nr & comparison.nr & subgroup.nr & z fixed & z random & z Copas & z regression & g fixed & g random & g Copas & g regression \\ 
+  \hline
+2009 & 2009 & 1 & 1 & 0.31 & 0.36 & 0.31 & 0.43 & 0.70 & 0.70 & 0.70 & 2.48 \\ 
+  2068 & 2068 & 2 & 0 & 0.29 & 0.35 & 0.29 & 0.42 & 0.68 & 0.68 & 0.68 & 2.57 \\ 
+  52528 & 52528 & 1 & 0 & -0.75 & -0.69 & -0.50 & -0.26 & -1.19 & -1.53 & 0.18 & -0.52 \\ 
+  60546 & 60546 & 1 & 1 & 0.17 & 0.24 & 0.17 & 0.34 & 0.53 & 0.53 & 0.53 & 1.65 \\ 
+  70389 & 70389 & 1 & 1 & -0.08 & -0.07 & 15.62 & -0.04 & -0.13 & -0.13 & -0.13 & -0.05 \\ 
+  73769 & 73769 & 3 & 1 & -0.09 & 0.00 & 7148.96 & 0.02 & -0.01 & -0.12 & 0.01 & 0.04 \\ 
+  79113 & 79113 & 2 & 0 & -0.38 & -0.38 & -0.38 & -0.48 & -0.93 & -0.93 & -2.00 & -3.47 \\ 
+  90138 & 90138 & 3 & 0 & 0.30 & 0.80 & 0.30 & 0.53 & 0.72 & 0.71 & 0.71 & 2.16 \\ 
+  97356 & 97356 & 2 & 0 & -0.06 & -0.33 & -0.06 & -0.11 & -0.42 & -0.35 & -1.58 & -1.82 \\ 
+  98030 & 98030 & 1 & 0 & -0.09 & -0.07 & -0.09 & -0.04 & -0.41 & -0.41 & -1.50 & -2.79 \\ 
+  101436 & 101436 & 1 & 5 & 0.54 & 0.62 & 0.80 & 0.90 & 1.21 & 1.21 & 1.21 & 2.74 \\ 
+  118121 & 118121 & 4 & 1 & 0.25 & 0.23 & 47.73 & -0.03 & 0.44 & 0.44 & 0.44 & 0.14 \\ 
+  119537 & 119537 & 3 & 0 & 0.07 & 0.15 & 0.07 & 0.29 & 0.50 & 0.50 & 1.43 & 1.81 \\ 
+  119818 & 119818 & 3 & 3 & -0.25 & -0.25 & -0.20 & -0.04 & -0.50 & -0.54 & 28.44 & -0.03 \\ 
+  146301 & 146301 & 1 & 0 & 0.14 & 0.26 & 472149.03 & 0.28 & 0.56 & 0.37 & 0.60 & 0.52 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Missing meta-analysis pooled treatment effect and adjusted treatment effects. Abbreviations are used for z-score (= z) and Hedges g (= g).} 
+\label{missing.differences}
+\end{table}
 
 
 
 
+\subsection{Comparison of adjustment methods}
+Regression adjusted estimates are compared to the estimates of Copas selection model if these are not equal to random effects meta-analysis. A Tukey mean difference plot can serve to reveal systematic differences and biases between the two measurement methods. We will compare estimates based on all three outcome measures, i.e. original measure, $z$-score and Hedges $g$ in Figure \ref{fig:adjustment.mean.diff}. Note that the 39 survival outcome data is not included when using $z$-score and Hedges $g$.
 
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-21-1} 
 
+}
 
 
 
+\end{knitrout}
+\caption{Mean - difference plots for publication bias adjustment methods. The mean of the adjusted treatment effects is displayed on the $x$-axis and the difference on the $y$-axis. Blue and red lines display the systematic error and the confidence intervals of the systematic error (limits of agreement). Two values have been omitted in the middle plot for Hedges $g$ and one for $z$-score (see Table \ref{missing.differences}).}
+\label{fig:adjustment.mean.diff}
+\end{figure}
 
+No formal tests are provided, but the at least there seems to be no clear bias or systematic. The limits of agreement in Figure \ref{fig:adjustment.mean.diff} are large. We conclude thus that the impact of regression adjustment on the effect sizes is in general not substantially larger than the impact of Copas selection model in the subset of data where the estimate of the Copas selection model is not equal to a random effects estimate.  \\
 
 
 
+\section{Comparison of Tests and Adjustments} \label{sec:comparison.tests.adjustment}
 
 
+In section \ref{sec:change.size}, we have seen that some adjustments for small study effects are not in line with our previous definition of publication bias: Some times, the adjustment for small study effects leads to a larger treatment effect. We want to take this into account when considering evidence for publication bias. Whenever adjustment leads to larger effect sizes, the small study effect test result from section \ref{sec:publication.bias.tests} is revised and changed to negative. We will revisit the results from section \ref{sec:publication.bias.tests} and first visualize which proportion of the data finds rather ``negative publication bias'' than the predefined type of publication bias. Figure \ref{fig:test.corrected} is equal to Figure \ref{fig:test} with sole difference that now the proportion of ``negative publication bias'' is colored, and the count of significant findings is corrected (not significant for negative publication bias). \\
 
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% \section{Small study effects}
-% <<echo=FALSE, warning=FALSE>>=
-% p.samplesize.z  <- data.ext2 %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% ungroup() %>% 
-%   mutate(std.z = abs(z), sample.size = total1 + total2) %>%
-%   group_by(sample.size) %>% 
-%   summarize(median.effect = median(std.z, na.rm = T)) %>% 
-%   ggplot(aes(x = sample.size, y = median.effect)) + geom_point(size = 0.8) + 
-%   theme_bw() + xlab("sample size") + ylab("median absolute z-score") +
-%   xlim(c(15, 300)) + ylim(c(0, 0.25)) +
-%   scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
-% 
-% p.samplesize.effect.sep <- data %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% 
-%   filter(outcome.measure.new == "Risk Ratio" | 
-%            outcome.measure.new == "Odds Ratio" | 
-%            outcome.measure.new == "Mean Difference" |
-%            outcome.measure.new == "Std. Mean Difference") %>% 
-%   group_by(outcome.measure.new) %>% 
-%   mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
-%   group_by(sample.size, outcome.measure.new) %>% 
-%   summarize(median.effect = median(scaled.effect, na.rm = T)) %>% 
-%   ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure.new)) + geom_point(size = .5) + facet_wrap(~outcome.measure.new, scales = "free") + 
-%   theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size") +
-%   xlim(c(15, 300)) +
-%   scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
-% @
-% 
-% The median $z$-score for a given sample size of a trial is shown in Figure \ref{z.samplesize}. It is clearly visible that the absolute value decreases with increasing sample size, i.e. that the effect size is becoming smaller. The trend flattens off after $\sim$ sample size = 400 (not shown). 
-% -- Appendix -- \\
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% plot(p.samplesize.z)
-% @
-% \caption{Median of the absolute $z$-score plotted against the total sample size.}
-% \label{z.samplesize}
-% \end{figure}
-% 
-% Only for illustration, the same trend is reproduced in Figure \ref{effect.samplesize.separated} with a similar method, using the original effect size measures ``Odds Ratio'', ``Risk Ratio'', ``Mean Difference'' and ``Std. Mean Difference'' (the most commonly used in the dataset). The ``normalized effect'' is the original effect size, normalized with respect to all other effect sizes of the same measure (i.e. subtraction of mean and division through standard error of the mean).
-% 
-% \begin{figure}
-% <<echo=FALSE>>=
-% plot(p.samplesize.effect.sep)
-% @
-% \caption{Median of the absolute value of the normalized, original effect size plotted against the total sample size.}
-% \label{effect.samplesize.separated}
-% \end{figure}
-% 
-% %Show absolute effect size depending on scaled time? Chunck 3
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-23-1} 
 
+}
 
 
 
+\end{knitrout}
+\caption{Histogram of the $p$-values for small study effect in meta-analyses. The testing method is indicated in the header, bin width is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+\label{fig:test.corrected}
+\end{figure}
 
+The proportion of findings where we found amplification by adjustment was 34.5\%. Most often, the proportion of tests with evidence for small study effects (and especially, excess significance), is lower, though. There are exceptions to this, such as Schwarzer's test results, where we have 143 - 60 = 83 significant test results, which corresponds to $\sim$ 40\%. Since excess significance is not necessarily connected with small study effects, we can furthermore reject the newly obtained, slightly smaller number of significant excess significance test results, and stick to the previous findings. \\
+We can see how the agreement in significance is before, and after having removed negative publication bias significant results in Table \ref{test.agreement}. The proportion of agreement in significance is defined as the proportion of cases where, when the test with less significant findings is significant, also the other is significant. \\
+After the adjustment of the test results, the agreement for small study effects tests and excess significance tests increases a bit. This seems also to be the general trend, but not without exceptions. The two right-most columns indicate the agreement in significance, and we see that agreement is never larger than 0.3 (with Egger's test, continuous outcomes). Furthermore, only Egger and Thompson show a goof agreement for significance ($\sim$ 0.83). In contrast, some small study effect tests for binary outcomes seem rather to be exclusive, see for example the example of Schwarzer's test (6\% after adjustment) and R\"ucker's test (11\%): Only 19 \% of the cases where Schwarzer's Test is significant have also a significant finding using R\"ucker's test. Almost all binary small study effect tests have agreement in significance > 0.5. Thus, we see that large overall agreement is rather due to the large proportion of non-significant findings.
 
 
 
 
 
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Mon Jul  1 17:11:08 2019
+\begin{table}[ht]
+\centering
+\begingroup\scriptsize
+\begin{tabular}{lcccc}
+  & pre, overall & post, overall & pre, significance & post, significance \\ 
+  \hline
+\hline
+Excess significance, Schwarzer & 0.82 & 0.87 & 0.14 & 0.19 \\ 
+  Excess significance, Peter & 0.80 & 0.84 & 0.27 & 0.21 \\ 
+  Excess significance, Rucker & 0.83 & 0.85 & 0.32 & 0.26 \\ 
+  Excess significance, Harbord & 0.80 & 0.85 & 0.27 & 0.24 \\ 
+  Peter, Schwarzer & 0.82 & 0.88 & 0.38 & 0.39 \\ 
+  Schwarzer, Rucker & 0.82 & 0.87 & 0.32 & 0.35 \\ 
+  Schwarzer, Harbord & 0.86 & 0.91 & 0.58 & 0.54 \\ 
+  Rucker, Peter & 0.89 & 0.92 & 0.64 & 0.62 \\ 
+  Harbord, Peter & 0.86 & 0.90 & 0.53 & 0.48 \\ 
+   \hline
+Excess significance, Egger & 0.79 & 0.81 & 0.72 & 0.61 \\ 
+  Excess significance, Thompson & 0.82 & 0.83 & 0.72 & 0.61 \\ 
+  Excess significance, Begg & 0.81 & 0.84 & 0.33 & 0.28 \\ 
+  Thompson, Egger & 0.95 & 0.96 & 0.96 & 0.95 \\ 
+  Thompson, Begg & 0.87 & 0.89 & 0.69 & 0.73 \\ 
+  Egger, Begg & 0.86 & 0.87 & 0.78 & 0.77 \\ 
+   \hline
+Excess significance, Egger (survival) & 0.87 & 0.97 & 0.00 &  \\ 
+  Excess significance, Thompson (survival) & 0.92 & 0.97 & 0.00 &  \\ 
+  Excess significance, Begg (survival) & 0.95 & 1.00 & 0.00 &  \\ 
+  Thompson, Egger (survival) & 0.90 & 0.95 & 0.67 & 0.00 \\ 
+  Thompson, Begg (survival) & 0.92 & 0.97 & 0.50 & 0.00 \\ 
+  Egger, Begg (survival) & 0.87 & 0.97 & 0.50 & 0.00 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Overall proportion of agreement if significant or unsignificant, and for significance only. Horizontal lines separate binary, continuous and survival outcomes (order as in table). The reference significance test is the one with more significant results.} 
+\label{test.agreement}
+\end{table}
 
 
 
@@ -924,1033 +979,7 @@ The wald test statistics $p$-value for fixed and random effects meta-analyses an
 
 
 
-% Since the tests have different properties, the agreement between the tests can be visualized. Here, agreement is specified as classifying the same meta-analysis as significant, based on the 0.1 $p$-value threshold. Again, this is done separately for the different outcome types. The result can be seen in Figure \ref{fig:test.agreement}. In the Figure, the number of agreeing tests is displayed, i.e., how many meta-analyses had only one significant test result etc.
-% 
-% \begin{figure}
-% <<echo = FALSE, fig.height = 5>>=
-% grid.arrange(agree.bin,
-%               agree.cont, 
-%               agree.surv, ncol = 1)
-% @
-% \caption{Barplot for the number of significant test results per meta-analyses, separated for outcome.types}
-% \label{fig:test.agreement}
-% \end{figure}
 
-
-
-% \begin{figure}[!ht]
-% <<echo=FALSE>>=
-% plot(p.dist.bin)
-% @
-% \caption{Histogram of the $p$-values for small study effect in binary outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
-% \label{fig:test.bin}
-% \end{figure}
-% 
-% \begin{figure}
-% <<echo=FALSE>>=
-% plot(p.dist.cont)
-% @
-% \caption{Histogram of the $p$-values for the small study effect in continuous outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
-% \label{fig:test.cont}
-% \end{figure}
-% 
-% \begin{figure}
-% <<echo=FALSE>>=
-% plot(p.dist.surv)
-% @
-% \caption{Histogram of the $p$-values for the small study effect in survival outcome meta-analyses. The testing method is indicated in the header, binwidth is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
-% \label{fig:test.surv}
-% \end{figure}
-
-
-
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% plot(adjustment.stat.z)
-% @
-% \caption{Histogram of the wald test-statistic of meta-analysis and adjusted pooled treatment effect, based on the z-score. The method is indicated in the header, binwidth is set to 1. The significant proportion based on the threshold of 0.05 is displayed inside the figures (The red line displays the corresponding quantile of the std. normal, 1.96).}
-% \label{fig:adjustment.stat.z}
-% \end{figure}
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% plot(adjustment.stat.d)
-% @
-% \caption{Histogram of the wald test-statistic of meta-analysis and adjusted pooled treatment effect, based on Hedges $g$ or Cohen's $d$. The method is indicated in the header, binwidth is set to 1. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
-% \label{fig:adjustment.stat.d}
-% \end{figure}
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% plot(adjustment.stat.log.hazard.ratio)
-% @
-% \caption{Histogram of the wald test-statistic of meta-analysis and adjusted pooled treatment effect, based on the $z$-score. The method is indicated in the header, binwidth is set to 1. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
-% \label{fig:adjustment.stat.log.hazard.ratio}
-% \end{figure}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-% 
-% <<echo=FALSE, warning=FALSE>>=
-% #Test Results: Binary
-% test.bin <- meta.bin %>% ungroup() %>% summarize(egger.test = mean(egger.test),
-%                                                           schwarzer.test = mean(schwarzer.test),
-%                                                           rucker.test = mean(rucker.test),
-%                                                           harbord.test = mean(harbord.test),
-%                                                           peter.test = mean(peter.test))
-% test.bin <- test.bin %>% gather(key = "test.type", value = "mean")
-% 
-% p.bin <- meta.bin %>% ungroup() %>% 
-%   select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
-%   gather(key = "test.type", value = "null.hypothesis") %>%  
-%   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
-%   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
-%   theme_bw() + xlab(label = NULL) +
-%   annotate("text", x = test.bin$test.type, y = 1000, 
-%            label = paste(round(test.bin$mean, 2)*100, "% rejected"), 
-%            color = "white")
-% 
-% 
-% 
-% test.sig.bin <- meta.bin %>% filter(sig.fixef.bin == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
-%                                                               schwarzer.test = mean(schwarzer.test),
-%                                                               rucker.test = mean(rucker.test),
-%                                                               harbord.test = mean(harbord.test),
-%                                                               peter.test = mean(peter.test))
-% test.sig.bin <- test.sig.bin %>% gather(key = "test.type", value = "mean")
-% 
-% p1 <- meta.bin %>% ungroup() %>% filter(sig.fixef.bin == 1) %>% 
-% select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
-%   gather(key = "test.type", value = "null.hypothesis") %>% 
-%   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
-%   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
-%   theme_bw() + ggtitle("Significant Pooled Effects")+ xlab(label = NULL) + theme(legend.position="none") +
-%   annotate("text", x = test.sig.bin$test.type, y = 1750, 
-%            label = paste(round(test.sig.bin$mean, 2)*100, "% rejected"), 
-%            color = "white")
-% 
-% test.nonsig.bin <- meta.bin %>% filter(sig.fixef.bin == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
-%                                                                                                 schwarzer.test = mean(schwarzer.test),
-%                                                                                                 rucker.test = mean(rucker.test),
-%                                                                                                 harbord.test = mean(harbord.test),
-%                                                                                                 peter.test = mean(peter.test))
-% test.nonsig.bin <- test.nonsig.bin %>% gather(key = "test.type", value = "mean")
-% 
-% p2 <- meta.bin %>% 
-%   filter(sig.fixef.bin == 0) %>% ungroup() %>% 
-%   select(egger.test, schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
-%   gather(key = "test.type", value = "null.hypothesis") %>% 
-%   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
-%   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
-%   theme_bw() + ggtitle("Non-significant Pooled Effects")+ xlab(label = NULL) +theme(legend.position="none") +
-%   annotate("text", x = test.nonsig.bin$test.type, y = 650, 
-%            label = paste(round(test.nonsig.bin$mean, 2)*100, "% rejected"), 
-%            color = "white")
-% 
-% range.pb.difference.bin <- range(test.sig.bin$mean - test.nonsig.bin$mean)
-% 
-% #Test Results: Continuous
-% test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
-%                                                             begg.test = mean(begg.test),
-%                                                             thomson.test = mean(thomson.test))
-% 
-% test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
-% 
-% p.cont <- meta.cont %>% ungroup() %>% 
-%   select(egger.test, thomson.test, begg.test) %>% 
-%   gather(key = "test.type", value = "null.hypothesis") %>% 
-%   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
-%   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
-%   theme_bw() + xlab(label = NULL) +
-%   annotate("text", x = test.cont$test.type, y = 750, 
-%            label = paste(round(test.cont$mean, 2)*100, "% rejected"), 
-%            color = "white")
-% 
-% 
-% test.sig.cont <- meta.cont %>% filter(sig.fixef.cont == 1) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
-%                                                                                                 begg.test = mean(begg.test),
-%                                                                                                 thomson.test = mean(thomson.test))
-% 
-% test.sig.cont <- test.sig.cont %>% gather(key = "test.type", value = "mean")
-% 
-% p3 <- meta.cont %>% 
-%   filter(sig.fixef.cont == 1) %>% ungroup() %>% 
-%   select(egger.test, thomson.test, begg.test) %>% 
-%   gather(key = "test.type", value = "null.hypothesis") %>% 
-%   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
-%   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
-%   theme_bw() + ggtitle("Significant Pooled Effects")+ xlab(label = NULL) + theme(legend.position="none") +
-%   annotate("text", x = test.sig.cont$test.type, y = 600, 
-%            label = paste(round(test.sig.cont$mean, 2)*100, "% rejected"), 
-%            color = "white")
-% 
-% test.nonsig.cont <- meta.cont %>% filter(sig.fixef.cont == 0) %>% ungroup() %>% summarize(egger.test = mean(egger.test),
-%                                                                                                    begg.test = mean(begg.test),
-%                                                                                                    thomson.test = mean(thomson.test))
-% 
-% test.nonsig.cont <- test.nonsig.cont %>% gather(key = "test.type", value = "mean")
-% 
-% p4 <- meta.cont %>% 
-%   filter(sig.fixef.cont == 0) %>% ungroup() %>% 
-%   select(egger.test, thomson.test, begg.test) %>% 
-%   gather(key = "test.type", value = "null.hypothesis") %>% 
-%   mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "rejected", "not rejected"))) %>% 
-%   ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
-%   theme_bw() + ggtitle("Non-significant Pooled Effects")+ xlab(label = NULL) + theme(legend.position="none") +
-%   annotate("text", x = test.nonsig.cont$test.type, y = 100, 
-%            label = paste(round(test.nonsig.cont$mean, 2)*100, "% rejected"), 
-%            color = "white")
-% 
-% range.pb.difference.cont <- range(test.sig.cont$mean - test.nonsig.cont$mean)
-% 
-% ########################################################################################################################################
-% ########################################################################################################################################
-% 
-% #Agreement proportions of publication bias tests:
-% 
-% #Binary:
-% n.bin <- dim(meta.bin)[1]
-% meta.bin <- meta.bin %>%ungroup() %>%  mutate(egger.schwarzer = ifelse(egger.test == schwarzer.test, "agree", "disagree"),
-%                                         egger.peter = ifelse(egger.test == peter.test, "agree", "disagree"),
-%                                         egger.rucker = ifelse(egger.test == rucker.test, "agree", "disagree"),
-%                                         egger.harbord = ifelse(egger.test == harbord.test, "agree", "disagree"),
-%                                         schwarzer.peter = ifelse(schwarzer.test == peter.test, "agree", "disagree"),
-%                                         schwarzer.rucker = ifelse(schwarzer.test == rucker.test, "agree", "disagree"),
-%                                         schwarzer.harbord = ifelse(schwarzer.test == harbord.test, "agree", "disagree"),
-%                                         rucker.peter = ifelse(rucker.test == peter.test, "agree", "disagree"),
-%                                         rucker.harbord = ifelse(rucker.test == harbord.test, "agree", "disagree"),
-%                                         harbord.peter = ifelse(harbord.test == peter.test, "agree", "disagree"))
-% 
-% agreement.bin <- meta.bin %>% ungroup() %>% summarise(egger.schwarzer = sum(egger.schwarzer == "agree")/n(),
-%                                             egger.peter = sum(egger.peter == "agree")/n(),
-%                                             egger.rucker = sum(egger.rucker == "agree")/n(),
-%                                             egger.harbord = sum(egger.harbord == "agree")/n(),
-%                                             schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
-%                                             schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
-%                                             schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
-%                                             rucker.peter = sum(rucker.peter == "agree")/n(),
-%                                             harbord.peter = sum(harbord.peter == "agree")/n())
-% 
-% correlation.bin <- meta.bin %>%ungroup() %>%  summarise(egger.schwarzer = cor(pval.egger.bin, pval.schwarzer.bin),
-%                                               egger.peter = cor(pval.egger.bin, pval.peter.bin),
-%                                               egger.rucker = cor(pval.egger.bin, pval.rucker.bin),
-%                                               egger.harbord = cor(pval.egger.bin, pval.harbord.bin),
-%                                               schwarzer.peter = cor(pval.schwarzer.bin, pval.peter.bin),
-%                                               schwarzer.rucker = cor(pval.schwarzer.bin, pval.rucker.bin),
-%                                               schwarzer.harbord = cor(pval.schwarzer.bin, pval.harbord.bin),
-%                                               rucker.peter = cor(pval.rucker.bin, pval.peter.bin),
-%                                               harbord.peter = cor(pval.harbord.bin, pval.peter.bin))
-% 
-% binary.tests.agreement <- rbind(agreement.bin, correlation.bin)
-% rownames(binary.tests.agreement) <- c("Test Agreement","P-value Correlation")
-% 
-% 
-% #Continuous:
-% n.cont <- dim(meta.cont)[1]
-% meta.cont <- meta.cont %>% ungroup() %>% mutate(thomson.egger = ifelse(thomson.test == egger.test, "agree", "disagree"),
-%                                           thomson.begg = ifelse(thomson.test == begg.test, "agree", "disagree"),
-%                                           egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"))
-% 
-% agreement.cont <- meta.cont %>% ungroup() %>%  summarise(thomson.egger = sum(thomson.egger == "agree")/n(),
-%                                               thomson.begg = sum(thomson.begg == "agree")/n(),
-%                                               egger.begg = sum(egger.begg == "agree")/n())
-% 
-% correlation.cont <- meta.cont %>% ungroup() %>% summarise(thomson.egger = cor(pval.thomson.cont, pval.egger.cont),
-%                                                 thomson.begg = cor(pval.thomson.cont, pval.begg.cont),
-%                                                 egger.begg = cor(pval.egger.cont, pval.begg.cont))
-% 
-% cont.tests.agreement <- rbind(agreement.cont, correlation.cont)
-% rownames(cont.tests.agreement) <- c("Test Agreement","P-value Correlation")
-% 
-% ########################################################################################################################################
-% ########################################################################################################################################
-% 
-% 
-% #Trimfill missing studies fractions statistics:
-% trimfill.cont.mean <- meta.cont %>% ungroup %>% summarise(mean = mean(missing.trim.cont)) %>% select(mean)
-% trimfill.cont.median <- meta.cont %>% ungroup %>% summarise(median = median(missing.trim.cont)) %>% select(median)
-% 
-% trimfill.bin.mean <- meta.bin %>% ungroup %>% summarise(mean = mean(missing.trim.bin)) %>% select(mean)
-% trimfill.bin.median <- meta.bin %>% ungroup %>% summarise(median = median(missing.trim.bin)) %>% select(median)
-% 
-% ########################################################################################################################################
-% ########################################################################################################################################
-% 
-% change.ranef.bin <- meta.bin %>% ungroup() %>% 
-%   select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change") %>% 
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
-%   group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
-% 	mutate(n = n/sum(n)) 
-% 
-% p.change.ranef.bin <- meta.bin %>% ungroup() %>% 
-%   select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change") %>%  
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
-%   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + ggtitle("Binary outcomes")+ 
-%   theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
-%   annotate("text", x = change.ranef.bin[change.ranef.bin$sig.change == 3,]$correction.method, y = 1000, 
-%          label = paste(round(change.ranef.bin[change.ranef.bin$sig.change == 3,]$n*100, 2), "% changed to nonsig."), 
-%          color = "white")
-% 
-% change.ranef.cont <- meta.cont %>% ungroup() %>% 
-%   select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change") %>% 
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%   
-%   group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
-% 	mutate(n = n/sum(n))
-% 
-% p.change.ranef.cont <- meta.cont %>% ungroup() %>% 
-%   select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change") %>%  
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
-%   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + ggtitle("Continuous outcomes") +
-%   theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
-%   annotate("text", x = change.ranef.cont[change.ranef.cont$sig.change == 3,]$correction.method, y = 500, 
-%          label = paste(round(change.ranef.cont[change.ranef.cont$sig.change == 3,]$n*100, 2), "% changed to nonsig."), 
-%          color = "white")
-% 
-% change.ranef <- meta %>% ungroup() %>% 
-%   select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change") %>% 
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%   
-%   group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
-% 	mutate(n = n/sum(n))
-% 
-% p.ranef.change <- meta %>% ungroup() %>% 
-%   select(sig.change.ranef.reg, sig.change.ranef.copas, sig.change.ranef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change") %>%  
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
-%   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
-%   theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
-%   annotate("text", x = change.ranef[change.ranef$sig.change == 3,]$correction.method, y = 1500, 
-%          label = paste(round(change.ranef[change.ranef$sig.change == 3,]$n*100, 2), "changed to nonsig."), 
-%          color = "white")
-% # Significance after correction plots, separated for meta-analyses with significant publication bias test.
-% #Fixed effects meta-analysis significance
-% #Binary outcomes:
-% change.fixef.bin <- meta.bin %>% ungroup() %>% 
-%   select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change") %>% 
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%   
-%   group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
-% 	mutate(n = n/sum(n))
-% 
-% p.change.fixef.bin <- meta.bin %>% ungroup() %>% 
-%   select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change") %>%  
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%   
-%   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + ggtitle("Binary outcomes")+  
-%   theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
-%   annotate("text", x = change.fixef.bin[change.fixef.bin$sig.change == 3,]$correction.method, y = 800, 
-%          label = paste(round(change.fixef.bin[change.fixef.bin$sig.change == 3,]$n*100, 2), "changed to nonsig."), 
-%          color = "white")
-% 
-% #Continuous outcomes:
-% change.fixef.cont <- meta.cont %>% ungroup() %>% 
-%   select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change") %>% 
-%   mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
-%   group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
-% 	mutate(n = n/sum(n))
-% 
-% p.change.fixef.cont <- meta.cont %>% ungroup() %>% 
-%   select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change") %>%  
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
-%   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + ggtitle("Continuous outcomes")+ 
-%   theme_bw() + xlab(label = NULL) + scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
-%   annotate("text", x = change.fixef.cont[change.fixef.cont$sig.change == 3,]$correction.method, y = 300, 
-%          label = paste(round(change.fixef.cont[change.fixef.cont$sig.change == 3,]$n*100, 2), "changed to nonsig."), 
-%          color = "white")
-% 
-% #Overall:
-% change.fixef <- meta %>% ungroup() %>% select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change") %>% 
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
-% 	group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
-% 	mutate(n = n/sum(n))
-% 
-% p.fixef.change <- meta %>% ungroup() %>% 
-%   select(sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change") %>%  
-%   mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
-%   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
-%   theme_bw() + xlab(label = NULL) + guides(fill=guide_legend(title=NULL)) +
-% 	scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
-%   annotate("text", x = change.fixef[change.fixef$sig.change == 3,]$correction.method, y = 1500, 
-%          label = paste(round(change.fixef[change.fixef$sig.change == 3,]$n*100, 2), "% changed to nonsig."), 
-%          color = "white")
-% 
-% #Separated for meta-analyses with significant publication bias test.
-% change.fixef.bias <- meta %>% 
-%   select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
-%   filter(thomson.test == 1) %>% 
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
-% 	group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>% 
-% 	mutate(n = n/sum(n))
-% 
-% p.change.fixef.bias <- meta %>% 
-%   select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
-%   filter(thomson.test == 1) %>% 
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>% 
-%   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
-%   theme_bw() + xlab(label = NULL) + guides(fill=guide_legend(title=NULL)) +
-% 	scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
-%   annotate("text", x = change.fixef.bias[change.fixef.bias$sig.change == 3,]$correction.method, y = 250, 
-%            label = paste(round(change.fixef.bias[change.fixef.bias$sig.change == 3,]$n*100, 2), "% changed to nonsig."), 
-%            color = "white")
-% 
-% change.fixef.unbias <- meta %>% 
-%   select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
-%   filter(thomson.test == 0) %>% 
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
-% 	group_by(sig.change, correction.method) %>% count() %>% group_by(correction.method) %>%  
-% 	mutate(n = n/sum(n))
-% 
-% p.change.fixef.unbias <- meta %>% 
-%   select(thomson.test, rucker.test, sig.change.fixef.reg, sig.change.fixef.copas, sig.change.fixef.trimfill) %>% 
-%   gather(key = "correction.method", value = "sig.change", sig.change.fixef.reg:sig.change.fixef.trimfill) %>% 
-%   filter(thomson.test == 0) %>% 
-% 	mutate(sig.change = factor(ifelse(sig.change == 0 |sig.change == 2, 0, sig.change))) %>%
-%   ggplot(aes(x = correction.method, fill = sig.change)) + geom_bar() + coord_flip() + 
-%   theme_bw() + xlab(label = NULL) + guides(fill=guide_legend(title=NULL)) +
-% 	scale_fill_discrete(labels= c("unchanged", "change.to.sig", "change.to.nonsig")) +
-%   annotate("text", x = change.fixef.unbias[change.fixef.unbias$sig.change == 3,]$correction.method, y = 1300, 
-%            label = paste(round(change.fixef.unbias[change.fixef.unbias$sig.change == 3,]$n*100, 2), "% changed to nonsig."), 
-%            color = "white")
-% 
-% 
-% ########################################################################################################################################
-% ########################################################################################################################################
-% 
-% p.missing.copas <- meta %>% ggplot(aes(x = missing.copas/n)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20)
-% p.missing.trim <- meta %>% ggplot(aes(x = missing.trim)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20)
-% @
-% 
-% There are tests that can be applied to find out if small study effects are present in the meta analysis. For the precise description, see the methods section. Application of the tests is only recommended if there are ten or more studies \citep{cochrane.handbook} that can be used, so all meta-analyses with less than ten studies have been excluded.
-% 
-% \vspace{0mm}
-% There are modifications to make tests more appropriate in case of binary outcomes, therefore the results have been separated in continuous and dichotomous outcome test results. In Figure \ref{bias.results.cont} the proportion of test results that led to rejection of the null hypothesis of no small study effect based on the 5 \% level are shown for continuous outcomes ($n$ = n.cont)
-% The same is shown in Figure \ref{bias.results.bin} for dichotomous outcome measures ($n$ = n.bin). The amount of studies varies from 5\% (Schwarzer's Test) to 13 \% (Egger's Test) for binary outcomes and 9\% (Begg and Mazumdar's Test) to 25 \% (Egger's Test) for continuous outcomes. 
-% 
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% plot(p.cont)
-% @
-% \caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (continuous outcomes).}
-% \label{bias.results.cont}
-% \end{figure}
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% plot(p.bin)
-% @
-% \caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (dichotomous outcomes).}
-% \label{bias.results.bin}
-% \end{figure}
-% 
-% There is no substantive change in the fraction of positive test results, depending on if the pooled treatment effect size estimate is significant or not. Most substantively, the fraction of positive Egger Test results increases for significant pooled treatment effects by range.pb.difference.bin[2] (the minimal increase is range.pb.difference.bin[1] for Schwarzer's Test).
-% 
-% %Show plots of significant meta-analyses separated? Chunck 4
-% 
-% Furthermore one can look if the frequencies of tests that reject the null hypotheses change over time (mean publication year of the studies included in the meta analyses). The proportion of the test results are shown in Figure \ref{pub.bias.time.overtime}. The Figure suggests that the frequency of publication bias remains constant over time. The mean publication years have been restricted such that at least 180 meta-analyses are available per year, such that random fluctuation is restricted to some extent. The significance threshold for the $p$-values used is 0.05, and the small study effect test used is Thomson's test (with the arcsine variance stabilizing transformation function used in the case of binary outcomes).
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% meta %>% filter(mean.publication.year < 2013 & mean.publication.year > 1990) %>% 
-%   ggplot(aes(x = mean.publication.year, fill = factor(thomson.test), stat(count))) + geom_density(na.rm = T, position = "fill") + 
-%   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
-% @
-% \caption{Proportion of test results where the null hypothesis of no small study effect is rejected over time (mean publication.year).}
-% \label{pub.bias.overtime}
-% \end{figure}
-% 
-% 
-% The agreement of the tests, i.e. the proportion of meta-analyses where the rest results are equal between tests, is shown in Table \ref{agreement.bin} and Table \ref{agreement.cont}, again separated for outcome types. Agreement in tests for binary outcomes is better than continuous outcomes, with some variation between tests (binary outcomes: 83 to 91\%). Correlation varies more between tests, both for continuous and binary outcome tests.
-% 
-% <<results = 'asis', echo = FALSE, warning = FALSE>>=
-% print(xtable(x = t(binary.tests.agreement), caption = "Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (dichotomous outcomes)", label = "agreement.bin",  align = "lll", digits = 2), include.rownames = T, size = "footnotesize")
-% @
-% 
-% 
-% <<results = 'asis', echo = FALSE, warning = FALSE>>=
-% print(xtable(x = t(cont.tests.agreement), caption = "Proportion of tests that agree in rejection ar acceptance of the null hypothesis that there is no small study effect (continuous outcomes)", label = "agreement.cont",  align = "lll", digits = 2), include.rownames = T, size = "footnotesize")
-% @
-% 
-% \vspace{0mm}
-% Test performance depends on the sample size, despite having restricted sample size to a minimum of 10 studies. The p-values of the Thompson and Sharp tests are shown with respect to the sample size of the meta-analysis in Figure \ref{pvalues.samplesize}. %(Suggests that 10 is likely too small)
-% In the case of binary outcomes, the arcsine variance stabilizing function has been applied prior to use of Thompson and Sharp's test. A trend towards more rejections for larger sample sizes can be seen.
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% meta %>% filter(n < 40) %>% ggplot(aes(stat(count), x = n, fill = factor(thomson.test))) + 
-%   geom_density(position = "fill")
-% @
-% \caption{P-values of Thomson and Sharp's test for small study effects and their corresponding sample size.}
-% \label{pvalues.samplesize}
-% \end{figure}
-% 
-% 
-% 
-% \vspace{0mm}
-% One can use the proportion of added studies by the trim-and-fill method from the overall number of studies to further investigate the extent of small study effects. The mean fraction of trimmed comparisons for binary outcomes is round(trimfill.bin.mean,2) and the median round(trimfill.bin.median,2). 
-% % A histogram with those fractions is shown in Figure \ref{trimfill.cont} for continuous outcomes and \ref{trimfill.bin} for dichotomous outcomes. In both cases, the method very commonly adds supposedly unpublished studies to the meta-analyses. 
-% In Figure \ref{trimfill.pvalues.bin} and Figure \ref{trimfill.pvalues.cont}, the relationship between fraction of added studies by trim-and-fill and the hypothesis test decisions of the small study effects tests is shown for continuous and dichotomous outcomes. In the case of Peters test dor dichotomous outcomes, there is less agreement with the trim-and fill method than in the case of Thomson and Sharp's test for continuos outcomes in the sense that the fraction of meta-analyses with rejected null hypothesises increases more clearly when there are more studies added by trim-and-fill. 
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% meta.bin %>% filter(missing.trim.bin < 0.5) %>% 
-%   ggplot(aes(x = missing.trim.bin, fill = factor(peter.test), stat(count))) + 
-%   geom_density(na.rm = T, position = "fill") + 
-%   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
-% @
-% \caption{Fraction of added studies for small study effect correction by trim and fill and the corresponding small study effect test decision (based on 5\% significance level) of Peters test and dichotomous outcomes}
-% \label{trimfill.pvalues.bin}
-% \end{figure}
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% meta.cont %>% filter(missing.trim.cont < 0.5) %>% 
-%   ggplot(aes(x = missing.trim.cont, fill = factor(thomson.test), stat(count))) + 
-%   geom_density(na.rm = T, position = "fill") + 
-%   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
-% @
-% \caption{Fraction of added studies for small study effect correction by trim and fill and the corresponding small study effect test decision (based on 5\% significance level) of Thomson and Sharp's test and continuous outcomes}
-% \label{trimfill.pvalues.cont}
-% \end{figure}
-% 
-% 
-% \subsection{Small Study Effect Correction}
-% Multiple methods are available to correct for the effects of small study effects in order to get an unbiased estimate. Three of them will be applied to the meta-analyses shown previously that have ten or more study results and are therefore eligible for testing for publication bias. 
-% 
-% \vspace{0mm}
-% The extent to what the results of the meta-analysis results are changed can be investigated. Because statistical significance is often used to decide if there is a treatment effect, a non-significant corrected effect size estimate can indicate that an observed treatment effect has been accepted because of small study effects. Therefore, the cases have been counted in which 
-% \begin{enumerate}
-% \item Significance or non-significance of pooled estimate of meta-analysis did not change after correction for small study effects.
-% \item Significance of pooled estimate of meta-analysis did change to non-significance after correction for small study effects.
-% \item Non-significance of pooled estimate of meta-analysis did change to significance after correction for small study effects.
-% \end{enumerate}
-% 
-% The results of this can be seen in Figure \ref{significance.change.fixed} for all three methods, comparing the significance of the corrected pooled effect size estimate with the significance of the pooled effect size estimate of the fixed effects meta-analysis. The same for significance of random effects meta-analysis is shown in Figure \ref{significance.change.random}. The significance threshold was chosen such that the $p$-value had to be < 0.05 for rejection of the null hypothesis of no treatment effect. The correction methods were trim-and-fill, copas selection model and regression with random effects and shrinkage of within-study-variance methods. More details to the applied correction methods and their application are in the methods section \ref{methods}. Notably, the correction methods has been applied to all meta-analyses, thus also for such that had no significant small study effect test result. 
-% 
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% plot(p.fixef.change)
-% @
-% \caption{Change in signficance of fixed effects meta-analysis pooled estimate after correction.}
-% \label{significance.change.fixed}
-% \end{figure}
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% plot(p.ranef.change)
-% @
-% \caption{Change in signficance of random effects meta-analysis pooled estimate after correction.}
-% \label{significance.change.random}
-% \end{figure}
-% 
-% Since it has been previously seen in Figure \ref{test.results} that the results of small study effects vary considerably between continuous outcomes, the results in significance change from fixed effects meta-analysis can be seen separately in Figure \ref{significance.change.fixed.sep} for continuous and binary outcomes. The change in significance from random effects meta-analysis to significance of corrected estimate can be seen in Figure \ref{significance.change.fixed.sep}
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% grid.arrange(p.change.fixef.bin, p.change.fixef.cont, ncol = 1)
-% @
-% \caption{Change in signficance of fixed effects meta-analysis pooled estimate after correction, separated for continuous and binary outcomes.}
-% \label{significance.change.fixed.sep}
-% \end{figure}
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% grid.arrange(p.change.ranef.bin, p.change.ranef.cont, ncol = 1)
-% @
-% \caption{Change in signficance of random effects meta-analysis pooled estimate after correction, separated for continuous and binary outcomes.}
-% \label{significance.change.random}
-% \end{figure}
-% 
-% Because the real amount of publication bias in the dataset is not known, the correction method can also be applied only to meta-analyses that have publication bias according to the small study effect tests in the previous section. Because the test developed by \citet{thomson.sharp} has been applied to both binary and continuous outcome meta-analyses (in the case of binary outcomes to arcsine variance stabilized proportions), it is used as a criterium to distinguish biased from unbiased meta-analyses. The proportions of significance tests of pooled treatment effects that turned from significant to non-significant, non-significant to significant etc. are shown in Figure \ref{significance.change.fixed.sep}. Fixed effects meta-analysis has been used to determine signficance of the uncorrected estimate.
-% 
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% grid.arrange(p.change.fixef.bias, p.change.fixef.unbias, ncol = 1)
-% @
-% \caption{Change in signficance of random effects meta-analysis pooled estimate after correction, separated for continuous and binary outcomes.}
-% \label{significance.change.random}
-% \end{figure}
-% 
-% Similarly, the number of missing studies per meta-analysis, i.e. those which have not been included because of small study effects, are estimated by the copas and trim-and-fill method and their empirical distribution is shown in histograms in Figure \ref{missing.studies.distribution}. For visualisation, the fraction of unpublished studies from the total fraction of available studies is shown.
-% 
-% \begin{figure}
-% <<echo=FALSE, warning=FALSE>>=
-% grid.arrange(p.missing.copas, p.missing.trim, ncol = 1)
-% @
-% \caption{Fraction of missing studies estimated of the number of total studies included in the meta-analysis for copas selection and trim-and-fill method.}
-% \label{missing.studies.distribution}
-% \end{figure}
-% 
-% 
-% 
-% 
-% % # <<results = 'asis', Echo = FALSE>>=
-% % # rejection.bin <- meta.bin %>% summarize(egger.rejection = mean(egger.test),
-% % #                                             schwarzer.rejection = mean(schwarzer.test),
-% % #                                             rucker.rejection = mean(rucker.test),
-% % #                                             harbord.rejection = mean(harbord.test),
-% % #                                             peter.rejection = mean(peter.test))
-% % # print(xtable(rejection.bin), label = "bias.results", caption = "Cumulative number of groups with number of reproduction trials >= n", align = "llll", digits = 0), include.rownames = F, size = "footnotesize")
-% % # @
-% 
-% 
-% 
-% 
-% 
-% 
-% % 
-% % For continuous outcomes, three tests are available: Eggers (based on linear regression), Thompson and Sharp (weighted linear regression) and Begg and Mazumdar (rank based) test. The following three figures show the distribution of p-values of the corresponding tests. Note that only meta analyses with more than 10 comparisons have been included. 
-% % 
-% % \vspace{0mm}
-% % Since each histogram of p-values has 20 bins, the content of the bin with the smallest p-values is equal to the number of meta-analyses whose reporting bias test reports a p-value < 0.05. The fraction of those analyses in which we would reject the null-hypothesis based on the 5 \% threshold can therefore be assessed by eye, and would be for example for Eggers test somewhat less than one third of all analyses. 
-% % 
-% % \begin{figure}
-% % <<echo=FALSE>>=
-% % data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
-% %   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
-% %   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
-% %   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-% %   mutate(n = n()) %>% filter(n > 9) %>% 
-% %   summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-% %                             method = "linreg")$p.val) %>% 
-% %   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
-% %   theme_bw() + labs(title = "Eggers Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
-% % @
-% % \caption{Histogram of p-values for Eggers reporting bias test (linear regression based) for continuous outcome meta analysis.}
-% % \label{egger.cont}
-% % \end{figure}
-% % 
-% % 
-% % \begin{figure}
-% % <<echo=FALSE>>=
-% % data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
-% %   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
-% %   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
-% %   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-% %   mutate(n = n()) %>% filter(n > 9) %>% 
-% %   summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-% %                             method = "mm")$p.val) %>% 
-% %   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
-% %   theme_bw() + labs(title = "Thomson Sharp Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
-% % @
-% % \caption{Histogram of p-values for Thompsom and Sharp reporting bias test (weighted linear regression based) for continuous outcome meta analysis.}
-% % \label{thomson.cont}
-% % \end{figure}
-% % 
-% % \begin{figure}
-% % <<echo=FALSE>>=
-% % data %>% filter(outcome.measure == "Mean Difference" | outcome.measure == "Std. Mean Difference") %>% #filter(file.nr < 503) %>% 
-% %   filter(sd1 > 0 & sd2 > 0 ) %>% filter(!is.na(sd1) & !is.na(sd2)) %>% 
-% %   filter(mean1 != 0 | mean2 != 0 ) %>% filter(!is.na(mean1) & !is.na(mean2)) %>% 
-% %   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-% %   mutate(n = n()) %>% filter(n > 9) %>% 
-% %   summarize(pval = metabias(metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2, mean.c = mean2, sd.c = sd2), 
-% %                             method = "rank")$p.val) %>% 
-% %   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
-% %   theme_bw() + labs(title = "Begg and Mazumdar Reporting Bias Test P-values for Continuous Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
-% % @
-% % \caption{Histogram of p-values for Begg and Mazumdar reporting bias test (rank based) for continuous outcome meta analysis.}
-% % \label{begg.cont}
-% % \end{figure}
-% % 
-% % 
-% % For binary outcomes, Peters and Harbords reporting bias test have been chosen. Also here, only meta-analyses with more than 10 comparisons are included.
-% % 
-% % \begin{figure}
-% % <<echo=FALSE>>=
-% % data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
-% %   filter(events1 > 0 | events2 > 0) %>% 
-% %   filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
-% %   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-% %   mutate(n = n()) %>% filter(n > 9) %>% 
-% %   summarize(pval = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "peters")$p.val) %>% 
-% %   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
-% %   theme_bw() + labs(title = "Peters Reporting Bias Test P-values for Binary Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
-% % @
-% % \caption{Histogram of p-values for Peters reporting bias test (rank based) for continuous outcome meta analysis.}
-% % \label{peters.bin}
-% % \end{figure}
-% % 
-% % 
-% % \begin{figure}
-% % <<echo=FALSE>>=
-% % data %>% filter(outcome.measure == "Risk Ratio" | outcome.measure == "Odds Ratio") %>% filter(file.nr != 3014) %>% 
-% %   filter(events1 > 0 | events2 > 0) %>% 
-% %   filter(total1 - events1 > 0 | total2 - events2 > 0) %>%
-% %   group_by(file.nr, outcome.nr, subgroup.nr) %>% 
-% %   mutate(n = n()) %>% filter(n > 9) %>% 
-% %   summarize(pval = metabias(metabin(event.e = events1, n.e = total1, event.c = events2, n.c = total2, sm = "OR"), method = "score")$p.val) %>% 
-% %   ggplot(aes(x = pval)) + geom_histogram(col = "gray15", fill = "dodgerblue", bins = 20) +
-% %   theme_bw() + labs(title = "Harbord Reporting Bias Test P-values for Binary Outcome Meta-Analyses") + xlab("P-value") + ylab("Frequency")
-% % @
-% % \caption{Histogram of p-values for Harbord reporting bias test (rank based) for continuous outcome meta analysis.}
-% % \label{harbord.bin}
-% % \end{figure}
-% 
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %Chunck 1
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% % Since most of the times the study publication year is available for a given result, the fraction of significant treatment effects found is shown over time in Figure \ref{study.significance.overtime}. The $p$-value was chosen to be 0.05  only times where a reasonbly large number of effect estimates is available is shown in order to reduce random fluctuation ($n$ > 800). 
-% % 
-% % \begin{figure}
-% % <<echo=FALSE, warning=FALSE>>=
-% % data.ext %>% filter(!is.na(sig.type)) %>%  ggplot(aes(x = study.year, fill = factor(sig.type), stat(count))) + geom_density(na.rm = T, position = "fill") + 
-% %   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))+ scale_x_continuous(limits = c(1970, 2017))
-% % @
-% % \caption{Mean of the absolute value of the normalized effect size plotted against the total sample size.}
-% % \label{study.significance.overtime}
-% % \end{figure}
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %Chunck 2
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% % The separation of studies can also be made based on the significance of heterogeneity between them when pooling them by means of a meta-analysis. Significant heterogeneity between studies corresponds to a rejection of the null-hypothesis that all the study treatment effect estimates share the same underlying distribution. The test used to assess heterogeneity was based on the between-study heterogeneity estimate $Q$ estimated as \citet{tau.estimator} suggested. This is shown in Figure \ref{primary.secondary.significance.sep.sig}.
-% % 
-% % \begin{figure}
-% % <<echo=FALSE, warning=FALSE>>=
-% % grid.arrange(sig.meta.Q1, nonsig.meta.Q, ncol= 1)
-% % @
-% % \caption{Overall fraction of studies whose treatment effect estimate was significant when pooled by means of meta-analysis, separated by significance of study treatment effect estimate. The fractions have been calculated
-% % by fixed-effects, random-effects and Hartung and Knapp adjusted random-effects meta-analysis}
-% % \label{primary.secondary.significance.sep.sig}
-% % \end{figure}
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %Chunck 3
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% % A second way to analyse meta-analyses is a cumulative meta-analysis that should reveal shifts in treatment effect sizes over time. This can again be done for the entire dataset, i.e. for all effect estimates and their ordering in time. It is important to scale the effect estimates here with respect to the estimates of the replication studies that are about the same subject, have the same outcome measure, etc. Also, only effect estimates that can be compared to other estimates before are included, i.e. only study results with one or more replica are included. Time needs to be scaled and normalized in order to compare multiple time-trends in effect size to each other and gain insights in the overall trend. This is done in Figure \ref{effects.overtime.separated}, separared for odds rati, risk ratio, and mean and standardized difference outcome measures. In order to reduce the spread over time of effect sizes, only studies between 1970 and 2019 were included, as well as studies with a minimal group size of 12 participants (each group).
-% % 
-% % \begin{figure}
-% % <<echo=FALSE>>=
-% % data.ext %>% filter(outcome.measure.new == "Mean Difference" | outcome.measure.new == "Std. Mean Difference" | 
-% %                 outcome.measure.new == "Risk Ratio" | outcome.measure.new == "Odds Ratio") %>% 
-% %   filter(total1 > 11 & total2 > 11) %>% filter(!is.na(study.year) & study.year > 1970 & study.year < 2019) %>% 
-% %   group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 1) %>% 
-% %   mutate(scaled.effect = abs(scale(effect)), scaled.time = scale(study.year)) %>% 
-% %   ggplot(aes(x = scaled.time, y = scaled.effect)) + geom_point(size = .5, alpha = 0.2)  + facet_wrap(~outcome.measure.new) +
-% %   geom_smooth() + theme_bw() +  ylab("absolute scaled effect")  + ylab("scaled time")
-% % @
-% % \caption{Absolute values of scaled effect sizes over scaled time, separated for outcome measures.}
-% % \label{effects.overtime.separated}
-% % \end{figure}
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %Chunck 4
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% % The same plots can be shown separately for meta-analyses with significant and non-significant pooled effect sizes. This is done in Figure \ref{bias.results.cont.sep} for continuous outcomes and \ref{bias.results.bin.sep} for binary outcomes.
-% % 
-% % \begin{figure}
-% % <<echo=FALSE, warning=FALSE>>=
-% % grid.arrange(p3, p4, ncol = 2)
-% % @
-% % \caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (continuous outcomes).}
-% % \label{bias.results.cont.sep}
-% % \end{figure}
-% % 
-% % \begin{figure}
-% % <<echo=FALSE, warning=FALSE>>=
-% % grid.arrange(p1, p2, ncol = 2)
-% % @
-% % \caption{Proportion where the null hypothesis of no small study effect is rejected based on the 5\% significance level for different tests (dichotomous outcomes).}
-% % \label{bias.results.bin.sep}
-% % \end{figure}
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %Chunck 5
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% % #Proportion of significant pooled estimates based on proportion of single pooled estimates
-% % mly %>% filter(NA.sig.type == 0) %>% ggplot(aes(x = mean.sig.type)) + geom_histogram()
-% % 
-% % mly %>% filter(NA.sig.type == 0) %>% ggplot(aes(x = mean.sig.type, fill = factor(sig.ranef), stat(count))) + 
-% %   geom_density(na.rm = T, position = "fill") + 
-% %   labs(fill = "Significance") + scale_fill_discrete(labels= c("Yes", "No"))
-% % 
-% % mly %>% filter(NA.sig.type == 0) %>% ggplot(aes(x = mean.sig.type, fill = factor(sig.ranef), stat(count))) + 
-% %   geom_histogram(position = "fill")
-% % 
-% % mly %>% filter(NA.sig.type == 0) %>% ggplot(aes(x = mean.sig.type, fill = factor(sig.ranef))) + 
-% %   geom_histogram()
-% 
-% % \begin{figure}
-% % <<echo=FALSE, warning=FALSE>>=
-% % plot(p.secondary.over.meansig)
-% % @
-% % \caption{Fraction of significant meta-analysis, dependent on the fraction of significant single results.}
-% % \label{secondary.significance.over.meansig}
-% % \end{figure}
-% 
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %Chunck 6
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% #Agreement proportions of publication bias tests:
-% 
-% #Binary:
-% meta.bin <- meta.bin %>%ungroup() %>%  mutate(tes.d.schwarzer = ifelse(tes.d.test == schwarzer.test, "agree", "disagree"),
-%                                               tes.d.peter = ifelse(tes.d.test == peter.test, "agree", "disagree"),
-%                                               tes.d.rucker = ifelse(tes.d.test == rucker.test, "agree", "disagree"),
-%                                               tes.d.harbord = ifelse(tes.d.test == harbord.test, "agree", "disagree"),
-%                                               schwarzer.peter = ifelse(schwarzer.test == peter.test, "agree", "disagree"),
-%                                               schwarzer.rucker = ifelse(schwarzer.test == rucker.test, "agree", "disagree"),
-%                                               schwarzer.harbord = ifelse(schwarzer.test == harbord.test, "agree", "disagree"),
-%                                               rucker.peter = ifelse(rucker.test == peter.test, "agree", "disagree"),
-%                                               rucker.harbord = ifelse(rucker.test == harbord.test, "agree", "disagree"),
-%                                               harbord.peter = ifelse(harbord.test == peter.test, "agree", "disagree"))
-% agreement.bin <- meta.bin %>% ungroup() %>% summarise(tes.d.schwarzer = sum(tes.d.schwarzer == "agree")/n(),
-%                                                       tes.d.peter = sum(tes.d.peter == "agree")/n(),
-%                                                       tes.d.rucker = sum(tes.d.rucker == "agree")/n(),
-%                                                       tes.d.harbord = sum(tes.d.harbord == "agree")/n(),
-%                                                       schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
-%                                                       schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
-%                                                       schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
-%                                                       rucker.peter = sum(rucker.peter == "agree")/n(),
-%                                                       harbord.peter = sum(harbord.peter == "agree")/n())
-% correlation.bin <- meta.bin %>%ungroup() %>%  summarise(tes.d.schwarzer = cor(stat.d.tes, stat.schwarzer),
-%                                                         tes.d.peter = cor(stat.d.tes, stat.peter),
-%                                                         tes.d.rucker = cor(stat.d.tes, stat.rucker),
-%                                                         tes.d.harbord = cor(stat.d.tes, stat.harbord),
-%                                                         schwarzer.peter = cor(stat.schwarzer, stat.peter),
-%                                                         schwarzer.rucker = cor(stat.schwarzer, stat.rucker),
-%                                                         schwarzer.harbord = cor(stat.schwarzer, stat.harbord),
-%                                                         rucker.peter = cor(stat.rucker, stat.peter),
-%                                                         harbord.peter = cor(stat.harbord, stat.peter))
-% # rsquared.bin <- meta.bin %>%ungroup() %>%  summarise(tes.d.schwarzer = summary(lm(stat.d.tes~ stat.schwarzer))$r.squared,
-% #                                                         tes.d.peter = summary(lm(stat.d.tes~ stat.peter))$r.squared,
-% #                                                         tes.d.rucker = summary(lm(stat.d.tes~ stat.rucker))$r.squared,
-% #                                                         tes.d.harbord = summary(lm(stat.d.tes~ stat.harbord))$r.squared,
-% #                                                         schwarzer.peter = summary(lm(stat.schwarzer~ stat.peter))$r.squared,
-% #                                                         schwarzer.rucker = summary(lm(stat.schwarzer~ stat.rucker))$r.squared,
-% #                                                         schwarzer.harbord = summary(lm(stat.schwarzer~ stat.harbord))$r.squared,
-% #                                                         rucker.peter = summary(lm(stat.rucker~ stat.peter))$r.squared,
-% #                                                         harbord.peter = summary(lm(stat.harbord~ stat.peter))$r.squared)
-% meta.bin <- meta.bin %>%ungroup() %>%  mutate(tes.d.schwarzer = ifelse(tes.d.test + schwarzer.test > 1, "agree", "disagree"),
-%                                               tes.d.peter = ifelse(tes.d.test + peter.test > 1, "agree", "disagree"),
-%                                               tes.d.rucker = ifelse(tes.d.test + rucker.test > 1, "agree", "disagree"),
-%                                               tes.d.harbord = ifelse(tes.d.test + harbord.test > 1, "agree", "disagree"),
-%                                               schwarzer.peter = ifelse(schwarzer.test + peter.test > 1, "agree", "disagree"),
-%                                               schwarzer.rucker = ifelse(schwarzer.test + rucker.test > 1, "agree", "disagree"),
-%                                               schwarzer.harbord = ifelse(schwarzer.test + harbord.test > 1, "agree", "disagree"),
-%                                               rucker.peter = ifelse(rucker.test + peter.test > 1, "agree", "disagree"),
-%                                               rucker.harbord = ifelse(rucker.test + harbord.test > 1, "agree", "disagree"),
-%                                               harbord.peter = ifelse(harbord.test + peter.test > 1, "agree", "disagree"))
-% agreement.bin <- meta.bin %>% ungroup() %>% summarise(tes.d.schwarzer = sum(tes.d.schwarzer == "agree")/sum(schwarzer.test),
-%                                                       tes.d.peter = sum(tes.d.peter == "agree")/sum(peter.test),
-%                                                       tes.d.rucker = sum(tes.d.rucker == "agree")/n(),
-%                                                       tes.d.harbord = sum(tes.d.harbord == "agree")/n(),
-%                                                       schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
-%                                                       schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
-%                                                       schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
-%                                                       rucker.peter = sum(rucker.peter == "agree")/n(),
-%                                                       harbord.peter = sum(harbord.peter == "agree")/n())
-% 
-% binary.tests.agreement <- rbind(agreement.bin, correlation.bin, rsquared.bin)
-% rownames(binary.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
-% colnames(binary.tests.agreement) <- c("Excess significance, Schwarzer", "Excess significance, Peter",
-%                                       "Excess significance, Rucker", "Excess significance, Harbord",
-%                                       "Peter, Schwarzer", "Schwarzer, Rucker", "Schwarzer, Harbord",
-%                                       "Rucker, Peter", "Harbord, Peter")
-% #--------------------------------------------------------------------------------------------------------------------#
-% 
-% 
-% #Continuous:
-% meta.cont <- meta.cont %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
-%                                                 thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
-%                                                 egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
-%                                                 tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
-%                                                 thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
-%                                                 tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
-% agreement.cont <- meta.cont %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
-%                                                          thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
-%                                                          tes.d.begg = sum(tes.d.begg == "agree")/n(),
-%                                                          thompson.egger = sum(thompson.egger == "agree")/n(),
-%                                                          thompson.begg = sum(thompson.begg == "agree")/n(),
-%                                                          egger.begg = sum(egger.begg == "agree")/n())
-% correlation.cont <- meta.cont %>% ungroup() %>% summarise(tes.d.egger = cor(stat.egger, stat.d.tes),
-%                                                           thompson.tes.d = cor(stat.thompson, stat.d.tes),
-%                                                           tes.d.begg = cor(stat.d.tes, stat.begg),
-%                                                           thompson.egger = cor(stat.thompson, stat.egger),
-%                                                           thompson.begg = cor(stat.thompson, stat.begg),
-%                                                           egger.begg = cor(stat.egger, stat.begg))
-% rsquared.cont <- meta.cont %>% ungroup() %>% summarise(tes.d.egger = summary(lm(stat.egger~ stat.d.tes))$r.squared,
-%                                                        thompson.tes.d = summary(lm(stat.thompson~ stat.d.tes))$r.squared,
-%                                                        tes.d.begg = summary(lm(stat.d.tes~ stat.begg))$r.squared,
-%                                                        thompson.egger = summary(lm(stat.thompson~ stat.egger))$r.squared,
-%                                                        thompson.begg = summary(lm(stat.thompson~ stat.begg))$r.squared,
-%                                                        egger.begg = summary(lm(stat.egger~ stat.begg))$r.squared)
-% agreement.sig.cont <- meta.cont %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/sum(egger.test),
-%                                                              thompson.tes.d = sum(thompson.tes.d == "agree")/sum(thompsom.test),
-%                                                              tes.d.begg = sum(tes.d.begg == "agree")/sum(begg.test),
-%                                                              thompson.egger = sum(thompson.egger == "agree")/sum(egger.test),
-%                                                              thompson.begg = sum(thompson.begg == "agree")/sum(thompson.test),
-%                                                              egger.begg = sum(egger.begg == "agree")/sum(egger.test))
-% 
-% 
-% 
-% cont.tests.agreement <- rbind(agreement.cont, correlation.cont, rsquared.cont)
-% rownames(cont.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
-% colnames(cont.tests.agreement) <- c( "Excess significance, Egger", "Excess significance, Thompson", 
-%                                      "Excess significance, Begg","Thompson, Egger", "Thompson, Begg", "Egger, Begg")
-% 
-% #--------------------------------------------------------------------------------------------------------------------#
-% 
-% 
-% #Survival:
-% meta.surv <- meta.surv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
-%                                                 thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
-%                                                 egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
-%                                                 tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
-%                                                 thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
-%                                                 tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
-% agreement.surv <- meta.surv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
-%                                                          thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
-%                                                          tes.d.begg = sum(tes.d.begg == "agree")/n(),
-%                                                          thompson.egger = sum(thompson.egger == "agree")/n(),
-%                                                          thompson.begg = sum(thompson.begg == "agree")/n(),
-%                                                          egger.begg = sum(egger.begg == "agree")/n())
-% correlation.surv <- meta.surv %>% ungroup() %>% summarise(tes.d.egger = cor(stat.egger, stat.d.tes),
-%                                                           thompson.tes.d = cor(stat.thompson, stat.d.tes),
-%                                                           tes.d.begg = cor(stat.d.tes, stat.begg),
-%                                                           thompson.egger = cor(stat.thompson, stat.egger),
-%                                                           thompson.begg = cor(stat.thompson, stat.begg),
-%                                                           egger.begg = cor(stat.egger, stat.begg))
-% # rsquared.surv <- meta.surv %>% ungroup() %>% summarise(tes.d.egger = summary(lm(stat.egger~ stat.d.tes))$r.squared,
-% #                                                           thompson.tes.d = summary(lm(stat.thompson~ stat.d.tes))$r.squared,
-% #                                                           tes.d.begg = summary(lm(stat.d.tes~ stat.begg))$r.squared,
-% #                                                           thompson.egger = summary(lm(stat.thompson~ stat.egger))$r.squared,
-% #                                                           thompson.begg = summary(lm(stat.thompson~ stat.begg))$r.squared,
-% #                                                           egger.begg = summary(lm(stat.egger~ stat.begg))$r.squared)
-% meta.surv <- meta.surv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test + egger.test > 1, "agree", "disagree"),
-%                                                 thompson.begg = ifelse(thompson.test + begg.test > 1, "agree", "disagree"),
-%                                                 egger.begg = ifelse(egger.test + begg.test > 1, "agree", "disagree"),
-%                                                 tes.d.egger = ifelse(tes.d.test + egger.test > 1, "agree", "disagree"),
-%                                                 thompson.tes.d = ifelse(thompson.test +tes.d.test > 1, "agree", "disagree"),
-%                                                 tes.d.begg = ifelse(tes.d.test + begg.test > 1, "agree", "disagree"))
-% agreement.sig.surv <- meta.surv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/sum(tes.d.test),
-%                                                              thompson.tes.d = sum(thompson.tes.d == "agree")/sum(tes.d.test),
-%                                                              tes.d.begg = sum(tes.d.begg == "agree")/sum(tes.d.test),
-%                                                              thompson.egger = sum(thompson.egger == "agree")/sum(egger.test),
-%                                                              thompson.begg = sum(thompson.begg == "agree")/sum(thompson.test),
-%                                                              egger.begg = sum(egger.begg == "agree")/sum(egger.test))
-% 
-% surv.tests.agreement <- rbind(agreement.surv, correlation.surv, rsquared.surv)
-% rownames(surv.tests.agreement) <- c("Test Agreement","p-value Correlation", "p-value R-squared")
-% colnames(surv.tests.agreement) <- c("Excess significance, Egger (survival)", "Excess significance, Thompson (survival)", 
-%                                     "Excess significance, Begg (survival)", "Thompson, Egger (survival)", 
-%                                     "Thompson, Begg (survival)", "Egger, Begg (survival)")
-% 
-% #--------------------------------------------------------------------------------------------------------------------#
-% 
-% #Merging:
-% test.agreement <- rbind(t(binary.tests.agreement), t(cont.tests.agreement), t(surv.tests.agreement))
-% 
-% #--------------------------------------------------------------------------------------------------------------------#
-% 
-% 
-% 
-% 
-% The agreement/coinicidence between between small study effect and excess significance tests is often not pronounced, thus, it will be compared by different methods. The results of it are displayed in Table \ref{test.agreement}. \\
-% The row names indicate which two tests are compared. First, the column ``Test Agreement'' quantifies the overall proportion by which the two tests agree in their dichotomous classification of $p$-values with respect to the 0.1 threshold, i.e. rejection or ``acceptance'' of the null-hypothesis. A ``Test Agreement'' equal to one thus indicates equivalent results, zero no correspondence whatsoever. The second column, ``Correlation'' gives the correlation between the test statistics. A positive correlation indicates positive correlation of $p$-values, negative correlation correlation in opposite directions. Notably, for a high correlation, the scales must not be equal. The ``R-squared'' value indicates to what extent one test-statistic can be predicted by another, and ignores additive differences between $p$-values (as for correlation), as well as multiplicative constants between them (i.e. $y ~ a + b*x$, $y$ and $x$ being two test-statistics). An R-squared value of 1 indicates complete predictability. \\
-% %Importantly, the order of the variables does not matter for the test-statistics for all indicators (i.e. test-statistics for $x$ and $y$ can be exchanged and the table stays the same). If a test is completely replaceable by another, all values in a row are equal to one. \\
-% The analysis is again done separately for the outcome types. Overall, the test agreement is always above 0.62, and excluding survival outcomes, even above 0.79 (survival outcomes have only 39 test results, and thus more stochastic variation). Correlation ranges from near perfect (Thompson, Egger continuous, 0.91) to negative correlation (Excess significance, Thompson survival: -0.17). The R-squared values also indicate that some tests are similar, while others are not.
-% 
-% <<echo=FALSE, results='asis'>>=
-% print(xtable(test.agreement, align = "lccc", caption = "Agreement in significance proportion, correlation and R-squared of linear regression
-%              between the p-values of the publication bias tests. Horizontal lines separate binary, continuous and survival outcomes (order as in table).",
-%              label = "test.agreement"), hline = c(0,0,9, 15, 21), size = "footnotesize")
-@
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %Chunck 1
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %Chunck 1
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %Chunck 1
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %Chunck 1
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %Chunck 1
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1961,33 +990,33 @@ The wald test statistics $p$-value for fixed and random effects meta-analyses an
 \chapter{Methods} 
 \section{Introduction and Notation}
 The analysis has already been said to be restricted on clinical or health care interventions. The interventions are restricted to comparisons of two treatment arms by some measure of sanity or worsening of health. The difference in this measure between the grouops is referred to as the treatment effect. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, Cohen's $d$ or Hedges $g$, Fisher's z score or Pearsons correlation coefficient. \\
-Let us consider a meta-analysis with $n$ study treatment effects ($n > 1$, but typically small). A study is indexed by $i$, and it's treatment effect by  $\theta_i$. The observed treatment effect is $\hat{\theta}_i$. The pooled treatment effect of a meta-analysis will be denoted as $\theta_M$, and consequently, the observed pooled treatment effect as $\hat{\theta}_M$. Furthermore, each treatment effect is typically measured with some standard error $s_i$ and an estimate of $s_i$ is denoted as $\hat{s}_i$. The $\hat{}$ sign thus indicates if it is an estimate.\\
+Let us consider a meta-analysis with $n$ study treatment effects ($n > 1$, but typically small). A study is indexed by $i$, and it's treatment effect by  $\theta_i$. The observed treatment effect is $\hat{\theta}_i$. The pooled treatment effect of a meta-analysis will be denoted as $\theta_M$, and consequently, the observed pooled treatment effect as $\hat{\theta}_M$. Furthermore, each treatment effect is typically measured with some standard error $\se_i$ and an estimate of $\se_i$ is denoted as $\hat{\se}_i$. The $\hat{}$ sign thus indicates if it is an estimate.\\
 For continuous outcomes, let $m_t$ be the mean of the treatment group, $m_c$ the mean of the control group, and equivalently $\textrm{sd}_t$ and $\textrm{sd}_c$ the corresponding standard deviations. $n_t$ and $n_c$ are the total number of participants in the groups.
 In the case of binary outcomes, let $e_t$ be the count of events in the treatment arm $e_c$ the count of events in the control group. The observed counts in a study $i$ are referred to as $e_{t,i}$ and analogously $e_{c,i}$.
 
 \section{Effect Measures and $p$-values}
 \subsection{Continuous Outcomes}
-For given $(m_t, m_c), (\textrm{sd}_t, \textrm{sd}_c)$ and $(n_t, n_c)$, one can compute mean difference as well as a standardized mean difference (here: Hedges $g$) and  a standard error thereof. Note that the definition of Hedges $g$ and its standard error $s$ varies among the literature, the following applies for this report:
+For given $(m_t, m_c), (\textrm{sd}_t, \textrm{sd}_c)$ and $(n_t, n_c)$, one can compute mean difference as well as a standardized mean difference (here: Hedges $g$) and  a standard error thereof. Note that the definition of Hedges $g$ and its standard error $\se$ varies among the literature, the following applies for this report:
 
 \begin{align}
-s &= \sqrt{\frac{(n_t - 1)\textrm{sd}_t^2 + (n_c - 1)\textrm{sd}_c^2}{n_t + n_c - 2}} & g &= \frac{m_t - m_c}{s} \label{eq:hedges.g}
+\se &= \sqrt{\frac{(n_t - 1)\textrm{sd}_t^2 + (n_c - 1)\textrm{sd}_c^2}{n_t + n_c - 2}} & g &= \frac{m_t - m_c}{\se} \label{eq:hedges.g}
 \end{align}
 
-The mean difference $\theta$ and its standard error $s$ can similarly be obtained by
+The mean difference $\theta$ and its standard error $\se$ can similarly be obtained by
 
 \begin{align}
-\theta &= m_t - m_c & s &= \sqrt{\textrm{sd}_t^2/n_t + \textrm{sd}_c^2/n_t}
+\theta &= m_t - m_c & \se &= \sqrt{\textrm{sd}_t^2/n_t + \textrm{sd}_c^2/n_t}
 \end{align}
 
-Both estimators take into account that the two groups might have unequal variances. A $p$-value to test the null hypothesis that the mean between group is equal is commonly obtained with the students $t$ test. The $t$ statistic is obtained, using $s$ and $g$ from \ref{eq:hedges.g}, by
+Both estimators take into account that the two groups might have unequal variances. A $p$-value to test the null hypothesis that the mean between group is equal is commonly obtained with the Students $t$ test. The $t$ statistic is obtained, using $s$ and $g$ from \ref{eq:hedges.g}, by
 
 \begin{align}
 t &= g/(s\sqrt{(1/n_t)+(1/n_c)}) \nonumber
 \end{align}
-and the $p$-value can be obtained with the cumulative student's $t$-distribution $F$ with $n_t + n_c - 2$ degrees of freedom:
+and the $p$-value can be obtained with the cumulative Student's $t$-distribution $F$ with $n_t + n_c - 2$ degrees of freedom:
 
 \begin{align}
-p &= 2(1-F(|t|)) \nonumber
+p &= 2(1-F(\abs{t})) \nonumber
 \end{align}
 
 The t-test is known to be not very reliable if combined sample size is small ($n < 30$), see for example \citet{t.test}.
@@ -1995,72 +1024,72 @@ The t-test is known to be not very reliable if combined sample size is small ($n
 \subsection{Binary Outcomes}
 Two commonly used effect measures for binary outcome data are risk ratios and odds ratios between treatment and control group. 
 The methods presented here can also be found, for example, in \cite[34]{Intro.meta}.
-Let $\theta$ be the logarithm to base 10 of the odds ratio. $\theta$ and its variance $s^2$ can be obtained by 
+Let $\theta$ be the natural logarithm of the odds ratio. $\theta$ and its variance $\se^2$ can be obtained by 
 
 \begin{align}
-\hat{\theta} &= \log(\frac{e_t*(n_c - e_c)}{e_c*(n_t - e_t)}) \nonumber \\
-\hat{s}^2 &= 1/e_t + 1/(n_t - e_t) + 1/e_c + 1/(n_c - e_c) \nonumber
+\theta &= \log(\frac{e_t\cdot(n_c - e_c)}{e_c\cdot(n_t - e_t)}) \nonumber \\
+\se^2 &= 1/e_t + 1/(n_t - e_t) + 1/e_c + 1/(n_c - e_c) \nonumber
 \end{align}
 
-Plugging in the observed counts will give the corresponding estimates. The logarithm of the risk ratio $\theta$ and its variance $s^2$ is similarly defined as
+Plugging in the observed counts will give the corresponding estimates. The logarithm of the risk ratio $\theta$ and its variance $\se^2$ is similarly defined as
 
 \begin{align}
 \theta &= \log(\frac{e_t/n_t}{e_c/n_c}) \label{eq:risk.ratio} \\
-s^2 &= 1/e_t + 1/n_t + 1/e_c + 1/e_t \label{eq:risk.ratio.variance}
+\se^2&= 1/e_t + 1/n_t + 1/e_c + 1/e_t \label{eq:risk.ratio.variance}
 \end{align}
 
-Using likelihood theory, one could show that the estimators are maximum likelihood estimators and that one can use the asymptotic normal distribution of the maximum likelihood estimator to calculate a $p$-value, e..g. \cite[98]{held2014}. \\
+Using likelihood theory, one could show that the estimators are maximum likelihood estimators and that one can use the asymptotic normal distribution of the maximum likelihood estimator to calculate a $p$-value, \eg \cite[98]{held2014}. \\
 Thus, with $\Phi$ as the cumulative standard normal distribution, we get
 \begin{align}
-p &= 2*(1-\Phi(|\hat{\theta}/\hat{s}|) \nonumber
+p &= 2\cdot(1-\Phi(\abs{\hat{\theta}/\hat{\se}}), \nonumber
 \end{align}
-, a $p$-value for the corresponding estimates, which summarizes the evidence against $\hat{\theta}$ being zero (i.e. the true risk/odds ratio being 1). \\
-Binary and continuous effect measures can be converted into each other, as described in section \ref{sec:transformation.effectsizes}.
+a $p$-value for the corresponding estimate, which summarizes the evidence against $\hat{\theta}$ being zero (\ie the true risk/odds ratio being 1). \\
+Binary and continuous effect measures can be converted into each other, as described in Section \ref{sec:transformation.effectsizes}.
 
 \subsection{Survival Outcomes}
-Time-to-event data with censoring has to be analyzed by special means. One frequently used method to take into account right-censoring is the Cox proportional hazards regression model \citep{Cox}. Because the method itself is not applied in this thesis, but only the resulting estimates of the parameters are used, the reader is referred to the extensive literature covering this topic (e.g. \citet{Surv}). \\
-The so-called hazard ratio estimated by cox p.h. regression is the ratio of the instantaneous risk of experiencing the event between two groups. Because it is a maximum likelihood estimator, one can again use its Wald test statistic to test for equal hazards. Let $\hat{\theta}$ be an estimate of the log hazard ratio and $\hat{s}$ an estimate of the standard error of it. As before
+Time-to-event data with censoring has to be analyzed by special means. One frequently used method to take into account right-censoring is the Cox proportional hazards regression model \citep{Cox}. Because the method itself is not applied in this thesis, but only the resulting estimates of the parameters are used, the reader is referred to the extensive literature covering this topic (\eg \citet{Surv}). \\
+The so-called hazard ratio estimated by Cox regression is the ratio of the instantaneous risk of experiencing the event between two groups. Because it is a maximum likelihood estimator, one can again use its Wald test statistic to test for equal hazards. Let $\hat{\theta}$ be an estimate of the log hazard ratio and $\hat{\se}$ an estimate of the standard error of it. As before
 \begin{align}
-p &= 2*(1-\phi(|\hat{\theta}/\hat{s}|) \nonumber
+p &= 2\cdot(1-\phi(\abs{\hat{\theta}/\hat{\se}(\hat{\theta})}) \nonumber
 \end{align}
 will give a $p$-value for the evidence against the null hypothesis.
 
 
 
 \section{Fixed and Random Effects Meta-Analysis} \label{sec:meta.analysis}
-The fixed effects meta-analysis estimator of the pooled treatment effect is a mean of the single treatment effect estimators, weighted by their standard errors \citep{fixed.effects.rosenthal}. Let $w_i = 1/s_i^2$ be the weights, and $\theta_M$ be the pooled estimator and $s_M^2$ its variance. Then 
+The fixed effects meta-analysis estimator of the pooled treatment effect is a mean of the single treatment effect estimators, weighted by their standard errors \citep{fixed.effects.rosenthal}. Let $w_i = 1/\se_i^2$ be the weights, and $\theta_M$ be the pooled estimator and $s_M^2$ its variance. Then 
 
 \begin{align}
 \theta_M &= \frac{\sum_{i = 1}^n w_i \theta_i}{\sum_{i = 1}^n w_i} &
 s_M^2 &= \frac{1}{\sum_{i = 1}^n w_i} \label{eq:fixed.effects}
 \end{align}
 
-This estimator minimizes the variance between the effects. An estimate $\hat{\theta}_M$ can be obtained by plugging in the observed treatment effects and variances $\hat{\theta}_i, \hat{s}_i^2$. The underlying idea is that we assume $\theta_i \sim N(\theta_M, s_i^2)$, $\theta_M$ being the true effect, all $\theta_i$ being distributed around an equal mean. \\
+This estimator minimizes the variance between the effects. An estimate $\hat{\theta}_M$ can be obtained by plugging in the observed treatment effects and variances $\hat{\theta}_i$ and $\hat{\se}_i^2$. The underlying idea is that we assume $\theta_i \sim N(\theta_M, \se_i^2)$, $\theta_M$ being the true effect, all $\theta_i$ being distributed around an equal mean. \\
 The random effects model \citep{whitehead} assumes instead that 
 \begin{align}
-\theta_i \sim N(\mu_i, s_i^2) &&
+\theta_i \sim N(\mu_i, \se_i^2) &&
 \mu_i \sim N(\theta_M, \tau^2) \label{eq:random.effects} 
 \end{align}
 
 Marginally, we have $\theta_i$ being distributed around a common mean $\theta_M$ with additional variance $\tau^2$:
 
 \begin{align}
-\theta_i | \mu_i \sim N(\theta_M, s_i^2 + \tau^2) \nonumber %\label{eq:random.effects.marginal}
+\theta_i \given \mu_i \sim N(\theta_M, \se_i^2 + \tau^2) \nonumber %\label{eq:random.effects.marginal}
 \end{align}
 
-$\tau^2$ is often referred to as a population variance or between-study variance, whereas $s_i^2$ can be interpreted as sampling error. The pooled treatment effect estimate $\theta_M$ of the random effects model and its variance is obtained by replacing the weights $w_i$ in equation \ref{eq:fixed.effects} with $w_i = 1/(s_i^2 + \tau^2)$. \\
-The model is superior to the fixed effects model whenever the standard errors of the treatment effects alone are unlikely to fully account for the entire variability observed between studies. Note that as $\tau^2$ increases, each $\theta_i$ will eventually get equal weights, irrespective of it's sampling error $s_i^2$.\\
+$\tau^2$ is often referred to as a population variance or between-study variance, whereas $\se_i^2$ can be interpreted as sampling error. The pooled treatment effect estimate $\theta_M$ of the random effects model and its variance is obtained by replacing the weights $w_i$ in equation \ref{eq:fixed.effects} with $w_i = 1/(\se_i^2 + \tau^2)$. \\
+The model is superior to the fixed effects model whenever the standard errors of the treatment effects alone are unlikely to fully account for the entire variability observed between studies. Note that as $\tau^2$ increases, each $\theta_i$ will eventually get equal weights, irrespective of it's sampling error $\se_i^2$.\\
 The estimation of $\tau^2$ has been subject to some debate in the statistical literature. Oftentimes, the method of moment estimator of \citet{tau.estimator} is used.
 We use the measure of heterogeneity, $Q$, and divide by $C$ after having subtracted the degrees of freedom $n-1$:
 
 \begin{align}
 Q &= \sum_{i = 1}^n w_i(y_i - \theta_M)^2 & C &= \sum_{i = 1}^n w_i - \frac{\sum_{i = 1}^n w_i^2}{\sum_{i = 1}^n w_i}\label{eq:Q.heterogeneity} \\
-\tau^2 &= \max(0, \frac{Q - (n-1)}{C}) \label{eq:Tau.definition}
+\tau^2 &= \max\big(0, \frac{Q - (n-1)}{C}\big) \label{eq:Tau.definition}
 \end{align}
 
 Again, $w_i, \theta_i ...$ have to be replaced by their estimates in order to get an estimate $\hat{\tau}^2$. \\
-The Paule-Mandel estimator \citep{paulemandel} is considered to have most often better properties than the method of moments estimator (e.g. \citet{tau.estimator.evaluation}).
-Since we defined $w_i = 1/(s_i^2 + \tau^2)$, it als holds that
+The Paule-Mandel estimator \citep{paulemandel} is considered to have most often better properties than the method of moments estimator (\eg \citet{tau.estimator.evaluation}).
+Since we defined $w_i = 1/(\se_i^2 + \tau^2)$, it als holds that
 
 \begin{align}
 w_i \textrm{Var}(\theta_i) &= 1 & \textrm{Var}(\sqrt{w_i}\theta_i) = 1 \nonumber
@@ -2069,7 +1098,7 @@ w_i \textrm{Var}(\theta_i) &= 1 & \textrm{Var}(\sqrt{w_i}\theta_i) = 1 \nonumber
 For any $w_i$, the variance can be estimated and equated to its expected value:
 
 \begin{align}
-s^2(w_i\theta_i) &= \frac{\sum_{i = 1}^n w_i(\theta_i - \theta_M)^2}{n-1} & \frac{\sum_{i = 1}^n w_i(\theta_i - \theta_M)^2}{n-1} = 1 \label{eq:paulemandel}
+\se^2(w_i\theta_i) &= \frac{\sum_{i = 1}^n w_i(\theta_i - \theta_M)^2}{n-1} & \frac{\sum_{i = 1}^n w_i(\theta_i - \theta_M)^2}{n-1} = 1 \label{eq:paulemandel}
 \end{align}
 
 $\theta_M$ can be estimated using equation \ref{eq:fixed.effects}, the only problem is to estimate $\tau^2$. It can be obtained through an iterative process, using a newly defined function
@@ -2084,11 +1113,11 @@ The estimation of $\tau^2$ is accompanied by uncertainty. A common procedure is 
 An advantage of the $\tau^2$ is that it is directly linked to the variability in the data. Additionally, one can use the $I^2$ statistic to see what portion the between study variance has of the overall variance. It is computed as
 
 \begin{align}
-I^2 &= (Q - n + 1)/Q \nonumber%\label{I2.proportion}
+I^2 &= \max\big(0, 1 - \frac{n-1}{Q}\big) \nonumber%\label{I2.proportion}
 \end{align}
 
-%Large values for $\hat{I}^2$ are of great importance when analyzing e.g. small study effects. \\
-Importantly, all proposed methods above assume normally distributed effect sizes and proper estimates $\hat{s}$ of the true standard error. This assumptions are not met for very small sample sizes and very few event counts. Alternatively, the mantel-haenszel method for risk and odds ratios (see e.g. \citet{mantel.haenszel}) could be used in the latter case. 
+%Large values for $\hat{I}^2$ are of great importance when analyzing \eg small study effects. \\
+Importantly, all proposed methods above assume normally distributed effect sizes and proper estimates $\hat{\se}$ of the true standard error. This assumptions are not met for very small sample sizes and very few event counts. Alternatively, the Mantel-Haenszel method for risk and odds ratios (see \eg \citet{mantel.haenszel}) could be used in the latter case. 
 
 
 
@@ -2106,7 +1135,7 @@ Importantly, all proposed methods above assume normally distributed effect sizes
 
 
 \section{Small Study Effects Tests}
-The tests that will be presented on the following pages are a common way to detect publication bias. Importantly, they are however not interpretable directly as evidence for publication bias, but this is left for the discussion chapter. The tests are also often referred to as funnel plot asymmetry tests, because of the popularity of a recent test that has been used frequently to test and adjust for publication bias, which goes under the name of trim-and-fill \citet{trimfill}. However, it is known for some time that the method has disadvantageous properties, therefore, it will not be discussed here, as well as the funnel plot (the radial plot will be used as an alternative).\\
+The tests that will be presented on the following pages are a common way to detect publication bias. Importantly, they are however not interpretable directly as evidence for publication bias, but this is left for the discussion chapter. The tests are also often referred to as funnel plot asymmetry tests, because of the popularity of a recent test that has been used frequently to test and adjust for publication bias, which goes under the name of trim-and-fill \citep{trimfill}. However, it is known for some time that the method has disadvantageous properties, therefore, it will not be discussed here, as well as the funnel plot (the radial plot will be used as an alternative).\\
 A test for small study effects will test in some ways if the size of the estimated treatment effect of a study depends on some measure of its size. An association between study size and treatment effect size can be interpreted as an artifact of publication bias.
 
 \subsection{Continuous Outcome Tests}
@@ -2114,11 +1143,11 @@ For a continuous outcomes that are normally distributed, the sample mean and var
 
 \subsubsection{Begg and Mazumdar: Rank Correlation Test} \label{sec:Begg}
 \citet{begg.ties} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
-A standardized effect size $\theta_i^\star$ can be computed as in \ref{begg.stand.eff}. $s_i^{2\star}$ is the variance of $\theta_i - \theta_M$ as defined in \ref{begg.stand.var}, $\theta_M$ being the fixed effects pooled treatment effect (\ref{eq:fixed.effects}. 
+A standardized effect size $\theta_i^\star$ can be computed as in \ref{begg.stand.eff}. $\se_i^{2\star}$ is the variance of $\theta_i - \theta_M$ as defined in \ref{begg.stand.var}, $\theta_M$ being the fixed effects pooled treatment effect (\ref{eq:fixed.effects}. 
 
 \begin{align}
-\theta_i^\star &= (\theta_i - \theta_M)/s_i^{2\star} \label{begg.stand.eff}  \\
-s_i^{2\star} &= s_i^2 - 1/\sum_{i = 1}^n\frac{1}{s_i^2}1 \label{begg.stand.var} 
+\theta_i^\star &= (\theta_i - \theta_M)/\se_i^{2\star} \label{begg.stand.eff}  \\
+\se_i^{2\star} &= \se_i^2 - 1/\sum_{i = 1}^n\frac{1}{\se_i^2}1 \label{begg.stand.var} 
 \end{align}
 
 A rank correlation test based on Kendall's tau is then used. First, the pairs are ordered after their ranks based on $s^{2\star}$. Then, for each $s^{2\star}$ rank, the corresponding ranks based on $\theta^{2\star}$ that are larger are counted and summed up to $u$. The number of ranks based on $\theta^{2\star}$ that are in contrary, smaller, are counted and summed up to $l$. Then the normalized test statistic $Z$ is given as
@@ -2129,7 +1158,7 @@ Z &= (u - l)/\sqrt{n(n-1)(2n + 5)/18} \nonumber
 
 Thus, large number of concordance between pairs will reflect in large $\hat{u}$ and small $\hat{l}$ and thus lead to a large $\hat{Z}$. The $p$-value is obtained using the standard normal distribution $\Phi$:
 \begin{align}
-p &= 2*(1-\Phi(|Z|)) \nonumber
+p &= 2\cdot(1-\Phi(\abs{Z})) \nonumber
 \end{align}
 
 The changes that have to be made int the case of ties are small and can be found in \cite[410]{begg.ties}.
@@ -2145,7 +1174,7 @@ y &= \beta_0 + \beta_1 x + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:si
 $\epsilon$ is the residual noise term that becomes necessary when $n$ pairs $(x_i, y_i)$ are given and there is no exact solution. Then it is common to look for the solution that minimizes the squared residuals, the least-squares solution. Formally,
 
 \begin{align}
-\operatorname*{argmin}_{\beta_0, \beta_1}(\sum_{i = 1}^n y_i - \beta_0 - \beta_1 x_i) \label{eq:least.squares}
+\operatorname*{argmin}_{\beta_0, \beta_1}\big(\sum_{i = 1}^n y_i - \beta_0 - \beta_1 x_i\big) \label{eq:least.squares}
 \end{align}
 
 Let $\mathbf{X}$ be a matrix with the explanatory variables $x$ and $\mathbf{y}$ a corresponding vector for all $y$:
@@ -2193,7 +1222,7 @@ $\bar{x}, \bar{y}$ denoting the sample means of the corresponding values $x_1, .
 To test whether there is evidence for the intercept $\beta_0$ to be unequal to some value $\beta_{H0}$, a $t$-test can be used. 
 
 \begin{align}
-p &= 2(1-F(|(\beta_0 - \beta_{H0})/s_{\beta_0}|)) \nonumber
+p &= 2(1-F(\abs{(\beta_0 - \beta_{H0})/s_{\beta_0}})) \nonumber
 \end{align}
 
 where $F$ is the cumulative $t$ distribution with $n-2$ degrees of freedom. $p$ will give the evidence against the null hypothesis $\beta_0 = \beta_{H0}$. \\
@@ -2206,19 +1235,19 @@ The concept is extendable to weighted linear regression. Weighted linear regress
 with positive weights $w_i$ that penalize large squared residuals for some $i$ more if $w_i$ is larger compared to other $w_i$. \\
 Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weights on the diagonal and zeros on the off-diagonals. The estimates in \ref{eq:regression.parameters} and \ref{eq:regression.variances} can still be used if $\mathbf{X}$ is exchanged with $\mathbf{X}^\star =  \mathbf{W} \mathbf{X}$ and $\mathbf{y}$ with $\mathbf{y}^\star = \mathbf{W} \mathbf{y}$. \label{weighted.regression} \\
 Now it is shown how linear regression can be used to test dependency of effect sizes on study sizes. The simplest application was introduced by \citet{Egger}.
-Let $\theta/s$ be the dependent variable $y$ and $1/s$ the explanatory variable $x$. If plotted, this corresponds to a radial or Galbraith plot \citet{galbraith}. The linear regression equation as introduced before in \ref{eq:simple.regression} can be written in two ways:
+Let $\theta/s$ be the dependent variable $y$ and $1/s$ the explanatory variable $x$. If plotted, this corresponds to a radial or Galbraith plot \citep{galbraith}. The linear regression equation as introduced before in \ref{eq:simple.regression} can be written in two ways:
 
 \begin{align}
 \theta/s &= \beta_0 + \beta_1/s + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:radial.plot} 
 \end{align}
 
-\ref{eq:radial.plot} is often provided due to the correspondence to the radial plot. However, it is equivalent to
+Equation \eqref{eq:radial.plot} is often provided due to the correspondence to the radial plot. However, it is equivalent to
 
 \begin{align}
-\theta &= \beta_0 + \beta_1 s + \epsilon, & \epsilon \sim N(0, w^{-1}\sigma^2) \label{eq:egger.plot}
+\theta &= \beta_0 + \beta_1 \se + \epsilon, & \epsilon \sim N(0, w^{-1}\sigma^2) \label{eq:egger.plot}
 \end{align}
 
-with weights $w = 1/s^2$. Thus testing $\beta_0$ of \ref{eq:radial.plot} or $\beta_1$ is equivalent. The corresponding $p$-value is then used as evidence for a small study effect. Plugging in  $\theta_i/s_i, 1/s_i$ as $y_i, x_i$ into equation \ref{eq:regression.parameters} and \ref{eq:regression.variances} will give the estimates for $\hat{\beta}_0, \hat{\beta}_1,\hat{s}_{\beta_0}$ and $\hat{s}_{\beta_1}$.
+with weights $w = 1/\se^2$. Thus testing $\beta_0$ of \ref{eq:radial.plot} or $\beta_1$ is equivalent. The corresponding $p$-value is then used as evidence for a small study effect. Plugging in  $\theta_i/\se_i, 1/\se_i$ as $y_i, x_i$ into equation \ref{eq:regression.parameters} and \ref{eq:regression.variances} will give the estimates for $\hat{\beta}_0, \hat{\beta}_1,\hat{\se}_{\beta_0}$ and $\hat{\se}_{\beta_1}$.
 
 % \begin{align}
 % \hat{\beta_1} &= \frac{\sum_{i = 1}^n (\varphi_i - \bar{\varphi})(\theta^\star_i - \bar{\theta}^\star)}{\sum_{i = 1}^n (\varphi_i - \bar{\varphi})^2} &
@@ -2230,28 +1259,28 @@ with weights $w = 1/s^2$. Thus testing $\beta_0$ of \ref{eq:radial.plot} or $\be
 A method proposed in \citet{thompson.sharp} allows for between study variance $\tau^2$, as introduced before in section \ref{sec:meta.analysis}. It extends the previously seen linear regression approach with $x = 1/s$ and $y = \theta/s$ by introducing weights. The effect size $\theta_i$ is assumed to be distributed as
 
 \begin{align}
-\theta_i \sim N(\beta_0 + \beta_1 s_i, s_i^2 + \tau^2) \label{t.sharp.regression}
+\theta_i \sim N(\beta_0 + \beta_1 \se_i, \se_i^2 + \tau^2) \label{t.sharp.regression}
 \end{align}
 
 $\tau^2$ is estimated as in equation \ref{eq:Tau.definition} (method of moments). %or \ref{eq:paule.mandel}. 
-The weights are set as $w_i = 1/\sqrt{s_i^2 + \tau^2})$. After adjusting for the weights as described in \ref{weighted.regression}, we can proceed analogous to Egger's test. The $p$-value for $\beta_{0} \neq 0$ reflects the evidence for a small study effect.
+The weights are set as $w_i = 1/\sqrt{\se_i^2 + \tau^2})$. After adjusting for the weights as described in \ref{weighted.regression}, we can proceed analogous to Egger's test. The $p$-value for $\beta_{0} \neq 0$ reflects the evidence for a small study effect.
 
 \subsection{Dichotomous Outcomes Tests}
  
-The issue with dichotomous outcomes is that effect size and variance of effect size are correlated, which can readily be seen in \ref{eq:risk.ratio} and \ref{eq:risk.ratio.variance}. For example, a small number of event counts in one or group will inflate the variance and the effect size. Consequently, the tests above will tend to reject the null-hypothesis too often, i.e. report false positives. A number of solutions to this problem are provided in the literature.
+The issue with dichotomous outcomes is that effect size and variance of effect size are correlated, which can readily be seen in \ref{eq:risk.ratio} and \ref{eq:risk.ratio.variance}. For example, a small number of event counts in one or group will inflate the variance and the effect size. Consequently, the tests above will tend to reject the null-hypothesis too often, \ie report false positives. A number of solutions to this problem are provided in the literature.
 
 
 \subsubsection{Peters Test: Weighted Linear Regression Test} \label{sec:Peter}
-Instead of taking the standard error $s$ as explanatory variable $x$ as in Egger's Test, the inverse of the total sample size is used. Additionally, the variances $s_i^2$ are used as weights. Thus, the subsequent test procedure is identical to Egger's test. Peters test is a a small modification of Macaskill's test where the explanatory variable is the sample size instead of its inverse.
+Instead of taking the standard error $s$ as explanatory variable $x$ as in Egger's Test, the inverse of the total sample size is used. Additionally, the variances $\se_i^2$ are used as weights. Thus, the subsequent test procedure is identical to Egger's test. Peters test is a a small modification of Macaskill's test where the explanatory variable is the sample size instead of its inverse.
 
 
 \subsubsection{Harbord's Test: Score based Test} \label{sec:Harbord}
 A rank based alternative to Peters test for binary outcomes is Harbord's test \citep{Harbord}.
-It uses a different treatment effect and variance estimate: the score $\varphi$ of the log-likelihood, evaluated at log odds ratio $\theta_0 = 0$ and its inverse Fisher information $s^2$. Formally,
+It uses a different treatment effect and variance estimate: the score $\varphi$ of the log-likelihood, evaluated at log odds ratio $\theta_0 = 0$ and its inverse Fisher information $\se^2$. Formally,
 
 \begin{align}
 \varphi &= e_t - (e_t - e_c)(e_t + (n_t - e_t))/(n_t + n_c) \label{harbord.score} \\
-s^2 &= \frac{(e_t + e_c)(e_t + (n_t - e_t))(e_c + (n_c - e_c))((n_t - e_t) + (n_c - e_c))}{(n_t + n_c)^2(n_t + n_c - 1)} \label{harbord.variance}
+ \se^2&= \frac{(e_t + e_c)(e_t + (n_t - e_t))(e_c + (n_c - e_c))((n_t - e_t) + (n_c - e_c))}{(n_t + n_c)^2(n_t + n_c - 1)} \label{harbord.variance}
 \end{align}
 
 It can be shown that they are both good approximations of the log odds ratio and its variance if the real $\theta$ is not too far from zero. The standardized estimator $r_i/v_i$ is also known as Pet0 odds ratio. The obtained scores and variances can be used in Egger's test as treatment effects and variances.
@@ -2261,16 +1290,16 @@ It can be shown that they are both good approximations of the log odds ratio and
 \citet{Schwarzer} developed a test for the correlation between $E_t - \mathbb{E}(E_t)$ and the variance of $E_t$, $E_t$ being a random variable from the non-central hypergeometric distribution, assuming a fixed log odds ratio. \\
 $\mathbb{E}(E_t)$ and variance of $E_t$ are then estimated based on $e_t$. The standardized cell count deviation 
 \begin{align}
-(e_t - \mathbb{E}(E_t))/\sqrt(s_i^2)
+(e_t - \mathbb{E}(E_t))/\sqrt(\se_i^2)
 \end{align}
-and the inverse of $s_i^2$ is then used as before in Begg and Mazumdar's test.
+and the inverse of $\se_i^2$ is then used as before in Begg and Mazumdar's test.
 
 \subsubsection{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables} \label{sec:Rucker}
 The correlation between variance and effect size of dichotomous outcome measures can be abolished by the variance stabilizing transformation for binomial random variables. We use that the arcsine function is the variance stabilizing transformation for a proportion. Let
 
 \begin{align}
-\theta_i = \arcsin{e_t/n_t} - \arcsin{e_c/n_c} \nonumber &
-s_i^2 = 1/4n_t + +/4n_c \nonumber
+\theta_i &= \arcsin{e_t/n_t} - \arcsin{e_c/n_c} \nonumber &
+\se_i^2 &= 1/4n_t + /4n_c \nonumber
 \end{align}
 
 Then one can optionally apply Begg and Mazumdar's rank correlation test or Thompson and Sharp's test using the newly obtained estimates.
@@ -2278,14 +1307,14 @@ Then one can optionally apply Begg and Mazumdar's rank correlation test or Thomp
 
 \subsection{Excess Significance Test} \label{sec:excess.significance}
 \citet{excess.significance} developped an exploratory test to detect if the proportion of significant findings is larger than expected. Note that significance is here defined as one-sided significance, with the direction of the test being the same for each study. \\
-We assume that the effects are equally distributed around a true mean effect $\theta_M$, which can be estimated as for example by fixed effects Meta-Analysis \ref{eq:fixed.effects}. Let $O$ be the number of significant study results out of $n$ studies and $\alpha$ the significance threshold. Corresponding to the study effect $\theta_i$, we can specify the power $1 - \beta_i$, the probability to accepting a true result. Let $z_{\alpha,i}$ be the $1-\alpha$ quantile of a normal distribution with standard error $\hat{s}_i$. The power of study $i$ can be estimated as:
+We assume that the effects are equally distributed around a true mean effect $\theta_M$, which can be estimated by fixed effects Meta-Analysis \ref{eq:fixed.effects}. Let $O$ be the number of significant study results out of $n$ studies and $\alpha$ the significance threshold. Corresponding to the study effect $\theta_i$, we can specify the power $1 - \beta_i$, the probability to accepting a true result. Let $z_{\alpha,i}$ be the $1-\alpha$ quantile of a normal distribution with standard error $\hat{\se}_i$. The power of study $i$ can be estimated as:
 
 \begin{align}
 1 - \hat{\beta}_i &= F(z_\alpha) 
 \end{align}
 
-with $F$ being the cumulative distribution of a normal with mean $\hat{\theta}_M$ and standard deviation $\hat{s}_i$. \\
-If we assume no bias in $\theta_i, \theta_M$, the expected number of significant study results is then just
+with $F$ being the cumulative distribution of a normal with mean $\hat{\theta}_M$ and standard deviation $\hat{\se}_i$. \\
+If we assume no bias in $\theta_i$ and $\theta_M$, the expected number of significant study results is then just
 
 \begin{align}
 E &= \sum_{i = 1}^n (1 - \beta_i) \nonumber
@@ -2297,19 +1326,13 @@ $E$ can then be compared to $O$ by constructing a test statistic $\chi$:
 \chi  &= \big( \frac{(O - E)^2}{E} + \frac{(O - E)^2}{n - E}\big) \nonumber
 \end{align}
 
-and consecutively, calculating a $p$-value for the evidence against the null-hypothesis of $O = E$ with a $\chi^2$ distribution with one degree of freedom. Alternatively, one can also use a binomial proportion test, which tests if the probability of significance is the same as expected. A simple Wald test statistic $Z$ is given by:
+and consecutively, calculating a $p$-value for the evidence against the null-hypothesis of $O = E$ with a $\chi^2$ distribution with one degree of freedom. Alternatively, one can also use a binomial test, which is encouraged when $n$ and $O$ is small. We will get a one sided $p$-value for excess significance, $\P(X \geq O)$, by 
 
 \begin{align}
-Z = \frac{O/n - E/n}{\sqrt{(O/n(1-O/n))/n}}
+p &= \sum_{i = O}^n(n \choose i p^i (1-p)^{n - i})
 \end{align}
 
-The one sided $p$-value for the alternative hypothesis $O/n > E/n$ is
-
-\begin{align}
-p &= 1 - \Phi(Z) \nonumber
-\end{align}
-
-with $\Phi$ being the cumulative distribution function of a standard normal. \citet{excess.significance} propose it to be more suitable if $n$ is small.
+with $p = E/n$ and $X$ being a binomial random variable with probability $p$. 
 
 
 
@@ -2328,7 +1351,7 @@ with $\Phi$ being the cumulative distribution function of a standard normal. \ci
 
 
 \section{Small Study Effect and Publication Bias Adjustment}
-There are different approaches to correct for small study effects and publication bias. They can mainly be distinguished by their underlying methods: regression based approaches aim to regress the effect to a study with infinite precision (i.e. very small standard error) or to a summary effect, corrected for publication bias. Selection models aim to simulate different, hypothetical selection processes and attain a approximate treatment effect by sensitivity analysis:
+There are different approaches to correct for small study effects and publication bias. They can mainly be distinguished by their underlying methods: regression based approaches aim to regress the effect to a study with infinite precision (\ie very small standard error) or to a summary effect, corrected for publication bias. Selection models aim to simulate different, hypothetical selection processes and attain a approximate treatment effect by sensitivity analysis:
 
 \subsection{Adjustment by Regression}
 \citet{limitmeta} use a random effects model %together with shrinkage procedure 
@@ -2337,14 +1360,14 @@ to obtain an unbiased estimate. Similarly to
 regression based tests for small study effects, we have
 
 \begin{align}
-\theta_i & = \beta_0 + \beta_1\sqrt{s_i^2 + \tau^2} + \epsilon_i\sqrt{v_i + \tau^2}, \epsilon_i \stackrel{\textrm{iid}}{\sim} N(0,1)  \label{eq:limitmeta.regression}
+\theta_i & = \beta_0 + \beta_1\sqrt{\se_i^2 + \tau^2} + \epsilon_i\sqrt{v_i + \tau^2}, \epsilon_i \stackrel{\textrm{iid}}{\sim} N(0,1)  \label{eq:limitmeta.regression}
 \end{align}
 
-The only difference between Thompson and Sharp's variant is $x = \sqrt{s^2 + \tau^2}$ instead of $x = \sqrt{s^2}$. $\beta_{1}$ represents the bias introduced by small study effects, as illustrated in the following equations:
+The only difference between Thompson and Sharp's variant is $x = \sqrt{\se^2 + \tau^2}$ instead of $x = \sqrt{\se^2}$. $\beta_{1}$ represents the bias introduced by small study effects, as illustrated in the following equations:
 
 \begin{align}
-\mathbb{E}((\theta_i - \beta_0)/\sqrt{s_i^2}) \rightarrow \beta_1 \textrm{ if } s_i \rightarrow \infty \nonumber \\ %\label{limitmeta.infinitesample} \\
-\mathbb{E}(theta_i) \rightarrow \beta_0 + \beta_1 \tau \textrm{if} s_i \rightarrow 0 \nonumber
+\mathbb{E}((\theta_i - \beta_0)/\sqrt{\se_i^2}) \rightarrow \beta_1 \textrm{ if } \se_i \rightarrow \infty \nonumber \\ %\label{limitmeta.infinitesample} \\
+\mathbb{E}(theta_i) \rightarrow \beta_0 + \beta_1 \tau \textrm{if} \se_i \rightarrow 0 \nonumber
 \end{align}
 
 After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen before in the simple linear regression framework. Now we have basically two possible estimates at hand:
@@ -2372,7 +1395,7 @@ which is similar to the random-effects meta-analysis setting. $\theta$ is the po
 The \textit{selection model} is defined as follows. Suppose a selection of studies with reported ($\neq$ estimated) standard errors $s$ (likely different from $\sigma$). Only a proportion of the selection will be published, with a defining the overall proportion of published studies and b (assumed to be positive) defining how fast this proportion increases with $s$ becoming smaller. Formally,
 
 \begin{align}
-P(\textrm{select}|s) &= \Phi(a + b/s) \nonumber %\label{copas.selection1}
+P(\textrm{select}\given s) &= \Phi(a + b/s) \nonumber %\label{copas.selection1}
 \end{align}
 
 The equation can be rewritten as 
@@ -2387,23 +1410,23 @@ So far, we have, for a study $i$
 \begin{align}
 \theta_i = \mu_i + \sigma_i\epsilon_i \nonumber \\ 
 \mu_i \sim N(\theta, \tau^2) \nonumber \\
-z_i = a + b/s_i + \delta_i \nonumber
+z_i = a + b/\se_i + \delta_i \nonumber
 \end{align}
 
 where $(\epsilon_i, \delta_i)$ are standard normal residuals. The two models are coupled by introducing a correlation $\rho = cor(\theta_i, z_i)$ by defining $(\epsilon_i, \delta_i)$ as bivariate standard normals. It follows that,
 %Every given study $i$ in the meta-analysis has $z_i > 0$. 
 if $\rho_i$ is large and positive and $z_i > 0$, then the estimate of a study $i$ that is selected is likely to have positive $\epsilon_i$ and $\delta_i$ and thus, the true mean $\mu$ is likely to be overestimated. \\
-Let $u_i = a + b/s_i$, $\lambda(u_i)$ the Mill's ratio $\phi(u_i)/\Phi(u_i)$ ($\phi$ is the standard normal density function and $\Phi$ the cdf) and $\tilde{\rho_i} = \sigma/\sqrt(\tau^2 + \sigma_i^2) \rho_i$. The probability of a study being selected, given $s_i$ and $\theta_i$, is
+Let $u_i = a + b/\se_i$, $\lambda(u_i)$ the Mill's ratio $\phi(u_i)/\Phi(u_i)$ ($\phi$ is the standard normal density function and $\Phi$ the cdf) and $\tilde{\rho_i} = \sigma/\sqrt(\tau^2 + \sigma_i^2) \rho_i$. The probability of a study being selected, given $\se_i$ and $\theta_i$, is
 
 \begin{align}
-P(\textrm{select}|s_i, \theta_i) = %P(a,b,s,y) = 
-\Phi(\frac{u_i + \tilde{\rho_i}((\theta_i - \mu)/\sqrt(\tau^2 + \sigma_i^2))}{\sqrt{1 - \tilde{\rho_i^2}}}) \nonumber
+P(\textrm{select} \given \se_i, \theta_i) = %P(a,b,s,y) = 
+\Phi\big(\frac{u_i + \tilde{\rho_i}((\theta_i - \mu)/\sqrt(\tau^2 + \sigma_i^2))}{\sqrt{1 - \tilde{\rho_i^2}}}\big) \nonumber
 \end{align}
 
-Which again shows that larger $s_i$ and $\theta_i$ lead to a larger selection probability. It can also be shown that the expected value 
+Which again shows that larger $\se_i$ and $\theta_i$ lead to a larger selection probability. It can also be shown that the expected value 
 
 \begin{align}
-\mathbb{E}(\theta_i|s_i, \textrm{select}) = \mu + \rho_i\sigma_i\lambda(u_i) \label{eq:copas.expectation}
+\mathbb{E}(\theta_i \given \se_i, \textrm{select}) = \mu + \rho_i\sigma_i\lambda(u_i) \label{eq:copas.expectation}
 \end{align}
 
 which shows that the expected value for a study is larger for larger $\sigma$. \\
@@ -2411,35 +1434,35 @@ A likelihood for $\theta_i$, conditional on $z>0$ can be formulated to estimate 
 The nuisance parameter $\sigma_i$ can be replaced by an estimate if the sample size in the studies is large enough. Since
 
 \begin{align}
-\textrm{Var}(\theta_i| s_i, z_i > 0) = \sigma_i^2 (1 - c_i^2\rho_i^2) \nonumber
+\textrm{Var}(\theta_i\given \se_i, z_i > 0) = \sigma_i^2 (1 - c_i^2\rho_i^2) \nonumber
 \end{align}
 
 with $c^2 = \lambda(u_i)(u_i + \lambda(u_i))$, we can replace $\sigma_i^2$ by $\hat{\sigma}_i^2 = \frac{1}{1-c_i^2\rho_i^2}$. Although one has to evaluate the likelihood for fixed pairs $(a,b)$, one can compare the fit of the model to evaluate which one is more suitable:
-With equation \ref{eq:copas.expectation}, one can obtain fitted values of $\theta_i$ based on $s_i$. Also, for two different pairs $(a,b)$, $(a^\star, b^\star)$,
+With equation \ref{eq:copas.expectation}, one can obtain fitted values of $\theta_i$ based on $\se_i$. Also, for two different pairs $(a,b)$, $(a^\star, b^\star)$,
 
 \begin{align}
-\mathbb{E}(\theta_i|z_i > 0, a^\star, b^\star) - \mathbb{E}(\theta_i|z_i > 0, a, b) \approx c^\star + \rho(\lambda(a^\star) - \lambda(a))s_i \nonumber
+\mathbb{E}(\theta_i\given z_i > 0, a^\star, b^\star) - \mathbb{E}(\theta_i\given z_i > 0, a, b) \approx c^\star + \rho(\lambda(a^\star) - \lambda(a))\se_i \nonumber
 \end{align}
 
-and that local departures of $\theta_i$ can be approximated by adding a linear term in $s_i$ to the expectation of $\theta_i$. Thus, to test a pair $(a,b)$, it is sufficient to test $\beta \neq 0$ in
+and that local departures of $\theta_i$ can be approximated by adding a linear term in $\se_i$ to the expectation of $\theta_i$. Thus, to test a pair $(a,b)$, it is sufficient to test $\beta \neq 0$ in
 
 \begin{align}
-\theta_i &= \theta + \beta s_i + \sigma_i \epsilon_i \nonumber
+\theta_i &= \theta + \beta \se_i + \sigma_i \epsilon_i \nonumber
 \end{align}
 
 with restriction that $\rho \geq 0$. To test some pair $(a,b)$ against the scenario with no selection, we set $a^\star = \infty$ (or $\rho = 0$). A likelihood ratio test will give a test statistic to test against $H0 =$ no selection:
 
 \begin{align}
-\chi^2 &= 2*(\operatorname*{max1}_{\theta, \tau, \beta}\tilde{L}(\theta, \tau, \beta) - \operatorname*{max}_{\theta, \tau}\tilde{L}(\theta, \tau, 0)) \label{eq:copas.small.study}
+\chi^2 &= 2\cdot(\operatorname*{max1}_{\theta, \tau, \beta}\tilde{L}(\theta, \tau, \beta) - \operatorname*{max}_{\theta, \tau}\tilde{L}(\theta, \tau, 0)) \label{eq:copas.small.study}
 \end{align}
 
 with 
 \begin{align}
-\tilde{L}(\theta, \tau, \beta) = -\frac{1}{2}\sum_{i = 1}^n[\log(\tau^2 + \sigma_i^2) + \frac{(\theta_i - \theta - \beta s_i)^2}{(\tau^2 + \sigma_i^2)}] \nonumber
+\tilde{L}(\theta, \tau, \beta) = -\frac{1}{2}\sum_{i = 1}^n[\log(\tau^2 + \sigma_i^2) + \frac{(\theta_i - \theta - \beta \se_i)^2}{(\tau^2 + \sigma_i^2)}] \nonumber
 \end{align}
 
 $\chi^2$ can be used with a $\chi^2$ distribution with one degree of freedom to obtain a $p$-value. Note that the test is almost equivalent to Egger's small study effect test with $\tau^2 = 0$. Thus, although the copas selection model models publication bias, it is dependent on the small study effects to find the most suitable pair $(a,b)$. \\
-If one applies the model to a single meta-analysis, a sensitivity analysis is suggested. One can observe how $\theta$ and it's confidence intervals change dependent on the underlying selection process. Selection models are in general not recommended for inference (e.g. \citet{selection.assessment}). 
+If one applies the model to a single meta-analysis, a sensitivity analysis is suggested. One can observe how $\theta$ and it's confidence intervals change dependent on the underlying selection process. Selection models are in general not recommended for inference (\eg \citet{selection.assessment}). 
 \citet{limitmeta} have shown how the method can be implemented in a simulation for inference purposes. \\
 A range of values of $(a,b)$ are applied, and the test for residual small study effect as described in equation \ref{eq:copas.small.study} is applied. If all obtained $p$-values from the test are above a threshold 0.1, this is interpreted as no evidence, and no need for modelling, and the standard, classical random effects meta-analysis is retained. If none of the $p$-values is above the threshold, a wider range of values for $(a,b)$ is used. When some $p$-values are above, and some below the threshold, the pair $(a,b)$ with the smallest number of missing studies is retained (that is, the least intense underlying selection model is chosen).\\
 Currently, there is no test to detect miss-specifications in the model itself, the authors themselves have argued that a non-parametric test of the residuals would lack power.
@@ -2447,13 +1470,13 @@ Currently, there is no test to detect miss-specifications in the model itself, t
 
 \section{Transformation between effect sizes} \label{sec:transformation.effectsizes}
 Assuming that binary outcomes result from a dichotomization of originally continuous random variables, in this case, the logistic distribution, a transformation from typical binary effect measures to Cohen's $d$ can be achieved \cite[47]{Intro.meta}. \\
-Let $\theta$ be a log odds ratio and $s$ its standard error. Cohen's $d$ and it's variance $s_d^2$ is obtained by
+Let $\theta$ be a log odds ratio and $s$ it's standard error. Cohen's $d$ and it's variance $s_d^2$ is obtained by
 
 \begin{align}
-d &= \theta \frac{\sqrt{3}}{\pi} & s_d^2 = s^2 \frac{\sqrt{3}}{\pi} \nonumber
+d &= \theta \frac{\sqrt{3}}{\pi} & s_d^2 =  \se^2\frac{\sqrt{3}}{\pi} \nonumber
 \end{align}
 
-$\frac{\pi}{\sqrt{3}} = 1.81$ is the standard deviation of the logistic distribution $L(\mu, \eta)$ with scale parameter $\eta = 1$, so we just divide the log odds ratio and it's variance through the standard deviation. The approximation works only well if $e_t$ and $e_c$ are not very small, especially in the case of $s_d^2$. Plugging in the observed log odds ratio $\hat{\theta}$ and $\hat{s}^2$ will give an estimate of Cohen's $d$.\\
+The factor $\frac{\pi}{\sqrt{3}} = 1.81$ is the standard deviation of the logistic distribution $L(\mu, \eta)$ with scale parameter $\eta = 1$, so we just divide the log odds ratio and it's variance through the standard deviation. The approximation works only well if $e_t$ and $e_c$ are not very small, especially in the case of $s_d^2$. Plugging in the observed log odds ratio $\hat{\theta}$ and $\hat{\se}^2$ will give an estimate of Cohen's $d$.\\
 Pearson's correlation can be attained by the formulas (\citet{olkin1985dtor}, \cite[48]{Intro.meta})
 
 \begin{align}
@@ -2466,7 +1489,7 @@ s_r^2 &= \frac{a^2 s_d^2}{(d^2 + a)^3} \nonumber
 
 Finally, we can get to a fisher's z-scaled correlation $z$ and it's variance $s_z^2$ by using
 \begin{align}
-z &= 0.5 \ln(\frac{1 + r}{1 - r}) & \nonumber
+z &= 0.5 \ln\big(\frac{1 + r}{1 - r}\big) & \nonumber
 s_z^2 &= \frac{1}{n-3}
 \end{align}
 
@@ -2496,7 +1519,7 @@ s_z^2 &= \frac{1}{n-3}
 % \hat{\beta}_0 &= \bar{y} - \hat{\beta}_1 \bar{x} \label{eq:regression.estimator}
 % \end{align}
 % 
-% $\bar{x}, \bar{y}$ denotes the sample mean of the corresponding values $x_1, .., x_n$ and $y_1, ..., y_n$. $\hat{\beta}_0$ is the intercept and $\hat{\beta}_1$ the slope of the fitted line. Let $\hat{y}_i = \beta_0 + \beta_1 x_i$ and $e_i = y_i - \hat{y}_i$. The variances $s^2_\beta$
+% $\bar{x}, \bar{y}$ denotes the sample mean of the corresponding values $x_1, .., x_n$ and $y_1, ..., y_n$. $\hat{\beta}_0$ is the intercept and $\hat{\beta}_1$ the slope of the fitted line. Let $\hat{y}_i = \beta_0 + \beta_1 x_i$ and $e_i = y_i - \hat{y}_i$. The variances $\se^2_\beta$
 % 
 % 
 % 
@@ -2670,7 +1693,7 @@ s_z^2 &= \frac{1}{n-3}
 % v_{i}^\star &= v_{i} - 1/\sum_{i = 1}^n v_{i}^-1 \label{begg.stand.var} 
 % \end{align}
 % 
-% A rank correlation test based on Kendall's tau is then used. The pairs $(y_{i}^\star, v_{i}^\star)$ that are ranked in the same order are enumerated. Let $u$ be the number of pairs ranked in the same order, and $l$ the number of pairs ranked in the opposite order (e.g. larger standardized effect size and smaller variance). Then the normalized test statistic $Z$ is given in \ref{begg.teststat}. 
+% A rank correlation test based on Kendall's tau is then used. The pairs $(y_{i}^\star, v_{i}^\star)$ that are ranked in the same order are enumerated. Let $u$ be the number of pairs ranked in the same order, and $l$ the number of pairs ranked in the opposite order (\eg larger standardized effect size and smaller variance). Then the normalized test statistic $Z$ is given in \ref{begg.teststat}. 
 % 
 % \begin{align}
 % Z &= (u - l)/\sqrt{n(n-1)(2n + 5)/18} \label{begg.teststat}
@@ -2700,7 +1723,7 @@ s_z^2 &= \frac{1}{n-3}
 % 
 % \subsection{Dichotomous Outcomes Tests}
 % 
-% The issue with dichotomous outcomes is that effect size and variance of effect size are not independent. Consequently, the tests above will tend to reject the null-hypothesis too often, i.e. that they are not conservative enough. A number of solutions to this problem are existing in the literature.
+% The issue with dichotomous outcomes is that effect size and variance of effect size are not independent. Consequently, the tests above will tend to reject the null-hypothesis too often, \ie that they are not conservative enough. A number of solutions to this problem are existing in the literature.
 % 
 % 
 % \subsubsection{Peters Test: Weighted Linear Regression Test}
@@ -2838,7 +1861,7 @@ s_z^2 &= \frac{1}{n-3}
 % \mathbb{E}(y_{i}) \rightarrow \beta_{0} + \beta_{1}\tau \textrm{if} \sqrt{v_{i}} \rightarrow 0 
 % \end{align}
 % 
-% After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen before e.g. in Thompson and Sharp's Test with weights also equal to Thompson and Sharp's Test (see \ref{Thompson}).
+% After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen before \eg in Thompson and Sharp's Test with weights also equal to Thompson and Sharp's Test (see \ref{Thompson}).
 % 
 % \vspace{0mm}
 % To diminuish the random variation within studies, but keep the variation between studies, we change \ref{limitmeta.regression} to a scenario where each study has $M$-fold increased precision:

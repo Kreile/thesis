@@ -107,7 +107,7 @@ median.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcom
 #data.ext2 <- data.ext %>% mutate(study.year = ifelse(study.year > 1920, study.year, NA))
 publication.year.range <- c(quantile(data.ext2$study.year, 0.05, na.rm = T), quantile(data.ext2$study.year, 0.25, na.rm = T), 
                             quantile(data.ext2$study.year, 0.5, na.rm = T), quantile(data.ext2$study.year, 0.75, na.rm = T),
-                            round(mean(data.ext2$study.year, na.rm = T), 2))
+                            round(mean(data.ext2$study.year, na.rm = T), 2), quantile(data.ext2$study.year, 0.95, na.rm = T))
 
 #Outcome.measure frequency table:
 outcome.measure.frequencies <- rbind(data %>% group_by(outcome.measure.new) %>% count() %>% 
@@ -124,22 +124,22 @@ outcome.measure.frequencies$Percentage <- paste(outcome.measure.frequencies$Perc
 data.ext2 <- data.ext2 %>% ungroup() %>%  mutate(total.n = total1 + total2)
 samplesize.range <- c(quantile(data.ext2$total.n, 0.05, na.rm = T), quantile(data.ext2$total.n, 0.25, na.rm = T), 
                             quantile(data.ext2$total.n, 0.5, na.rm = T), quantile(data.ext2$total.n, 0.75, na.rm = T),
-                            round(mean(data.ext2$total.n, na.rm = T), 2))
+                            round(mean(data.ext2$total.n, na.rm = T), 2), quantile(data.ext2$total.n, 0.95, na.rm = T))
 treatment.group.size.range <- c(quantile(data.ext2$total1, 0.05, na.rm = T), quantile(data.ext2$total1, 0.25, na.rm = T), 
                       quantile(data.ext2$total1, 0.5, na.rm = T), quantile(data.ext2$total1, 0.75, na.rm = T),
-                      round(mean(data.ext2$total1, na.rm = T), 2))
+                      round(mean(data.ext2$total1, na.rm = T), 2), quantile(data.ext2$total1, 0.95, na.rm = T))
 
 #Frequencies of results:
 comp.freq <- data %>% group_by(file.nr) %>% summarise(n = n())
 comp.range <- c(length(which(comp.freq$n < 6)), quantile(comp.freq$n, 0.25, na.rm = T), 
                       quantile(comp.freq$n, 0.5, na.rm = T), quantile(comp.freq$n, 0.75, na.rm = T),
-                      round(mean(comp.freq$n, na.rm = T), 2))
+                      round(mean(comp.freq$n, na.rm = T), 2), quantile(comp.freq$n, 0.95, na.rm = T))
 
 #Frequencies of studies:
 study.freq <- data %>% group_by(file.nr) %>% distinct(study.name) %>% count()
 study.range <- c(length(which(study.freq$n < 3)), quantile(study.freq$n, 0.25, na.rm = T), 
                       quantile(study.freq$n, 0.5, na.rm = T), quantile(study.freq$n, 0.75, na.rm = T),
-                      round(mean(study.freq$n, na.rm = T), 2))
+                      round(mean(study.freq$n, na.rm = T), 2), quantile(study.freq$n, 0.95, na.rm = T))
 
 #Pooling studies
 cum.repr.trials.subg <- data %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
@@ -375,7 +375,7 @@ Results are part of studies that are again part of a (systematic) review. This s
     child [missing] {}		
     child { node {Comparison 1  }};
 \end{tikzpicture}
-\caption{Structure of a hypothetical review with two different comparisons\label{review.structure}}
+\caption{Structure of a hypothetical review with two different comparisons}
 \label{review.structure}
 \end{figure}
 
@@ -396,7 +396,7 @@ print(xtable(missing.table, label = "missing", caption = "Number of missing vari
       size = "footnotesize", digits = 0)
 @
 
-The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = \Sexpr{publication.year.range[1]}). The median of the publication years is \Sexpr{publication.year.range[3]}, the mean \Sexpr{publication.year.range[5]} and the quartiles are \Sexpr{publication.year.range[2]} and \Sexpr{publication.year.range[4]}. Only a handful ($n = 18$) have been published in 2018, none in 2019. \\
+The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = \Sexpr{publication.year.range[1]}, 95\% quantile = \Sexpr{publication.year.range[6]},). The median of the publication years is \Sexpr{publication.year.range[3]}, the mean \Sexpr{publication.year.range[5]} and the quartiles are \Sexpr{publication.year.range[2]} and \Sexpr{publication.year.range[4]}. Only a handful ($n = 18$) have been published in 2018, none in 2019. \\
 %No information is available concerning unpublished results and studies.
 The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.) abundances are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 30 \% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (> 65\%).
 
@@ -404,19 +404,19 @@ The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.
 print(xtable(outcome.measure.frequencies, label = "outcome.measure.frequencies", 
              caption = "Frequencies of outcome measures among results. n denotes the total number 
              of results with the outcome measure and percentage the percentage of the outcome measure,", 
-             align = "llll", digits = 1), include.rownames = F, size = "footnotesize")
+             align = "llrr", digits = 1), include.rownames = F, size = "footnotesize")
 @
 
 
-The sample sizes among results vary to some extent. There are 5\% of treatment group sample sizes that are smaller than \Sexpr{treatment.group.size.range[1]}, the 5\% quantile. The first quartile is \Sexpr{treatment.group.size.range[2]}, the median \Sexpr{treatment.group.size.range[3]}, the mean \Sexpr{treatment.group.size.range[5]} and the third quartile \Sexpr{treatment.group.size.range[4]}. The large difference between median and mean is caused by very large groups with over 2,000,000 participants. Analogously, the quantiles of the total sample size are: 5\% quantile = \Sexpr{samplesize.range[1]}, first quartile = \Sexpr{samplesize.range[2]}, median = \Sexpr{samplesize.range[3]} and third quartile = \Sexpr{samplesize.range[4]}. The mean is \Sexpr{samplesize.range[5]}. \\
-The mean and median number of results per review are \Sexpr{study.range[5]} and \Sexpr{study.range[3]}. There are \Sexpr{comp.range[1]} reviews with five or fewer results, and the quartiles are \Sexpr{comp.range[2]} and \Sexpr{comp.range[4]}. Similarly, the number of reviews with a maximum of two studies included is \Sexpr{study.range[1]}, the mean study number is \Sexpr{study.range[5]}, the median \Sexpr{study.range[3]} and the interquartile range \Sexpr{study.range[2]} and \Sexpr{study.range[4]}. The discrepancy between mean and median is due to large reviews with a high number of studies and results, most extreme in \citet{largest.review} which is a systematic review about antibiotic prophylaxis for preventing infection after cesarean section, with 95 studies and 1497 results in total. \\
-For results to be suitable for usage in meta-analysis, they have to be identical with respect to comparison and outcome. More specifically, the studies in the dataset that have the same comparison, outcome and subgroup can be pooled in a meta-analysis, since their research subject and experimental setup can be considered sufficiently homogeneous. Importantly, this distinction is also used by the Cochrane Organization itself, i.e. the meta-analyses are identical to the meta-analyses done in the systematic reviews.\\%Another approach that is not made here is to analyze all subgroups together, which is possible if enough studies are given.
+The sample sizes among results vary to some extent. There are 5\% of treatment group sample sizes that are smaller than \Sexpr{treatment.group.size.range[1]}, the 5\% quantile and 95\% smaller than \Sexpr{treatment.group.size.range[6]}. The first quartile is \Sexpr{treatment.group.size.range[2]}, the median \Sexpr{treatment.group.size.range[3]}, the mean \Sexpr{treatment.group.size.range[5]} and the third quartile \Sexpr{treatment.group.size.range[4]}. The large difference between median and mean is caused by very large groups with over 2,000,000 participants. Analogously, the quantiles of the total sample size are: 5\% quantile = \Sexpr{samplesize.range[1]}, first quartile = \Sexpr{samplesize.range[2]}, median = \Sexpr{samplesize.range[3]}, third quartile = \Sexpr{samplesize.range[4]} and 95\% = \Sexpr{samplesize.range[6]}. The mean is \Sexpr{samplesize.range[5]}. \\
+The mean and median number of results per review are \Sexpr{study.range[5]} and \Sexpr{study.range[3]}. There are \Sexpr{comp.range[1]} reviews with five or fewer results, and the quartiles are \Sexpr{comp.range[2]} and \Sexpr{comp.range[4]}. Similarly, the number of reviews with a maximum of two studies included is \Sexpr{study.range[1]}, the mean study number is \Sexpr{study.range[5]}, the median \Sexpr{study.range[3]} and the interquartile range \Sexpr{study.range[2]} and \Sexpr{study.range[4]} and the 95\% quantile \Sexpr{study.range[6]}. The discrepancy between mean and median is due to large reviews with a high number of studies and results, most extreme in \citet{largest.review} which is a systematic review about antibiotic prophylaxis for preventing infection after cesarean section, with 95 studies and 1497 results in total.\\
+For results to be suitable for usage in meta-analysis, they have to be identical with respect to comparison and outcome. More specifically, the studies in the dataset that have the same comparison, outcome and subgroup can be pooled in a meta-analysis, since their research subject and experimental setup can be considered sufficiently homogeneous. Importantly, this distinction is also used by the Cochrane Organization itself, i.e. the meta-analyses are identical to the meta-analyses done in the systematic reviews.\\ %Another approach that is not made here is to analyze all subgroups together, which is possible if enough studies are given.
 The dataset is divided in meta-analyses with identical experimental setup. The size of a meta-analysis denotes how many results are included in a group.
-Table \ref{repr.groups} shows the number of meta-analysis with size $\geq n$ results. Practically, this number of meta analyses can be performed, with each having at least $n$ results:
+Table \ref{repr.groups} shows the number of meta-analysis with size $\geq n$ results. Practically, this number of meta analyses can be performed, with each having at least $n$ results.
 
 <<echo=FALSE, results='asis'>>=
 
-print(xtable(cum.repr.trials.subg, label = "repr.groups", caption = "Cumulative number of groups with number of reproduction trials >= n", align = "llll", digits = 0), include.rownames = F, size = "footnotesize")
+print(xtable(cum.repr.trials.subg, label = "repr.groups", caption = "Cumulative number of groups with number of reproduction trials $\\geq$ n", align = "llrr", digits = 0), include.rownames = F, size = "footnotesize")
 @
 
 \section{Data Tidying and Processing} \label{sec:Processing}

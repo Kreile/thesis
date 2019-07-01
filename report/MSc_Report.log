@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.3.6)  28 JUN 2019 16:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.3.6)  1 JUL 2019 17:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -803,11 +803,7 @@ File: tikzlibrarytopaths.code.tex 2008/06/17 v3.0.1a (rcs-revision 1.2)
 (/usr/local/texlive/2017/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
 s/tikzlibrarytrees.code.tex
 File: tikzlibrarytrees.code.tex 2008/02/24 v3.0.1a (rcs-revision 1.2)
-) (./MSc_Report.aux
-
-LaTeX Warning: Label `review.structure' multiply defined.
-
-)
+) (./MSc_Report.aux)
 \openout1 = `MSc_Report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 61.
@@ -824,7 +820,8 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 61.
 LaTeX Font Info:    ... okay on input line 61.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 61.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 61.
- (/usr/local/texlive/2017/texmf-dist/tex/latex/base/ts1cmr.fd
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 61.
@@ -972,115 +969,174 @@ outcome.measure.new
 
 ]
 Chapter 3.
-
-LaTeX Warning: Reference `sex:excess.significance' on page 13 undefined on inpu
-t line 589.
-
-<figure/ch03_figunnamed-chunk-10-1.pdf, id=238, 585.18625pt x 650.43pt>
+<figure/ch03_figunnamed-chunk-10-1.pdf, id=244, 585.18625pt x 650.43pt>
 File: figure/ch03_figunnamed-chunk-10-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-10-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-10-1.pdf used on input li
-ne 609.
+ne 611.
 (pdftex.def)             Requested size: 369.94295pt x 411.20222pt.
 
-<figure/ch03_figunnamed-chunk-11-1.pdf, id=241, 585.18625pt x 433.62pt>
+Overfull \hbox (1.71149pt too wide) in paragraph at lines 623--625
+[]\T1/cmr/m/n/10.95 The his-tograms in Fig-ure [][]3.1[][] show that the dis-tr
+i-bu-tions are (with the ex-cep-tion of Schwarzer's
+ []
+
+[13] <figure/ch03_figunnamed-chunk-11-1.pdf, id=263, 585.18625pt x 433.62pt>
 File: figure/ch03_figunnamed-chunk-11-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-11-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-11-1.pdf used on input li
-ne 629.
+ne 630.
 (pdftex.def)             Requested size: 369.94295pt x 274.13483pt.
- [13] [14 <./figure/ch03_figunnamed-chunk-10-1.pdf>]
-<figure/ch03_figunnamed-chunk-12-1.pdf, id=268, 585.18625pt x 469.755pt>
+ [14 <./figure/ch03_figunnamed-chunk-10-1.pdf>]
+Overfull \hbox (4.70937pt too wide) in paragraph at lines 657--659
+\T1/cmr/m/n/10.95 The con-fi-dence in-ter-vals can be used as lim-its of agree-
+ment, which gives, af-ter back-transformation,
+ []
+
+<figure/ch03_figunnamed-chunk-12-1.pdf, id=276, 585.18625pt x 614.295pt>
 File: figure/ch03_figunnamed-chunk-12-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-12-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-12-1.pdf used on input li
-ne 663.
-(pdftex.def)             Requested size: 369.94295pt x 296.97939pt.
- [15 <./figure/ch03_figunnamed-chunk-11-1.pdf>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+ne 664.
+(pdftex.def)             Requested size: 369.94295pt x 388.35765pt.
+ [15 <./figure/ch03_figunnamed-chunk-11-1.pdf>] [16 <./figure/ch03_figunnamed-c
+hunk-12-1.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 726--729
 
- [16 <./figure/ch03_figunnamed-chunk-12-1.pdf>]
-<figure/ch03_figunnamed-chunk-15-1.pdf, id=295, 585.18625pt x 650.43pt>
+ []
+
+<figure/ch03_figunnamed-chunk-15-1.pdf, id=303, 585.18625pt x 650.43pt>
 File: figure/ch03_figunnamed-chunk-15-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-15-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-15-1.pdf used on input li
-ne 726.
+ne 734.
 (pdftex.def)             Requested size: 369.94295pt x 411.20222pt.
 
-Overfull \hbox (54.38142pt too wide) in paragraph at lines 744--770
+Overfull \hbox (61.48605pt too wide) in paragraph at lines 750--769
  [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 809--813
+LaTeX Warning: Reference `fig:adjustment.sue' on page 17 undefined on input lin
+e 776.
+
+[17]
+Underfull \hbox (badness 10000) in paragraph at lines 784--792
 
  []
 
-[17] [18 <./figure/ch03_figunnamed-chunk-15-1.pdf>]
-<figure/ch03_figunnamed-chunk-18-1.pdf, id=319, 585.18625pt x 650.43pt>
+[18 <./figure/ch03_figunnamed-chunk-15-1.pdf>]
+<figure/ch03_figunnamed-chunk-17-1.pdf, id=328, 585.18625pt x 650.43pt>
+File: figure/ch03_figunnamed-chunk-17-1.pdf Graphic file (type pdf)
+
+<use figure/ch03_figunnamed-chunk-17-1.pdf>
+Package pdftex.def Info: figure/ch03_figunnamed-chunk-17-1.pdf used on input li
+ne 797.
+(pdftex.def)             Requested size: 369.94295pt x 411.20222pt.
+
+<figure/ch03_figunnamed-chunk-18-1.pdf, id=330, 585.18625pt x 216.81pt>
 File: figure/ch03_figunnamed-chunk-18-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-18-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-18-1.pdf used on input li
-ne 818.
-(pdftex.def)             Requested size: 369.94295pt x 411.20222pt.
- [19 <./figure/ch03_figunnamed-chunk-18-1.pdf>] [20
+ne 814.
+(pdftex.def)             Requested size: 369.94295pt x 137.0674pt.
 
-]
+Overfull \hbox (54.38142pt too wide) in paragraph at lines 855--877
+ [][] 
+ []
+
+[19]
+
+LaTeX Warning: Text page 20 contains only floats.
+
+[20 <./figure/ch03_figunnamed-chunk-17-1.pdf> <./figure/ch03_figunnamed-chunk-1
+8-1.pdf>]
+<figure/ch03_figunnamed-chunk-21-1.pdf, id=358, 585.18625pt x 542.025pt>
+File: figure/ch03_figunnamed-chunk-21-1.pdf Graphic file (type pdf)
+
+<use figure/ch03_figunnamed-chunk-21-1.pdf>
+Package pdftex.def Info: figure/ch03_figunnamed-chunk-21-1.pdf used on input li
+ne 891.
+(pdftex.def)             Requested size: 369.94295pt x 342.66852pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 902--903
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 909--910
+
+ []
+
+<figure/ch03_figunnamed-chunk-23-1.pdf, id=367, 585.18625pt x 650.43pt>
+File: figure/ch03_figunnamed-chunk-23-1.pdf Graphic file (type pdf)
+
+<use figure/ch03_figunnamed-chunk-23-1.pdf>
+Package pdftex.def Info: figure/ch03_figunnamed-chunk-23-1.pdf used on input li
+ne 915.
+(pdftex.def)             Requested size: 369.94295pt x 411.20222pt.
+ [21] [22 <./figure/ch03_figunnamed-chunk-21-1.pdf>] [23 <./figure/ch03_figunna
+med-chunk-23-1.pdf>] [24]
 Chapter 4.
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 1969.
+(hyperref)                removing `math shift' on input line 997.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 1969.
+(hyperref)                removing `math shift' on input line 997.
 
-[21] [22] [23] [24] [25] [26] [27] [28] [29] [30] [31] [32]
+[25
+
+] [26] [27] [28] [29] [30] [31]
+
+Package amsmath Warning: Foreign command \atopwithdelims;
+(amsmath)                \frac or \genfrac should be used instead
+(amsmath)                 on input line 1333.
+
+[32] [33] [34] [35] [36]
 Appendix A.
-[33
+[37
 
-] [34
+] [38
 
 ] (./MSc_Report.bbl (./MSc_Report.brf)
 \tf@brf=\write7
 \openout7 = `MSc_Report.brf'.
 
- [35
+ [39
 
-]) [36]
+]) [40]
 
 Package natbib Warning: There were undefined citations.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 2935.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 2935.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1957.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1957.
 (./MSc_Report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 2935.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 2935.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1957.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1957.
 
 Package rerunfilecheck Info: File `MSc_Report.out' has not changed.
-(rerunfilecheck)             Checksum: C2B69AC63AA904AC94A800193C4C8CAB;1126.
+(rerunfilecheck)             Checksum: 13F0E9CE88BE0C6F4AD77D399CD068F6;1208.
 Package rerunfilecheck Info: File `MSc_Report.brf' has not changed.
-(rerunfilecheck)             Checksum: 0F0E87CC291C8B5A6FB755ED2B849FB9;1878.
+(rerunfilecheck)             Checksum: 1C8F1D65FF4AA016AF899AABAF34DF06;1816.
 
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: There were multiply-defined labels.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 2935.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1957.
  ) 
 Here is how much of TeX's memory you used:
- 20533 strings out of 492995
- 366842 string characters out of 6132705
- 454495 words of memory out of 5000000
- 23504 multiletter control sequences out of 15000+600000
- 31906 words of font info for 80 fonts, out of 8000000 for 9000
+ 20574 strings out of 492995
+ 367831 string characters out of 6132705
+ 459473 words of memory out of 5000000
+ 23529 multiletter control sequences out of 15000+600000
+ 32811 words of font info for 83 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,16n,54p,1667b,1566s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
@@ -1094,30 +1150,31 @@ ocal/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/loc
 al/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local
 /texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/te
 xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texli
-ve/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texliv
-e/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/
-2017/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texl
-ive/2017/texmf-dist/fonts/type1/public/cm-super/sfbx1095.pfb></usr/local/texliv
-e/2017/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/local/texlive/
-2017/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/20
-17/texmf-dist/fonts/type1/public/cm-super/sfbx2074.pfb></usr/local/texlive/2017
-/texmf-dist/fonts/type1/public/cm-super/sfbx2488.pfb></usr/local/texlive/2017/t
-exmf-dist/fonts/type1/public/cm-super/sfrm0600.pfb></usr/local/texlive/2017/tex
-mf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2017/texmf
--dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2017/texmf-d
-ist/fonts/type1/public/cm-super/sfrm1095.pfb></usr/local/texlive/2017/texmf-dis
-t/fonts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/2017/texmf-dist/
-fonts/type1/public/cm-super/sfsl1095.pfb></usr/local/texlive/2017/texmf-dist/fo
-nts/type1/public/cm-super/sfss1000.pfb></usr/local/texlive/2017/texmf-dist/font
-s/type1/public/cm-super/sfss1200.pfb></usr/local/texlive/2017/texmf-dist/fonts/
-type1/public/cm-super/sfst1095.pfb></usr/local/texlive/2017/texmf-dist/fonts/ty
-pe1/public/cm-super/sfsx1440.pfb></usr/local/texlive/2017/texmf-dist/fonts/type
-1/public/cm-super/sfti1095.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/
-public/cm-super/sftt1095.pfb>
-Output written on MSc_Report.pdf (44 pages, 1641045 bytes).
+ve/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texliv
+e/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
+/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2
+017/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texli
+ve/2017/texmf-dist/fonts/type1/public/cm-super/sfbx1095.pfb></usr/local/texlive
+/2017/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/local/texlive/2
+017/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/201
+7/texmf-dist/fonts/type1/public/cm-super/sfbx2074.pfb></usr/local/texlive/2017/
+texmf-dist/fonts/type1/public/cm-super/sfbx2488.pfb></usr/local/texlive/2017/te
+xmf-dist/fonts/type1/public/cm-super/sfrm0600.pfb></usr/local/texlive/2017/texm
+f-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2017/texmf-
+dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2017/texmf-di
+st/fonts/type1/public/cm-super/sfrm1095.pfb></usr/local/texlive/2017/texmf-dist
+/fonts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/2017/texmf-dist/f
+onts/type1/public/cm-super/sfsl1095.pfb></usr/local/texlive/2017/texmf-dist/fon
+ts/type1/public/cm-super/sfss1000.pfb></usr/local/texlive/2017/texmf-dist/fonts
+/type1/public/cm-super/sfss1200.pfb></usr/local/texlive/2017/texmf-dist/fonts/t
+ype1/public/cm-super/sfst1095.pfb></usr/local/texlive/2017/texmf-dist/fonts/typ
+e1/public/cm-super/sfsx1440.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1
+/public/cm-super/sfti1095.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/p
+ublic/cm-super/sftt1095.pfb>
+Output written on MSc_Report.pdf (48 pages, 1813962 bytes).
 PDF statistics:
- 729 PDF objects out of 1000 (max. 8388607)
- 637 compressed objects within 7 object streams
- 158 named destinations out of 1000 (max. 500000)
- 174 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 796 PDF objects out of 1000 (max. 8388607)
+ 692 compressed objects within 7 object streams
+ 169 named destinations out of 1000 (max. 500000)
+ 197 words of extra memory for PDF output out of 10000 (max. 10000000)
 

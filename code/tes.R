@@ -64,10 +64,28 @@ tes <- function(data){
   pval.chi <- pchisq(A, 1, lower.tail = FALSE) # Compute p-value
   pval.chi <- ifelse(pval.chi < 0.5, pval.chi*2, (1-pval.chi)*2)
   
-  est.p <- O/n
-  A.wald <- ((est.p) - (E/n)) / sqrt((est.p)*(1-est.p)/n)
-  pval.bin <- 1 - pnorm(A.wald)
+  pval.bin <- 1 - pbinom(q = O, n = n, prob = E/n)
   
   return(c(A = A, A.wald = A.wald, pval.chi = pval.chi, pval.bin = pval.bin, O = O, E = E, n = n))
   
 }
+
+O <- 3
+E <- 1.06 # Expected number of statistically significant result  
+n <- 20 # Number of studies in meta-analysis
+A <- (O - E)^2/E + (O - E)^2/(n - E) # Compute chi-square statistic
+pval.chi <- pchisq(A, 1, lower.tail = FALSE) # Compute p-value
+pval.chi <- ifelse(pval.chi < 0.5, pval.chi*2, (1-pval.chi)*2)
+
+est.p <- O/n
+
+# pval.chi <- (1- pchisq(A, 1) )
+pval.bin <- pbinom(q = O-1, size = n, prob = E/n, lower.tail = F)
+
+c(A = A, A.wald = A.wald, pval.chi = pval.chi, pval.bin = pval.bin, O = O, E = E, n = n)
+
+
+
+
+
+
