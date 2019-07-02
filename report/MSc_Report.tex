@@ -586,8 +586,8 @@ The dataset that was ultimately tested and adjusted for publication bias compris
 
 
 
-The meta-analyses fulfilling the criteria from chapter \ref{ch:dataset}, section \ref{sec:Processing}, are analysed with small study effects tests and excess significance tests. We will apply the tests on the original effect size measures, i.e. risk ratios, Hedges $g$ or log hazard ratios. Different tests are applied depending on if the outcomes are of type binary or continuous or survival.\\
-Thus, we apply multiple tests on the same data. The results can then be displayed separately to compare the different tests. A histogram of $p$-values will summarize the overall evidence against the null-hypothesis of no publication bias, as displayed in Figure \ref{fig:test}. \\
+The meta-analyses fulfilling the criteria from chapter \ref{ch:dataset}, section \ref{sec:Processing}, are analysed with one-sided small study effects tests and excess significance tests. The direction in which bias is expected is the one on which more significant results are ($p$-value < 0.05, two-sided). The tests are applied on the original effect size measures, i.e. risk ratios, Hedges $g$ or log hazard ratios. Different tests are applied depending on the outcome type being binary or continuous and survival.\\
+Thus, multiple tests are applied on the same data. The results can then be displayed separately to compare the results from the different tests. A histogram of $p$-values will summarize the overall evidence against the null-hypothesis of no publication bias, as displayed in Figure \ref{fig:test}. \\
 ``Excess significance'' denotes the excess of significant $p$-values testing method from \citet{excess.significance}, see \ref{sec:excess.significance}. For continuous and survival outcomes, the names refer to: 
 
 \begin{itemize}
@@ -615,13 +615,16 @@ For binary outcomes, the names refer to:
 
 
 \end{knitrout}
-\caption{Histogram of the $p$-values for small study effect in meta-analyses. The testing method is indicated in the header, bin width is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+\caption{Histogram of one-sided $p$-values for small study effect in direction of larger effect sizes. The testing method is indicated in the header, bin width is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
 \label{fig:test}
 \end{figure}
 
 %Agreement table -> Chunck 1
-The histograms in Figure \ref{fig:test} show that the distributions are (with the exception of Schwarzer's test) skewed to the right for all outcome types, indicating evidence for small study effects and excess significance, respectively. Moreover, the excess significance tests have a mode around $p = 0.4$. There is some discrepancy between continuous and binary data test results; the evidence for small study effects in continuous data is clearly larger. Survival outcome type results are quite different with very few evidence for small study effects and excess significance. Note that the sample size of survival outcomes is small ($n$ = 39).\\
-It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects/excess significance for the same meta-analyses. A simple method to check the coincidence of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between survival and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and survival outcomes results.
+The histograms in Figure \ref{fig:test} show that most distributions are clearly skewed to the right, indicating evidence for small study effects. Exceptions from this are the excess significance and Schwarzer's test, and the tests for survival outcomes. There, there is no evidence for publication bias, and the histograms are even skewed to the left (Schwarzer). But note that the sample size of survival outcomes is small ($n$ = 39). \\
+There is discrepancy between continuous and binary data test results; the evidence for small study effects in continuous data is clearly larger. Also, we see that the $I^2$ statistic of the proportion of overall between-study heterogeneity is distributed differently for the tests, with results with $I^2 = 0$ being evenly distributed in binary outcomes along the range of $p$-values, while they are more similar to the meta-analyses with larger heterogeneity for continuous outcome.\\
+In the literature, the excess significance test is advised to be used in the case of no between study heterogeneity. Since there are no small $p$-values for such meta-analyses, one must conclude that there is no excess significance in the dataset. The obvious correspondence with the heterogeneity statistic however rather suggests that the test itself is just another was to assess between study heterogeneity. Thompson test and R\"ucker's test are designed such that they take into account the between study heterogeneity when assessing small study effects. When no heterogeneity is given, Thompsons test results and Eggers test result should be equal, however, the $I^2$ statistic is computed by a more suitable estimator \citep{paulemandel} of $\tau^2$ as the estimator that Thompson and Sharp's test uses (method of moment estimator of \citet{tau.estimator}, which is more conservative by usually finding larger $\tau^2$). In the part of the histogram with $I^2 > 0$, the two tests are more reliable than the remaining tests, while the opposite is expected from simulations \citep{limitmeta} when $I^2 = 0$.\\
+
+It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects for the same meta-analyses. A simple method to check the coincidence of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between survival and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and survival outcomes results. Also, the $I^2$ statistic is included. Since no test statistic is used for excess significance tests, it is not shown here
 
 \begin{figure}
 \begin{knitrout}
@@ -634,11 +637,11 @@ It cannot be seen in Figure \ref{fig:test} if the tests used are finding small s
 
 
 \end{knitrout}
-\caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots outside are statistically significant using the 0.1 threshold).}
+\caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots outside are statistically significant by 0.1 $p$-value threshold).}
 \label{fig:test.agreement}
 \end{figure}
 
-The observed patterns on the scatterplots differ: Excess significance and small study effect test statistics do usually not align with each other, forming rather randomly scattered bulks of points. Regression based tests as Egger and Thompson which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. In general, small study effect tests align on the diagonal, but the extent to which they align differs. Continuous and survival outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics .\\
+The observed patterns on the scatterplots differ, and some small study effect test statistics do align better than others. Regression based tests as Egger and Thompsons test which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. Continuous and survival outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics .\\
 Because scatterplots and correlation coefficients can be misleading, also a Tukey mean-difference or Bland-Altman of transformed $p$-values plot is shown for four scenarios in Figure \ref{fig:mean.diff.test}:
 \begin{itemize}
 \item For Egger's and Thompson's tests, which is supposedly the most similar test and should show the least deviations and systematic errors
@@ -654,7 +657,7 @@ This can be justified since all tests are supposed to measure the evidence for p
 \item the points should scatter independently on the $y$-axis and no general increase or decrease with the mean of the transformed $p$-values should be visible
 \end{itemize}
 
-Although this is not formally tested, the last criterium seems not to be given when comparing small study effect and excess significance tests. With decreasing mean, the difference gets more negative, and vice versa, such that one would predict that the excess significance $p$-values are more ``extreme'' in both directions. -- In the appendix, it can be seen that this is reproducible with the remaining small study effect tests (not there yet) -- However, the systematic error between the compared tests is close to zero, and small study effect tests do probably not show bias when compared to each other. \\
+Although this is not formally tested, there are likely systematic errors and bias between excess significance tests, although more so for continuous tests. -- In the appendix, it can be seen that this is reproducible with the remaining small study effect tests (not there yet) -- \\
 The confidence intervals can be used as limits of agreement, which gives, after back-transformation, around 0.9 for Egger's and Thompson's test, and around 0.99 for Harbord's and R\"ucker's tests. This suggests that correspondence between the tests is not very good in general. 
 
 \begin{figure}
@@ -675,7 +678,7 @@ The confidence intervals can be used as limits of agreement, which gives, after 
 The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. We expect that some proportion of the meta-analysis will only be significant for a certain test, and this is indeed observed in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Jul  1 17:11:00 2019
+% Tue Jul  2 18:53:37 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -683,12 +686,12 @@ The previous results suggest that the results will also differ substantially aft
   \hline
 Count & Binary Outcomes & Continuous and Survival \\ 
   \hline
-0 & 66.1 \% & 72.5 \% \\ 
-  1 & 16.1 \% & 7.5 \% \\ 
-  2 & 8.8 \% & 8 \% \\ 
-  3 & 5.7 \% & 10.5 \% \\ 
-  4 & 3 \% & 1.5 \% \\ 
-  5 & 0.4 \% & - \\ 
+0 & 68 \% & 64.3 \% \\ 
+  1 & 13.5 \% & 10 \% \\ 
+  2 & 7.5 \% & 6.9 \% \\ 
+  3 & 5.2 \% & 16.5 \% \\ 
+  4 & 4.9 \% & 2.3 \% \\ 
+  5 & 0.8 \% & - \\ 
    \hline
 \end{tabular}
 \endgroup
@@ -700,9 +703,9 @@ Count & Binary Outcomes & Continuous and Survival \\
 
 
 Here, it is difficult to say if continuous and survival or binary outcome types show better agreement, since more tests are applied in the binary case, and the continuous and survival outcome type tests have in general more positive findings. Very few meta-analyses are significant, irrespective of the test used, but around 67\% of the dataset is not significant, no matter which test is used. \\
-When only looking at small study effect tests, 29.1\% of binary outcome tests and 26.2\% of survival and continuous outcome tests had at least one significant result. This also suggests that the overlap between small study effect tests and excess significance is small. After applying the Bonferroni correction for multiple testing, this shrinks to 10.9\% for binary and 12.1\% for continuous and survival outcomes. \\
-To compare significant findings for small study effect tests and excess significance tests, we limit ourselves to comparison with Harbord's or Egger's test. 22.4\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, 23.4\% for continuous and survival outcomes. The numbers change to 13.4\% for binary outcomes and 13.4\% for continuous and survival outcomes after applying the Bonferroni correction. \\
-2.7\% have significant Harbord's test result and significant excess significance test result  (1.1\% with Bonferroni). Of the continuous outcomes, we have 3.3\% with Egger's test and 0.8\% with Bonferroni correction. 
+When only looking at small study effect tests, 27.3\% of binary outcome tests and 34.4\% of survival and continuous outcome tests had at least one significant result. After applying the Bonferroni correction for multiple testing, this shrinks to 10.5\% for binary and 17.5\% for continuous and survival outcomes. \\
+% To compare significant findings for small study effect tests and excess significance tests, we limit ourselves to comparison with Harbord's or Egger's test. mean.min.bin2\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, mean.min.else2\% for continuous and survival outcomes. The numbers change to mean.min.bin2.b\% for binary outcomes and mean.min.else2.b\% for continuous and survival outcomes after applying the Bonferroni correction. \\
+% both.bin\% have significant Harbord's test result and significant excess significance test result  (both.bin.b\% with Bonferroni). Of the continuous outcomes, we have both.else\% with Egger's test and both.else.b\% with Bonferroni correction. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -715,17 +718,17 @@ To compare significant findings for small study effect tests and excess signific
 
 \subsection{Change in Effect Size after Adjustment} \label{sec:change.size}
 
-Since there's evidence for publication bias when applying small study effect and excess significance tests, we apply small study effect adjustment methods to correct for small study effect tests. \\
-We will see that consequences of adjustment can be; 
+Since there's evidence for publication bias when applying small study effect and excess significance tests, we apply small study effect adjustment methods to take into account that small studies are likely overestimating the treatment effect. \\
+However, we will see that consequences of adjustment can be; 
 \begin{itemize}
 \item first, the absolute size of the treatment effect can be smaller than the classical meta-analysis treatment effect, which is expected if publication bias
 is the cause for the small study effect.
-\item secondly, the effect can be larger than before in meta-analysis. In this case, the small study effect must be not due to publication bias for large effects (``true'' publication bias), but due to bias for small effects (``negative publication bias'').
+\item secondly, the effect can be larger than before in meta-analysis. In this case, the small study effect must be not due to publication bias for large effects (``true'' publication bias), but due to bias for small effects (``null effect publication bias'' or even ``reversed effect publication bias'', sometimes refer erred to as ``Proteus phenomenon'' \citep{proteus}).
 \end{itemize}
 
-In section \ref{sec:comparison.tests.adjustment}, it will be followed up on the latter point. For now, we will examine the extent and the frequencies of the two scenarios. \\
-To compare the effects of adjustment between meta-analyses, the outcome measures are transformed to Hedges $g$ (standardized mean differences) and Fisher's $z$-score (see section \ref{sec:transformation.effectsizes} for details). The effect of adjustment can additionally be compared to either random or fixed effects meta-analysis. \\
-Figure \ref{fig:adjustment.size} displays the difference $\delta$ between the observed meta-analysis pooled treatment effect and the adjusted treatment effect, $\hat{\theta}_M - \hat{\theta}_\textrm{Adj.}$. The absolute value $|\hat{\theta}_M|$ is taken and the sign of $\hat{\theta}_\textrm{Adj.}$ is adjusted accordingly such that all effects are mirrored to one side. $\delta > 0$ is equivalent to $\hat{\theta}_\textrm{Adj} < \hat{\theta}_M$, a reduction of the original effect size. For better illustration, some very large and very small differences have been omitted in the $z$-score and Hedges $g$ histograms; they are shown in Table \ref{missing.differences}. Table \ref{adjustment.difference} shows the quantiles and means for the various differences and additional information.\\
+This is because, in contrast to the small study effect tests, the applied adjustment method does not pre-specify the direction in which bias is expected. \\
+To compare the effects of adjustment between meta-analyses, the outcome measures are transformed to Hedges $g$ (standardized mean differences) and Fisher's $z$-score (see section \ref{sec:transformation.effectsizes} for details). The effect of adjustments can be compared to either random or fixed effects meta-analysis estimates. \\
+Figure \ref{fig:adjustment.reg} displays the difference $\delta$ between the observed meta-analysis pooled treatment effect and the regression adjusted treatment effect, $\hat{\theta}_M - \hat{\theta}_\textrm{Adj.}$. The absolute value $|\hat{\theta}_M|$ is taken and the sign of $\hat{\theta}_\textrm{Adj.}$ is adjusted accordingly such that all effects are mirrored to one side. $\delta > 0$ is equivalent to $\hat{\theta}_\textrm{Adj} < \hat{\theta}_M$, a reduction of the original effect size. Additionally, the test statistic of heterogeneity adjusted small study effect tests (R\"ucker's and Thompson's test) is displayed with green color. Test statitics smaller $< 1$ are equivalent to no evidence for small study effect, test statistics between one and two to weak evidence, and above two they indicate evidence for small study effects. Some very large and very small differences have been omitted in the $z$-score and Hedges $g$ histograms; they are shown in Table \ref{missing.differences}. 
 
 \begin{figure}
 \begin{knitrout}
@@ -738,12 +741,32 @@ Figure \ref{fig:adjustment.size} displays the difference $\delta$ between the ob
 
 
 \end{knitrout}
-\caption{Histogram of the treatment effect differences between meta-analysis and adjusted meta-analysis. Negative differences indicate greater adjusted effect sizes than meta-analysis effect sizes. The bins are centered at zero.}
-\label{fig:adjustment.size}
+\caption{Histogram of the treatment effect differences between meta-analysis and regression adjusted meta-analysis. Negative differences indicate greater adjusted effect sizes than meta-analysis effect sizes. The bins are centered at zero and binwidth is equal to 0.1. Deeper green color indicates more evidence for small study effects.}
+\label{fig:adjustment.reg}
 \end{figure}
 
+We see that more treatment effect sizes are negatively adjusted and diminished. Furthermore, we see that large adjustment is not necessarily connected with evidence for small study effects, but there is of course strong coincidence. The cases with no evidence and large adjustment indicate that between-study heterogeneity was not resolved by adjustment for small study effects. Adjustment was larger when random effects meta-analysis effect is used as reference, because there larger weights are given to small studies.\\
+Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Copas; Copas selection model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Therefore, the effect of adjustment by Copas can be seen when comparing adjusted with random effects estimates. Again, we clearly see that more effect sizes are adjusted downwards. Additionally, there is more coincidence with the small study effect test statistics and adjustment, which is as expected. \\
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-16-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Histogram of the treatment effect differences between meta-analysis and Copas adjusted meta-analysis. Negative differences indicate greater adjusted effect sizes than meta-analysis effect sizes. The bins are centered at zero and binwidth is equal to 0.1. Deeper green color indicates more evidence for small study effects.}
+\label{fig:adjustment.copas}
+\end{figure}
+
+Table \ref{adjustment.difference} shows the quantiles and means for the various differences and additional information. When Hedge's $g$ is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small (the means of Copas in the first two rows for $z$-score are caused by one very large value, see Table \ref{missing.differences}). To recall some other findings out of Table \ref{adjustment.difference}: 5\% or 90 cases have their $z$-score reduced by more than 0.15 by regression adjustment (and 5\% or 90 increased by -0.13, fixed effects reference). Also, Hedges $g$ is reduced by 0.39 compared to fixed effects estimates in 5\% or 90 meta-analyses (or increased by 0.24). 
+
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Jul  1 17:11:03 2019
+% Tue Jul  2 18:53:53 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -772,14 +795,6 @@ z: Fixed - Copas & -0.05 & -0.01 & -0.00 & 0.01 & 0.05 & -271.73 & 4.76 & 48.67 
 
 
 
-
-Adjustment leads most often to reduction of treatment effect estimates, as can be seen by the size of the bins of the right part of the histograms in Figure \ref{fig:adjustment.sue}. The difference between the bins on the right and left side of the zero-centered bin is however not very large in general. The seeming exception of the Copas selection model in the case with $z$-scores and fixed effects reference requires closer examination: Copas selection model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Thus, when comparing Copas with Fixed effects, we compare most often random effects with fixed effects estimates. The effect of adjustment by Copas can therefore only be seen when comparing random effects estimates with fixed effect estimates: we can see in Table \ref{adjustment.difference} that we have, for $z$-score, 18.4\% reduced effect sizes compared to 10.3\% (= 100\% - 89.69\%) increased effect sizes. Thus, the Copas selection model also has a larger proportion of reduced effect sizes compared to amplified.\\
-%This resolves the case for the seeming exception and for Hedges $g$'s, 24.4\% and 12.46\% (Table \ref{adjustment.difference}. 
-Also, there are more reduced effect sizes if random effects meta-analysis is used as a reference effect size. When Hedge's $g$ is used as an effect measure, there are (substantially) more reduced effect sizes. \\
-The means in Table \ref{adjustment.difference} suggest that the average reduction is small (the means of Copas in the first two rows for $z$-score are caused by one very large value, see Table \ref{missing.differences}). To recall some other findings out of Table \ref{adjustment.difference}: 5\% or 90 cases have their $z$-score reduced by more than 0.15 by regression adjustment (and 5\% or 90 increased by -0.13, fixed effects reference). Also, Hedges $g$ is reduced by 0.39 compared to fixed effects estimates in 5\% or 90 meta-analyses (or increased by 0.24).
-
-
-
 \subsection{Change in Evidence for Treatment Effects} \label{sec:change.evidence}
 Adjustment for small study effects in meta-analysis will not only provide new effect sizes, but also standard errors thereof. Thus, also the evidence for efficacy of a treatment can be obtained, which is usually summarized in a suitable test statistic or $p$-value. It is of interest if and how the evidence for treatment effects changes if adjusted for publication bias.\\
 The Wald test statistics $p$-value for fixed and random effects meta-analyses and Copas and regression adjusted treatment effects have been calculated. They are shown in Figure \ref{fig:adjustment.stat} for meta-analysis based on $z$-score, Hedges $g$ and log hazard ratios. \\
@@ -794,7 +809,7 @@ Also, Copas selection method has a very small impact on the evidence compared to
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-17-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-18-1} 
 
 }
 
@@ -811,7 +826,7 @@ The Copas selection model also gives an estimate of the number of missing studie
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-18-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-19-1} 
 
 }
 
@@ -825,7 +840,7 @@ The Copas selection model also gives an estimate of the number of missing studie
 We can see that in some occasions, the method finds more than half of all studies are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}. The discrepancy between mean and median may indicate that the estimate of 0\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie 0 meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for 0, more than 30\% of missing studies.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Jul  1 17:11:05 2019
+% Tue Jul  2 18:53:54 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -848,7 +863,7 @@ Missing fraction & 323 & 0 & 0 & 0.1 & 0.3 & 1.0 & 0.2 \\
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Jul  1 17:11:05 2019
+% Tue Jul  2 18:53:54 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -888,7 +903,7 @@ Regression adjusted estimates are compared to the estimates of Copas selection m
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-21-1} 
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-22-1} 
 
 }
 
@@ -899,86 +914,7 @@ Regression adjusted estimates are compared to the estimates of Copas selection m
 \label{fig:adjustment.mean.diff}
 \end{figure}
 
-No formal tests are provided, but the at least there seems to be no clear bias or systematic. The limits of agreement in Figure \ref{fig:adjustment.mean.diff} are large. We conclude thus that the impact of regression adjustment on the effect sizes is in general not substantially larger than the impact of Copas selection model in the subset of data where the estimate of the Copas selection model is not equal to a random effects estimate.  \\
-
-
-
-\section{Comparison of Tests and Adjustments} \label{sec:comparison.tests.adjustment}
-
-
-In section \ref{sec:change.size}, we have seen that some adjustments for small study effects are not in line with our previous definition of publication bias: Some times, the adjustment for small study effects leads to a larger treatment effect. We want to take this into account when considering evidence for publication bias. Whenever adjustment leads to larger effect sizes, the small study effect test result from section \ref{sec:publication.bias.tests} is revised and changed to negative. We will revisit the results from section \ref{sec:publication.bias.tests} and first visualize which proportion of the data finds rather ``negative publication bias'' than the predefined type of publication bias. Figure \ref{fig:test.corrected} is equal to Figure \ref{fig:test} with sole difference that now the proportion of ``negative publication bias'' is colored, and the count of significant findings is corrected (not significant for negative publication bias). \\
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-23-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Histogram of the $p$-values for small study effect in meta-analyses. The testing method is indicated in the header, bin width is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
-\label{fig:test.corrected}
-\end{figure}
-
-The proportion of findings where we found amplification by adjustment was 34.5\%. Most often, the proportion of tests with evidence for small study effects (and especially, excess significance), is lower, though. There are exceptions to this, such as Schwarzer's test results, where we have 143 - 60 = 83 significant test results, which corresponds to $\sim$ 40\%. Since excess significance is not necessarily connected with small study effects, we can furthermore reject the newly obtained, slightly smaller number of significant excess significance test results, and stick to the previous findings. \\
-We can see how the agreement in significance is before, and after having removed negative publication bias significant results in Table \ref{test.agreement}. The proportion of agreement in significance is defined as the proportion of cases where, when the test with less significant findings is significant, also the other is significant. \\
-After the adjustment of the test results, the agreement for small study effects tests and excess significance tests increases a bit. This seems also to be the general trend, but not without exceptions. The two right-most columns indicate the agreement in significance, and we see that agreement is never larger than 0.3 (with Egger's test, continuous outcomes). Furthermore, only Egger and Thompson show a goof agreement for significance ($\sim$ 0.83). In contrast, some small study effect tests for binary outcomes seem rather to be exclusive, see for example the example of Schwarzer's test (6\% after adjustment) and R\"ucker's test (11\%): Only 19 \% of the cases where Schwarzer's Test is significant have also a significant finding using R\"ucker's test. Almost all binary small study effect tests have agreement in significance > 0.5. Thus, we see that large overall agreement is rather due to the large proportion of non-significant findings.
-
-
-
-
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Jul  1 17:11:08 2019
-\begin{table}[ht]
-\centering
-\begingroup\scriptsize
-\begin{tabular}{lcccc}
-  & pre, overall & post, overall & pre, significance & post, significance \\ 
-  \hline
-\hline
-Excess significance, Schwarzer & 0.82 & 0.87 & 0.14 & 0.19 \\ 
-  Excess significance, Peter & 0.80 & 0.84 & 0.27 & 0.21 \\ 
-  Excess significance, Rucker & 0.83 & 0.85 & 0.32 & 0.26 \\ 
-  Excess significance, Harbord & 0.80 & 0.85 & 0.27 & 0.24 \\ 
-  Peter, Schwarzer & 0.82 & 0.88 & 0.38 & 0.39 \\ 
-  Schwarzer, Rucker & 0.82 & 0.87 & 0.32 & 0.35 \\ 
-  Schwarzer, Harbord & 0.86 & 0.91 & 0.58 & 0.54 \\ 
-  Rucker, Peter & 0.89 & 0.92 & 0.64 & 0.62 \\ 
-  Harbord, Peter & 0.86 & 0.90 & 0.53 & 0.48 \\ 
-   \hline
-Excess significance, Egger & 0.79 & 0.81 & 0.72 & 0.61 \\ 
-  Excess significance, Thompson & 0.82 & 0.83 & 0.72 & 0.61 \\ 
-  Excess significance, Begg & 0.81 & 0.84 & 0.33 & 0.28 \\ 
-  Thompson, Egger & 0.95 & 0.96 & 0.96 & 0.95 \\ 
-  Thompson, Begg & 0.87 & 0.89 & 0.69 & 0.73 \\ 
-  Egger, Begg & 0.86 & 0.87 & 0.78 & 0.77 \\ 
-   \hline
-Excess significance, Egger (survival) & 0.87 & 0.97 & 0.00 &  \\ 
-  Excess significance, Thompson (survival) & 0.92 & 0.97 & 0.00 &  \\ 
-  Excess significance, Begg (survival) & 0.95 & 1.00 & 0.00 &  \\ 
-  Thompson, Egger (survival) & 0.90 & 0.95 & 0.67 & 0.00 \\ 
-  Thompson, Begg (survival) & 0.92 & 0.97 & 0.50 & 0.00 \\ 
-  Egger, Begg (survival) & 0.87 & 0.97 & 0.50 & 0.00 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Overall proportion of agreement if significant or unsignificant, and for significance only. Horizontal lines separate binary, continuous and survival outcomes (order as in table). The reference significance test is the one with more significant results.} 
-\label{test.agreement}
-\end{table}
-
-
-
-
-
-
-
-
-
-
+No formal tests are provided, but the at least there seems to be no clear bias or systematic error. The limits of agreement in Figure \ref{fig:adjustment.mean.diff} are large. We conclude thus that the impact of regression adjustment on the effect sizes is in general not substantially larger than the impact of Copas selection model in the subset of data where the estimate of the Copas selection model is not equal to a random effects estimate.  \\
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -989,7 +925,7 @@ Excess significance, Egger (survival) & 0.87 & 0.97 & 0.00 &  \\
 
 \chapter{Methods} 
 \section{Introduction and Notation}
-The analysis has already been said to be restricted on clinical or health care interventions. The interventions are restricted to comparisons of two treatment arms by some measure of sanity or worsening of health. The difference in this measure between the grouops is referred to as the treatment effect. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, Cohen's $d$ or Hedges $g$, Fisher's z score or Pearsons correlation coefficient. \\
+The analysis has already been said to be restricted on clinical or health care interventions. The interventions are restricted to comparisons of two treatment arms by some measure of sanity or worsening of health. The difference in this measure between the groups is referred to as the treatment effect. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, Cohen's $d$ or Hedges $g$, Fisher's z score or Pearsons correlation coefficient. \\
 Let us consider a meta-analysis with $n$ study treatment effects ($n > 1$, but typically small). A study is indexed by $i$, and it's treatment effect by  $\theta_i$. The observed treatment effect is $\hat{\theta}_i$. The pooled treatment effect of a meta-analysis will be denoted as $\theta_M$, and consequently, the observed pooled treatment effect as $\hat{\theta}_M$. Furthermore, each treatment effect is typically measured with some standard error $\se_i$ and an estimate of $\se_i$ is denoted as $\hat{\se}_i$. The $\hat{}$ sign thus indicates if it is an estimate.\\
 For continuous outcomes, let $m_t$ be the mean of the treatment group, $m_c$ the mean of the control group, and equivalently $\textrm{sd}_t$ and $\textrm{sd}_c$ the corresponding standard deviations. $n_t$ and $n_c$ are the total number of participants in the groups.
 In the case of binary outcomes, let $e_t$ be the count of events in the treatment arm $e_c$ the count of events in the control group. The observed counts in a study $i$ are referred to as $e_{t,i}$ and analogously $e_{c,i}$.
@@ -1089,7 +1025,7 @@ Q &= \sum_{i = 1}^n w_i(y_i - \theta_M)^2 & C &= \sum_{i = 1}^n w_i - \frac{\sum
 
 Again, $w_i, \theta_i ...$ have to be replaced by their estimates in order to get an estimate $\hat{\tau}^2$. \\
 The Paule-Mandel estimator \citep{paulemandel} is considered to have most often better properties than the method of moments estimator (\eg \citet{tau.estimator.evaluation}).
-Since we defined $w_i = 1/(\se_i^2 + \tau^2)$, it als holds that
+Since we defined $w_i = 1/(\se_i^2 + \tau^2)$, it also holds that
 
 \begin{align}
 w_i \textrm{Var}(\theta_i) &= 1 & \textrm{Var}(\sqrt{w_i}\theta_i) = 1 \nonumber
@@ -1235,10 +1171,10 @@ The concept is extendable to weighted linear regression. Weighted linear regress
 with positive weights $w_i$ that penalize large squared residuals for some $i$ more if $w_i$ is larger compared to other $w_i$. \\
 Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weights on the diagonal and zeros on the off-diagonals. The estimates in \ref{eq:regression.parameters} and \ref{eq:regression.variances} can still be used if $\mathbf{X}$ is exchanged with $\mathbf{X}^\star =  \mathbf{W} \mathbf{X}$ and $\mathbf{y}$ with $\mathbf{y}^\star = \mathbf{W} \mathbf{y}$. \label{weighted.regression} \\
 Now it is shown how linear regression can be used to test dependency of effect sizes on study sizes. The simplest application was introduced by \citet{Egger}.
-Let $\theta/s$ be the dependent variable $y$ and $1/s$ the explanatory variable $x$. If plotted, this corresponds to a radial or Galbraith plot \citep{galbraith}. The linear regression equation as introduced before in \ref{eq:simple.regression} can be written in two ways:
+Let $\theta/s$ be the dependent variable $y$ and $1/\se$ the explanatory variable $x$. If plotted, this corresponds to a radial or Galbraith plot \citep{galbraith}. The linear regression equation as introduced before in \ref{eq:simple.regression} can be written in two ways:
 
 \begin{align}
-\theta/s &= \beta_0 + \beta_1/s + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:radial.plot} 
+\theta/s &= \beta_0 + \beta_1/\se + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:radial.plot} 
 \end{align}
 
 Equation \eqref{eq:radial.plot} is often provided due to the correspondence to the radial plot. However, it is equivalent to
@@ -1256,7 +1192,7 @@ with weights $w = 1/\se^2$. Thus testing $\beta_0$ of \ref{eq:radial.plot} or $\
 
 
 \subsubsection{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test} \label{sec:Thompson}
-A method proposed in \citet{thompson.sharp} allows for between study variance $\tau^2$, as introduced before in section \ref{sec:meta.analysis}. It extends the previously seen linear regression approach with $x = 1/s$ and $y = \theta/s$ by introducing weights. The effect size $\theta_i$ is assumed to be distributed as
+A method proposed in \citet{thompson.sharp} allows for between study variance $\tau^2$, as introduced before in section \ref{sec:meta.analysis}. It extends the previously seen linear regression approach with $x = 1/\se$ and $y = \theta/s$ by introducing weights. The effect size $\theta_i$ is assumed to be distributed as
 
 \begin{align}
 \theta_i \sim N(\beta_0 + \beta_1 \se_i, \se_i^2 + \tau^2) \label{t.sharp.regression}
@@ -1276,14 +1212,14 @@ Instead of taking the standard error $s$ as explanatory variable $x$ as in Egger
 
 \subsubsection{Harbord's Test: Score based Test} \label{sec:Harbord}
 A rank based alternative to Peters test for binary outcomes is Harbord's test \citep{Harbord}.
-It uses a different treatment effect and variance estimate: the score $\varphi$ of the log-likelihood, evaluated at log odds ratio $\theta_0 = 0$ and its inverse Fisher information $\se^2$. Formally,
+It uses a different treatment effect and variance estimate: the score $\varphi$ of the log-likelihood, evaluated at log odds ratio $\theta_0 = 0$ and its inverse Fisher information $s^2$. Formally,
 
 \begin{align}
 \varphi &= e_t - (e_t - e_c)(e_t + (n_t - e_t))/(n_t + n_c) \label{harbord.score} \\
- \se^2&= \frac{(e_t + e_c)(e_t + (n_t - e_t))(e_c + (n_c - e_c))((n_t - e_t) + (n_c - e_c))}{(n_t + n_c)^2(n_t + n_c - 1)} \label{harbord.variance}
+ s^2 &= \frac{(e_t + e_c)(e_t + (n_t - e_t))(e_c + (n_c - e_c))((n_t - e_t) + (n_c - e_c))}{(n_t + n_c)^2(n_t + n_c - 1)} \label{harbord.variance}
 \end{align}
 
-It can be shown that they are both good approximations of the log odds ratio and its variance if the real $\theta$ is not too far from zero. The standardized estimator $r_i/v_i$ is also known as Pet0 odds ratio. The obtained scores and variances can be used in Egger's test as treatment effects and variances.
+It can be shown that they are both good approximations of the log odds ratio and its variance if the real $\theta$ is not too far from zero. The standardized estimator $r_i/v_i$ is also known as Peto odds ratio. The obtained scores and variances can be used in Egger's test as treatment effects and variances.
 
 
 \subsubsection{Schwarzer's Test: Rank Correlation Test} \label{sec:Schwarzer}
@@ -1306,7 +1242,7 @@ Then one can optionally apply Begg and Mazumdar's rank correlation test or Thomp
 
 
 \subsection{Excess Significance Test} \label{sec:excess.significance}
-\citet{excess.significance} developped an exploratory test to detect if the proportion of significant findings is larger than expected. Note that significance is here defined as one-sided significance, with the direction of the test being the same for each study. \\
+\citet{excess.significance} developed an exploratory test to detect if the proportion of significant findings is larger than expected. Note that significance is here defined as one-sided significance, with the direction of the test being the same for each study. \\
 We assume that the effects are equally distributed around a true mean effect $\theta_M$, which can be estimated by fixed effects Meta-Analysis \ref{eq:fixed.effects}. Let $O$ be the number of significant study results out of $n$ studies and $\alpha$ the significance threshold. Corresponding to the study effect $\theta_i$, we can specify the power $1 - \beta_i$, the probability to accepting a true result. Let $z_{\alpha,i}$ be the $1-\alpha$ quantile of a normal distribution with standard error $\hat{\se}_i$. The power of study $i$ can be estimated as:
 
 \begin{align}
@@ -1329,7 +1265,7 @@ $E$ can then be compared to $O$ by constructing a test statistic $\chi$:
 and consecutively, calculating a $p$-value for the evidence against the null-hypothesis of $O = E$ with a $\chi^2$ distribution with one degree of freedom. Alternatively, one can also use a binomial test, which is encouraged when $n$ and $O$ is small. We will get a one sided $p$-value for excess significance, $\P(X \geq O)$, by 
 
 \begin{align}
-p &= \sum_{i = O}^n(n \choose i p^i (1-p)^{n - i})
+p &= \sum_{i = O}^n\Big({n \choose i} p^i (1-p)^{n - i}\Big)
 \end{align}
 
 with $p = E/n$ and $X$ being a binomial random variable with probability $p$. 

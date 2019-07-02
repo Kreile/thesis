@@ -1,0 +1,340 @@
+% LaTeX file for Chapter 06
+
+
+<<'preamble03',include=FALSE, echo=FALSE>>=
+library(knitr)
+opts_chunk$set(fig.path='figure/ch03_fig',
+               echo=TRUE, message=FALSE,
+               fig.width=8, fig.height=3,
+               self.contained = FALSE,
+               out.width='\\textwidth-3cm',
+               message=FALSE, fig.align='center',
+               background="gray98", tidy=FALSE, #tidy.opts=list(width.cutoff=60),
+               cache=TRUE
+)
+options(width=74)
+@
+
+<<'Data03', echo=FALSE, warning=FALSE>>= 
+rm(list = ls())
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
+FILE = 'cochrane_2018-06-09.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH2, 'code')
+PATH_RESULTS = file.path(PATH2, 'results')
+PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+
+file_results = "pb.RData"
+
+source(file.path(PATH_CODE, 'PubBias_functions.R'))
+
+file.dat <- "data.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+	load(file.path(PATH_RESULTS, file.dat))
+} else {
+	data = pb.readData(path = PATH_DATA, file = FILE)
+	tmp = pb.clean(data)
+	data = tmp[[1]]
+	aliases = tmp[[2]]
+	save(data, file =  file.path(PATH_RESULTS, file.dat))
+}
+
+load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+load(file.path(PATH_RESULTS, "meta.bin.RData"))
+load(file.path(PATH_RESULTS, "meta.cont.RData"))
+load(file.path(PATH_RESULTS, "meta.surv.RData"))
+load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
+
+require(corrgram)
+
+# data.ext2 <- pb.process2(data)
+@
+
+
+\chapter{Additional Results} \label{ch:Additional.Results}
+
+
+\section{Comparison of Two-sided test and adjustments results} \label{sec:comparison.tests.adjustment}
+<<echo = FALSE, warnings = FALSE>>=
+adjustment.diff.keep <- meta.f %>% 
+  mutate(est.copas.f = case_when(sign(est.copas) == sign(est.fixef) ~  abs(est.copas),
+                                 sign(est.copas) != sign(est.fixef) ~ -abs(est.copas)),
+         est.reg.f = case_when(sign(est.reg) == sign(est.fixef) ~  abs(est.reg),
+                               sign(est.reg) != sign(est.fixef) ~ -abs(est.reg)),
+         est.copas.r = case_when(sign(est.copas) == sign(est.ranef) ~  abs(est.copas),
+                                 sign(est.copas) != sign(est.ranef) ~ -abs(est.copas)),
+         est.reg.r = case_when(sign(est.reg) == sign(est.ranef) ~  abs(est.reg),
+                               sign(est.reg) != sign(est.ranef) ~ -abs(est.reg)),
+         
+         est.d.copas.f = case_when(sign(est.d.copas) == sign(est.d.fixef) ~  abs(est.d.copas),
+                                   sign(est.d.copas) != sign(est.d.fixef) ~ -abs(est.d.copas)),
+         est.d.reg.f = case_when(sign(est.d.reg) == sign(est.d.fixef) ~  abs(est.d.reg),
+                                 sign(est.d.reg) != sign(est.d.fixef) ~ -abs(est.d.reg)),
+         est.d.copas.r = case_when(sign(est.d.copas) == sign(est.d.ranef) ~  abs(est.d.copas),
+                                   sign(est.d.copas) != sign(est.d.ranef) ~ -abs(est.d.copas)),
+         est.d.reg.r = case_when(sign(est.d.reg) == sign(est.d.ranef) ~  abs(est.d.reg),
+                                 sign(est.d.reg) != sign(est.d.ranef) ~ -abs(est.d.reg)),
+         
+         est.z.copas.f = case_when(sign(est.z.copas) == sign(est.z.fixef) ~  abs(est.z.copas),
+                                   sign(est.z.copas) != sign(est.z.fixef) ~ -abs(est.z.copas)),
+         est.z.reg.f = case_when(sign(est.z.reg) == sign(est.z.fixef) ~  abs(est.z.reg),
+                                 sign(est.z.reg) != sign(est.z.fixef) ~ -abs(est.z.reg)),
+         est.z.copas.r = case_when(sign(est.z.copas) == sign(est.z.ranef) ~  abs(est.z.copas),
+                                   sign(est.z.copas) != sign(est.z.ranef) ~ -abs(est.z.copas)),
+         est.z.reg.r = case_when(sign(est.z.reg) == sign(est.z.ranef) ~  abs(est.z.reg),
+                                 sign(est.z.reg) != sign(est.z.ranef) ~ -abs(est.z.reg)),
+         
+         est.fixef = abs(est.fixef),
+         est.ranef = abs(est.ranef),
+         est.z.fixef = abs(est.z.fixef),
+         est.z.ranef = abs(est.z.ranef),
+         est.d.fixef = abs(est.d.fixef),
+         est.d.ranef = abs(est.d.ranef)) 
+
+sig.level <- 0.1
+meta.f <- meta.f %>% 
+	mutate(egger.test = ifelse(pval1.egger < sig.level, 1, 0),
+				 thompson.test = ifelse(pval1.thompson < sig.level, 1, 0),
+				 begg.test = ifelse(pval1.begg < sig.level, 1, 0),
+				 
+				 tes.d.test = ifelse(pval1.d.tes < sig.level, 1, 0),
+				 
+				 schwarzer.test = ifelse(pval1.schwarzer < sig.level, 1, 0),
+				 rucker.test = ifelse(pval1.rucker < sig.level, 1, 0),
+				 harbord.test = ifelse(pval1.harbord < sig.level, 1, 0),
+				 peter.test = ifelse(pval1.peter < sig.level, 1, 0))
+
+#--------------------------------------------------------------------------------------------------------------------#
+meta.bin <- adjustment.diff.keep %>% filter(outcome.type == "bin")
+meta.cont <- adjustment.diff.keep %>% filter(outcome.type == "cont")
+meta.surv <- adjustment.diff.keep %>% filter(outcome.type == "surv")
+
+dat_text <- data.frame(
+  label = paste(c(sum(meta.bin$harbord.test), sum(meta.bin$peter.test), 
+                  sum(meta.bin$rucker.test), sum(meta.bin$schwarzer.test), sum(meta.bin$tes.d.test, na.rm = T)), "< 0.1,",
+                round(c(mean(meta.bin$harbord.test), mean(meta.bin$peter.test), 
+                        mean(meta.bin$rucker.test), mean(meta.bin$schwarzer.test), mean(meta.bin$tes.d.test, na.rm = T)),2)*100, "%"),
+  test.type   = c("pval1.harbord", "pval1.peter", "pval1.rucker", "pval1.schwarzer", "pval1.d.tes"),
+  bias.side = rep(0, times = 5))
+
+labels <- c(pval1.harbord = "Harbord", pval1.peter = "Peter", pval1.rucker = "Rucker", pval1.schwarzer = "Schwarzer", pval1.d.tes = "Excess Significance")
+
+p.dist.bin.corrected <- meta.bin  %>% ungroup() %>% 
+  select(bias.side, pval1.harbord, pval1.peter, pval1.rucker, pval1.schwarzer, pval1.d.tes) %>% 
+  gather(key = "test.type", value = "p.value", pval1.harbord:pval1.d.tes) %>% 
+  ggplot(aes(x = p.value, fill = factor(bias.side))) + 
+  geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + theme(legend.position = "none") +
+  facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+  geom_text(data = dat_text, mapping = aes(x = 0.5, y = 200, label = label), color = "black") + 
+  theme(strip.text.x = element_text(size=7)) + 
+  ggtitle("Binary Outcomes") 
+
+#--------------------------------------------------------------------------------------------------------------------#
+#Continuous Outcomes:
+dat_text <- data.frame(
+  label = paste(c(sum(meta.cont$begg.test), sum(meta.cont$egger.test), sum(meta.cont$thompson.test), sum(meta.cont$tes.d.test, na.rm = T)), "< 0.1,",
+                round(c(mean(meta.cont$begg.test), mean(meta.cont$egger.test), mean(meta.cont$thompson.test), mean(meta.cont$tes.d.test, na.rm = T)),2)*100, "%"),
+  test.type   = c("pval1.begg", "pval1.egger", "pval1.thompson", "pval1.d.tes"),
+  bias.side = rep(0, times = 4))
+
+labels <- c(pval1.begg = "Begg Mazumdar", pval1.egger = "Egger", pval1.thompson = "Thompson Sharp", pval1.d.tes = "Excess significance")
+
+p.dist.cont.corrected <- meta.cont %>% ungroup() %>% 
+  select(bias.side, pval1.egger, pval1.thompson, pval1.begg, pval1.d.tes) %>% 
+  gather(key = "test.type", value = "p.value", pval1.egger:pval1.d.tes) %>% 
+  ggplot(aes(x = p.value, fill = factor(bias.side))) + 
+  geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + theme(legend.position = "none") +
+  facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+  geom_text(data = dat_text, mapping = aes(x = 0.5, y = 60, label = label),  color = "black") + 
+  theme(strip.text.x = element_text(size=7)) + ggtitle("Continuous Outcomes")
+
+
+#--------------------------------------------------------------------------------------------------------------------#
+dat_text <- data.frame(
+  label = paste(c(sum(meta.surv$begg.test), sum(meta.surv$egger.test), 
+                  sum(meta.surv$thompson.test), sum(meta.surv$tes.d.test, na.rm = T)), "< 0.1,",
+                round(c(mean(meta.surv$begg.test), mean(meta.surv$egger.test), 
+                        mean(meta.surv$thompson.test), 
+                        mean(meta.surv$tes.d.test, na.rm = T)),2)*100, "%"),
+  test.type   = c("pval1.begg", "pval1.egger", "pval1.thompson", "pval1.d.tes"),
+  bias.side = rep("publication bias", times = 4))
+p.dist.surv.corrected <- meta.surv %>% ungroup() %>% 
+  mutate(bias.side = factor(ifelse(bias.side == 1, "publication bias", "negative publication bias"))) %>% 
+  select(bias.side, pval1.egger, pval1.thompson, pval1.begg, pval1.d.tes) %>% 
+  gather(key = "test.type", value = "p.value", pval1.egger:pval1.d.tes) %>% 
+  ggplot(aes(x = p.value, fill = factor(bias.side))) + 
+  geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + guides(fill=guide_legend(title=NULL))+
+  theme(legend.position = "bottom") +
+  facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+  geom_text(data = dat_text, mapping = aes(x = 0.5, y = 10, label = label),  color = "black") + 
+  theme(strip.text.x = element_text(size=7)) + ggtitle("Survival Outcomes")
+@
+
+In section \ref{sec:change.size}, we have seen that some adjustments for small study effects are not in line with our previous definition of publication bias: Some times, the adjustment for small study effects leads to a larger treatment effect. We want to take this into account when considering evidence for publication bias. Whenever adjustment leads to larger effect sizes, the small study effect test result from section \ref{sec:publication.bias.tests} is revised and changed to negative. We will revisit the results from section \ref{sec:publication.bias.tests} and first visualize which proportion of the data finds rather ``negative publication bias'' than the predefined type of publication bias. Figure \ref{fig:test.corrected} is equal to Figure \ref{fig:test} with sole difference that now the proportion of ``negative publication bias'' is colored, and the count of significant findings is corrected (not significant for negative publication bias). \\
+
+\begin{figure}
+<<echo=FALSE, fig.height = 9>>=
+grid.arrange(p.dist.bin.corrected,
+             p.dist.cont.corrected,
+             p.dist.surv.corrected, ncol = 1)
+@
+\caption{Histogram of the $p$-values for small study effect in meta-analyses. The testing method is indicated in the header, bin width is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
+\label{fig:test.corrected}
+\end{figure}
+
+The proportion of findings where we found amplification by adjustment was \Sexpr{round((1-sum(adjustment.diff.keep$bias.side)/dim(adjustment.diff.keep)[1])*100, 1)}\%. Most often, the proportion of tests with evidence for small study effects (and especially, excess significance), is lower, though. There are exceptions to this, such as Schwarzer's test results, where we have 143 - 60 = 83 significant test results, which corresponds to $\sim$ 40\%. Since excess significance is not necessarily connected with small study effects, we can furthermore reject the newly obtained, slightly smaller number of significant excess significance test results, and stick to the previous findings. \\
+We can see how the agreement in significance is before, and after having removed negative publication bias significant results in Table \ref{test.agreement}. The proportion of agreement in significance is defined as the proportion of cases where, when the test with less significant findings is significant, also the other is significant. \\
+After the adjustment of the test results, the agreement for small study effects tests and excess significance tests increases a bit. This seems also to be the general trend, but not without exceptions. The two right-most columns indicate the agreement in significance, and we see that agreement is never larger than 0.3 (with Egger's test, continuous outcomes). Furthermore, only Egger and Thompson show a goof agreement for significance ($\sim$ 0.83). In contrast, some small study effect tests for binary outcomes seem rather to be exclusive, see for example the example of Schwarzer's test (6\% after adjustment) and R\"ucker's test (11\%): Only 19 \% of the cases where Schwarzer's Test is significant have also a significant finding using R\"ucker's test. Almost all binary small study effect tests have agreement in significance > 0.5. Thus, we see that large overall agreement is rather due to the large proportion of non-significant findings.
+
+<<echo = FALSE, warning= FALSE>>=
+#Agreement proportions of publication bias tests:
+
+#Binary:
+meta.bin <- meta.bin %>%ungroup() %>%  mutate(tes.d.schwarzer = ifelse(tes.d.test == schwarzer.test, "agree", "disagree"),
+                                              tes.d.peter = ifelse(tes.d.test == peter.test, "agree", "disagree"),
+                                              tes.d.rucker = ifelse(tes.d.test == rucker.test, "agree", "disagree"),
+                                              tes.d.harbord = ifelse(tes.d.test == harbord.test, "agree", "disagree"),
+                                              schwarzer.peter = ifelse(schwarzer.test == peter.test, "agree", "disagree"),
+                                              schwarzer.rucker = ifelse(schwarzer.test == rucker.test, "agree", "disagree"),
+                                              schwarzer.harbord = ifelse(schwarzer.test == harbord.test, "agree", "disagree"),
+                                              rucker.peter = ifelse(rucker.test == peter.test, "agree", "disagree"),
+                                              rucker.harbord = ifelse(rucker.test == harbord.test, "agree", "disagree"),
+                                              harbord.peter = ifelse(harbord.test == peter.test, "agree", "disagree"))
+agreement.bin <- meta.bin %>% ungroup() %>% summarise(tes.d.schwarzer = sum(tes.d.schwarzer == "agree")/n(),
+                                                      tes.d.peter = sum(tes.d.peter == "agree")/n(),
+                                                      tes.d.rucker = sum(tes.d.rucker == "agree")/n(),
+                                                      tes.d.harbord = sum(tes.d.harbord == "agree")/n(),
+                                                      schwarzer.peter = sum(schwarzer.peter == "agree")/n(),
+                                                      schwarzer.rucker = sum(schwarzer.rucker == "agree")/n(),
+                                                      schwarzer.harbord = sum(schwarzer.harbord == "agree")/n(),
+                                                      rucker.peter = sum(rucker.peter == "agree")/n(),
+                                                      harbord.peter = sum(harbord.peter == "agree")/n())
+meta.bin <- meta.bin %>%ungroup() %>%  mutate(tes.d.schwarzer = ifelse(tes.d.test + schwarzer.test > 1, "agree", "disagree"),
+                                              tes.d.peter = ifelse(tes.d.test + peter.test > 1, "agree", "disagree"),
+                                              tes.d.rucker = ifelse(tes.d.test + rucker.test > 1, "agree", "disagree"),
+                                              tes.d.harbord = ifelse(tes.d.test + harbord.test > 1, "agree", "disagree"),
+                                              schwarzer.peter = ifelse(schwarzer.test + peter.test > 1, "agree", "disagree"),
+                                              schwarzer.rucker = ifelse(schwarzer.test + rucker.test > 1, "agree", "disagree"),
+                                              schwarzer.harbord = ifelse(schwarzer.test + harbord.test > 1, "agree", "disagree"),
+                                              rucker.peter = ifelse(rucker.test + peter.test > 1, "agree", "disagree"),
+                                              rucker.harbord = ifelse(rucker.test + harbord.test > 1, "agree", "disagree"),
+                                              harbord.peter = ifelse(harbord.test + peter.test > 1, "agree", "disagree"))
+agreement.sig.bin <- meta.bin %>% ungroup() %>% summarise(tes.d.schwarzer = sum(tes.d.schwarzer == "agree")/sum(schwarzer.test),
+                                                      tes.d.peter = sum(tes.d.peter == "agree")/sum(peter.test),
+                                                      tes.d.rucker = sum(tes.d.rucker == "agree")/sum(rucker.test),
+                                                      tes.d.harbord = sum(tes.d.harbord == "agree")/sum(harbord.test),
+                                                      schwarzer.peter = sum(schwarzer.peter == "agree")/sum(schwarzer.test),
+                                                      schwarzer.rucker = sum(schwarzer.rucker == "agree")/sum(schwarzer.test),
+                                                      schwarzer.harbord = sum(schwarzer.harbord == "agree")/sum(schwarzer.test),
+                                                      rucker.peter = sum(rucker.peter == "agree")/sum(peter.test),
+                                                      harbord.peter = sum(harbord.peter == "agree")/sum(peter.test))
+
+binary.tests.agreement <- rbind(agreement.bin, agreement.sig.bin)
+rownames(binary.tests.agreement) <- c("Agreement (overall)", "Agreement (significance)")
+colnames(binary.tests.agreement) <- c("Excess significance, Schwarzer", "Excess significance, Peter",
+                                      "Excess significance, Rucker", "Excess significance, Harbord",
+                                      "Peter, Schwarzer", "Schwarzer, Rucker", "Schwarzer, Harbord",
+                                      "Rucker, Peter", "Harbord, Peter")
+#--------------------------------------------------------------------------------------------------------------------#
+
+
+#Continuous:
+meta.cont <- meta.cont %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
+                                                thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
+                                                egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
+                                                tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
+                                                thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
+                                                tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
+agreement.cont <- meta.cont %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
+                                                         thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
+                                                         tes.d.begg = sum(tes.d.begg == "agree")/n(),
+                                                         thompson.egger = sum(thompson.egger == "agree")/n(),
+                                                         thompson.begg = sum(thompson.begg == "agree")/n(),
+                                                         egger.begg = sum(egger.begg == "agree")/n())
+meta.cont <- meta.cont %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test + egger.test > 1, "agree", "disagree"),
+                                                thompson.begg = ifelse(thompson.test + begg.test > 1, "agree", "disagree"),
+                                                egger.begg = ifelse(egger.test + begg.test > 1, "agree", "disagree"),
+                                                tes.d.egger = ifelse(tes.d.test + egger.test > 1, "agree", "disagree"),
+                                                thompson.tes.d = ifelse(thompson.test +tes.d.test > 1, "agree", "disagree"),
+                                                tes.d.begg = ifelse(tes.d.test + begg.test > 1, "agree", "disagree"))
+agreement.sig.cont <- meta.cont %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/sum(tes.d.test),
+                                                             thompson.tes.d = sum(thompson.tes.d == "agree")/sum(tes.d.test),
+                                                             tes.d.begg = sum(tes.d.begg == "agree")/sum(tes.d.test),
+                                                             thompson.egger = sum(thompson.egger == "agree")/sum(thompson.test),
+                                                             thompson.begg = sum(thompson.begg == "agree")/sum(begg.test),
+                                                             egger.begg = sum(egger.begg == "agree")/sum(begg.test))
+
+
+
+cont.tests.agreement <- rbind(agreement.cont, agreement.sig.cont)
+rownames(cont.tests.agreement) <- c("Agreement (overall)", "Agreement (significance)")
+colnames(cont.tests.agreement) <- c( "Excess significance, Egger", "Excess significance, Thompson",
+                                     "Excess significance, Begg","Thompson, Egger", "Thompson, Begg", "Egger, Begg")
+
+#--------------------------------------------------------------------------------------------------------------------#
+
+
+#Survival:
+meta.surv <- meta.surv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
+                                                thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
+                                                egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
+                                                tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
+                                                thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
+                                                tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
+agreement.surv <- meta.surv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
+                                                         thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
+                                                         tes.d.begg = sum(tes.d.begg == "agree")/n(),
+                                                         thompson.egger = sum(thompson.egger == "agree")/n(),
+                                                         thompson.begg = sum(thompson.begg == "agree")/n(),
+                                                         egger.begg = sum(egger.begg == "agree")/n())
+meta.surv <- meta.surv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test + egger.test > 1, "agree", "disagree"),
+                                                thompson.begg = ifelse(thompson.test + begg.test > 1, "agree", "disagree"),
+                                                egger.begg = ifelse(egger.test + begg.test > 1, "agree", "disagree"),
+                                                tes.d.egger = ifelse(tes.d.test + egger.test > 1, "agree", "disagree"),
+                                                thompson.tes.d = ifelse(thompson.test +tes.d.test > 1, "agree", "disagree"),
+                                                tes.d.begg = ifelse(tes.d.test + begg.test > 1, "agree", "disagree"))
+agreement.sig.surv <- meta.surv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/sum(tes.d.test),
+                                                             thompson.tes.d = sum(thompson.tes.d == "agree")/sum(tes.d.test),
+                                                             tes.d.begg = sum(tes.d.begg == "agree")/sum(tes.d.test),
+                                                             thompson.egger = sum(thompson.egger == "agree")/sum(egger.test),
+                                                             thompson.begg = sum(thompson.begg == "agree")/sum(thompson.test),
+                                                             egger.begg = sum(egger.begg == "agree")/sum(egger.test))
+
+surv.tests.agreement <- rbind(agreement.surv, agreement.sig.surv)
+rownames(surv.tests.agreement) <- c("Agreement (overall)","Agreement (significance)")
+colnames(surv.tests.agreement) <- c("Excess significance, Egger (survival)", "Excess significance, Thompson (survival)",
+                                    "Excess significance, Begg (survival)", "Thompson, Egger (survival)",
+                                    "Thompson, Begg (survival)", "Egger, Begg (survival)")
+
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Merging:
+test.agreement.new <- rbind(t(binary.tests.agreement), t(cont.tests.agreement), t(surv.tests.agreement))
+
+test.agreement.together <- data.frame(test.agreement[,1], test.agreement.new[,1],
+                                      test.agreement[,2], test.agreement.new[,2])
+
+colnames(test.agreement.together) <- c("pre, overall", "post, overall", "pre, significance",
+                                      "post, significance")
+
+#--------------------------------------------------------------------------------------------------------------------#
+@
+
+
+
+<<echo=FALSE, results='asis'>>=
+print(xtable(test.agreement.together, align = "lcccc", caption = "Overall proportion of agreement if significant or unsignificant, and for significance only. Horizontal lines separate binary, continuous and survival outcomes (order as in table). The reference significance test is the one with more significant results.",
+             label = "test.agreement"), hline = c(0, 0, 9, 15, 21), size = "scriptsize")
+@
+
+
+
+
+
+
+
+
+
+

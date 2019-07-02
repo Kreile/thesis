@@ -10,7 +10,7 @@ opts_chunk$set(
 
 \chapter{Methods} 
 \section{Introduction and Notation}
-The analysis has already been said to be restricted on clinical or health care interventions. The interventions are restricted to comparisons of two treatment arms by some measure of sanity or worsening of health. The difference in this measure between the grouops is referred to as the treatment effect. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, Cohen's $d$ or Hedges $g$, Fisher's z score or Pearsons correlation coefficient. \\
+The analysis has already been said to be restricted on clinical or health care interventions. The interventions are restricted to comparisons of two treatment arms by some measure of sanity or worsening of health. The difference in this measure between the groups is referred to as the treatment effect. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, Cohen's $d$ or Hedges $g$, Fisher's z score or Pearsons correlation coefficient. \\
 Let us consider a meta-analysis with $n$ study treatment effects ($n > 1$, but typically small). A study is indexed by $i$, and it's treatment effect by  $\theta_i$. The observed treatment effect is $\hat{\theta}_i$. The pooled treatment effect of a meta-analysis will be denoted as $\theta_M$, and consequently, the observed pooled treatment effect as $\hat{\theta}_M$. Furthermore, each treatment effect is typically measured with some standard error $\se_i$ and an estimate of $\se_i$ is denoted as $\hat{\se}_i$. The $\hat{}$ sign thus indicates if it is an estimate.\\
 For continuous outcomes, let $m_t$ be the mean of the treatment group, $m_c$ the mean of the control group, and equivalently $\textrm{sd}_t$ and $\textrm{sd}_c$ the corresponding standard deviations. $n_t$ and $n_c$ are the total number of participants in the groups.
 In the case of binary outcomes, let $e_t$ be the count of events in the treatment arm $e_c$ the count of events in the control group. The observed counts in a study $i$ are referred to as $e_{t,i}$ and analogously $e_{c,i}$.
@@ -110,7 +110,7 @@ Q &= \sum_{i = 1}^n w_i(y_i - \theta_M)^2 & C &= \sum_{i = 1}^n w_i - \frac{\sum
 
 Again, $w_i, \theta_i ...$ have to be replaced by their estimates in order to get an estimate $\hat{\tau}^2$. \\
 The Paule-Mandel estimator \citep{paulemandel} is considered to have most often better properties than the method of moments estimator (\eg \citet{tau.estimator.evaluation}).
-Since we defined $w_i = 1/(\se_i^2 + \tau^2)$, it als holds that
+Since we defined $w_i = 1/(\se_i^2 + \tau^2)$, it also holds that
 
 \begin{align}
 w_i \textrm{Var}(\theta_i) &= 1 & \textrm{Var}(\sqrt{w_i}\theta_i) = 1 \nonumber
@@ -256,10 +256,10 @@ The concept is extendable to weighted linear regression. Weighted linear regress
 with positive weights $w_i$ that penalize large squared residuals for some $i$ more if $w_i$ is larger compared to other $w_i$. \\
 Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weights on the diagonal and zeros on the off-diagonals. The estimates in \ref{eq:regression.parameters} and \ref{eq:regression.variances} can still be used if $\mathbf{X}$ is exchanged with $\mathbf{X}^\star =  \mathbf{W} \mathbf{X}$ and $\mathbf{y}$ with $\mathbf{y}^\star = \mathbf{W} \mathbf{y}$. \label{weighted.regression} \\
 Now it is shown how linear regression can be used to test dependency of effect sizes on study sizes. The simplest application was introduced by \citet{Egger}.
-Let $\theta/s$ be the dependent variable $y$ and $1/s$ the explanatory variable $x$. If plotted, this corresponds to a radial or Galbraith plot \citep{galbraith}. The linear regression equation as introduced before in \ref{eq:simple.regression} can be written in two ways:
+Let $\theta/s$ be the dependent variable $y$ and $1/\se$ the explanatory variable $x$. If plotted, this corresponds to a radial or Galbraith plot \citep{galbraith}. The linear regression equation as introduced before in \ref{eq:simple.regression} can be written in two ways:
 
 \begin{align}
-\theta/s &= \beta_0 + \beta_1/s + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:radial.plot} 
+\theta/s &= \beta_0 + \beta_1/\se + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:radial.plot} 
 \end{align}
 
 Equation \eqref{eq:radial.plot} is often provided due to the correspondence to the radial plot. However, it is equivalent to
@@ -277,7 +277,7 @@ with weights $w = 1/\se^2$. Thus testing $\beta_0$ of \ref{eq:radial.plot} or $\
 
 
 \subsubsection{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test} \label{sec:Thompson}
-A method proposed in \citet{thompson.sharp} allows for between study variance $\tau^2$, as introduced before in section \ref{sec:meta.analysis}. It extends the previously seen linear regression approach with $x = 1/s$ and $y = \theta/s$ by introducing weights. The effect size $\theta_i$ is assumed to be distributed as
+A method proposed in \citet{thompson.sharp} allows for between study variance $\tau^2$, as introduced before in section \ref{sec:meta.analysis}. It extends the previously seen linear regression approach with $x = 1/\se$ and $y = \theta/s$ by introducing weights. The effect size $\theta_i$ is assumed to be distributed as
 
 \begin{align}
 \theta_i \sim N(\beta_0 + \beta_1 \se_i, \se_i^2 + \tau^2) \label{t.sharp.regression}
@@ -297,14 +297,14 @@ Instead of taking the standard error $s$ as explanatory variable $x$ as in Egger
 
 \subsubsection{Harbord's Test: Score based Test} \label{sec:Harbord}
 A rank based alternative to Peters test for binary outcomes is Harbord's test \citep{Harbord}.
-It uses a different treatment effect and variance estimate: the score $\varphi$ of the log-likelihood, evaluated at log odds ratio $\theta_0 = 0$ and its inverse Fisher information $\se^2$. Formally,
+It uses a different treatment effect and variance estimate: the score $\varphi$ of the log-likelihood, evaluated at log odds ratio $\theta_0 = 0$ and its inverse Fisher information $s^2$. Formally,
 
 \begin{align}
 \varphi &= e_t - (e_t - e_c)(e_t + (n_t - e_t))/(n_t + n_c) \label{harbord.score} \\
- \se^2&= \frac{(e_t + e_c)(e_t + (n_t - e_t))(e_c + (n_c - e_c))((n_t - e_t) + (n_c - e_c))}{(n_t + n_c)^2(n_t + n_c - 1)} \label{harbord.variance}
+ s^2 &= \frac{(e_t + e_c)(e_t + (n_t - e_t))(e_c + (n_c - e_c))((n_t - e_t) + (n_c - e_c))}{(n_t + n_c)^2(n_t + n_c - 1)} \label{harbord.variance}
 \end{align}
 
-It can be shown that they are both good approximations of the log odds ratio and its variance if the real $\theta$ is not too far from zero. The standardized estimator $r_i/v_i$ is also known as Pet0 odds ratio. The obtained scores and variances can be used in Egger's test as treatment effects and variances.
+It can be shown that they are both good approximations of the log odds ratio and its variance if the real $\theta$ is not too far from zero. The standardized estimator $r_i/v_i$ is also known as Peto odds ratio. The obtained scores and variances can be used in Egger's test as treatment effects and variances.
 
 
 \subsubsection{Schwarzer's Test: Rank Correlation Test} \label{sec:Schwarzer}
@@ -327,7 +327,7 @@ Then one can optionally apply Begg and Mazumdar's rank correlation test or Thomp
 
 
 \subsection{Excess Significance Test} \label{sec:excess.significance}
-\citet{excess.significance} developped an exploratory test to detect if the proportion of significant findings is larger than expected. Note that significance is here defined as one-sided significance, with the direction of the test being the same for each study. \\
+\citet{excess.significance} developed an exploratory test to detect if the proportion of significant findings is larger than expected. Note that significance is here defined as one-sided significance, with the direction of the test being the same for each study. \\
 We assume that the effects are equally distributed around a true mean effect $\theta_M$, which can be estimated by fixed effects Meta-Analysis \ref{eq:fixed.effects}. Let $O$ be the number of significant study results out of $n$ studies and $\alpha$ the significance threshold. Corresponding to the study effect $\theta_i$, we can specify the power $1 - \beta_i$, the probability to accepting a true result. Let $z_{\alpha,i}$ be the $1-\alpha$ quantile of a normal distribution with standard error $\hat{\se}_i$. The power of study $i$ can be estimated as:
 
 \begin{align}
@@ -350,7 +350,7 @@ $E$ can then be compared to $O$ by constructing a test statistic $\chi$:
 and consecutively, calculating a $p$-value for the evidence against the null-hypothesis of $O = E$ with a $\chi^2$ distribution with one degree of freedom. Alternatively, one can also use a binomial test, which is encouraged when $n$ and $O$ is small. We will get a one sided $p$-value for excess significance, $\P(X \geq O)$, by 
 
 \begin{align}
-p &= \sum_{i = O}^n(n \choose i p^i (1-p)^{n - i})
+p &= \sum_{i = O}^n\Big({n \choose i} p^i (1-p)^{n - i}\Big)
 \end{align}
 
 with $p = E/n$ and $X$ being a binomial random variable with probability $p$. 

@@ -134,6 +134,9 @@ meta.info.extended <- data.ext2 %>%
             mean.events = mean(events1 + events2),
             mean.publication.year = mean(study.year, na.rm = TRUE),
             first.publication.year = min(study.year, na.rm = T),
+            
+            side = bias.side.fct(outcome = outcome.type, lrr = lrr, var.lrr = var.lrr, smd = smd, var.smd = var.smd,
+                                 effect = effect, se = se),
             n.sig.single = sum(sig.single, na.rm = T),
             NA.sig.single = sum(is.na(sig.single)),
             se.min = min(se, na.rm = T),

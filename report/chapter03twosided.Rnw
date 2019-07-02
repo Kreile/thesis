@@ -5,7 +5,7 @@
 library(knitr)
 opts_chunk$set(fig.path='figure/ch03_fig',
                echo=TRUE, message=FALSE,
-               fig.width=8.1, fig.height=3,
+               fig.width=8, fig.height=3,
                self.contained = FALSE,
                out.width='\\textwidth-3cm',
                message=FALSE, fig.align='center',
@@ -286,7 +286,7 @@ p.dist.surv <- meta.surv %>% ungroup() %>%
   facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
   guides(fill=guide_legend(title=expression(paste(I^2, " Heterogeneity")))) + 
   geom_text(data = dat_text, mapping = aes(x = 0.5, y = 10, label = label),  color = "black")  + 
-  scale_fill_discrete(labels = c("> 0", "= 0")) +
+  scale_fill_discrete(labels = c("0", "> 0")) +
   theme(strip.text.x = element_text(size=7)) + 
   ggtitle("Survival Outcomes") 
 #--------------------------------------------------------------------------------------------------------------------#
@@ -298,9 +298,9 @@ p.dist.surv <- meta.surv %>% ungroup() %>%
 ################################################################################################
 ################################################################################################
 
-cor.data <- meta.f %>% select(stat.rucker, stat.harbord, stat.peter, stat.schwarzer, 
+cor.data <- meta.f %>% mutate(stat.d.tes = stat.d.tes/k) %>%  select(stat.rucker, stat.harbord, stat.peter, stat.schwarzer, stat.d.tes, 
                              stat.egger, stat.thompson, stat.begg, I2)
-colnames(cor.data) <- c("Rucker", "Harbord", "Peter", "Schwarzer", "Egger", "Thompson",
+colnames(cor.data) <- c("Rucker", "Harbord", "Peter", "Schwarzer", "Excess s.",  "Egger", "Thompson",
                         "Begg", "I-squared")
 
 panel.pts.new <- function (x, y, corr = NULL, col.regions, cor.method, ...) 
@@ -510,24 +510,21 @@ grid.arrange(p.dist.bin,
 \end{figure}
 
 %Agreement table -> Chunck 1
-The histograms in Figure \ref{fig:test} show that most distributions are clearly skewed to the right, indicating evidence for small study effects. Exceptions from this are the excess significance and Schwarzer's test, and the tests for survival outcomes. There, there is no evidence for publication bias, and the histograms are even skewed to the left (Schwarzer). But note that the sample size of survival outcomes is small ($n$ = \Sexpr{dim(meta.surv)[1]}). \\
-There is discrepancy between continuous and binary data test results; the evidence for small study effects in continuous data is clearly larger. Also, we see that the $I^2$ statistic of the proportion of overall between-study heterogeneity is distributed differently for the tests, with results with $I^2 = 0$ being evenly distributed in binary outcomes along the range of $p$-values, while they are more similar to the meta-analyses with larger heterogeneity for continuous outcome.\\
-In the literature, the excess significance test is advised to be used in the case of no between study heterogeneity. Since there are no small $p$-values for such meta-analyses, one must conclude that there is no excess significance in the dataset. The obvious correspondence with the heterogeneity statistic however rather suggests that the test itself is just another was to assess between study heterogeneity. Thompson test and R\"ucker's test are designed such that they take into account the between study heterogeneity when assessing small study effects. When no heterogeneity is given, Thompsons test results and Eggers test result should be equal, however, the $I^2$ statistic is computed by a more suitable estimator \citep{paulemandel} of $\tau^2$ as the estimator that Thompson and Sharp's test uses (method of moment estimator of \citet{tau.estimator}, which is more conservative by usually finding larger $\tau^2$). In the part of the histogram with $I^2 > 0$, the two tests are more reliable than the remaining tests, while the opposite is expected from simulations \citep{limitmeta} when $I^2 = 0$.\\
-
-It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects for the same meta-analyses. A simple method to check the coincidence of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between survival and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and survival outcomes results. Also, the $I^2$ statistic is included. Since no test statistic is used for excess significance tests, it is not shown here
+The histograms in Figure \ref{fig:test} show that the distributions are (with the exception of Schwarzer's test) skewed to the right for all outcome types, indicating evidence for small study effects and excess significance, respectively. Moreover, the excess significance tests have a mode around $p = 0.4$. There is some discrepancy between continuous and binary data test results; the evidence for small study effects in continuous data is clearly larger. Survival outcome type results are quite different with very few evidence for small study effects and excess significance. Note that the sample size of survival outcomes is small ($n$ = \Sexpr{dim(meta.surv)[1]}).\\
+It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects/excess significance for the same meta-analyses. A simple method to check the coincidence of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between survival and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and survival outcomes results.
 
 \begin{figure}
-<<echo=FALSE, fig.height = 7, fig.width = 8.5, warning=FALSE>>=
+<<echo=FALSE, fig.height = 6, warning=FALSE>>=
 corrgram(cor.data, 
          upper.panel=panel.pts.new, lower.panel=panel.cor, 
          cex.labels = 1, cex = .25, cex.cor = 2, pch = 1,
          text.panel=panel.txt, cor.method = "spearman")
 @
-\caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots outside are statistically significant by 0.1 $p$-value threshold).}
+\caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots outside are statistically significant using the 0.1 threshold).}
 \label{fig:test.agreement}
 \end{figure}
 
-The observed patterns on the scatterplots differ, and some small study effect test statistics do align better than others. Regression based tests as Egger and Thompsons test which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. Continuous and survival outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics .\\
+The observed patterns on the scatterplots differ: Excess significance and small study effect test statistics do usually not align with each other, forming rather randomly scattered bulks of points. Regression based tests as Egger and Thompson which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. In general, small study effect tests align on the diagonal, but the extent to which they align differs. Continuous and survival outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics .\\
 Because scatterplots and correlation coefficients can be misleading, also a Tukey mean-difference or Bland-Altman of transformed $p$-values plot is shown for four scenarios in Figure \ref{fig:mean.diff.test}:
 \begin{itemize}
 \item For Egger's and Thompson's tests, which is supposedly the most similar test and should show the least deviations and systematic errors
@@ -543,7 +540,7 @@ This can be justified since all tests are supposed to measure the evidence for p
 \item the points should scatter independently on the $y$-axis and no general increase or decrease with the mean of the transformed $p$-values should be visible
 \end{itemize}
 
-Although this is not formally tested, there are likely systematic errors and bias between excess significance tests, although more so for continuous tests. -- In the appendix, it can be seen that this is reproducible with the remaining small study effect tests (not there yet) -- \\
+Although this is not formally tested, the last criterium seems not to be given when comparing small study effect and excess significance tests. With decreasing mean, the difference gets more negative, and vice versa, such that one would predict that the excess significance $p$-values are more ``extreme'' in both directions. -- In the appendix, it can be seen that this is reproducible with the remaining small study effect tests (not there yet) -- However, the systematic error between the compared tests is close to zero, and small study effect tests do probably not show bias when compared to each other. \\
 The confidence intervals can be used as limits of agreement, which gives, after back-transformation, around 0.9 for Egger's and Thompson's test, and around 0.99 for Harbord's and R\"ucker's tests. This suggests that correspondence between the tests is not very good in general. 
 
 \begin{figure}
@@ -566,9 +563,9 @@ print(xtable(number.sig.tests, caption = "Counts Number of significant test resu
 @
 
 Here, it is difficult to say if continuous and survival or binary outcome types show better agreement, since more tests are applied in the binary case, and the continuous and survival outcome type tests have in general more positive findings. Very few meta-analyses are significant, irrespective of the test used, but around 67\% of the dataset is not significant, no matter which test is used. \\
-When only looking at small study effect tests, \Sexpr{mean.min.bin}\% of binary outcome tests and \Sexpr{mean.min.else}\% of survival and continuous outcome tests had at least one significant result. After applying the Bonferroni correction for multiple testing, this shrinks to \Sexpr{mean.min.bin.b}\% for binary and \Sexpr{mean.min.else.b}\% for continuous and survival outcomes. \\
-% To compare significant findings for small study effect tests and excess significance tests, we limit ourselves to comparison with Harbord's or Egger's test. \Sexpr{mean.min.bin2}\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, \Sexpr{mean.min.else2}\% for continuous and survival outcomes. The numbers change to \Sexpr{mean.min.bin2.b}\% for binary outcomes and \Sexpr{mean.min.else2.b}\% for continuous and survival outcomes after applying the Bonferroni correction. \\
-% \Sexpr{both.bin}\% have significant Harbord's test result and significant excess significance test result  (\Sexpr{both.bin.b}\% with Bonferroni). Of the continuous outcomes, we have \Sexpr{both.else}\% with Egger's test and \Sexpr{both.else.b}\% with Bonferroni correction. 
+When only looking at small study effect tests, \Sexpr{mean.min.bin}\% of binary outcome tests and \Sexpr{mean.min.else}\% of survival and continuous outcome tests had at least one significant result. This also suggests that the overlap between small study effect tests and excess significance is small. After applying the Bonferroni correction for multiple testing, this shrinks to \Sexpr{mean.min.bin.b}\% for binary and \Sexpr{mean.min.else.b}\% for continuous and survival outcomes. \\
+To compare significant findings for small study effect tests and excess significance tests, we limit ourselves to comparison with Harbord's or Egger's test. \Sexpr{mean.min.bin2}\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, \Sexpr{mean.min.else2}\% for continuous and survival outcomes. The numbers change to \Sexpr{mean.min.bin2.b}\% for binary outcomes and \Sexpr{mean.min.else2.b}\% for continuous and survival outcomes after applying the Bonferroni correction. \\
+\Sexpr{both.bin}\% have significant Harbord's test result and significant excess significance test result  (\Sexpr{both.bin.b}\% with Bonferroni). Of the continuous outcomes, we have \Sexpr{both.else}\% with Egger's test and \Sexpr{both.else.b}\% with Bonferroni correction. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1225,17 +1222,17 @@ colnames(missing.copas.table) <- c("= 0", colnames(missing.copas.table)[2:6], "m
 
 \subsection{Change in Effect Size after Adjustment} \label{sec:change.size}
 
-Since there's evidence for publication bias when applying small study effect and excess significance tests, we apply small study effect adjustment methods to take into account that small studies are likely overestimating the treatment effect. \\
-However, we will see that consequences of adjustment can be; 
+Since there's evidence for publication bias when applying small study effect and excess significance tests, we apply small study effect adjustment methods to correct for small study effect tests. \\
+We will see that consequences of adjustment can be; 
 \begin{itemize}
 \item first, the absolute size of the treatment effect can be smaller than the classical meta-analysis treatment effect, which is expected if publication bias
 is the cause for the small study effect.
-\item secondly, the effect can be larger than before in meta-analysis. In this case, the small study effect must be not due to publication bias for large effects (``true'' publication bias), but due to bias for small effects (``null effect publication bias'' or even ``reversed effect publication bias'', sometimes refer erred to as ``Proteus phenomenon'' \citep{proteus}).
+\item secondly, the effect can be larger than before in meta-analysis. In this case, the small study effect must be not due to publication bias for large effects (``true'' publication bias), but due to bias for small effects (``negative publication bias'').
 \end{itemize}
 
-This is because, in contrast to the small study effect tests, the applied adjustment method does not pre-specify the direction in which bias is expected. \\
-To compare the effects of adjustment between meta-analyses, the outcome measures are transformed to Hedges $g$ (standardized mean differences) and Fisher's $z$-score (see section \ref{sec:transformation.effectsizes} for details). The effect of adjustments can be compared to either random or fixed effects meta-analysis estimates. \\
-Figure \ref{fig:adjustment.reg} displays the difference $\delta$ between the observed meta-analysis pooled treatment effect and the regression adjusted treatment effect, $\hat{\theta}_M - \hat{\theta}_\textrm{Adj.}$. The absolute value $|\hat{\theta}_M|$ is taken and the sign of $\hat{\theta}_\textrm{Adj.}$ is adjusted accordingly such that all effects are mirrored to one side. $\delta > 0$ is equivalent to $\hat{\theta}_\textrm{Adj} < \hat{\theta}_M$, a reduction of the original effect size. Additionally, the test statistic of heterogeneity adjusted small study effect tests (R\"ucker's and Thompson's test) is displayed with green color. Test statitics smaller $< 1$ are equivalent to no evidence for small study effect, test statistics between one and two to weak evidence, and above two they indicate evidence for small study effects. Some very large and very small differences have been omitted in the $z$-score and Hedges $g$ histograms; they are shown in Table \ref{missing.differences}. 
+In section \ref{sec:comparison.tests.adjustment}, it will be followed up on the latter point. For now, we will examine the extent and the frequencies of the two scenarios. \\
+To compare the effects of adjustment between meta-analyses, the outcome measures are transformed to Hedges $g$ (standardized mean differences) and Fisher's $z$-score (see section \ref{sec:transformation.effectsizes} for details). The effect of adjustment can additionally be compared to either random or fixed effects meta-analysis. \\
+Figure \ref{fig:adjustment.reg} displays the difference $\delta$ between the observed meta-analysis pooled treatment effect and the regression adjusted treatment effect, $\hat{\theta}_M - \hat{\theta}_\textrm{Adj.}$. The absolute value $|\hat{\theta}_M|$ is taken and the sign of $\hat{\theta}_\textrm{Adj.}$ is adjusted accordingly such that all effects are mirrored to one side. $\delta > 0$ is equivalent to $\hat{\theta}_\textrm{Adj} < \hat{\theta}_M$, a reduction of the original effect size. Additionally, the test statistic of heterogeneity adjusted small study effect tests (R\"ucker's and Thompson's test) is displayed with green color. Test statitics smaller than one are equivalent to no evidence for small study effect, test statistics between one and two weak evidence, and above two evidence for small study effects. Some very large and very small differences have been omitted in the $z$-score and Hedges $g$ histograms; they are shown in Table \ref{missing.differences}. 
 
 \begin{figure}
 <<echo=FALSE, fig.height = 5.2, warning=FALSE>>=
@@ -1246,8 +1243,8 @@ grid.arrange(diff.z.fixef.reg, diff.z.ranef.reg, diff.d.fixef.reg, diff.d.ranef.
 \label{fig:adjustment.reg}
 \end{figure}
 
-We see that more treatment effect sizes are negatively adjusted and diminished. Furthermore, we see that large adjustment is not necessarily connected with evidence for small study effects, but there is of course strong coincidence. The cases with no evidence and large adjustment indicate that between-study heterogeneity was not resolved by adjustment for small study effects. Adjustment was larger when random effects meta-analysis effect is used as reference, because there larger weights are given to small studies.\\
-Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Copas; Copas selection model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Therefore, the effect of adjustment by Copas can be seen when comparing adjusted with random effects estimates. Again, we clearly see that more effect sizes are adjusted downwards. Additionally, there is more coincidence with the small study effect test statistics and adjustment, which is as expected. \\
+We see that more treatment effect sizes are negatively adjusted and diminuished. Furthermore, we see that large adjustment is not necessarily connected with evidence for small study effects, but there is of course strong coincidence. The cases with no evidence and large adjustment indicate that between-study heterogeneity was not resolved by adjustment for small study effects. Adjustment was larger when random effects meta-analysis effect is used as reference, because of the larger weights that are given for small studies.\\
+Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Copas; Copas selection model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Therefore, the effect of adjustment by Copas can be seen when comparing adjusted with random effects estimates. Again, we clearly see that more effect sizes are adjusted downwards. Additionally, there is more coincidence with the small study effec test statistics and adjustment, which is as expected. \\
 
 \begin{figure}
 <<echo=FALSE, fig.height = 4, warning=FALSE>>=

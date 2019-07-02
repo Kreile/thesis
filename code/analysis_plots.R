@@ -39,7 +39,7 @@ load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 ################################################################################################
 
 sig.level <- 0.1
-meta.f <- meta.f %>% 
+meta.f <- meta.f %>% rowwise() %>% 
 	mutate(egger.test = ifelse(pval.egger < sig.level, 1, 0),
 				 thompson.test = ifelse(pval.thompson < sig.level, 1, 0),
 				 begg.test = ifelse(pval.begg < sig.level, 1, 0),
@@ -47,7 +47,9 @@ meta.f <- meta.f %>%
 				 schwarzer.test = ifelse(pval.schwarzer < sig.level, 1, 0),
 				 rucker.test = ifelse(pval.rucker < sig.level, 1, 0),
 				 harbord.test = ifelse(pval.harbord < sig.level, 1, 0),
-				 peter.test = ifelse(pval.peter < sig.level, 1, 0))
+				 peter.test = ifelse(pval.peter < sig.level, 1, 0),
+				 I2 = max(c(0, 1 - (k-1)/Q)),
+				 i2f = factor(ifelse(I2 == 0, 1, 0)))
 
 meta.bin <- meta.f %>% filter(outcome.type == "bin")
 meta.cont <- meta.f %>% filter(outcome.type == "cont")
@@ -80,25 +82,63 @@ meta.surv <- meta.f %>% filter(outcome.type == "surv")
 
 
 
-
 test.bin <- meta.bin %>% ungroup() %>% summarize(
-																								 schwarzer.test = mean(schwarzer.test),
-																								 rucker.test = mean(rucker.test),
-																								 harbord.test = mean(harbord.test),
-																								 peter.test = mean(peter.test))
+  schwarzer.test = mean(schwarzer.test),
+  rucker.test = mean(rucker.test),
+  harbord.test = mean(harbord.test),
+  peter.test = mean(peter.test))
 test.bin <- test.bin %>% gather(key = "test.type", value = "mean")
 
 p.bin <- meta.bin %>% ungroup() %>% 
-	select(schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
-	gather(key = "test.type", value = "null.hypothesis") %>%  
-	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
-	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
-	theme_bw() + xlab(label = NULL) + ggtitle("Binary Outcomes") + theme(legend.position = "top") +
-	guides(fill=guide_legend(title=NULL))+
-	annotate("text", x = test.bin$test.type, y = 500, 
-					 label = paste(round(test.bin$mean, 2)*100, "% rejected"), 
-					 color = "white")
+  select(schwarzer.test, rucker.test, harbord.test, peter.test) %>% 
+  gather(key = "test.type", value = "null.hypothesis") %>%  
+  mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
+  ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+  theme_bw() + xlab(label = NULL) + ggtitle("Binary Outcomes") + theme(legend.position = "top") +
+  guides(fill=guide_legend(title=NULL))+
+  annotate("text", x = test.bin$test.type, y = 500, 
+           label = paste(round(test.bin$mean, 2)*100, "% rejected"), 
+           color = "white")
 #--------------------------------------------------------------------------------------------------------------------#
+
+#Continuous Outcomes:
+test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+                                                   begg.test = mean(begg.test),
+                                                   thompson.test = mean(thompson.test))
+
+test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
+
+p.cont <- meta.cont %>% ungroup() %>% 
+  select(egger.test, thompson.test, begg.test) %>% 
+  gather(key = "test.type", value = "null.hypothesis") %>% 
+  mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
+  ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+  theme_bw() + xlab(label = NULL) + ggtitle("Continuous Outcomes") + theme(legend.position = "top") +
+  guides(fill=guide_legend(title=NULL))+
+  annotate("text", x = test.cont$test.type, y = 150, 
+           label = paste(round(test.cont$mean, 2)*100, "% rejected"), 
+           color = "white")
+
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Survival Outcomes:
+test.surv <- meta.surv %>% ungroup() %>% summarize(egger.test = mean(egger.test),
+                                                   begg.test = mean(begg.test),
+                                                   thompson.test = mean(thompson.test))
+
+test.surv <- test.surv %>% gather(key = "test.type", value = "mean")
+
+p.surv <- meta.surv %>% ungroup() %>% 
+  select(egger.test, thompson.test, begg.test) %>% 
+  gather(key = "test.type", value = "null.hypothesis") %>% 
+  mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
+  ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
+  theme_bw() + xlab(label = NULL) + ggtitle("Continuous Outcomes") + theme(legend.position = "top") +
+  guides(fill=guide_legend(title=NULL))+
+  annotate("text", x = test.surv$test.type, y = 10, 
+           label = paste(round(test.surv$mean, 2)*100, "% rejected"), 
+           color = "white") 
+#--------------------------------------------------------------------------------------------------------------------#-------------------------------------------------------------------------------------------------------------------#
 
 dat_text <- data.frame(
 	label = paste(c(sum(meta.bin$harbord.test), sum(meta.bin$peter.test), 
@@ -117,24 +157,6 @@ p.dist.bin <- meta.bin %>% ungroup() %>%
 	theme(strip.text.x = element_text(size=15))
 #--------------------------------------------------------------------------------------------------------------------#
 
-#Survival Outcomes:
-test.cont <- meta.cont %>% ungroup() %>% summarize(egger.test = mean(egger.test),
-																									 begg.test = mean(begg.test),
-																									 thompson.test = mean(thompson.test))
-
-test.cont <- test.cont %>% gather(key = "test.type", value = "mean")
-
-p.cont <- meta.cont %>% ungroup() %>% 
-	select(egger.test, thompson.test, begg.test) %>% 
-	gather(key = "test.type", value = "null.hypothesis") %>% 
-	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
-	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
-	theme_bw() + xlab(label = NULL) + ggtitle("Continuous Outcomes") + theme(legend.position = "top") +
-	guides(fill=guide_legend(title=NULL))+
-	annotate("text", x = test.cont$test.type, y = 150, 
-					 label = paste(round(test.cont$mean, 2)*100, "% rejected"), 
-					 color = "white")
-#--------------------------------------------------------------------------------------------------------------------#
 
 dat_text <- data.frame(
 	label = paste(c(sum(meta.cont$begg.test), sum(meta.cont$egger.test), sum(meta.cont$thompson.test)), "< 0.1,",
@@ -149,25 +171,6 @@ p.dist.cont <- meta.cont %>% ungroup() %>%
 	facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
 	geom_text(data = dat_text, mapping = aes(x = 0.5, y = 50, label = label),  color = "black") + 
 	theme(strip.text.x = element_text(size=15))
-#--------------------------------------------------------------------------------------------------------------------#
-
-#Survival Outcomes:
-test.surv <- meta.surv %>% ungroup() %>% summarize(egger.test = mean(egger.test),
-																									 begg.test = mean(begg.test),
-																									 thompson.test = mean(thompson.test))
-
-test.surv <- test.surv %>% gather(key = "test.type", value = "mean")
-
-p.surv <- meta.surv %>% ungroup() %>% 
-	select(egger.test, thompson.test, begg.test) %>% 
-	gather(key = "test.type", value = "null.hypothesis") %>% 
-	mutate(null.hypothesis = factor(ifelse(null.hypothesis == 1, "significant", "not significant"))) %>% 
-	ggplot(aes(x = test.type, fill = null.hypothesis)) + geom_bar() + coord_flip() + 
-	theme_bw() + xlab(label = NULL) + ggtitle("Continuous Outcomes") + theme(legend.position = "top") +
-	guides(fill=guide_legend(title=NULL))+
-	annotate("text", x = test.surv$test.type, y = 10, 
-					 label = paste(round(test.surv$mean, 2)*100, "% rejected"), 
-					 color = "white")
 #--------------------------------------------------------------------------------------------------------------------#
 
 dat_text <- data.frame(
@@ -727,6 +730,26 @@ meta.f <- meta.f %>% rowwise() %>%
 
 #Agreement proportions of publication bias tests:
 
+
+#Test agreement
+agree.bin <- meta.bin %>% mutate(n.sig = peter.test + rucker.test + harbord.test + schwarzer.test) %>% 
+  group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
+  ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + 
+  xlab("Number of significant tests") + ylab("count") + ggtitle("Binary Outcomes")
+#--------------------------------------------------------------------------------------------------------------------#
+
+agree.cont <- meta.cont %>% mutate(n.sig = egger.test + thompson.test + begg.test) %>% 
+  group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
+  ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + 
+  xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
+#--------------------------------------------------------------------------------------------------------------------#
+
+agree.surv <- meta.surv %>% mutate(n.sig = egger.test + thompson.test + begg.test) %>% 
+  group_by(n.sig) %>% count %>% filter(n.sig > 0) %>% 
+  ggplot(aes(y = nn, x = n.sig)) + theme_bw() + geom_col() + 
+  xlab("Number of significant tests") + ylab("count") + ggtitle("Continuous Outcomes")
+#--------------------------------------------------------------------------------------------------------------------#
+
 #Binary:
 meta.bin <- meta.bin %>%ungroup() %>%  mutate(tes.d.schwarzer = ifelse(tes.d.test == schwarzer.test, "agree", "disagree"),
                                               tes.d.peter = ifelse(tes.d.test == peter.test, "agree", "disagree"),
@@ -884,6 +907,8 @@ colnames(surv.tests.agreement) <- c("Excess significance, Egger (survival)", "Ex
 
 #Merging:
 test.agreement <- rbind(t(binary.tests.agreement), t(cont.tests.agreement), t(surv.tests.agreement))
+
+
 
 #--------------------------------------------------------------------------------------------------------------------#
 
