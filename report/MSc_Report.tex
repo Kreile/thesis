@@ -1566,6 +1566,8 @@ The histograms in Figure \ref{fig:test} show that most distributions are clearly
 There is discrepancy between continuous and binary data test results; the evidence for small study effects in continuous data is clearly larger. Also, we see that the $I^2$ statistic of the proportion of overall between-study heterogeneity is distributed differently for the tests, with results with $I^2 = 0$ being evenly distributed in binary outcomes along the range of $p$-values, while they are more similar to the meta-analyses with larger heterogeneity for continuous outcome.\\
 In the literature, the excess significance test is advised to be used in the case of no between study heterogeneity. Since there are no small $p$-values for such meta-analyses, one must conclude that there is no excess significance in the dataset. The obvious correspondence with the heterogeneity statistic however rather suggests that the test is another way to assess between study heterogeneity. Thompson test and R\"ucker's test are designed such that they take into account the between study heterogeneity when assessing small study effects. When no heterogeneity is given, Thompson's test results and Egger's test result should be equal, however, the $I^2$ statistic is computed by a more suitable estimator \citep{paulemandel} of $\tau^2$ as the estimator that Thompson and Sharp's test uses (method of moment estimator of \citet{tau.estimator}, which is more conservative by usually finding larger $\tau^2$). In the part of the histogram with $I^2 > 0$, the two tests are more reliable than the remaining tests, while the opposite is expected from simulations \citep{limitmeta} when $I^2 = 0$.\\
 
+
+\subsection{Publication Bias Test Consistency}
 It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects for the same meta-analyses. A simple method to check the consistency of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between survival and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and survival outcomes results. Also, the $I^2$ statistic is included. Since no test statistic is used for excess significance tests, it is not shown here
 
 \begin{figure}
@@ -1620,7 +1622,7 @@ The confidence intervals from Figure \ref{fig:mean.diff.test} can be used as lim
 The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. We expect that some proportion of the meta-analysis will only be significant for a certain test, and this is indeed observed in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul  5 16:13:26 2019
+% Fri Jul  5 16:17:15 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1708,7 +1710,7 @@ Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Co
 Table \ref{adjustment.difference} shows the quantiles and means for the various differences and additional information. When Hedge's $g$ is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small (the means of Copas in the first two rows for $z$-score are caused by one very large value, see Table \ref{missing.differences}). To recall some other findings out of Table \ref{adjustment.difference}: 5\% or 90 cases have their $z$-score reduced by more than 0.15 by regression adjustment (and 5\% or 90 increased by -0.13, fixed effects reference). Also, Hedges $g$ is reduced by 0.39 compared to fixed effects estimates in 5\% or 90 meta-analyses (or increased by 0.24). 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul  5 16:13:41 2019
+% Fri Jul  5 16:17:30 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1782,7 +1784,7 @@ The Copas selection model also gives an estimate of the number of missing studie
 We can see that in some occasions, the method finds more than half of all studies are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}. The discrepancy between mean and median may indicate that the estimate of 0\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie 0 meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for 0, more than 30\% of missing studies.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul  5 16:13:42 2019
+% Fri Jul  5 16:17:32 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1805,7 +1807,7 @@ Missing fraction & 323 & 0 & 0 & 0.1 & 0.3 & 1.0 & 0.2 \\
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul  5 16:13:42 2019
+% Fri Jul  5 16:17:32 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny

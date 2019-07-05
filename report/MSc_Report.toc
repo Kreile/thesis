@@ -37,8 +37,9 @@
 \contentsline {subsubsection}{The Publication Bias Test and Adjustment Dataset}{23}{section*.18}
 \contentsline {chapter}{\numberline {4}Results}{25}{chapter.4}
 \contentsline {section}{\numberline {4.1}Publication Bias Test Results}{25}{section.4.1}
-\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{28}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{28}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.1.1}Publication Bias Test Consistency}{27}{subsection.4.1.1}
+\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{29}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{29}{subsection.4.2.1}
 \contentsline {subsection}{\numberline {4.2.2}Change in Evidence for Treatment Effects}{31}{subsection.4.2.2}
 \contentsline {subsection}{\numberline {4.2.3}Comparison of adjustment methods}{33}{subsection.4.2.3}
 \contentsline {chapter}{\numberline {A}Appendix}{35}{appendix.A}
