@@ -1,3 +1,16 @@
+- Introduction 
+What has been done yet
+Importance
+
+
+
+
+
+
+
+
+
+
 
 - How to deal with sparse data (binary outcomes)? e.g. metabin(incr = "TACC")
 Currently, e(t) = 0 and e(c) = 0 is used as exclusion criteria. If only one is 0,

@@ -8,9 +8,160 @@ opts_chunk$set(
 ) 
 @
 
+
+<<'Data03', echo=FALSE, warning=FALSE>>= 
+rm(list = ls())
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
+FILE = 'cochrane_2018-06-09.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH2, 'code')
+PATH_RESULTS = file.path(PATH2, 'results')
+PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+
+file_results = "pb.RData"
+
+source(file.path(PATH_CODE, 'PubBias_functions.R'))
+
+file.dat <- "data.RData"
+if (file.exists(file.path(PATH_RESULTS, file.dat))) {
+	load(file.path(PATH_RESULTS, file.dat))
+} else {
+	data = pb.readData(path = PATH_DATA, file = FILE)
+	tmp = pb.clean(data)
+	data = tmp[[1]]
+	aliases = tmp[[2]]
+	save(data, file =  file.path(PATH_RESULTS, file.dat))
+}
+
+load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+load(file.path(PATH_RESULTS, "meta.bin.RData"))
+load(file.path(PATH_RESULTS, "meta.cont.RData"))
+load(file.path(PATH_RESULTS, "meta.surv.RData"))
+load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
+load(file.path(PATH_RESULTS, "meta_id_I2.RData"))
+
+adjustment.diff.keep <- meta.f %>% 
+  mutate(est.copas.f = case_when(sign(est.copas) == sign(est.fixef) ~  abs(est.copas),
+                                 sign(est.copas) != sign(est.fixef) ~ -abs(est.copas)),
+         est.reg.f = case_when(sign(est.reg) == sign(est.fixef) ~  abs(est.reg),
+                               sign(est.reg) != sign(est.fixef) ~ -abs(est.reg)),
+         est.copas.r = case_when(sign(est.copas) == sign(est.ranef) ~  abs(est.copas),
+                                 sign(est.copas) != sign(est.ranef) ~ -abs(est.copas)),
+         est.reg.r = case_when(sign(est.reg) == sign(est.ranef) ~  abs(est.reg),
+                               sign(est.reg) != sign(est.ranef) ~ -abs(est.reg)),
+         
+         est.d.copas.f = case_when(sign(est.d.copas) == sign(est.d.fixef) ~  abs(est.d.copas),
+                                   sign(est.d.copas) != sign(est.d.fixef) ~ -abs(est.d.copas)),
+         est.d.reg.f = case_when(sign(est.d.reg) == sign(est.d.fixef) ~  abs(est.d.reg),
+                                 sign(est.d.reg) != sign(est.d.fixef) ~ -abs(est.d.reg)),
+         est.d.copas.r = case_when(sign(est.d.copas) == sign(est.d.ranef) ~  abs(est.d.copas),
+                                   sign(est.d.copas) != sign(est.d.ranef) ~ -abs(est.d.copas)),
+         est.d.reg.r = case_when(sign(est.d.reg) == sign(est.d.ranef) ~  abs(est.d.reg),
+                                 sign(est.d.reg) != sign(est.d.ranef) ~ -abs(est.d.reg)),
+         
+         est.z.copas.f = case_when(sign(est.z.copas) == sign(est.z.fixef) ~  abs(est.z.copas),
+                                   sign(est.z.copas) != sign(est.z.fixef) ~ -abs(est.z.copas)),
+         est.z.reg.f = case_when(sign(est.z.reg) == sign(est.z.fixef) ~  abs(est.z.reg),
+                                 sign(est.z.reg) != sign(est.z.fixef) ~ -abs(est.z.reg)),
+         est.z.copas.r = case_when(sign(est.z.copas) == sign(est.z.ranef) ~  abs(est.z.copas),
+                                   sign(est.z.copas) != sign(est.z.ranef) ~ -abs(est.z.copas)),
+         est.z.reg.r = case_when(sign(est.z.reg) == sign(est.z.ranef) ~  abs(est.z.reg),
+                                 sign(est.z.reg) != sign(est.z.ranef) ~ -abs(est.z.reg)),
+         
+         est.fixef = abs(est.fixef),
+         est.ranef = abs(est.ranef),
+         est.z.fixef = abs(est.z.fixef),
+         est.z.ranef = abs(est.z.ranef),
+         est.d.fixef = abs(est.d.fixef),
+         est.d.ranef = abs(est.d.ranef)) 
+
+truebias.bin.percentage <- round(adjustment.diff.keep %>% filter(outcome.type == "bin") %>% filter(est.fixef - est.reg > 0) %>% count()/(dim(meta.bin)[1])*100,1)
+
+wider.dataset.ioannidis.comparison <- data.ext2 %>% filter(outcome.type == "bin") %>% group_by(meta.id) %>% filter(n() > 2) %>% filter(dupl.remove == 0) %>% filter(!all(events1 == 0) & !all(events2 == 0)) %>% filter(!all(events1 == total1) & !(all(events2 == total2))) %>% summarise(n()) %>% ungroup() %>% count() 
+
+restr.dataset.ioannidis.comparison <- (data.ext2 %>% filter(outcome.type == "bin") %>% group_by(meta.id) %>% filter(n() > 2) %>% filter(dupl.remove == 0) %>% filter(!all(events1 == 0) & !all(events2 == 0)) %>% filter(!all(events1 == total1) & !(all(events2 == total2))) %>% filter(se > 0) %>%  ungroup() %>% distinct(file.nr, .keep_all = T) %>% count() / wider.dataset.ioannidis.comparison)*100
+
+largerten.ioannidis.comparison <- (data.ext2 %>% filter(outcome.type == "bin") %>% group_by(meta.id) %>% filter(n() > 9) %>% filter(dupl.remove == 0) %>% filter(!all(events1 == 0) & !all(events2 == 0)) %>% filter(!all(events1 == total1) & !(all(events2 == total2))) %>% filter(se > 0) %>% summarise(n()) %>% ungroup() %>% count() / wider.dataset.ioannidis.comparison)*100
+
+variance.ratio.ioannidis.comparison <- (data.ext2 %>% filter(outcome.type == "bin") %>% group_by(meta.id) %>% filter(n() > 2) %>% filter(dupl.remove == 0) %>% filter(!all(events1 == 0) & !all(events2 == 0)) %>% filter(!all(events1 == total1) & !(all(events2 == total2))) %>% filter(se > 0) %>% filter((max(se)^2)/(min(se)^2) > 4) %>% summarise(n()) %>% ungroup() %>% count() / wider.dataset.ioannidis.comparison)*100
+
+onesig.ioannidis.comparison <- (data.ext2 %>% filter(outcome.type == "bin") %>% group_by(meta.id) %>% filter(n() > 2) %>% filter(dupl.remove == 0) %>% filter(!all(events1 == 0) & !all(events2 == 0)) %>% filter(!all(events1 == total1) & !(all(events2 == total2))) %>% filter(se > 0) %>% 
+  filter(sum(pval.single < 0.05, na.rm = T) > 0) %>% summarise(n()) %>% ungroup() %>% count() / wider.dataset.ioannidis.comparison)*100
+
+allcriteria <- (dim(meta.bin)[1]/wider.dataset.ioannidis.comparison)*100
+
+harbord.ioannidis.comparison <- (meta.bin %>% filter(pval.harbord < 0.1) %>% count()/dim(meta.bin)[1])*100
+
+own.results <- c(wider.dataset.ioannidis.comparison$n, paste(round(c(largerten.ioannidis.comparison$n, variance.ratio.ioannidis.comparison$n, onesig.ioannidis.comparison$n, allcriteria$n,
+                       harbord.ioannidis.comparison$n)), "%", sep = ""))
+
+ioannidis.results <- c(6873, paste(c(13, 72, 55, 5, 12), "%", sep = ""))
+
+comparison.ioannidis <- data.frame(Ioannidis = ioannidis.results, Thesis = own.results)
+rownames(comparison.ioannidis) <- c("Wider dataset (n)", "study number > 10", "variance ratio > 4",
+                                    "study sig. number > 1", "all exclusion criteria", "harbord test p-value < 0.1")
+
+@
+
 \chapter{Discussion}
 
-It is tempting to claim to have a perspective that spans the entire clinical research when looking at the cochrane dataset. Several points can be made to argue in this favor (see chapter 2 CITE for details).
+\section{Results in the light of the Literature}\label{sec:discussion.results}
+
+Extensive research already revealed the presence of small study effects and adjustment for it. Thus, before drawing conclusions, the resulty of these studies are reviewed, and it will be seen if we are to add to the findings, reafirm them or even have to correct some of them. The methodological approaches, as well as the data differs between the publications. When clear methodological drawbacks are found in the analysis, the results are resumed for completeness, but left uncommented, and the reader is referred to chapter \ref{ch:methods} for ciriticism of the methods. Sometimes, the results are adjusted such that they can be compared to the application of two-sided small study effect tests used in most publications.
+
+\subsection{\citet{Egger}}
+The first attempt, to our knowledge, to obtain an overview over the issue of publication bias for meta-analysis in clinical science. The Cochrane database (1996 issue 2) and publications from the four leading medicine journals (the Lancet, BMJ, JAMA and Annals of Internal Medicine) between 1993 and 1996 were used to find systematic reviews with randomized controlled trials for the application of Egger's small study effect test. They included 38 meta-analyses with at least 5 studies and binary outcomes from the Cochrane Library and 37 from the journals. Five (13\%) meta-analyses from Cochrane and 13 (38\%) from the journals had significant two sided small study effect test results (P < 0.01). Also, they found that the test-statistics were more often negative, which correspondend in their setup to larger small studies, i.e. ``true publication bias'' (\Sexpr{round(((24/38))*100, 1)} among Cochrane meta-analyses and \Sexpr{round(((26/37))*100, 1)} for journal meta-analyses). The results from this report with R\"ucker's test are: \Sexpr{length(which(meta.bin$pval.rucker < 0.1))/dim(meta.bin)[1]}\%, and when using regression adjustment to decide about the direction of publication bias, we get \Sexpr{truebias.bin.percentage}\%.
+
+
+\subsection{\citet{sutton.2000}}
+Out of 397 systematic reviews from the Cochrane database (complete number for 1998, issue 3), 49 had more than ten included studies and binary outcomes and 48 compared two treatments. They were analysed by trim-and-fill method \citep{trimfill} to detect and adjust for funnel plot asymmetry (similar to small study effect tests, but the method is known to overestimate bias). 23 were found to have missing studies, and eight had more than three missing studies which was considered to be significant publication bias. Additionally, they found that three estimates of random effects meta-analysis became non-significant after adjustment, and one became significant (by negative adjustment). The results are difficult to compare, but the methodological limitations make this findings unreliable. 
+
+
+\subsection{\citet{Ioannidis2007}}
+Very similar work compared to this thesis, especially because extensive use of the Cochrane Library was made with a large number of meta-analyses. The data processing steps were however different, and only binary outcomes as used in two-by-two tables were analysed. The approximately corresponding numbers are put in parentheses for comparison. The Cochrane Library from 2003 (issue 2) was used. After removal of duplicates and intractable meta-analyses, they had 6,873 meta-analyses with more than two studies left (\Sexpr{wider.dataset.ioannidis.comparison}). When only using one meta-analysis per review, this reduced to 846 (\Sexpr{restr.dataset.ioannidis.comparison}). Then, the criteria that have also been applied in this masters thesis are applied: $I^2 < 0.5$, variance ratio of smallest and largest effects > 4, at least one significant study result and at least 10 studies to be used. Afterwards, they applied Harbord's, Egger's and Begg's Test to the dataset. The reader can compare some corresponding numbers in Table \ref{ioannidis}. The results seem to be similar enough to claim that neither the methods nor the data and it's results are differing substantially. Because the thesis relies on more data, it is likely to be more accurate and can possibly add to the findings of \citet{Ioannidis2007}. 
+
+<<echo = FALSE, results = 'asis'>>=
+print(xtable(comparison.ioannidis, caption = "Comparison of results from Ioannidis et.al. (2007) to the results of the thesis. The percentage of meta-analysis which match all exclusion criteria denotes the ones that apply to all criteria in the table plus the small heterogeneity criterium.", label = "ioannidis", align = "lrr"))
+@
+
+
+\subsection{\citet{souza.2007}} 
+Reviews of the World Health Organization (WHO) Reproductive Health Library (RHL), issue 9, were analysed with the trim-and-fill method. The RHL reproduces and expands reviews from the Cochrane Library with implications for developping countries. 21 of 105 reviews contained more than ten studies and were used. Trim-and-fill found asymmetry in 18 of 21 studies, and 10 had more than 3 missing studies (``significance''). Two of those and one with one missing studies found no evidence for treatment effects after the 0.05 $p$-value threshold after adjustment by trim-and-fill.
+
+\subsection{\citet{kicinsky}}
+The author provides an estimate of the probability of including significant findings versus non-significant findings in Cochrane meta-analyses over time.
+This work is by far the most complete and qualitatively satisfying analysis to estimate publication bias based on significance. The data is from the Cochrane Library from 2013 (issue number not provided). The method by which treatment-placebo and treatment-treatment comparisons, safety and efficacy meta-analyses were separated is not known, but it allowed to do a more specific analysis than in this thesis. \\
+From 3845 reviews, the author separated 907 reviews with more than ten studies. From those, 539 compared placebo to treatment. After removing duplicates and sensitivity analyses, 358 analyses with 1297 meta-analyses remained. From these 191 were excluded because they comprised overall mortality and withdrawal, because these could not clearly be specified as safety or efficacy, respectively. \\
+1106 meta-analyses from 329 meta-analyses, which contained 802 efficacy and 304 safety meta-analyses. The median publication year per meta-analysis was 1997 for efficacy meta-analyses and 1999 for safety meta-analyses. Then, a bayesian two-step hierarchical selection model was applied (\citet{bayesian.selection.model}, \citet{bayesian.selection.model2}). The model allows to estimate a ratio of publication probability between significant and non-significant study estimates using a two-step weight function. The model was fitted with the Monte-Carlo Markov-Chain algorithm STAN and the geometric mean was used as an estimate for the publication probability ratio. It shall be noted that some authors are critical on the use of selection models for inference, since the true selection process is unknown as $n$ unpublished studies is not known. They argue that selection models should solely be used for inference. Simulations performed in \citep{bayesian.selection.model} indicated that the method performed well if the true mean effect size was not small, and also robust to small study effects. It outperformed the Egger's test and Begg's test, especially when small study effects were absent, and had lower false-positive rates. Put ad-hoc, the model uses the between-study heterogeneity between significant and non-significant results and allows the model to downsize the weights for the former to attain a more coherent distribution of the overall mean effect size. \\
+The results showed a clear publication bias for significant results for efficacy meta-analyses (27\% higher for significant studies, 95\%CI credible intervals: 1.18 to 1.36). The probability was more than twice as high in 27\% of the meta-analyses (95\% CI: 23\% to 31\%). But the probability decreased: from 1.65 (95\% CI: 1.31 to 2.15) in 1980 (average publication year) to 1.36 (95\% CI: 1.17 to 1.62) in 1990 to 1.18 (95\% CI: 1.04 to 1.33) in 2000. For sake of completeness, the probability of inclusion was  1.78 (95\% CI: 1.51 to 2.13) larger for non-significant safety effect estimates, but again, decreased with time (1.77, 95\% CI: 1.46 to 2.21 in 2000). \\
+
+
+
+
+
+
+Applying the last crieria on the wider dataset, they were left with $n =$ 868 (\Sexpr{largerten.ioannidis.comparison}). 
+
+
+They analyse the Cochrane Library (2003, issue 2) to find meta-analyses suited for small-study effect tests. From 1669 reviews, they excluded all but reviews with binary outcomes(12,709 meta-analyses), and further excluded no-event meta-analyses and all-event meta-analyses (-906 = 11,803). They furthermore removed 761 meta-analyses with studies with identical data in other meta-analyses (effects, events and totals, keeping the larger meta-analysis), and meta-analyses with two studies only (4169 left). When they restricted to take only one meta-analysis per review, they were left with 846s
+
+Already in 1978, scientists raised concern that effect sizes could be overestimated systematically if journals were not willing to drop their policy to use ``statistical significance'' as one of their criteria for publication \citep{dunlap1978}. This results in a ``file drawer'' \citep{file.drawer.1979} full of effect sizes on the other side of the $p < 0.05$ significance threshold, publicly inaccessible, and likely to be neglected over time. In the course of the years, this could be verified repeatedly. For example, a Cochrane Methodology review states that effect sizes from the grey literature are systematically smaller than published effect sizes (\citet{hopewell.2007}, but see also \citet{grey.literature.2}, \citet{grey.literature.3}, \citet{grey.literature.4} (registered btw. 1987 - 2004), \citet{grey.literature.5} (registered btw. 1998 - 2000) which are not restricted to Cochrane). In social sciences, \citet{social.sciences.publication.bias} found that ``positive'' results were 40\% more likely to be reported. \\
+The introduction of registries for clinical trials and some legal force to make results available have clearly adapted to this issue in clinical science, but the evidence indicates that it is not resolved yet. 
+
+
+
+
+Of course, it is unfair to blame journals alone for disrupting proc
+
+\section{Implications}\label{sec:implications}
+
+Some aggravations 
+
+The primary implication of the results is that still, more statistical education and understanding is required from scientists and journal editors. First, it has to be achieved that the common fallacy to think of statistical significance as scientific relevance has to be overcome. Second, the practical use of more diverse approaches than just the usual analysis of evidence against the null-hypothesis of no treatment effect should be encouraged, as for example, non-inferiority analysis setups \etc. The possibilities and the importance of negative findings is generally under-appreciated and could be promoted systematically. Generally, this points to the need for more discourse-oriented culture in science, opposite to the discovery oriented modern research \citet{ioannidis.2005}. This, together with efforts like from Cochrane to systematically collect and connect empirical data, and open source study protocols, data and publications might resolve the issue to large parts. 
+
+It is tempting to claim to have a perspective that spans the entire clinical research when looking at the Cochrane dataset. Several points can be made to argue in this favor (see chapter 2 CITE for details).
 
 \begin{itemize}
 \item Size: Over 52,000 studies, 20,000 comparisons and 47 millions study participants. A vast diversity of topics and studies that stem from different institutions and researchers and have been conducted in different countries.
@@ -20,7 +171,7 @@ It is tempting to claim to have a perspective that spans the entire clinical res
 The dataset is certainly unique with respect to this features. The effort of the Cochrane Organization in reprocession, classification and integration of studies in a larger scientific framework is unmatched, not only in clinical science, but in empirical science in general CITE?CITE. Regardless whether it is representative of the field of clinical research, it thus provides an exceptional perspective, not only on clinical science, but on empirical science in general.
 
 \vspace{0mm}
-Concerning the generalizability of results of this thesis on clinical science, there are important caveats. First of all, intrinisically, the Cochrane Organization focuses on established research of public interest. By definition, it can not comprise the full diversity of the field, and especially where research and evidence is new, sparse and not established, it is almost certainly not included. The aim of Cochrane is to concentrate scientifical knowledge, thus it can not incorporate studies that are unique in their research subjects and are on the ``periphery'' of science. 
+Concerning the generalizability of results of this thesis on clinical science, there are important caveats. First of all, intrinsically, the Cochrane Organization focuses on established research of public interest. By definition, it can not comprise the full diversity of the field, and especially where research and evidence is new, sparse and not established, it is almost certainly not included. The aim of Cochrane is to concentrate scientific knowledge, thus it can not incorporate studies that are unique in their research subjects and are on the ``periphery'' of science. 
 
 \vspace{0mm}
 It is said in the Cochrane Handbook that Cochrane Field groups orchestrate the efforts of their groups and set emphasis on certain research. It is thus clear, that the Cochrane Library only comprises a selective fraction of clinical research. 
@@ -30,23 +181,23 @@ Although Cochrane strives to include unpublished study results, it almost certai
 
 %The conclusions to which one comes with regard to this question directly influence the meaning of the results. 
 % If one decides that the results can not be representative for clinical science, the results mainly concern the work of the Cochrane organization. If one decides that the results do at least partially hold for clinical science and science in general, the interpretation of the results change also.
-
-
-\section{Meta-analyses}
-If one investigates the success of a treatment, the first way of doing so is to investigate to what extent the treatment effect estimate differs from no treatment effect. This is usually done by a hypothesis test, where the null hypothesis of no treatment effect is rejected if the p-value of the treatment effect estimate is above a given threshold. One decides in this case in favor of the treatment. 
-
-\vspace{0mm}
-The aim of a meta-analysis is to re-calculate the treatment effect based on multiple results. The treatment effects are pooled and the pooled treatment effect estimate can then again be tested based on the null-hypothesis. Although not commonly accepted, this may be a stronger argument for the success of treatment, because meta-analysis can capture consistency among treatment effect estimates among different studies and will result in rejection of a null hypothesis if consistency is given. It is thus in line with the empirical principle that experimental findings should be validated based on their reproducibility. Consequently, a meta-analysis may provide a significant treatment effect estimate, even if the single results do not.
-
-\vspace{0mm}
-It was the aim of the first section CITE of the results part to compare significance of the treatment effect of single studies with the significance of the pooled effect. So the question to be answered was: How does significance in single studies relate to significance when all evidence is included? The first kind of significance has been termed primary significance and the second, secondary significance. One can imagine 3 scenarios: 
-\begin{itemize}
-\item A primary significant study belongs to a group which, overall, can not reject the null-hypothesis of no treatment effect in meta-analysis. The study result is then overruled by the result of the meta-analysis (if one is to accept that meta-analysis is a more stringent rule for decision about treatment effects).
-\item The opposite: A non-significant primary study belongs to a group which has a significant pooled treatment effect estimate. The study failed to find evidence for a ``true'' effect.
-\item Primary and secondary significance remain unchanged after meta-analysis.
-\end{itemize}
-
-The amount of overlap between primary and secondary significance was moderate, as it had to be expected based on the methodology of meta-analysis. The vast amount of non-significant primary results that contribute in the end to a significant secondary meta-analysis result is compelling. This links to the topic of the masters thesis of small study effects and publication bias. One ad-hoc interpretation of publication bias is that results that are not significant are less likely to be published (arguably because they show no treatment effect). 
-
-\vspace{0mm}
-If one is to prefer, or accept meta-analysis as a way to assess treatment effect evidence, the result provides a strong argument for publication of non-significant results, because they can contribute to evidence for treatment effects in meta-analysis (in a Cochrane review). Significant treatment effects that are found may find their into clinical practice and potentially benefit there patients and consumers. 
+% 
+% 
+% \section{Meta-analyses}
+% If one investigates the success of a treatment, the first way of doing so is to investigate to what extent the treatment effect estimate differs from no treatment effect. This is usually done by a hypothesis test, where the null hypothesis of no treatment effect is rejected if the p-value of the treatment effect estimate is above a given threshold. One decides in this case in favor of the treatment. 
+% 
+% \vspace{0mm}
+% The aim of a meta-analysis is to re-calculate the treatment effect based on multiple results. The treatment effects are pooled and the pooled treatment effect estimate can then again be tested based on the null-hypothesis. Although not commonly accepted, this may be a stronger argument for the success of treatment, because meta-analysis can capture consistency among treatment effect estimates among different studies and will result in rejection of a null hypothesis if consistency is given. It is thus in line with the empirical principle that experimental findings should be validated based on their reproducibility. Consequently, a meta-analysis may provide a significant treatment effect estimate, even if the single results do not.
+% 
+% \vspace{0mm}
+% It was the aim of the first section CITE of the results part to compare significance of the treatment effect of single studies with the significance of the pooled effect. So the question to be answered was: How does significance in single studies relate to significance when all evidence is included? The first kind of significance has been termed primary significance and the second, secondary significance. One can imagine 3 scenarios: 
+% \begin{itemize}
+% \item A primary significant study belongs to a group which, overall, can not reject the null-hypothesis of no treatment effect in meta-analysis. The study result is then overruled by the result of the meta-analysis (if one is to accept that meta-analysis is a more stringent rule for decision about treatment effects).
+% \item The opposite: A non-significant primary study belongs to a group which has a significant pooled treatment effect estimate. The study failed to find evidence for a ``true'' effect.
+% \item Primary and secondary significance remain unchanged after meta-analysis.
+% \end{itemize}
+% 
+% The amount of overlap between primary and secondary significance was moderate, as it had to be expected based on the methodology of meta-analysis. The vast amount of non-significant primary results that contribute in the end to a significant secondary meta-analysis result is compelling. This links to the topic of the masters thesis of small study effects and publication bias. One ad-hoc interpretation of publication bias is that results that are not significant are less likely to be published (arguably because they show no treatment effect). 
+% 
+% \vspace{0mm}
+% If one is to prefer, or accept meta-analysis as a way to assess treatment effect evidence, the result provides a strong argument for publication of non-significant results, because they can contribute to evidence for treatment effects in meta-analysis (in a Cochrane review). Significant treatment effects that are found may find their into clinical practice and potentially benefit there patients and consumers. 

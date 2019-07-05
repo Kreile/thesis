@@ -3,44 +3,44 @@
 \contentsline {chapter}{\bfseries {Preface}}{iii}{chapter*.2}
 \vspace *{10mm}
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
-\contentsline {chapter}{\numberline {2}The Cochrane Dataset}{3}{chapter.2}
-\contentsline {section}{\numberline {2.1}Cochrane Systematic Reviews}{3}{section.2.1}
-\contentsline {subsection}{\numberline {2.1.1}Methods for Cochrane Reviews}{4}{subsection.2.1.1}
-\contentsline {subsection}{\numberline {2.1.2}Structure and Content}{5}{subsection.2.1.2}
-\contentsline {section}{\numberline {2.2}Data Tidying and Processing}{9}{section.2.2}
-\contentsline {subsection}{\numberline {2.2.1}Modification of old variables}{9}{subsection.2.2.1}
-\contentsline {subsection}{\numberline {2.2.2}Newly Introduced Variables}{9}{subsection.2.2.2}
-\contentsline {subsection}{\numberline {2.2.3}Eligibility criteria for Publication Bias Test and Adjustment}{10}{subsection.2.2.3}
-\contentsline {subsubsection}{Exclusions due to Computational Errors}{10}{section*.10}
-\contentsline {subsubsection}{The Publication Bias Test and Adjustment Dataset}{11}{section*.11}
-\contentsline {chapter}{\numberline {3}Results}{13}{chapter.3}
-\contentsline {section}{\numberline {3.1}Small Study Effect and Excess of Significance Tests}{13}{section.3.1}
-\contentsline {section}{\numberline {3.2}Small Study Effects Adjustment}{17}{section.3.2}
-\contentsline {subsection}{\numberline {3.2.1}Change in Effect Size after Adjustment}{17}{subsection.3.2.1}
-\contentsline {subsection}{\numberline {3.2.2}Change in Evidence for Treatment Effects}{19}{subsection.3.2.2}
-\contentsline {subsection}{\numberline {3.2.3}Comparison of adjustment methods}{21}{subsection.3.2.3}
-\contentsline {chapter}{\numberline {4}Methods}{23}{chapter.4}
-\contentsline {section}{\numberline {4.1}Introduction and Notation}{23}{section.4.1}
-\contentsline {section}{\numberline {4.2}Effect Measures and $p$-values}{23}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Continuous Outcomes}{23}{subsection.4.2.1}
-\contentsline {subsection}{\numberline {4.2.2}Binary Outcomes}{24}{subsection.4.2.2}
-\contentsline {subsection}{\numberline {4.2.3}Survival Outcomes}{24}{subsection.4.2.3}
-\contentsline {section}{\numberline {4.3}Fixed and Random Effects Meta-Analysis}{25}{section.4.3}
-\contentsline {section}{\numberline {4.4}Small Study Effects Tests}{26}{section.4.4}
-\contentsline {subsection}{\numberline {4.4.1}Continuous Outcome Tests}{27}{subsection.4.4.1}
-\contentsline {subsubsection}{Begg and Mazumdar: Rank Correlation Test}{27}{section*.24}
-\contentsline {subsubsection}{Egger's Test: Weighted Linear Regression Test}{27}{section*.25}
-\contentsline {subsubsection}{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{29}{section*.26}
-\contentsline {subsection}{\numberline {4.4.2}Dichotomous Outcomes Tests}{29}{subsection.4.4.2}
-\contentsline {subsubsection}{Peters Test: Weighted Linear Regression Test}{29}{section*.27}
-\contentsline {subsubsection}{Harbord's Test: Score based Test}{29}{section*.28}
-\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{29}{section*.29}
-\contentsline {subsubsection}{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{30}{section*.30}
-\contentsline {subsection}{\numberline {4.4.3}Excess Significance Test}{30}{subsection.4.4.3}
-\contentsline {section}{\numberline {4.5}Small Study Effect and Publication Bias Adjustment}{31}{section.4.5}
-\contentsline {subsection}{\numberline {4.5.1}Adjustment by Regression}{31}{subsection.4.5.1}
-\contentsline {subsection}{\numberline {4.5.2}Copas Selection Model}{31}{subsection.4.5.2}
-\contentsline {section}{\numberline {4.6}Transformation between effect sizes}{33}{section.4.6}
+\contentsline {chapter}{\numberline {2}Methods}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}Introduction and Notation}{3}{section.2.1}
+\contentsline {section}{\numberline {2.2}Effect Measures and $p$-values}{3}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Continuous Outcomes}{3}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Binary Outcomes}{4}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3}Survival Outcomes}{4}{subsection.2.2.3}
+\contentsline {section}{\numberline {2.3}Fixed and Random Effects Meta-Analysis}{5}{section.2.3}
+\contentsline {section}{\numberline {2.4}Small Study Effects Tests}{6}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Continuous Outcome Tests}{7}{subsection.2.4.1}
+\contentsline {subsubsection}{Begg and Mazumdar: Rank Correlation Test}{7}{section*.3}
+\contentsline {subsubsection}{Egger's Test: Weighted Linear Regression Test}{7}{section*.4}
+\contentsline {subsubsection}{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{9}{section*.5}
+\contentsline {subsection}{\numberline {2.4.2}Dichotomous Outcomes Tests}{9}{subsection.2.4.2}
+\contentsline {subsubsection}{Peters Test: Weighted Linear Regression Test}{9}{section*.6}
+\contentsline {subsubsection}{Harbord's Test: Score based Test}{9}{section*.7}
+\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{9}{section*.8}
+\contentsline {subsubsection}{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{10}{section*.9}
+\contentsline {subsection}{\numberline {2.4.3}Excess Significance Test}{10}{subsection.2.4.3}
+\contentsline {section}{\numberline {2.5}Small Study Effect and Publication Bias Adjustment}{11}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}Adjustment by Regression}{11}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}Copas Selection Model}{11}{subsection.2.5.2}
+\contentsline {section}{\numberline {2.6}Transformation between effect sizes}{13}{section.2.6}
+\contentsline {chapter}{\numberline {3}The Cochrane Dataset}{15}{chapter.3}
+\contentsline {section}{\numberline {3.1}Cochrane Systematic Reviews}{15}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}Methods for Cochrane Reviews}{16}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Structure and Content}{17}{subsection.3.1.2}
+\contentsline {section}{\numberline {3.2}Data Tidying and Processing}{21}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Modification of old variables}{21}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}Newly Introduced Variables}{21}{subsection.3.2.2}
+\contentsline {subsection}{\numberline {3.2.3}Eligibility criteria for Publication Bias Test and Adjustment}{22}{subsection.3.2.3}
+\contentsline {subsubsection}{Exclusions due to Computational Errors}{22}{section*.17}
+\contentsline {subsubsection}{The Publication Bias Test and Adjustment Dataset}{23}{section*.18}
+\contentsline {chapter}{\numberline {4}Results}{25}{chapter.4}
+\contentsline {section}{\numberline {4.1}Publication Bias Test Results}{25}{section.4.1}
+\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{28}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{28}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Change in Evidence for Treatment Effects}{31}{subsection.4.2.2}
+\contentsline {subsection}{\numberline {4.2.3}Comparison of adjustment methods}{33}{subsection.4.2.3}
 \contentsline {chapter}{\numberline {A}Appendix}{35}{appendix.A}
 \vspace *{10mm}
 \contentsline {chapter}{\bfseries Bibliography}{37}{section*.31}

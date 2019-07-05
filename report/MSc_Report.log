@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.3.6)  2 JUL 2019 18:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.3.6)  5 JUL 2019 16:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -921,182 +921,173 @@ Underfull \vbox (badness 2050) has occurred while \output is active []
 ]
 [2]
 Chapter 2.
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 194.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 194.
+
 [3
 
-] [4]
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 264.
+] [4] [5] [6] [7] [8] [9]
 
+Package amsmath Warning: Foreign command \atopwithdelims;
+(amsmath)                \frac or \genfrac should be used instead
+(amsmath)                 on input line 530.
+
+[10] [11] [12] [13] [14]
+Chapter 3.
+[15
+
+] [16]
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 1206
+.
  (/usr/local/texlive/2017/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 
-LaTeX Warning: Reference `review' on page 5 undefined on input line 289.
+LaTeX Warning: Reference `review' on page 17 undefined on input line 1231.
 
 
-Overfull \hbox (2.00797pt too wide) in paragraph at lines 311--312
+Overfull \hbox (2.00797pt too wide) in paragraph at lines 1253--1254
 [][] 
  []
 
-[5]
+[17]
 Underfull \vbox (badness 2600) has occurred while \output is active []
 
- [6]
-Overfull \hbox (26.79576pt too wide) in paragraph at lines 327--352
+ [18]
+Overfull \hbox (26.79576pt too wide) in paragraph at lines 1269--1294
  [][] 
  []
 
 
-Package natbib Warning: Citation `largest.review' on page 7 undefined on input 
-line 412.
+Package natbib Warning: Citation `largest.review' on page 19 undefined on input
+ line 1354.
 
-[7]
-Underfull \hbox (badness 10000) in paragraph at lines 450--452
+[19]
+Underfull \hbox (badness 10000) in paragraph at lines 1392--1394
 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [8]
-Overfull \hbox (14.45792pt too wide) in paragraph at lines 457--458
+ [20]
+Overfull \hbox (14.45792pt too wide) in paragraph at lines 1399--1400
 []\T1/cmtt/m/n/10.95 mean1 \T1/cmr/m/n/10.95 and \T1/cmtt/m/n/10.95 mean2\T1/cm
 r/m/n/10.95 : When both \T1/cmtt/m/n/10.95 mean1 \T1/cmr/m/n/10.95 and \T1/cmtt
 /m/n/10.95 mean2 \T1/cmr/m/n/10.95 are equal to zero or NA, \T1/cmtt/m/n/10.95 
 outcome.measure.new
  []
 
-[9] [10] [11] [12
+[21] [22] [23] [24
 
 ]
-Chapter 3.
-<figure/ch03_figunnamed-chunk-10-1.pdf, id=239, 585.18625pt x 650.43pt>
+Chapter 4.
+<figure/ch03_figunnamed-chunk-10-1.pdf, id=456, 585.18625pt x 650.43pt>
 File: figure/ch03_figunnamed-chunk-10-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-10-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-10-1.pdf used on input li
-ne 611.
+ne 1553.
 (pdftex.def)             Requested size: 369.94295pt x 411.20222pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 623--626
+Underfull \hbox (badness 10000) in paragraph at lines 1565--1568
 
  []
 
-[13] [14 <./figure/ch03_figunnamed-chunk-10-1.pdf>]
-<figure/ch03_figunnamed-chunk-11-1.pdf, id=276, 614.295pt x 505.89pt>
+[25] [26 <./figure/ch03_figunnamed-chunk-10-1.pdf>]
+<figure/ch03_figunnamed-chunk-11-1.pdf, id=481, 614.295pt x 505.89pt>
 File: figure/ch03_figunnamed-chunk-11-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-11-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-11-1.pdf used on input li
-ne 633.
+ne 1575.
 (pdftex.def)             Requested size: 369.94295pt x 304.66335pt.
- [15 <./figure/ch03_figunnamed-chunk-11-1.pdf>]
-Overfull \hbox (4.70937pt too wide) in paragraph at lines 660--662
-\T1/cmr/m/n/10.95 The con-fi-dence in-ter-vals can be used as lim-its of agree-
-ment, which gives, af-ter back-transformation,
- []
-
-<figure/ch03_figunnamed-chunk-12-1.pdf, id=289, 585.18625pt x 614.295pt>
+ [27 <./figure/ch03_figunnamed-chunk-11-1.pdf>]
+<figure/ch03_figunnamed-chunk-12-1.pdf, id=495, 585.18625pt x 614.295pt>
 File: figure/ch03_figunnamed-chunk-12-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-12-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-12-1.pdf used on input li
-ne 667.
+ne 1609.
 (pdftex.def)             Requested size: 369.94295pt x 388.35765pt.
- [16 <./figure/ch03_figunnamed-chunk-12-1.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 705--709
+
+Underfull \hbox (badness 10000) in paragraph at lines 1647--1651
 
  []
 
-[17] <figure/ch03_figunnamed-chunk-15-1.pdf, id=316, 585.18625pt x 375.4025pt>
+[28] [29 <./figure/ch03_figunnamed-chunk-12-1.pdf>]
+<figure/ch03_figunnamed-chunk-15-1.pdf, id=521, 585.18625pt x 375.4025pt>
 File: figure/ch03_figunnamed-chunk-15-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-15-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-15-1.pdf used on input li
-ne 737.
+ne 1679.
 (pdftex.def)             Requested size: 369.94295pt x 237.32968pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 748--750
+Underfull \hbox (badness 10000) in paragraph at lines 1690--1692
 
  []
 
-<figure/ch03_figunnamed-chunk-16-1.pdf, id=318, 585.18625pt x 289.08pt>
+<figure/ch03_figunnamed-chunk-16-1.pdf, id=523, 585.18625pt x 289.08pt>
 File: figure/ch03_figunnamed-chunk-16-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-16-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-16-1.pdf used on input li
-ne 755.
+ne 1697.
 (pdftex.def)             Requested size: 369.94295pt x 182.75653pt.
 
-Overfull \hbox (61.48605pt too wide) in paragraph at lines 773--792
+Underfull \vbox (badness 2913) has occurred while \output is active []
+
+ [30 <./figure/ch03_figunnamed-chunk-15-1.pdf>]
+Overfull \hbox (61.48605pt too wide) in paragraph at lines 1715--1734
  [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 799--807
+Underfull \hbox (badness 10000) in paragraph at lines 1741--1749
 
  []
 
-
-Underfull \vbox (badness 4940) has occurred while \output is active []
-
- [18 <./figure/ch03_figunnamed-chunk-15-1.pdf>] [19 <./figure/ch03_figunnamed-c
-hunk-16-1.pdf>] <figure/ch03_figunnamed-chunk-18-1.pdf, id=348, 585.18625pt x 6
-50.43pt>
+[31 <./figure/ch03_figunnamed-chunk-16-1.pdf>]
+<figure/ch03_figunnamed-chunk-18-1.pdf, id=554, 585.18625pt x 650.43pt>
 File: figure/ch03_figunnamed-chunk-18-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-18-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-18-1.pdf used on input li
-ne 812.
+ne 1754.
 (pdftex.def)             Requested size: 369.94295pt x 411.20222pt.
 
-<figure/ch03_figunnamed-chunk-19-1.pdf, id=350, 585.18625pt x 216.81pt>
+<figure/ch03_figunnamed-chunk-19-1.pdf, id=556, 585.18625pt x 216.81pt>
 File: figure/ch03_figunnamed-chunk-19-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-19-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-19-1.pdf used on input li
-ne 829.
+ne 1771.
 (pdftex.def)             Requested size: 369.94295pt x 137.0674pt.
-
-Overfull \hbox (54.38142pt too wide) in paragraph at lines 870--892
+ [32 <./figure/ch03_figunnamed-chunk-18-1.pdf>]
+Overfull \hbox (54.38142pt too wide) in paragraph at lines 1812--1834
  [][] 
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [20 <./figure/ch03_figunnamed-chunk-18-1.pdf>]
-<figure/ch03_figunnamed-chunk-22-1.pdf, id=366, 585.18625pt x 542.025pt>
+<figure/ch03_figunnamed-chunk-22-1.pdf, id=572, 585.18625pt x 542.025pt>
 File: figure/ch03_figunnamed-chunk-22-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-22-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-22-1.pdf used on input li
-ne 906.
+ne 1848.
 (pdftex.def)             Requested size: 369.94295pt x 342.66852pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 917--918
+Underfull \hbox (badness 10000) in paragraph at lines 1859--1860
 
  []
 
-[21 <./figure/ch03_figunnamed-chunk-19-1.pdf>] [22 <./figure/ch03_figunnamed-ch
+[33 <./figure/ch03_figunnamed-chunk-19-1.pdf>] [34 <./figure/ch03_figunnamed-ch
 unk-22-1.pdf>]
-Chapter 4.
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 933.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 933.
-
-[23
-
-] [24] [25] [26] [27] [28] [29]
-
-Package amsmath Warning: Foreign command \atopwithdelims;
-(amsmath)                \frac or \genfrac should be used instead
-(amsmath)                 on input line 1269.
-
-[30] [31] [32] [33] [34]
 Appendix A.
 [35
 
@@ -1119,9 +1110,9 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1893.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1893.
 
 Package rerunfilecheck Info: File `MSc_Report.out' has not changed.
-(rerunfilecheck)             Checksum: 33B7D5ABEF66F65F7D0FA01A9004DD8B;1126.
+(rerunfilecheck)             Checksum: DE42254E869DFD7E10576B6182598795;1104.
 Package rerunfilecheck Info: File `MSc_Report.brf' has not changed.
-(rerunfilecheck)             Checksum: 79CED903C9B15BDA001A009AB2233CBB;2029.
+(rerunfilecheck)             Checksum: B535E57248B8C3157BEBCD8E062A8046;2005.
 
 
 LaTeX Warning: There were undefined references.
@@ -1129,11 +1120,11 @@ LaTeX Warning: There were undefined references.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1893.
  ) 
 Here is how much of TeX's memory you used:
- 20573 strings out of 492995
- 367799 string characters out of 6132705
- 451393 words of memory out of 5000000
- 23531 multiletter control sequences out of 15000+600000
- 32811 words of font info for 83 fonts, out of 8000000 for 9000
+ 20581 strings out of 492995
+ 367882 string characters out of 6132705
+ 451421 words of memory out of 5000000
+ 23536 multiletter control sequences out of 15000+600000
+ 34034 words of font info for 87 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,16n,54p,1667b,1566s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
@@ -1168,10 +1159,10 @@ ype1/public/cm-super/sfst1095.pfb></usr/local/texlive/2017/texmf-dist/fonts/typ
 e1/public/cm-super/sfsx1440.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1
 /public/cm-super/sfti1095.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/p
 ublic/cm-super/sftt1095.pfb>
-Output written on MSc_Report.pdf (46 pages, 1795711 bytes).
+Output written on MSc_Report.pdf (46 pages, 1795813 bytes).
 PDF statistics:
- 789 PDF objects out of 1000 (max. 8388607)
- 687 compressed objects within 7 object streams
+ 790 PDF objects out of 1000 (max. 8388607)
+ 688 compressed objects within 7 object streams
  166 named destinations out of 1000 (max. 500000)
  189 words of extra memory for PDF output out of 10000 (max. 10000000)
 

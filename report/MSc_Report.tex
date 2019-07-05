@@ -184,746 +184,7 @@ In this masters thesis, the answers for two questions are investigated: What is 
 % LaTeX file for Chapter 02
 
 
-
-
-
-
-
-
-
-
-\chapter{The Cochrane Dataset} \label{ch:dataset}
-
-
-\section{Cochrane Systematic Reviews}
-The Cochrane Group has specialized on systematic reviews in clinical science. Certain knowledge of standards and principles of the Cochrane Group may help to assess the quality and the properties of the dataset. The following information stems from the Cochrane Handbook for Systematic Reviews \citep{cochrane.handbook}. \\
-The definition of a systematic review is that it ``attempts to collate all empirical evidence that fits pre-specified eligibility criteria in order to answer a specific research question.'' Thus, the ``key properties of a review are'':
-
-\begin{itemize}
-\item``a clearly stated set of objectives with pre-defined eligibility criteria for studies''
-\item ``an explicit, reproducible methodology''
-\item ``a systematic search that attempts to identify all studies that would meet the eligibility criteria''
-\item ``an assessment of the validity of the findings of the included studies, for example through the assessment of risk of bias''
-\end{itemize}
-
-At the end of a systematic review, ``a systematic presentation, and synthesis, of the characteristics and findings of the included studies'' is done. \\
-53 Cochrane Review Groups prepare and maintain the reviews within specific areas of health care. A group consists of ``researchers, healthcare professionals and people using healthcare services (consumers)''. \\
-The groups are supported by Method Groups, Centers and Fields. The Cochrane Method Groups aim to discuss and consult the groups in methodological questions concerning review preparation. The Centers play a main role in training and support of the Groups. The Fields are responsible for broad medical research areas and follow priorities in those areas by advice and control of the groups. \\
-The first step in a review is writing a protocol, specifying the research question, the methods to be used in literature search and analysis and the eligibility criteria of the study. Changes in protocols are possible but have to be documented and the protocol is published in advance of the publication of the full review. The choices of methodology as well as the changes should not be made ``on the basis of how they affect the outcome of the research study''. \\
-In order to avoid potential conflicts of interests, there is a code of conduct that all entities of the Cochrane Organization have to agree on: conflicts of interest must be disclosed and possibly be forwarded to the Cochrane Center, and participation of review authors in the studies used have to be acknowledged. Additionally, a Steering Group publishes a report of potential conflicts of interests based on information about external funding of Cochrane Groups. \\
-In order for keeping the reviews up-to-date, they are revised in a two-year circle with exceptions. In addition to inclusion of new evidence in a field, the revision and maintenance process may as well includes change in analysis methods. This can reflect some advance in clinical science as for example new information about important subgroups, as well as new methods for conducting a Cochrane Review. However, there are no clear guidelines and the Cochrane Groups are free in the rate and extent of up-dating their reviews.
-
-\subsection{Methods for Cochrane Reviews}
-A research question defines the following points: ``the types of population (participants), types of interventions (and comparisons), and the types of outcomes that are of interest''. From the research question, usually the eligibility criteria follow. Usually, outcomes are not part of eligibility criteria, except for special cases such as adverse effect reviews. \\
-The type of study is an important eligibility criterium. The Cochrane Collaboration focuses ``primarily on randomized controlled trials'', and also, the methods of study identification in literature search are focused on randomized trials. Furthermore, study characteristics such as blinding of study operators with respect to treatment and cluster-randomizing might be additional eligibility criteria which have to be chosen by the review authors. \\
-After having specified the eligibility criteria, studies have to be collected. The central idea of systematic reviews, and also meta-analyses, is that the collected studies are a random sample of a population of studies, i.e. that they are representative and can be used to assess population properties. Therefore, the search process is crucial, as a selective search result may impose bias on the sample of studies available, making it a non-random sample. For this purpose, the Cochrane Groups are advised to go beyond MEDLINE !!cite!!, because a search restricted to it has been shown to deliver only 30\% to 80\% of available studies. ``Time and budget restraints require the review author to balance the thoroughness of the search with efficiency in use of time and funds and the best way of achieving this balance is to be aware of, and try to minimize, the biases such as publication bias and language bias that can result from restricting searches in different ways.'' It is important to note that not only studies, but also study reports are occasionally used in the reviews, as they may provide useful information. \\
-There are different sources that are being used to search for studies. 
-\begin{itemize}
-\item The Cochrane Central Register of Controlled Trials is a source of reports of controlled trials. ``As of January 2008 (Issue 1, 2008), CENTRAL contains nearly 530,000 citations to reports of trials and other studies potentially eligible for inclusion in Cochrane reviews, of which 310,000 trial reports are from MEDLINE, 50,000 additional trial reports are from EMBASE and the remaining 170,000 are from other sources such as other databases and handsearching.'' It includes citations published in many languages, citations only available in conference proceedings, citations from trials registers and trials results registers.
-\item MEDLINE. MEDLINE includes over 16 million references to journal articles. 5,200 journals publishing in 27 languages are indexed for MEDLINE. PubMed gives access to a free version of MEDLINE with up-to-date citations. NLM gateway such as the Health Services Research Project, Meeting Abstracts and TOXLINE Subset for toxicology citations allows for search in both databases together with additional data from the US National Library of Medicine.
-\item EMBASE. 4,800 Journals publishing in 30 languages are indexed to EMBASE, which includes more than 11 million records from 1974 onward. EMBASE.com also includes 7 million unique records from MEDLINE (1966 up to date) together with its own records. Additionally, EMBASE Classic allows access to digitized records from 1947 to 1973. EMBASE and MEDLINE each have around 1,800 journals not indexed in the other database.
-\item Regional or national and subject specific databases can additionally be consulted and often provide important information. Financial considerations may limit the use of such databases.
-\item General search engines such as Google Scholar, Intute and Turning Research into Practice (TRIP) database can be used.
-\item Citation Indexes. The database lists articles published in around 6,000 Journals with articles in which they have been cited and is available online as SciSearch. This form of search is known as cited reference searching.
-\item Dissertation sources. Dissertations are often listed in MEDLINE or EMBASE but one is advised to also search in specific dissertation sources.
-\item Grey Literature Databases. Approximately 10\% of the results in the Cochrane Database stems from conference abstracts and other grey literature. The Institute for Scientific and Technical Information in France provides access to entries of the previously closed System for Information on Grey Literature database of the European Association for Grey Literature Exploitation). Another source is the Healthcare Management Information Consortium (HMIC) database containing records from the Library and Information Services department of the Department of Health (DH) in England and the King's Fund Information and Library Service. The National Technical Information Service (NTIS) gives access to the results of US and non-US government-sponsored research, as well as technical report for most published results. References from newsletters, magazines and technical and annual reports in behavioral science, psychology and health are provided in the PsycEXTRA database which is linked to PsycINFO database.
-\end{itemize}
-
-
-\subsection{Structure and Content}
-The dataset consists of 5016 systematic reviews from the Cochrane Library with 52995 studies and 463820 results. A result compares a clinical or medical intervention or treatments to a control. Each study provides (multiple) results of clinical interventions. \\
-In Table \ref{barbiturate.row}, two results from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, further specifications are provided by the variables in the columns. \\
-The comparison variable specifies \textit{what kind} of treatments or interventions are compared, the outcome variable \textit{how} it is compared, and the subgroup variable (not indicated in table) if the result belongs to a certain subgroup. Here, the result is of a binary type, so the counts of events in the barbiturate treatment group and the total number of participants are given in columns ``Events'' and ``Total'' and the number of events in the control group ``Events\_c'' and participants ``Total\_c''. A event is here death at the end of follow up.
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Jul  1 17:02:14 2019
-\begin{table}[ht]
-\centering
-\begingroup\scriptsize
-\begin{tabular}{lllrrrr}
-  \hline
-Study & Comparison & Outcome & Events & Total & Events\_c & Total\_c \\ 
-  \hline
-Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up & 11 & 41 & 11 & 41 \\ 
-  Ward 1985 & Barbiturate vs no barbiturate & Death at the end of follow-up & 14 & 27 & 13 & 26 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Example of two results as given in the dataset. Events denotes the count of events in the treatment group while Events c the count of events in the group compared to. Further descriptive variables have been ommitted} 
-\label{barbiturate.row}
-\end{table}
-
-
-A complete listing of the variables of a result is given in Table \ref{variable}. They can roughly be separated into variables that \textit{specify the review} in which the result is contained and variables that \textit{specify the result} itself (separated by a horizontal line in Table \ref{variable}):
-
-\begin{table}[ht]
-  \begin{center}
-    \begin{tabular}{l l}
-      \textbf{Variable} & \textbf{Description}\\
-      \hline
-      \texttt{file.nr} & The number of the file from which the review data has been \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
-      \texttt{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
-      \texttt{file.index} & Internal index of the file in the Cochrane library.\\
-      \texttt{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
-      %\multicolumn{2}{c}{textbf{Study level variables}}\\ 
-      \hline
-      \texttt{study.name} & Name of the study to which the result belongs\\
-      \texttt{study.year} & Year in which the study was published\\
-      \hline
-      \texttt{comparison.name/.nr} & Specification of the interventions compared in the study  \\ &and a unique number for the comparison\\
-      \texttt{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome\\
-      \texttt{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ &unique number for the subgroup\\
-      \texttt{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
-      \texttt{effect} & Measure of the effect given in the quantity denoted by \\ &\texttt{outcome measure}.\\
-      \texttt{se} & Standard error of the measure of the effect,\\
-      \texttt{events1/events2} & The counts of patients with an outcome \textit{if}\\ &measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
-      \texttt{total1/total2} & Number of patients in groups.\\
-      \texttt{mean1/mean2} & Mean of patient measurements \textit{if} outcome is continuous.\\
-      \texttt{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
-    \end{tabular}
-  \caption{Dataset variable names and descriptions  \label{variable}}
-
-  \end{center}
-\end{table}
-
-Results are part of studies that are again part of a (systematic) review. This structure of a review is shown in Figure \ref{review}. 
-
-\begin{figure}
-\tikzstyle{every node}=[draw=black,thick,anchor=west]
-\tikzstyle{selected}=[draw=red,fill=red!30]
-\tikzstyle{optional}=[dashed,fill=gray!50]
-\begin{tikzpicture}
-[grow = right, anchor = west, 
-  growth parent anchor=east, % added code
-  parent anchor=east]
-  \node {Review} [edge from parent fork right]
-    child { node {Comparison 2}
-      child { node {Outcome 2}}
-      child { node {Outcome 1}
-        child { node {Subgroup 2}}
-        child { node {Subgroup 1}
-          child  { node {Result 2}}
-          child  { node {Result 1}}
-          }}
-    }
-    child [missing] {}		
-    child { node {Comparison 1  }};
-\end{tikzpicture}
-\caption{Structure of a hypothetical review with two different comparisons}
-\label{review.structure}
-\end{figure}
-
-\vspace{0mm}
-The structure of a review will now be outlined based on an example of the dataset. Let us consider the previously mentioned barbiturate and head injury review. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates''. \\
-%Since there are arguments for and against use of barbiturates, the authors of the review did a comprehensive literature search and collected all available study findings. 
-The review comprises five studies in total. Three of them compared barbiturate to placebo, one compared barbiturate to Mannitol and one Pentobarbital to Thiopental. The studies have different outcomes, for example, death or death and severe disability at follow up, but also dropout counts or adverse effects (secondary outcomes). 
-We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. Thus, it is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Jul  1 17:02:14 2019
-\begin{table}[ht]
-\centering
-\begingroup\footnotesize
-\begin{tabular}{lll}
-  \hline
-Study & Comparison & Outcome \\ 
-  \hline
-Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\ 
-  Bohn 1989 & Barbiturate vs no barbiturate & Death or severe disability at the end of follow-up \\ 
-  Eisenberg 1988 & Barbiturate vs no barbiturate & Death at the end of follow-up \\ 
-  Eisenberg 1988 & Barbiturate vs no barbiturate & Uncontrolled ICP during treatment \\ 
-  Eisenberg 1988 & Barbiturate vs no barbiturate & Hypotension during treatment \\ 
-  Perez-Barcena 2008 & Pentobarbital vs Thiopental & Death at the end of follow-up (6 months) \\ 
-  Perez-Barcena 2008 & Pentobarbital vs Thiopental & Death or severe disability at the end of follow-up (6 months) \\ 
-  Perez-Barcena 2008 & Pentobarbital vs Thiopental & Uncontrolled ICP during treatment \\ 
-  Perez-Barcena 2008 & Pentobarbital vs Thiopental & Hypotension during treatment \\ 
-  Schwartz 1984 & Barbiturate vs Mannitol & Death at the end of follow-up (1 year) \\ 
-  Schwartz 1984 & Barbiturate vs Mannitol & Death at the end of follow-up (1 year) \\ 
-  Schwartz 1984 & Barbiturate vs Mannitol & Uncontrolled ICP during treatment \\ 
-  Ward 1985 & Barbiturate vs no barbiturate & Death at the end of follow-up \\ 
-  Ward 1985 & Barbiturate vs no barbiturate & Death or severe disability at the end of follow-up \\ 
-  Ward 1985 & Barbiturate vs no barbiturate & Mean ICP during treatment \\ 
-  Ward 1985 & Barbiturate vs no barbiturate & Mean arterial pressure during treatment \\ 
-  Ward 1985 & Barbiturate vs no barbiturate & Hypotension during treatment \\ 
-  Ward 1985 & Barbiturate vs no barbiturate & Mean body temperature during treatment \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Barbiturate and head injury review. In the columns, study names, comparison and outcome measure of the results are given} 
-\label{barbiturates}
-\end{table}
-
-
-Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years. For continuous outcomes, the cases have been counted were no treatment effect and standard error is available: neither mean values and standard deviations, nor mean differences and standard error. Also Study years before 1920 and after 2019 are declared as missing, as well as sample sizes below zero.
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Jul  1 17:02:14 2019
-\begin{table}[ht]
-\centering
-\begingroup\footnotesize
-\begin{tabular}{lr}
-  \hline
-  \hline
-Missing mean values and mean differences & 984 \\ 
-  Missing standard deviations and standard errors & 1300 \\ 
-  Missing sample sizes & 12173 \\ 
-  Missing study year & 44649 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Number of missing variables and measurements in the dataset} 
-\label{missing}
-\end{table}
-
-
-The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = 1982, 95\% quantile = 2013,). The median of the publication years is 2003, the mean 2001 and the quartiles are 1996 and 2008. Only a handful ($n = 18$) have been published in 2018, none in 2019. \\
-%No information is available concerning unpublished results and studies.
-The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.) abundances are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 30 \% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (> 65\%).
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Jul  1 17:02:14 2019
-\begin{table}[ht]
-\centering
-\begingroup\footnotesize
-\begin{tabular}{lrr}
-  \hline
-Outcome measure & n & Percentage \\ 
-  \hline
-Risk Ratio & 232583 & 50.1\% \\ 
-  Mean Difference & 102315 & 22.1\% \\ 
-  Odds Ratio & 49372 & 10.6\% \\ 
-  Std. Mean Difference & 40535 & 8.7\% \\ 
-  Peto Odds Ratio & 19122 & 4.1\% \\ 
-  Hazard Ratio & 6566 & 1.4\% \\ 
-  Risk Difference & 6234 & 1.3\% \\ 
-  Rate Ratio & 2283 & 0.5\% \\ 
-  other & 4810 & 1\% \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Frequencies of outcome measures among results. n denotes the total number 
-             of results with the outcome measure and percentage the percentage of the outcome measure,} 
-\label{outcome.measure.frequencies}
-\end{table}
-
-
-
-The sample sizes among results vary to some extent. There are 5\% of treatment group sample sizes that are smaller than 8, the 5\% quantile and 95\% smaller than 551. The first quartile is 22, the median 48, the mean 302.03 and the third quartile 119. The large difference between median and mean is caused by very large groups with over 2,000,000 participants. Analogously, the quantiles of the total sample size are: 5\% quantile = 15, first quartile = 44, median = 94, third quartile = 229 and 95\% = 1044. The mean is 617.81. \\
-The mean and median number of results per review are 12.42 and 7. There are 417 reviews with five or fewer results, and the quartiles are 16 and 102. Similarly, the number of reviews with a maximum of two studies included is 836, the mean study number is 12.42, the median 7 and the interquartile range 4 and 15 and the 95\% quantile 40. The discrepancy between mean and median is due to large reviews with a high number of studies and results, most extreme in \citet{largest.review} which is a systematic review about antibiotic prophylaxis for preventing infection after cesarean section, with 95 studies and 1497 results in total.\\
-For results to be suitable for usage in meta-analysis, they have to be identical with respect to comparison and outcome. More specifically, the studies in the dataset that have the same comparison, outcome and subgroup can be pooled in a meta-analysis, since their research subject and experimental setup can be considered sufficiently homogeneous. Importantly, this distinction is also used by the Cochrane Organization itself, i.e. the meta-analyses are identical to the meta-analyses done in the systematic reviews.\\ %Another approach that is not made here is to analyze all subgroups together, which is possible if enough studies are given.
-The dataset is divided in meta-analyses with identical experimental setup. The size of a meta-analysis denotes how many results are included in a group.
-Table \ref{repr.groups} shows the number of meta-analysis with size $\geq n$ results. Practically, this number of meta analyses can be performed, with each having at least $n$ results.
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Mon Jul  1 17:02:14 2019
-\begin{table}[ht]
-\centering
-\begingroup\footnotesize
-\begin{tabular}{lrr}
-  \hline
-n & Number of groups & Cumulative sum of groups \\ 
-  \hline
-1 & 102344 & 186300 \\ 
-  2 & 31686 & 83956 \\ 
-  3 & 16072 & 52270 \\ 
-  4 & 9628 & 36198 \\ 
-  5 & 6444 & 26570 \\ 
-  6 & 4230 & 20126 \\ 
-  7 & 2961 & 15896 \\ 
-  8 & 2114 & 12935 \\ 
-  9 & 1592 & 10821 \\ 
-  10 & 1238 & 9229 \\ 
-  11 & 921 & 7991 \\ 
-  12 & 702 & 7070 \\ 
-  13 & 585 & 6368 \\ 
-  14 & 455 & 5783 \\ 
-  15 & 5328 & 5328 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Cumulative number of groups with number of reproduction trials $\geq$ n} 
-\label{repr.groups}
-\end{table}
-
-
-\section{Data Tidying and Processing} \label{sec:Processing}
-The original dataset was provided by .. (some words how the dataset was obtained and processed by C.R.). \\
-The information in the previous pages are from a tidied and processed version of this dataset. \\
-
-\subsection{Modification of old variables}
-In some cases, reasonable assumptions led to small changes in the originally provided variables:
-\begin{itemize}
-\item \texttt{study.year}: It was assumed that studies that are declared to have been published before 1920 ($n$ = 30664) are mis-specified, as well as after 2019 ($n$ = 384), so these have been set to NA. 
-\item \texttt{mean1} and \texttt{mean2}: When both \texttt{mean1} and \texttt{mean2} are equal to zero or NA, \texttt{outcome.measure.new} is equal to \texttt{(Std.) Mean Difference}, but a mean difference is given in \texttt{effect}, \texttt{mean1} is set equal to \texttt{effect} ($n$ = 1593).
-\end{itemize}
-
-
-\subsection{Newly Introduced Variables}
-Some new variables are added to the obtained dataset:
-\begin{itemize}
-\item \texttt{outcome.measure.new}: Outcome measure specifications given in \texttt{outcome.measure} were standardized whenever they were supposed to denote the same outcome measure. An example would be the formally different notations for odds ratios: ``Odds Ratio'', ``odds ratio'', ``OR'', which were all denoted as ``Odds Ratio''.
-\item \texttt{outcome.type}: A simplification of \texttt{outcome.measure.new}. The outcome.type ``bin'' indicates if \texttt{outcome.measure.new} is either one of ``Risk Ratio'', ''Odds Ratio'', ``Risk difference'' or ``Peto Odds Ratio''. ``cont'' is equivalent to \texttt{outcome.measure.new} equal to "Std. Mean Difference'' or ``Mean Difference''. ``surv'' equal to ``Hazard Ratio'' and ``rate'' equal to ''Rate Ratio'' or ``Rate Difference''.
-\item \texttt{lrr} and \texttt{var.lrr}: log risk ratio and variance of the log risk ratio for outcome.type ``bin''.
-\item \texttt{smd} and \texttt{var.smd}: Hedges $g$ and the variance of Hedges $g$ for outcome.type ``cont''. If not computable from \texttt{mean1}, \texttt{mean2}, \texttt{sd1} and \texttt{sd2}, and \texttt{outcome.measure.new} was equal to ``Std. Mean Difference'', it was set equal to \texttt{effect} (and \texttt{var.smd} equal to \texttt{se} squared, $n$ =  6938).
-\item \texttt{smd.ordl} and \texttt{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for outcome.type ``bin''.
-\item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for outcome.type ``bin'') or $g$ (for outcome.type ``cont'') to $r$ transformation.
-\item \texttt{z} and \texttt{var.z}: Fisher's z score and it's variance obtained from the Pearson correlation $r$ to $z$ transformation.
-\item \texttt{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for outcome.type ``cont'' or Wald test for outcome.type ``bin''.
-\item \texttt{events1c} and \texttt{events2c}: Correction of \texttt{events1} and \texttt{events2} zero event counts or event counts = patient number. When no events occurred, 0.5 was added, and when all patients experienced the event, 0.5 was subtracted. When one of \texttt{events} had zero counts while the other had maximum counts, no adjustment occurred.
-\item \texttt{meta.id}: Meta-analysis ID variable to uniquely identify any potential meta-analysis in the dataset. Consistent to what has been discussed before, all results that share a common comparison, outcome and subgroup (optional, subgroups not given in any case) may be combined in a meta-analysis.
-% \item \texttt{}:
-% \item \texttt{}:
-\end{itemize}
-
-
-\subsection{Eligibility criteria for Publication Bias Test and Adjustment} 
-Initially, the analysis is restricted to binary, continuous and survival outcomes. More formally:
-\begin{itemize}
-\item \textbf{Outcome measures}: The analysis has been restricted on the following outcome measures (from \texttt{outcome.measure.new}): ``Odds Ratio'', ``Risk Ratio'', ``Risk difference'', ``Peto Odds Ratio'', ``Std. Mean Difference'', ``Mean Difference'', ``Hazard Ratio'' 
-($n$ = 456727 out of a total of 463820 results)
-\end{itemize}
-
-The suggestions of criteria for eligibility for publication bias tests of \citet{Ioannidis2007} have largely been followed:
-\begin{itemize}
-\item \textbf{Sample size}: A meta-analysis is comprised of at least ten studies ($n$ = 5797 remaining). 
-\item \textbf{Heterogeneity}: The $I^2$ statistic of a given meta-analysis is smaller than 0.5, thus, the proportion of between study variance of the overall variance is smaller than 0.5 ($n$ = 4038 remaining).
-\item \textbf{Study size}: The ratio between largest variance of an estimate and smallest variance of an estimate is larger than four ($n$ = 4006 remaining).
-\item \textbf{Significance}: At least one treatment effect has a $p$-value below the significance threshold 0.05 ($n$ = 2673 remaining)
-\end{itemize}
-
-After having excluded meta-analyses with less than ten studies, additional criteria for excluding inconvenient meta-analyses are:
-\begin{itemize}
-\item \textbf{Sensitivity Analyses}: When the same results are used multiple times for different meta-analyses, only one is retained. More precisely, if a study hat the same \texttt{study.name} and same \texttt{effect}, it was considered a duplicate, and the smaller meta-analysis of the two was excluded. The intention is to exclude sensitivity analyses which are operated on subsets of the available results.
-\item \textbf{Zero events}: In the case of binary outcomes, meta-analyses with zero events in any study and any group are excluded ($n$ = 141 out of meta-analyses with at least ten studies).
-\item \textbf{Missing means and sd's}: In the case of continuous outcomes, meta-analyses with means and sd's in any group being equal to zero are excluded ($n$ = 306 out of meta-analyses with at least ten studies).
-\item \textbf{Single patient data}: Meta-analyses that are comprised of single patient data are excluded ($n$ = 8 out of meta-analyses with at least ten studies)
-\end{itemize}
-
---Make Flowchart--
-
-\subsubsection{Exclusions due to Computational Errors}
-In exceptional cases, the applied meta-analysis methods and publication bias tests and adjustment algorithms failed due to various reasons. Here, those cases are listed and if known, the reasons why computation failed are given.\\
-\textbf{Binary Outcomes}: Out of the meta-analyses that are of \texttt{outcome.type} bin, and have at least ten studies, two studies hat to be excluded:
-\begin{itemize}
-\item meta.id = 62301 (file.nr = 1531, comparison.nr = 8, outcome.nr = 6, subgroup.nr = 1):
-%A subgroup analysis for women with increased adverse pregnancy outcomes, where the effect of vitamin C supplements is tested on pre-eclampsia: 
-Largest study (se = 0.1) has risk ratio 1 and smallest study (se = 1) risk ratio 0.07. Copas publication bias adjustment methods has likelihood optimization issues.
-\item meta.id = 94519 (2519, 14, 1, 2): Largest study (se = 0.05) has risk ratio 0.9 and smallest study (se = 0.4) risk ratio 3. Again Copas publication bias adjustment methods has likelihood optimization issues.
-\end{itemize}
-
-There were no issues with \texttt{outcome.type} ``cont'' and ``surv''. For the subsequent information, it is important to know that meta-analyses are only repeated with Hedges $g$, Pearson correlation coefficient and Fisher's Z-scores, if the outcome type is not survival and all of the above criteria are met ($n$ = 0). \\
-\textbf{Pearson Correlation Coefficient}: Three studies had to be excluded when analyzing the Pearson correlation coefficients:
-\begin{itemize}
-\item meta.id = 157083 (file.nr = 5061, comparison.nr = 1, outcome.nr = 5, subgroup.nr = 2): A meta-analysis with all results from the same study, and equal sample size (5 each group). The Copas selection model algorithm issued an error when optimizing the likelihood.
-\item meta.id = 159329 (5183, 3, 13): One very small study with group sizes of 2 and 1 patients and small risk ratio of 0.222 (compared to the largest of 1.05, se = 0.04). Also, the Copas selection model algorithm issued an error when optimizing the likelihood.
-\item meta.id = 182298 (6211, 1, 8, -): One very small study with 8 patients in each group and 0 event counts in both. The Copas selection model algorithm issued an error when optimizing the likelihood.
-\end{itemize}
-
-\textbf{Fisher's Z score}: The same issues as encountered for Pearson correlation coefficients (meta.id = 157083 and 159329). The variance of the z score $s_z^2$ can be calculated as:  $s_z^2 = \frac{1}{n-3}$, $n$ being the total sample size. Thus, studies that have total sample size $n \geq 3$ are discarded in the meta-analyses ($n$ = 72 studies). 2 meta-analyses have then less than 10 studies left for pooling: 
-\begin{itemize}
-\item meta.id = 10671: (file.nr = 5061, comparison.nr = 1, outcome.nr = 5, subgroup.nr = 2), 7 studies left.
-\item meta.id = 43324: (1019, 1, 3, 2), 9 studies left.
-\end{itemize}
-
-\subsubsection{The Publication Bias Test and Adjustment Dataset}
-The dataset that was ultimately tested and adjusted for publication bias comprises 2673 meta-analyses and 42789 results. ..
-
-
-% \begin{itemize}
-% \item meta.id = 136563 (4218, 1, 1, 1): ``Roberts 2010'' (3)
-% \item meta.id = 136566 (4218, 1, 3, 1): ``Roberts 2010'' (3)
-% \end{itemize}
-
-
-
-
-%which leads to a reduction of the meta-analyses that can be calculated based on the Fisher's z score by $n$ = \Sexpr{}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% LaTeX file for Chapter 03
-
-
-
-
-
-
-
-\chapter{Results} \label{ch:Results}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Small Study Effect and Excess of Significance Tests} \label{sec:publication.bias.tests}
-
-
-
-
-The meta-analyses fulfilling the criteria from chapter \ref{ch:dataset}, section \ref{sec:Processing}, are analysed with one-sided small study effects tests and excess significance tests. The direction in which bias is expected is the one on which more significant results are ($p$-value < 0.05, two-sided). The tests are applied on the original effect size measures, i.e. risk ratios, Hedges $g$ or log hazard ratios. Different tests are applied depending on the outcome type being binary or continuous and survival.\\
-Thus, multiple tests are applied on the same data. The results can then be displayed separately to compare the results from the different tests. A histogram of $p$-values will summarize the overall evidence against the null-hypothesis of no publication bias, as displayed in Figure \ref{fig:test}. \\
-``Excess significance'' denotes the excess of significant $p$-values testing method from \citet{excess.significance}, see \ref{sec:excess.significance}. For continuous and survival outcomes, the names refer to: 
-
-\begin{itemize}
-\item Egger's test, the weighted linear regression test as described in section \ref{sec:Egger}
-\item Thompson and Sharp's test, the weighted linear regression test adjusted for between-study heterogeneity, section \ref{sec:Thompson}
-\item Begg and Mazumdar's test, the rank test described in section \ref{sec:Begg}
-\end{itemize}
-
-For binary outcomes, the names refer to:
-\begin{itemize}
-\item Harbord's test, the likelihood score based test (section \ref{sec:Harbord})
-\item Peter's test, the weighted linear regression with inverse sample size as explanatory variable (study size proxy) described in section \ref{sec:Peter}
-\item R\"ucker's test, the test based on the arcsine transformation of proportions, in combination with Thompson and Sharp's regression test (section \ref{sec:Rucker})
-\item Schwarzer's test, the rank based test using the expected event counts computed with the hypergeometric distribution (section \ref{sec:Schwarzer})
-\end{itemize}
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-10-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Histogram of one-sided $p$-values for small study effect in direction of larger effect sizes. The testing method is indicated in the header, bin width is equal to 0.1. The significant proportion based on the threshold of 0.1 is displayed inside the figures.}
-\label{fig:test}
-\end{figure}
-
-%Agreement table -> Chunck 1
-The histograms in Figure \ref{fig:test} show that most distributions are clearly skewed to the right, indicating evidence for small study effects. Exceptions from this are the excess significance and Schwarzer's test, and the tests for survival outcomes. There, there is no evidence for publication bias, and the histograms are even skewed to the left (Schwarzer). But note that the sample size of survival outcomes is small ($n$ = 39). \\
-There is discrepancy between continuous and binary data test results; the evidence for small study effects in continuous data is clearly larger. Also, we see that the $I^2$ statistic of the proportion of overall between-study heterogeneity is distributed differently for the tests, with results with $I^2 = 0$ being evenly distributed in binary outcomes along the range of $p$-values, while they are more similar to the meta-analyses with larger heterogeneity for continuous outcome.\\
-In the literature, the excess significance test is advised to be used in the case of no between study heterogeneity. Since there are no small $p$-values for such meta-analyses, one must conclude that there is no excess significance in the dataset. The obvious correspondence with the heterogeneity statistic however rather suggests that the test itself is just another was to assess between study heterogeneity. Thompson test and R\"ucker's test are designed such that they take into account the between study heterogeneity when assessing small study effects. When no heterogeneity is given, Thompsons test results and Eggers test result should be equal, however, the $I^2$ statistic is computed by a more suitable estimator \citep{paulemandel} of $\tau^2$ as the estimator that Thompson and Sharp's test uses (method of moment estimator of \citet{tau.estimator}, which is more conservative by usually finding larger $\tau^2$). In the part of the histogram with $I^2 > 0$, the two tests are more reliable than the remaining tests, while the opposite is expected from simulations \citep{limitmeta} when $I^2 = 0$.\\
-
-It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects for the same meta-analyses. A simple method to check the coincidence of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between survival and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and survival outcomes results. Also, the $I^2$ statistic is included. Since no test statistic is used for excess significance tests, it is not shown here
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-11-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots outside are statistically significant by 0.1 $p$-value threshold).}
-\label{fig:test.agreement}
-\end{figure}
-
-The observed patterns on the scatterplots differ, and some small study effect test statistics do align better than others. Regression based tests as Egger and Thompsons test which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. Continuous and survival outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics .\\
-Because scatterplots and correlation coefficients can be misleading, also a Tukey mean-difference or Bland-Altman of transformed $p$-values plot is shown for four scenarios in Figure \ref{fig:mean.diff.test}:
-\begin{itemize}
-\item For Egger's and Thompson's tests, which is supposedly the most similar test and should show the least deviations and systematic errors
-\item For Egger's and excess significance tests
-\item For Harbord's and R\"ucker's tests
-\item For Harbord's and excess significance tests
-\end{itemize}
-
-This can be justified since all tests are supposed to measure the evidence for publication bias. For the plots, the $p$-values of the tests are transformed on the entire continuous scale by a logit transformation $f(x)  = \log\frac{p}{1-p}$). The mean $p$-value (($f$($p$-value no. 1) + $f$($p$-value no. 2))/2) is then displayed against the difference between the $f$($p$-value). If no systematic errors and biases exist between the measurement methods, then 
-
-\begin{itemize}
-\item the mean of the differences should be around zero (systematic error) 
-\item the points should scatter independently on the $y$-axis and no general increase or decrease with the mean of the transformed $p$-values should be visible
-\end{itemize}
-
-Although this is not formally tested, there are likely systematic errors and bias between excess significance tests, although more so for continuous tests. -- In the appendix, it can be seen that this is reproducible with the remaining small study effect tests (not there yet) -- \\
-The confidence intervals can be used as limits of agreement, which gives, after back-transformation, around 0.9 for Egger's and Thompson's test, and around 0.99 for Harbord's and R\"ucker's tests. This suggests that correspondence between the tests is not very good in general. 
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-12-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Mean - difference plots for logit transformed $p$-values. The mean of logit transformed $p$-values is displayed on the $x$-axis and the difference on the $y$-axis. Blue and red lines display the systematic error and the confidence intervals of the systematic error (limits of agreement).}
-\label{fig:mean.diff.test}
-\end{figure}
-
-The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. We expect that some proportion of the meta-analysis will only be significant for a certain test, and this is indeed observed in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results.
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul  2 18:53:37 2019
-\begin{table}[ht]
-\centering
-\begingroup\footnotesize
-\begin{tabular}{ccc}
-  \hline
-Count & Binary Outcomes & Continuous and Survival \\ 
-  \hline
-0 & 68 \% & 64.3 \% \\ 
-  1 & 13.5 \% & 10 \% \\ 
-  2 & 7.5 \% & 6.9 \% \\ 
-  3 & 5.2 \% & 16.5 \% \\ 
-  4 & 4.9 \% & 2.3 \% \\ 
-  5 & 0.8 \% & - \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Counts Number of significant test results per meta-analysis, separated
-       for outcome types. Last entry for continuous and survival outcomes is empty since one test less was 
-       applied} 
-\label{number.sig.tests}
-\end{table}
-
-
-Here, it is difficult to say if continuous and survival or binary outcome types show better agreement, since more tests are applied in the binary case, and the continuous and survival outcome type tests have in general more positive findings. Very few meta-analyses are significant, irrespective of the test used, but around 67\% of the dataset is not significant, no matter which test is used. \\
-When only looking at small study effect tests, 27.3\% of binary outcome tests and 34.4\% of survival and continuous outcome tests had at least one significant result. After applying the Bonferroni correction for multiple testing, this shrinks to 10.5\% for binary and 17.5\% for continuous and survival outcomes. \\
-% To compare significant findings for small study effect tests and excess significance tests, we limit ourselves to comparison with Harbord's or Egger's test. mean.min.bin2\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, mean.min.else2\% for continuous and survival outcomes. The numbers change to mean.min.bin2.b\% for binary outcomes and mean.min.else2.b\% for continuous and survival outcomes after applying the Bonferroni correction. \\
-% both.bin\% have significant Harbord's test result and significant excess significance test result  (both.bin.b\% with Bonferroni). Of the continuous outcomes, we have both.else\% with Egger's test and both.else.b\% with Bonferroni correction. 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Small Study Effects Adjustment}
-
-
-\subsection{Change in Effect Size after Adjustment} \label{sec:change.size}
-
-Since there's evidence for publication bias when applying small study effect and excess significance tests, we apply small study effect adjustment methods to take into account that small studies are likely overestimating the treatment effect. \\
-However, we will see that consequences of adjustment can be; 
-\begin{itemize}
-\item first, the absolute size of the treatment effect can be smaller than the classical meta-analysis treatment effect, which is expected if publication bias
-is the cause for the small study effect.
-\item secondly, the effect can be larger than before in meta-analysis. In this case, the small study effect must be not due to publication bias for large effects (``true'' publication bias), but due to bias for small effects (``null effect publication bias'' or even ``reversed effect publication bias'', sometimes refer erred to as ``Proteus phenomenon'' \citep{proteus}).
-\end{itemize}
-
-This is because, in contrast to the small study effect tests, the applied adjustment method does not pre-specify the direction in which bias is expected. \\
-To compare the effects of adjustment between meta-analyses, the outcome measures are transformed to Hedges $g$ (standardized mean differences) and Fisher's $z$-score (see section \ref{sec:transformation.effectsizes} for details). The effect of adjustments can be compared to either random or fixed effects meta-analysis estimates. \\
-Figure \ref{fig:adjustment.reg} displays the difference $\delta$ between the observed meta-analysis pooled treatment effect and the regression adjusted treatment effect, $\hat{\theta}_M - \hat{\theta}_\textrm{Adj.}$. The absolute value $|\hat{\theta}_M|$ is taken and the sign of $\hat{\theta}_\textrm{Adj.}$ is adjusted accordingly such that all effects are mirrored to one side. $\delta > 0$ is equivalent to $\hat{\theta}_\textrm{Adj} < \hat{\theta}_M$, a reduction of the original effect size. Additionally, the test statistic of heterogeneity adjusted small study effect tests (R\"ucker's and Thompson's test) is displayed with green color. Test statitics smaller $< 1$ are equivalent to no evidence for small study effect, test statistics between one and two to weak evidence, and above two they indicate evidence for small study effects. Some very large and very small differences have been omitted in the $z$-score and Hedges $g$ histograms; they are shown in Table \ref{missing.differences}. 
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-15-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Histogram of the treatment effect differences between meta-analysis and regression adjusted meta-analysis. Negative differences indicate greater adjusted effect sizes than meta-analysis effect sizes. The bins are centered at zero and binwidth is equal to 0.1. Deeper green color indicates more evidence for small study effects.}
-\label{fig:adjustment.reg}
-\end{figure}
-
-We see that more treatment effect sizes are negatively adjusted and diminished. Furthermore, we see that large adjustment is not necessarily connected with evidence for small study effects, but there is of course strong coincidence. The cases with no evidence and large adjustment indicate that between-study heterogeneity was not resolved by adjustment for small study effects. Adjustment was larger when random effects meta-analysis effect is used as reference, because there larger weights are given to small studies.\\
-Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Copas; Copas selection model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Therefore, the effect of adjustment by Copas can be seen when comparing adjusted with random effects estimates. Again, we clearly see that more effect sizes are adjusted downwards. Additionally, there is more coincidence with the small study effect test statistics and adjustment, which is as expected. \\
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-16-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Histogram of the treatment effect differences between meta-analysis and Copas adjusted meta-analysis. Negative differences indicate greater adjusted effect sizes than meta-analysis effect sizes. The bins are centered at zero and binwidth is equal to 0.1. Deeper green color indicates more evidence for small study effects.}
-\label{fig:adjustment.copas}
-\end{figure}
-
-Table \ref{adjustment.difference} shows the quantiles and means for the various differences and additional information. When Hedge's $g$ is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small (the means of Copas in the first two rows for $z$-score are caused by one very large value, see Table \ref{missing.differences}). To recall some other findings out of Table \ref{adjustment.difference}: 5\% or 90 cases have their $z$-score reduced by more than 0.15 by regression adjustment (and 5\% or 90 increased by -0.13, fixed effects reference). Also, Hedges $g$ is reduced by 0.39 compared to fixed effects estimates in 5\% or 90 meta-analyses (or increased by 0.24). 
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul  2 18:53:53 2019
-\begin{table}[ht]
-\centering
-\begingroup\scriptsize
-\begin{tabular}{lcccccccccr}
-  \hline
- & 5\% & 25\% & 50\% & 75\% & 95\% & mean & = 0 (\%) & $>$= 0 (\%) & $>$ 0 (\%) & No adj. est. (\%) \\ 
-  \hline
-z: Fixed - Copas & -0.05 & -0.01 & -0.00 & 0.01 & 0.05 & -271.73 & 4.76 & 48.67 & 43.91 & 71.54 \\ 
-  z: Random - Copas & -0.00 & 0.00 & 0.00 & 0.00 & 0.04 & -263.62 & 71.65 & 89.42 & 17.77 & 71.54 \\ 
-  z: Fixed - Regression & -0.13 & -0.03 & 0.01 & 0.05 & 0.14 & 0.01 & 0.00 & 52.44 & 52.44 & 0.17 \\ 
-  z: Random - Regression & -0.15 & -0.03 & 0.02 & 0.07 & 0.18 & 0.02 & 0.00 & 57.64 & 57.64 & 0.17 \\ 
-  g: Fixed - Copas & -0.05 & -0.01 & 0.00 & 0.01 & 0.09 & 0.02 & 22.76 & 59.14 & 36.38 & 60.96 \\ 
-  g: Random - Copas & -0.00 & 0.00 & 0.00 & 0.00 & 0.14 & 0.03 & 63.29 & 87.49 & 24.20 & 60.96 \\ 
-  g: Fixed - Regression & -0.23 & -0.04 & 0.03 & 0.13 & 0.38 & 0.05 & 0.00 & 61.96 & 61.96 & 0.00 \\ 
-  g: Random - Regression & -0.24 & -0.03 & 0.05 & 0.16 & 0.42 & 0.06 & 0.00 & 64.06 & 64.06 & 0.00 \\ 
-  Log h.r.: Fixed - Copas & -0.02 & 0.00 & 0.00 & 0.00 & 0.02 & -0.00 & 46.15 & 35.90 & 82.05 & 56.41 \\ 
-  Log h.r.: Random - Copas & -0.02 & 0.00 & 0.00 & 0.00 & 0.00 & -0.01 & 61.54 & 17.95 & 79.49 & 56.41 \\ 
-  Log h.r.: Fixed - Regression & -0.20 & -0.13 & -0.06 & 0.02 & 0.14 & -0.05 & 0.00 & 33.33 & 33.33 & 0.00 \\ 
-  Log h.r.: Random - Regression & -0.22 & -0.14 & -0.07 & 0.03 & 0.14 & -0.06 & 0.00 & 33.33 & 33.33 & 0.00 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Quantiles and Means of the differences between meta-analysis pooled treatment effects and small study adjusted treatment effects. The column with the names ``> 0'' give the percentages of estimates larger than zero or larger or equal zero. The column ``No adj. est.'' gives the percentage of missing estimates due to non-significant publication bias test (for Copas) and computational errors. The row names indicate which outcome measure, meta-analysis method and adjustment method is used. Abbreviations are used for z-score (= z) and Hedges g (= g).} 
-\label{adjustment.difference}
-\end{table}
-
-
-
-\subsection{Change in Evidence for Treatment Effects} \label{sec:change.evidence}
-Adjustment for small study effects in meta-analysis will not only provide new effect sizes, but also standard errors thereof. Thus, also the evidence for efficacy of a treatment can be obtained, which is usually summarized in a suitable test statistic or $p$-value. It is of interest if and how the evidence for treatment effects changes if adjusted for publication bias.\\
-The Wald test statistics $p$-value for fixed and random effects meta-analyses and Copas and regression adjusted treatment effects have been calculated. They are shown in Figure \ref{fig:adjustment.stat} for meta-analysis based on $z$-score, Hedges $g$ and log hazard ratios. \\
-It can be seen that evidence for a treatment effect decreases after adjusting for publication bias. It does so more for Hedge's $g$ compared to $z$-scores, and for regression adjustment compared to Copas selection model. 
-%Also, the evidence decreases for random effects meta-analyses compared to fixed effects meta-analyses. 
-In the case of log-hazard ratio adjustment, the adjustment has only negligible impact on the $p$-values. \\
-Also, Copas selection method has a very small impact on the evidence compared to random effects meta-analysis, at least using $z$-scores (again, we should rely on comparisons to random effects meta-analysis to evaluate Copas method). \\ 
-% Interestingly, in contrast to the small study effect tests, there seems to be no large difference between adjusted continuous and binary meta-analysis test statistics --appendix--
-%Figures \ref{fig:adjustment.stat.z} for the adjusted $z$-scores, \ref{fig:adjustment.stat.smd} for the adjusted Hedges $g$ and Cohen's d and \ref{fig:adjustment.stat.log.hazard.ratio} for the adjusted log hazard ratios.
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-18-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Histogram of the Wald test-statistic $p$-value of meta-analysis and adjusted pooled treatment effect, based on different treatment effect measures. The method is indicated in the header, bin width is set to 0.05. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
-\label{fig:adjustment.stat}
-\end{figure}
-
-The Copas selection model also gives an estimate of the number of missing studies. It finds that 0 are missing, which corresponds to 0\% from all \ensuremath{2.8945\times 10^{4}} analysed studies. Figure \ref{fig:copas.missing} shows a histogram of the overall fraction of missing studies. Note that we have excluded 0 out of 1806, for which no Copas selection model estimate, but a random effects estimate was retained because the algorithm initially found no evidence for small study effects.
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-19-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Histogram of the fraction of missing studies from the total number of studies in a meta-analyses (only data shown where Copas estimate was obtained, thus \\$n =$ 0)}
-\label{fig:copas.missing}
-\end{figure}
-
-We can see that in some occasions, the method finds more than half of all studies are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}. The discrepancy between mean and median may indicate that the estimate of 0\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie 0 meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for 0, more than 30\% of missing studies.
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul  2 18:53:54 2019
-\begin{table}[ht]
-\centering
-\begingroup\footnotesize
-\begin{tabular}{lrrrrrrr}
-  \hline
- & = 0 & 5\% & 25\% & 50\% & 75\% & 95\% & mean \\ 
-  \hline
-Missing fraction & 323 & 0 & 0 & 0.1 & 0.3 & 1.0 & 0.2 \\ 
-  Missing study number & 323 & 0 & 0 & 1.4 & 5.2 & 17.9 & 4.2 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Fraction of missing studies and estimates of missing studies with their zero counts (``= 0''), quantiles and means.} 
-\label{copas.missing}
-\end{table}
-
-
-
-
-
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul  2 18:53:54 2019
-\begin{table}[ht]
-\centering
-\begingroup\tiny
-\begin{tabular}{lcccrrrrrrrr}
-  \hline
-meta.id & file.nr & comparison.nr & subgroup.nr & z fixed & z random & z Copas & z regression & g fixed & g random & g Copas & g regression \\ 
-  \hline
-2009 & 2009 & 1 & 1 & 0.31 & 0.36 & 0.31 & 0.43 & 0.70 & 0.70 & 0.70 & 2.48 \\ 
-  2068 & 2068 & 2 & 0 & 0.29 & 0.35 & 0.29 & 0.42 & 0.68 & 0.68 & 0.68 & 2.57 \\ 
-  52528 & 52528 & 1 & 0 & -0.75 & -0.69 & -0.50 & -0.26 & -1.19 & -1.53 & 0.18 & -0.52 \\ 
-  60546 & 60546 & 1 & 1 & 0.17 & 0.24 & 0.17 & 0.34 & 0.53 & 0.53 & 0.53 & 1.65 \\ 
-  70389 & 70389 & 1 & 1 & -0.08 & -0.07 & 15.62 & -0.04 & -0.13 & -0.13 & -0.13 & -0.05 \\ 
-  73769 & 73769 & 3 & 1 & -0.09 & 0.00 & 7148.96 & 0.02 & -0.01 & -0.12 & 0.01 & 0.04 \\ 
-  79113 & 79113 & 2 & 0 & -0.38 & -0.38 & -0.38 & -0.48 & -0.93 & -0.93 & -2.00 & -3.47 \\ 
-  90138 & 90138 & 3 & 0 & 0.30 & 0.80 & 0.30 & 0.53 & 0.72 & 0.71 & 0.71 & 2.16 \\ 
-  97356 & 97356 & 2 & 0 & -0.06 & -0.33 & -0.06 & -0.11 & -0.42 & -0.35 & -1.58 & -1.82 \\ 
-  98030 & 98030 & 1 & 0 & -0.09 & -0.07 & -0.09 & -0.04 & -0.41 & -0.41 & -1.50 & -2.79 \\ 
-  101436 & 101436 & 1 & 5 & 0.54 & 0.62 & 0.80 & 0.90 & 1.21 & 1.21 & 1.21 & 2.74 \\ 
-  118121 & 118121 & 4 & 1 & 0.25 & 0.23 & 47.73 & -0.03 & 0.44 & 0.44 & 0.44 & 0.14 \\ 
-  119537 & 119537 & 3 & 0 & 0.07 & 0.15 & 0.07 & 0.29 & 0.50 & 0.50 & 1.43 & 1.81 \\ 
-  119818 & 119818 & 3 & 3 & -0.25 & -0.25 & -0.20 & -0.04 & -0.50 & -0.54 & 28.44 & -0.03 \\ 
-  146301 & 146301 & 1 & 0 & 0.14 & 0.26 & 472149.03 & 0.28 & 0.56 & 0.37 & 0.60 & 0.52 \\ 
-   \hline
-\end{tabular}
-\endgroup
-\caption{Missing meta-analysis pooled treatment effect and adjusted treatment effects. Abbreviations are used for z-score (= z) and Hedges g (= g).} 
-\label{missing.differences}
-\end{table}
-
-
-
-
-\subsection{Comparison of adjustment methods}
-Regression adjusted estimates are compared to the estimates of Copas selection model if these are not equal to random effects meta-analysis. A Tukey mean difference plot can serve to reveal systematic differences and biases between the two measurement methods. We will compare estimates based on all three outcome measures, i.e. original measure, $z$-score and Hedges $g$ in Figure \ref{fig:adjustment.mean.diff}. Note that the 39 survival outcome data is not included when using $z$-score and Hedges $g$.
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
-
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-22-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Mean - difference plots for publication bias adjustment methods. The mean of the adjusted treatment effects is displayed on the $x$-axis and the difference on the $y$-axis. Blue and red lines display the systematic error and the confidence intervals of the systematic error (limits of agreement). Two values have been omitted in the middle plot for Hedges $g$ and one for $z$-score (see Table \ref{missing.differences}).}
-\label{fig:adjustment.mean.diff}
-\end{figure}
-
-No formal tests are provided, but the at least there seems to be no clear bias or systematic error. The limits of agreement in Figure \ref{fig:adjustment.mean.diff} are large. We conclude thus that the impact of regression adjustment on the effect sizes is in general not substantially larger than the impact of Copas selection model in the subset of data where the estimate of the Copas selection model is not equal to a random effects estimate.  \\
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% LaTeX file for Chapter 04
-
-
-\chapter{Methods} 
+\chapter{Methods} \label{ch:methods}
 \section{Introduction and Notation}
 The analysis has already been said to be restricted on clinical or health care interventions. The interventions are restricted to comparisons of two treatment arms by some measure of sanity or worsening of health. The difference in this measure between the groups is referred to as the treatment effect. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, Cohen's $d$ or Hedges $g$, Fisher's z score or Pearsons correlation coefficient. \\
 Let us consider a meta-analysis with $n$ study treatment effects ($n > 1$, but typically small). A study is indexed by $i$, and it's treatment effect by  $\theta_i$. The observed treatment effect is $\hat{\theta}_i$. The pooled treatment effect of a meta-analysis will be denoted as $\theta_M$, and consequently, the observed pooled treatment effect as $\hat{\theta}_M$. Furthermore, each treatment effect is typically measured with some standard error $\se_i$ and an estimate of $\se_i$ is denoted as $\hat{\se}_i$. The $\hat{}$ sign thus indicates if it is an estimate.\\
@@ -1049,7 +310,7 @@ The estimation of $\tau^2$ is accompanied by uncertainty. A common procedure is 
 An advantage of the $\tau^2$ is that it is directly linked to the variability in the data. Additionally, one can use the $I^2$ statistic to see what portion the between study variance has of the overall variance. It is computed as
 
 \begin{align}
-I^2 &= \max\big(0, 1 - \frac{n-1}{Q}\big) \nonumber%\label{I2.proportion}
+I^2 &= \max\Big(0, 1 - \frac{n-1}{Q}\Big) \nonumber%\label{I2.proportion}
 \end{align}
 
 %Large values for $\hat{I}^2$ are of great importance when analyzing \eg small study effects. \\
@@ -1858,6 +1119,745 @@ s_z^2 &= \frac{1}{n-3}
 % \begin{align} \label{generalized linear model}
 % \mathbf{Y}{_{ij}}|U{_i},\epsilon{_{ij}} = (1,x{_i}^\top)\beta + U{_i} + \epsilon{_{ij}}
 % \end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% LaTeX file for Chapter 03
+
+
+
+
+
+
+
+
+
+
+\chapter{The Cochrane Dataset} \label{ch:dataset}
+
+
+\section{Cochrane Systematic Reviews}
+The Cochrane Group has specialized on systematic reviews in clinical science. Certain knowledge of standards and principles of the Cochrane Group may help to assess the quality and the properties of the dataset. The following information stems from the Cochrane Handbook for Systematic Reviews \citep{cochrane.handbook}. \\
+The definition of a systematic review is that it ``attempts to collate all empirical evidence that fits pre-specified eligibility criteria in order to answer a specific research question.'' Thus, the ``key properties of a review are'':
+
+\begin{itemize}
+\item``a clearly stated set of objectives with pre-defined eligibility criteria for studies''
+\item ``an explicit, reproducible methodology''
+\item ``a systematic search that attempts to identify all studies that would meet the eligibility criteria''
+\item ``an assessment of the validity of the findings of the included studies, for example through the assessment of risk of bias''
+\end{itemize}
+
+At the end of a systematic review, ``a systematic presentation, and synthesis, of the characteristics and findings of the included studies'' is done. \\
+53 Cochrane Review Groups prepare and maintain the reviews within specific areas of health care. A group consists of ``researchers, healthcare professionals and people using healthcare services (consumers)''. \\
+The groups are supported by Method Groups, Centers and Fields. The Cochrane Method Groups aim to discuss and consult the groups in methodological questions concerning review preparation. The Centers play a main role in training and support of the Groups. The Fields are responsible for broad medical research areas and follow priorities in those areas by advice and control of the groups. \\
+The first step in a review is writing a protocol, specifying the research question, the methods to be used in literature search and analysis and the eligibility criteria of the study. Changes in protocols are possible but have to be documented and the protocol is published in advance of the publication of the full review. The choices of methodology as well as the changes should not be made ``on the basis of how they affect the outcome of the research study''. \\
+In order to avoid potential conflicts of interests, there is a code of conduct that all entities of the Cochrane Organization have to agree on: conflicts of interest must be disclosed and possibly be forwarded to the Cochrane Center, and participation of review authors in the studies used have to be acknowledged. Additionally, a Steering Group publishes a report of potential conflicts of interests based on information about external funding of Cochrane Groups. \\
+In order for keeping the reviews up-to-date, they are revised in a two-year circle with exceptions. In addition to inclusion of new evidence in a field, the revision and maintenance process may as well includes change in analysis methods. This can reflect some advance in clinical science as for example new information about important subgroups, as well as new methods for conducting a Cochrane Review. However, there are no clear guidelines and the Cochrane Groups are free in the rate and extent of up-dating their reviews.
+
+\subsection{Methods for Cochrane Reviews}
+A research question defines the following points: ``the types of population (participants), types of interventions (and comparisons), and the types of outcomes that are of interest''. From the research question, usually the eligibility criteria follow. Usually, outcomes are not part of eligibility criteria, except for special cases such as adverse effect reviews. \\
+The type of study is an important eligibility criterium. The Cochrane Collaboration focuses ``primarily on randomized controlled trials'', and also, the methods of study identification in literature search are focused on randomized trials. Furthermore, study characteristics such as blinding of study operators with respect to treatment and cluster-randomizing might be additional eligibility criteria which have to be chosen by the review authors. \\
+After having specified the eligibility criteria, studies have to be collected. The central idea of systematic reviews, and also meta-analyses, is that the collected studies are a random sample of a population of studies, i.e. that they are representative and can be used to assess population properties. Therefore, the search process is crucial, as a selective search result may impose bias on the sample of studies available, making it a non-random sample. For this purpose, the Cochrane Groups are advised to go beyond MEDLINE !!cite!!, because a search restricted to it has been shown to deliver only 30\% to 80\% of available studies. ``Time and budget restraints require the review author to balance the thoroughness of the search with efficiency in use of time and funds and the best way of achieving this balance is to be aware of, and try to minimize, the biases such as publication bias and language bias that can result from restricting searches in different ways.'' It is important to note that not only studies, but also study reports are occasionally used in the reviews, as they may provide useful information. \\
+There are different sources that are being used to search for studies. 
+\begin{itemize}
+\item The Cochrane Central Register of Controlled Trials is a source of reports of controlled trials. ``As of January 2008 (Issue 1, 2008), CENTRAL contains nearly 530,000 citations to reports of trials and other studies potentially eligible for inclusion in Cochrane reviews, of which 310,000 trial reports are from MEDLINE, 50,000 additional trial reports are from EMBASE and the remaining 170,000 are from other sources such as other databases and handsearching.'' It includes citations published in many languages, citations only available in conference proceedings, citations from trials registers and trials results registers.
+\item MEDLINE. MEDLINE includes over 16 million references to journal articles. 5,200 journals publishing in 27 languages are indexed for MEDLINE. PubMed gives access to a free version of MEDLINE with up-to-date citations. NLM gateway such as the Health Services Research Project, Meeting Abstracts and TOXLINE Subset for toxicology citations allows for search in both databases together with additional data from the US National Library of Medicine.
+\item EMBASE. 4,800 Journals publishing in 30 languages are indexed to EMBASE, which includes more than 11 million records from 1974 onward. EMBASE.com also includes 7 million unique records from MEDLINE (1966 up to date) together with its own records. Additionally, EMBASE Classic allows access to digitized records from 1947 to 1973. EMBASE and MEDLINE each have around 1,800 journals not indexed in the other database.
+\item Regional or national and subject specific databases can additionally be consulted and often provide important information. Financial considerations may limit the use of such databases.
+\item General search engines such as Google Scholar, Intute and Turning Research into Practice (TRIP) database can be used.
+\item Citation Indexes. The database lists articles published in around 6,000 Journals with articles in which they have been cited and is available online as SciSearch. This form of search is known as cited reference searching.
+\item Dissertation sources. Dissertations are often listed in MEDLINE or EMBASE but one is advised to also search in specific dissertation sources.
+\item Grey Literature Databases. Approximately 10\% of the results in the Cochrane Database stems from conference abstracts and other grey literature. The Institute for Scientific and Technical Information in France provides access to entries of the previously closed System for Information on Grey Literature database of the European Association for Grey Literature Exploitation). Another source is the Healthcare Management Information Consortium (HMIC) database containing records from the Library and Information Services department of the Department of Health (DH) in England and the King's Fund Information and Library Service. The National Technical Information Service (NTIS) gives access to the results of US and non-US government-sponsored research, as well as technical report for most published results. References from newsletters, magazines and technical and annual reports in behavioral science, psychology and health are provided in the PsycEXTRA database which is linked to PsycINFO database.
+\end{itemize}
+
+
+\subsection{Structure and Content}
+The dataset consists of 5016 systematic reviews from the Cochrane Library with 52995 studies and 463820 results. A result compares a clinical or medical intervention or treatments to a control. Each study provides (multiple) results of clinical interventions. \\
+In Table \ref{barbiturate.row}, two results from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, further specifications are provided by the variables in the columns. \\
+The comparison variable specifies \textit{what kind} of treatments or interventions are compared, the outcome variable \textit{how} it is compared, and the subgroup variable (not indicated in table) if the result belongs to a certain subgroup. Here, the result is of a binary type, so the counts of events in the barbiturate treatment group and the total number of participants are given in columns ``Events'' and ``Total'' and the number of events in the control group ``Events\_c'' and participants ``Total\_c''. A event is here death at the end of follow up.
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Mon Jul  1 17:02:14 2019
+\begin{table}[ht]
+\centering
+\begingroup\scriptsize
+\begin{tabular}{lllrrrr}
+  \hline
+Study & Comparison & Outcome & Events & Total & Events\_c & Total\_c \\ 
+  \hline
+Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up & 11 & 41 & 11 & 41 \\ 
+  Ward 1985 & Barbiturate vs no barbiturate & Death at the end of follow-up & 14 & 27 & 13 & 26 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Example of two results as given in the dataset. Events denotes the count of events in the treatment group while Events c the count of events in the group compared to. Further descriptive variables have been ommitted} 
+\label{barbiturate.row}
+\end{table}
+
+
+A complete listing of the variables of a result is given in Table \ref{variable}. They can roughly be separated into variables that \textit{specify the review} in which the result is contained and variables that \textit{specify the result} itself (separated by a horizontal line in Table \ref{variable}):
+
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{l l}
+      \textbf{Variable} & \textbf{Description}\\
+      \hline
+      \texttt{file.nr} & The number of the file from which the review data has been \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
+      \texttt{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
+      \texttt{file.index} & Internal index of the file in the Cochrane library.\\
+      \texttt{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
+      %\multicolumn{2}{c}{textbf{Study level variables}}\\ 
+      \hline
+      \texttt{study.name} & Name of the study to which the result belongs\\
+      \texttt{study.year} & Year in which the study was published\\
+      \hline
+      \texttt{comparison.name/.nr} & Specification of the interventions compared in the study  \\ &and a unique number for the comparison\\
+      \texttt{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome\\
+      \texttt{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ &unique number for the subgroup\\
+      \texttt{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
+      \texttt{effect} & Measure of the effect given in the quantity denoted by \\ &\texttt{outcome measure}.\\
+      \texttt{se} & Standard error of the measure of the effect,\\
+      \texttt{events1/events2} & The counts of patients with an outcome \textit{if}\\ &measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
+      \texttt{total1/total2} & Number of patients in groups.\\
+      \texttt{mean1/mean2} & Mean of patient measurements \textit{if} outcome is continuous.\\
+      \texttt{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
+    \end{tabular}
+  \caption{Dataset variable names and descriptions  \label{variable}}
+
+  \end{center}
+\end{table}
+
+Results are part of studies that are again part of a (systematic) review. This structure of a review is shown in Figure \ref{review}. 
+
+\begin{figure}
+\tikzstyle{every node}=[draw=black,thick,anchor=west]
+\tikzstyle{selected}=[draw=red,fill=red!30]
+\tikzstyle{optional}=[dashed,fill=gray!50]
+\begin{tikzpicture}
+[grow = right, anchor = west, 
+  growth parent anchor=east, % added code
+  parent anchor=east]
+  \node {Review} [edge from parent fork right]
+    child { node {Comparison 2}
+      child { node {Outcome 2}}
+      child { node {Outcome 1}
+        child { node {Subgroup 2}}
+        child { node {Subgroup 1}
+          child  { node {Result 2}}
+          child  { node {Result 1}}
+          }}
+    }
+    child [missing] {}		
+    child { node {Comparison 1  }};
+\end{tikzpicture}
+\caption{Structure of a hypothetical review with two different comparisons}
+\label{review.structure}
+\end{figure}
+
+\vspace{0mm}
+The structure of a review will now be outlined based on an example of the dataset. Let us consider the previously mentioned barbiturate and head injury review. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates''. \\
+%Since there are arguments for and against use of barbiturates, the authors of the review did a comprehensive literature search and collected all available study findings. 
+The review comprises five studies in total. Three of them compared barbiturate to placebo, one compared barbiturate to Mannitol and one Pentobarbital to Thiopental. The studies have different outcomes, for example, death or death and severe disability at follow up, but also dropout counts or adverse effects (secondary outcomes). 
+We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. Thus, it is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Mon Jul  1 17:02:14 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{lll}
+  \hline
+Study & Comparison & Outcome \\ 
+  \hline
+Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\ 
+  Bohn 1989 & Barbiturate vs no barbiturate & Death or severe disability at the end of follow-up \\ 
+  Eisenberg 1988 & Barbiturate vs no barbiturate & Death at the end of follow-up \\ 
+  Eisenberg 1988 & Barbiturate vs no barbiturate & Uncontrolled ICP during treatment \\ 
+  Eisenberg 1988 & Barbiturate vs no barbiturate & Hypotension during treatment \\ 
+  Perez-Barcena 2008 & Pentobarbital vs Thiopental & Death at the end of follow-up (6 months) \\ 
+  Perez-Barcena 2008 & Pentobarbital vs Thiopental & Death or severe disability at the end of follow-up (6 months) \\ 
+  Perez-Barcena 2008 & Pentobarbital vs Thiopental & Uncontrolled ICP during treatment \\ 
+  Perez-Barcena 2008 & Pentobarbital vs Thiopental & Hypotension during treatment \\ 
+  Schwartz 1984 & Barbiturate vs Mannitol & Death at the end of follow-up (1 year) \\ 
+  Schwartz 1984 & Barbiturate vs Mannitol & Death at the end of follow-up (1 year) \\ 
+  Schwartz 1984 & Barbiturate vs Mannitol & Uncontrolled ICP during treatment \\ 
+  Ward 1985 & Barbiturate vs no barbiturate & Death at the end of follow-up \\ 
+  Ward 1985 & Barbiturate vs no barbiturate & Death or severe disability at the end of follow-up \\ 
+  Ward 1985 & Barbiturate vs no barbiturate & Mean ICP during treatment \\ 
+  Ward 1985 & Barbiturate vs no barbiturate & Mean arterial pressure during treatment \\ 
+  Ward 1985 & Barbiturate vs no barbiturate & Hypotension during treatment \\ 
+  Ward 1985 & Barbiturate vs no barbiturate & Mean body temperature during treatment \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Barbiturate and head injury review. In the columns, study names, comparison and outcome measure of the results are given} 
+\label{barbiturates}
+\end{table}
+
+
+Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years. For continuous outcomes, the cases have been counted were no treatment effect and standard error is available: neither mean values and standard deviations, nor mean differences and standard error. Also Study years before 1920 and after 2019 are declared as missing, as well as sample sizes below zero.
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Mon Jul  1 17:02:14 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{lr}
+  \hline
+  \hline
+Missing mean values and mean differences & 984 \\ 
+  Missing standard deviations and standard errors & 1300 \\ 
+  Missing sample sizes & 12173 \\ 
+  Missing study year & 44649 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Number of missing variables and measurements in the dataset} 
+\label{missing}
+\end{table}
+
+
+The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = 1982, 95\% quantile = 2013,). The median of the publication years is 2003, the mean 2001 and the quartiles are 1996 and 2008. Only a handful ($n = 18$) have been published in 2018, none in 2019. \\
+%No information is available concerning unpublished results and studies.
+The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.) abundances are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 30 \% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (> 65\%).
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Mon Jul  1 17:02:14 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{lrr}
+  \hline
+Outcome measure & n & Percentage \\ 
+  \hline
+Risk Ratio & 232583 & 50.1\% \\ 
+  Mean Difference & 102315 & 22.1\% \\ 
+  Odds Ratio & 49372 & 10.6\% \\ 
+  Std. Mean Difference & 40535 & 8.7\% \\ 
+  Peto Odds Ratio & 19122 & 4.1\% \\ 
+  Hazard Ratio & 6566 & 1.4\% \\ 
+  Risk Difference & 6234 & 1.3\% \\ 
+  Rate Ratio & 2283 & 0.5\% \\ 
+  other & 4810 & 1\% \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Frequencies of outcome measures among results. n denotes the total number 
+             of results with the outcome measure and percentage the percentage of the outcome measure,} 
+\label{outcome.measure.frequencies}
+\end{table}
+
+
+
+The sample sizes among results vary to some extent. There are 5\% of treatment group sample sizes that are smaller than 8, the 5\% quantile and 95\% smaller than 551. The first quartile is 22, the median 48, the mean 302.03 and the third quartile 119. The large difference between median and mean is caused by very large groups with over 2,000,000 participants. Analogously, the quantiles of the total sample size are: 5\% quantile = 15, first quartile = 44, median = 94, third quartile = 229 and 95\% = 1044. The mean is 617.81. \\
+The mean and median number of results per review are 12.42 and 7. There are 417 reviews with five or fewer results, and the quartiles are 16 and 102. Similarly, the number of reviews with a maximum of two studies included is 836, the mean study number is 12.42, the median 7 and the interquartile range 4 and 15 and the 95\% quantile 40. The discrepancy between mean and median is due to large reviews with a high number of studies and results, most extreme in \citet{largest.review} which is a systematic review about antibiotic prophylaxis for preventing infection after cesarean section, with 95 studies and 1497 results in total.\\
+For results to be suitable for usage in meta-analysis, they have to be identical with respect to comparison and outcome. More specifically, the studies in the dataset that have the same comparison, outcome and subgroup can be pooled in a meta-analysis, since their research subject and experimental setup can be considered sufficiently homogeneous. Importantly, this distinction is also used by the Cochrane Organization itself, i.e. the meta-analyses are identical to the meta-analyses done in the systematic reviews.\\ %Another approach that is not made here is to analyze all subgroups together, which is possible if enough studies are given.
+The dataset is divided in meta-analyses with identical experimental setup. The size of a meta-analysis denotes how many results are included in a group.
+Table \ref{repr.groups} shows the number of meta-analysis with size $\geq n$ results. Practically, this number of meta analyses can be performed, with each having at least $n$ results.
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Mon Jul  1 17:02:14 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{lrr}
+  \hline
+n & Number of groups & Cumulative sum of groups \\ 
+  \hline
+1 & 102344 & 186300 \\ 
+  2 & 31686 & 83956 \\ 
+  3 & 16072 & 52270 \\ 
+  4 & 9628 & 36198 \\ 
+  5 & 6444 & 26570 \\ 
+  6 & 4230 & 20126 \\ 
+  7 & 2961 & 15896 \\ 
+  8 & 2114 & 12935 \\ 
+  9 & 1592 & 10821 \\ 
+  10 & 1238 & 9229 \\ 
+  11 & 921 & 7991 \\ 
+  12 & 702 & 7070 \\ 
+  13 & 585 & 6368 \\ 
+  14 & 455 & 5783 \\ 
+  15 & 5328 & 5328 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Cumulative number of groups with number of reproduction trials $\geq$ n} 
+\label{repr.groups}
+\end{table}
+
+
+\section{Data Tidying and Processing} \label{sec:Processing}
+The original dataset was provided by .. (some words how the dataset was obtained and processed by C.R.). \\
+The information in the previous pages are from a tidied and processed version of this dataset. \\
+
+\subsection{Modification of old variables}
+In some cases, reasonable assumptions led to small changes in the originally provided variables:
+\begin{itemize}
+\item \texttt{study.year}: It was assumed that studies that are declared to have been published before 1920 ($n$ = 30664) are mis-specified, as well as after 2019 ($n$ = 384), so these have been set to NA. 
+\item \texttt{mean1} and \texttt{mean2}: When both \texttt{mean1} and \texttt{mean2} are equal to zero or NA, \texttt{outcome.measure.new} is equal to \texttt{(Std.) Mean Difference}, but a mean difference is given in \texttt{effect}, \texttt{mean1} is set equal to \texttt{effect} ($n$ = 1593).
+\end{itemize}
+
+
+\subsection{Newly Introduced Variables}
+Some new variables are added to the obtained dataset:
+\begin{itemize}
+\item \texttt{outcome.measure.new}: Outcome measure specifications given in \texttt{outcome.measure} were standardized whenever they were supposed to denote the same outcome measure. An example would be the formally different notations for odds ratios: ``Odds Ratio'', ``odds ratio'', ``OR'', which were all denoted as ``Odds Ratio''.
+\item \texttt{outcome.type}: A simplification of \texttt{outcome.measure.new}. The outcome.type ``bin'' indicates if \texttt{outcome.measure.new} is either one of ``Risk Ratio'', ''Odds Ratio'', ``Risk difference'' or ``Peto Odds Ratio''. ``cont'' is equivalent to \texttt{outcome.measure.new} equal to "Std. Mean Difference'' or ``Mean Difference''. ``surv'' equal to ``Hazard Ratio'' and ``rate'' equal to ''Rate Ratio'' or ``Rate Difference''.
+\item \texttt{lrr} and \texttt{var.lrr}: log risk ratio and variance of the log risk ratio for outcome.type ``bin''.
+\item \texttt{smd} and \texttt{var.smd}: Hedges $g$ and the variance of Hedges $g$ for outcome.type ``cont''. If not computable from \texttt{mean1}, \texttt{mean2}, \texttt{sd1} and \texttt{sd2}, and \texttt{outcome.measure.new} was equal to ``Std. Mean Difference'', it was set equal to \texttt{effect} (and \texttt{var.smd} equal to \texttt{se} squared, $n$ =  6938).
+\item \texttt{smd.ordl} and \texttt{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for outcome.type ``bin''.
+\item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for outcome.type ``bin'') or $g$ (for outcome.type ``cont'') to $r$ transformation.
+\item \texttt{z} and \texttt{var.z}: Fisher's z score and it's variance obtained from the Pearson correlation $r$ to $z$ transformation.
+\item \texttt{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for outcome.type ``cont'' or Wald test for outcome.type ``bin''.
+\item \texttt{events1c} and \texttt{events2c}: Correction of \texttt{events1} and \texttt{events2} zero event counts or event counts = patient number. When no events occurred, 0.5 was added, and when all patients experienced the event, 0.5 was subtracted. When one of \texttt{events} had zero counts while the other had maximum counts, no adjustment occurred.
+\item \texttt{meta.id}: Meta-analysis ID variable to uniquely identify any potential meta-analysis in the dataset. Consistent to what has been discussed before, all results that share a common comparison, outcome and subgroup (optional, subgroups not given in any case) may be combined in a meta-analysis.
+% \item \texttt{}:
+% \item \texttt{}:
+\end{itemize}
+
+
+\subsection{Eligibility criteria for Publication Bias Test and Adjustment} 
+Initially, the analysis is restricted to binary, continuous and survival outcomes. More formally:
+\begin{itemize}
+\item \textbf{Outcome measures}: The analysis has been restricted on the following outcome measures (from \texttt{outcome.measure.new}): ``Odds Ratio'', ``Risk Ratio'', ``Risk difference'', ``Peto Odds Ratio'', ``Std. Mean Difference'', ``Mean Difference'', ``Hazard Ratio'' 
+($n$ = 456727 out of a total of 463820 results)
+\end{itemize}
+
+The suggestions of criteria for eligibility for publication bias tests of \citet{Ioannidis2007} have largely been followed:
+\begin{itemize}
+\item \textbf{Sample size}: A meta-analysis is comprised of at least ten studies ($n$ = 5797 remaining). 
+\item \textbf{Heterogeneity}: The $I^2$ statistic of a given meta-analysis is smaller than 0.5, thus, the proportion of between study variance of the overall variance is smaller than 0.5 ($n$ = 4038 remaining).
+\item \textbf{Study size}: The ratio between largest variance of an estimate and smallest variance of an estimate is larger than four ($n$ = 4006 remaining).
+\item \textbf{Significance}: At least one treatment effect has a $p$-value below the significance threshold 0.05 ($n$ = 2673 remaining)
+\end{itemize}
+
+After having excluded meta-analyses with less than ten studies, additional criteria for excluding inconvenient meta-analyses are:
+\begin{itemize}
+\item \textbf{Sensitivity Analyses}: When the same results are used multiple times for different meta-analyses, only one is retained. More precisely, if a study hat the same \texttt{study.name} and same \texttt{effect}, it was considered a duplicate, and the smaller meta-analysis of the two was excluded. The intention is to exclude sensitivity analyses which are operated on subsets of the available results.
+\item \textbf{Zero events}: In the case of binary outcomes, meta-analyses with zero events in any study and any group are excluded ($n$ = 141 out of meta-analyses with at least ten studies).
+\item \textbf{Missing means and sd's}: In the case of continuous outcomes, meta-analyses with means and sd's in any group being equal to zero are excluded ($n$ = 306 out of meta-analyses with at least ten studies).
+\item \textbf{Single patient data}: Meta-analyses that are comprised of single patient data are excluded ($n$ = 8 out of meta-analyses with at least ten studies)
+\end{itemize}
+
+--Make Flowchart--
+
+\subsubsection{Exclusions due to Computational Errors}
+In exceptional cases, the applied meta-analysis methods and publication bias tests and adjustment algorithms failed due to various reasons. Here, those cases are listed and if known, the reasons why computation failed are given.\\
+\textbf{Binary Outcomes}: Out of the meta-analyses that are of \texttt{outcome.type} bin, and have at least ten studies, two studies hat to be excluded:
+\begin{itemize}
+\item meta.id = 62301 (file.nr = 1531, comparison.nr = 8, outcome.nr = 6, subgroup.nr = 1):
+%A subgroup analysis for women with increased adverse pregnancy outcomes, where the effect of vitamin C supplements is tested on pre-eclampsia: 
+Largest study (se = 0.1) has risk ratio 1 and smallest study (se = 1) risk ratio 0.07. Copas publication bias adjustment methods has likelihood optimization issues.
+\item meta.id = 94519 (2519, 14, 1, 2): Largest study (se = 0.05) has risk ratio 0.9 and smallest study (se = 0.4) risk ratio 3. Again Copas publication bias adjustment methods has likelihood optimization issues.
+\end{itemize}
+
+There were no issues with \texttt{outcome.type} ``cont'' and ``surv''. For the subsequent information, it is important to know that meta-analyses are only repeated with Hedges $g$, Pearson correlation coefficient and Fisher's Z-scores, if the outcome type is not survival and all of the above criteria are met ($n$ = 0). \\
+\textbf{Pearson Correlation Coefficient}: Three studies had to be excluded when analyzing the Pearson correlation coefficients:
+\begin{itemize}
+\item meta.id = 157083 (file.nr = 5061, comparison.nr = 1, outcome.nr = 5, subgroup.nr = 2): A meta-analysis with all results from the same study, and equal sample size (5 each group). The Copas selection model algorithm issued an error when optimizing the likelihood.
+\item meta.id = 159329 (5183, 3, 13): One very small study with group sizes of 2 and 1 patients and small risk ratio of 0.222 (compared to the largest of 1.05, se = 0.04). Also, the Copas selection model algorithm issued an error when optimizing the likelihood.
+\item meta.id = 182298 (6211, 1, 8, -): One very small study with 8 patients in each group and 0 event counts in both. The Copas selection model algorithm issued an error when optimizing the likelihood.
+\end{itemize}
+
+\textbf{Fisher's Z score}: The same issues as encountered for Pearson correlation coefficients (meta.id = 157083 and 159329). The variance of the z score $s_z^2$ can be calculated as:  $s_z^2 = \frac{1}{n-3}$, $n$ being the total sample size. Thus, studies that have total sample size $n \geq 3$ are discarded in the meta-analyses ($n$ = 72 studies). 2 meta-analyses have then less than 10 studies left for pooling: 
+\begin{itemize}
+\item meta.id = 10671: (file.nr = 5061, comparison.nr = 1, outcome.nr = 5, subgroup.nr = 2), 7 studies left.
+\item meta.id = 43324: (1019, 1, 3, 2), 9 studies left.
+\end{itemize}
+
+\subsubsection{The Publication Bias Test and Adjustment Dataset}
+The dataset that was ultimately tested and adjusted for publication bias comprises 2673 meta-analyses and 42789 results. ..
+
+
+% \begin{itemize}
+% \item meta.id = 136563 (4218, 1, 1, 1): ``Roberts 2010'' (3)
+% \item meta.id = 136566 (4218, 1, 3, 1): ``Roberts 2010'' (3)
+% \end{itemize}
+
+
+
+
+%which leads to a reduction of the meta-analyses that can be calculated based on the Fisher's z score by $n$ = \Sexpr{}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% LaTeX file for Chapter 03
+
+
+
+
+
+
+
+\chapter{Results} \label{ch:Results}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Publication Bias Test Results} \label{sec:publication.bias.tests}
+
+
+
+
+The meta-analyses fulfilling the criteria from chapter \ref{ch:dataset}, section \ref{sec:Processing}, are analysed with one-sided small study effects tests and excess significance tests. The direction in which bias is expected is the one on which more significant results are ($p$-value < 0.05, two-sided). The tests are applied on the original effect size measures, i.e. risk ratios, Hedges $g$ or log hazard ratios. Different tests are applied depending on the outcome type being binary, continuous or survival.\\
+Thus, multiple tests are applied on the same data. The results can then be displayed separately to compare the results from the different tests. A histogram of $p$-values will summarize the overall evidence against the null-hypothesis of no publication bias, as displayed in Figure \ref{fig:test}. \\
+``Excess significance'' denotes the excess of significant $p$-values testing method from \citet{excess.significance}, see \ref{sec:excess.significance}. For continuous and survival outcomes, the names refer to: 
+
+\begin{itemize}
+\item Egger's test, the weighted linear regression test as described in section \ref{sec:Egger}
+\item Thompson and Sharp's test, the weighted linear regression test adjusted for between-study heterogeneity, section \ref{sec:Thompson}
+\item Begg and Mazumdar's test, the rank test described in section \ref{sec:Begg}
+\end{itemize}
+
+For binary outcomes, the names refer to:
+\begin{itemize}
+\item Harbord's test, the likelihood score based test (section \ref{sec:Harbord})
+\item Peter's test, the weighted linear regression with inverse sample size as explanatory variable (study size proxy) described in section \ref{sec:Peter}
+\item R\"ucker's test, the test based on the arcsine transformation of proportions, in combination with Thompson and Sharp's regression test (section \ref{sec:Rucker})
+\item Schwarzer's test, the rank based test using the expected event counts computed with the hypergeometric distribution (section \ref{sec:Schwarzer})
+\end{itemize}
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-10-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Histogram of one-sided $p$-values for small study effect in direction of larger effect sizes. The testing method is indicated in the header, bin width is equal to 0.1. The proportion of meta-analyses with signifiant publication bias based on the threshold of 0.1 is displayed inside the figures.}
+\label{fig:test}
+\end{figure}
+
+%Agreement table -> Chunck 1
+The histograms in Figure \ref{fig:test} show that most distributions are clearly skewed to the right, indicating evidence for small study effects. Exceptions from this are the excess significance and Schwarzer's test, and the tests for survival outcomes. There, there is no evidence for publication bias, and the histograms are even skewed to the left (Schwarzer). But note that the sample size of survival outcomes is small ($n$ = 39). \\
+There is discrepancy between continuous and binary data test results; the evidence for small study effects in continuous data is clearly larger. Also, we see that the $I^2$ statistic of the proportion of overall between-study heterogeneity is distributed differently for the tests, with results with $I^2 = 0$ being evenly distributed in binary outcomes along the range of $p$-values, while they are more similar to the meta-analyses with larger heterogeneity for continuous outcome.\\
+In the literature, the excess significance test is advised to be used in the case of no between study heterogeneity. Since there are no small $p$-values for such meta-analyses, one must conclude that there is no excess significance in the dataset. The obvious correspondence with the heterogeneity statistic however rather suggests that the test is another way to assess between study heterogeneity. Thompson test and R\"ucker's test are designed such that they take into account the between study heterogeneity when assessing small study effects. When no heterogeneity is given, Thompson's test results and Egger's test result should be equal, however, the $I^2$ statistic is computed by a more suitable estimator \citep{paulemandel} of $\tau^2$ as the estimator that Thompson and Sharp's test uses (method of moment estimator of \citet{tau.estimator}, which is more conservative by usually finding larger $\tau^2$). In the part of the histogram with $I^2 > 0$, the two tests are more reliable than the remaining tests, while the opposite is expected from simulations \citep{limitmeta} when $I^2 = 0$.\\
+
+It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects for the same meta-analyses. A simple method to check the consistency of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between survival and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and survival outcomes results. Also, the $I^2$ statistic is included. Since no test statistic is used for excess significance tests, it is not shown here
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-11-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots outside are statistically significant by 0.1 $p$-value threshold).}
+\label{fig:test.agreement}
+\end{figure}
+
+The observed patterns on the scatterplots differ, and some small study effect test statistics do align better than others. Regression based tests as Egger and Thompsons test which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. Continuous and survival outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics.\\
+Because scatterplots and correlation coefficients can be misleading, also a Tukey mean-difference or Bland-Altman of transformed $p$-values plot is shown for four scenarios in Figure \ref{fig:mean.diff.test}:
+\begin{itemize}
+\item For Egger's and Thompson's tests, which is supposedly the most similar test and should show the least deviations and systematic errors
+\item For Egger's and excess significance tests
+\item For Harbord's and R\"ucker's tests
+\item For Harbord's and excess significance tests
+\end{itemize}
+
+This can be justified since all tests are supposed to measure the evidence for publication bias. For the plots, the $p$-values of the tests are transformed on the entire continuous scale by a logit transformation $f(x)  = \log\frac{p}{1-p}$). The mean $p$-value (($f$($p$-value no. 1) + $f$($p$-value no. 2))/2) is then displayed against the difference between the $f$($p$-value). If no systematic errors and biases exist between the measurement methods, then 
+
+\begin{itemize}
+\item the mean of the differences should be around zero (no systematic error) 
+\item the points should scatter independently on the $y$-axis and no general increase or decrease with the mean of the transformed $p$-values should be visible
+\end{itemize}
+
+Although this is not formally tested, there are likely systematic errors and bias between excess significance tests, although more so for continuous tests. -- In the appendix, it can be seen that this is reproducible with the remaining small study effect tests (not there yet) -- \\
+The confidence intervals from Figure \ref{fig:mean.diff.test} can be used as limits of agreement, which gives, after back-transformation, around 0.9 for Egger's and Thompson's test, and around 0.99 for Harbord's and R\"ucker's tests. This suggests that correspondence between the tests is not very good in general. 
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-12-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Mean - difference plots for logit transformed $p$-values. The mean of logit transformed $p$-values is displayed on the $x$-axis and the difference on the $y$-axis. Blue and red lines display the systematic error and the confidence intervals of the systematic error (limits of agreement).}
+\label{fig:mean.diff.test}
+\end{figure}
+
+The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. We expect that some proportion of the meta-analysis will only be significant for a certain test, and this is indeed observed in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results.
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Fri Jul  5 16:13:26 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{ccc}
+  \hline
+Count & Binary Outcomes & Continuous and Survival \\ 
+  \hline
+0 & 68 \% & 64.3 \% \\ 
+  1 & 13.5 \% & 10 \% \\ 
+  2 & 7.5 \% & 6.9 \% \\ 
+  3 & 5.2 \% & 16.5 \% \\ 
+  4 & 4.9 \% & 2.3 \% \\ 
+  5 & 0.8 \% & - \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Counts Number of significant test results per meta-analysis, separated
+       for outcome types. Last entry for continuous and survival outcomes is empty since one test less was 
+       applied} 
+\label{number.sig.tests}
+\end{table}
+
+
+Here, it is difficult to say if continuous and survival or binary outcome types show better agreement, since more tests are applied in the binary case, and the continuous and survival outcome type tests have in general more positive findings. Very few meta-analyses are significant, irrespective of the test used, but around 67\% of the dataset is not significant, no matter which test is used. \\
+When only looking at small study effect tests, 27.3\% of binary outcome tests and 34.4\% of survival and continuous outcome tests had at least one significant result. After applying the Bonferroni correction for multiple testing, this shrinks to 10.5\% for binary and 17.5\% for continuous and survival outcomes. \\
+% To compare significant findings for small study effect tests and excess significance tests, we limit ourselves to comparison with Harbord's or Egger's test. mean.min.bin2\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, mean.min.else2\% for continuous and survival outcomes. The numbers change to mean.min.bin2.b\% for binary outcomes and mean.min.else2.b\% for continuous and survival outcomes after applying the Bonferroni correction. \\
+% both.bin\% have significant Harbord's test result and significant excess significance test result  (both.bin.b\% with Bonferroni). Of the continuous outcomes, we have both.else\% with Egger's test and both.else.b\% with Bonferroni correction. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Small Study Effects Adjustment}
+
+
+\subsection{Change in Effect Size after Adjustment} \label{sec:change.size}
+
+Since there's evidence for publication bias when applying small study effect and excess significance tests, we apply small study effect adjustment methods to take into account that small studies are likely overestimating the treatment effect. \\
+However, we will see that consequences of adjustment can be; 
+\begin{itemize}
+\item first, the absolute size of the treatment effect can be smaller than the classical meta-analysis treatment effect, which is expected if publication bias
+is the cause for the small study effect.
+\item secondly, the effect can be larger than before in meta-analysis. In this case, the small study effect must be not due to publication bias for large effects (``true'' publication bias), but due to bias for small effects (``null effect publication bias'' or even ``reversed effect publication bias'', sometimes refer erred to as ``Proteus phenomenon'' \citep{proteus}).
+\end{itemize}
+
+This is because, in contrast to the small study effect tests, the applied adjustment method does not pre-specify the direction in which bias is expected. \\
+To compare the effects of adjustment between meta-analyses, the outcome measures are transformed to Hedges $g$ (standardized mean differences) and Fisher's $z$-score (see section \ref{sec:transformation.effectsizes} for details). The effect of adjustments can be compared to either random or fixed effects meta-analysis estimates. \\
+Figure \ref{fig:adjustment.reg} displays the difference $\delta$ between the observed meta-analysis pooled treatment effect and the regression adjusted treatment effect, $\hat{\theta}_M - \hat{\theta}_\textrm{Adj.}$. The absolute value $|\hat{\theta}_M|$ is taken and the sign of $\hat{\theta}_\textrm{Adj.}$ is adjusted accordingly such that all effects are mirrored to one side. $\delta > 0$ is equivalent to $\hat{\theta}_\textrm{Adj} < \hat{\theta}_M$, a reduction of the original effect size. Additionally, the test statistic of heterogeneity adjusted small study effect tests (R\"ucker's and Thompson's test) is displayed with green color. Test statitics smaller $< 1$ are equivalent to no evidence for small study effect, test statistics between one and two to weak evidence, and above two they indicate evidence for small study effects. Some very large and very small differences have been omitted in the $z$-score and Hedges $g$ histograms; they are shown in Table \ref{missing.differences}. 
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-15-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Histogram of the treatment effect differences between meta-analysis and regression adjusted meta-analysis. Negative differences indicate greater adjusted effect sizes than meta-analysis effect sizes. The bins are centered at zero and binwidth is equal to 0.1. Deeper green color indicates more evidence for small study effects.}
+\label{fig:adjustment.reg}
+\end{figure}
+
+We see that more treatment effect sizes are negatively adjusted and diminished. Furthermore, we see that large adjustment is not necessarily connected with evidence for small study effects, but there is of course strong coincidence. The cases with no evidence and large adjustment indicate that between-study heterogeneity was not resolved by adjustment for small study effects. Adjustment was larger when random effects meta-analysis effect is used as reference, because there larger weights are given to small studies.\\
+Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Copas; Copas selection model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Therefore, the effect of adjustment by Copas can be seen when comparing adjusted with random effects estimates. Again, we clearly see that more effect sizes are adjusted downwards. Additionally, there is more coincidence with the small study effect test statistics and adjustment, which is as expected. \\
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-16-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Histogram of the treatment effect differences between meta-analysis and Copas adjusted meta-analysis. Negative differences indicate greater adjusted effect sizes than meta-analysis effect sizes. The bins are centered at zero and binwidth is equal to 0.1. Deeper green color indicates more evidence for small study effects.}
+\label{fig:adjustment.copas}
+\end{figure}
+
+Table \ref{adjustment.difference} shows the quantiles and means for the various differences and additional information. When Hedge's $g$ is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small (the means of Copas in the first two rows for $z$-score are caused by one very large value, see Table \ref{missing.differences}). To recall some other findings out of Table \ref{adjustment.difference}: 5\% or 90 cases have their $z$-score reduced by more than 0.15 by regression adjustment (and 5\% or 90 increased by -0.13, fixed effects reference). Also, Hedges $g$ is reduced by 0.39 compared to fixed effects estimates in 5\% or 90 meta-analyses (or increased by 0.24). 
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Fri Jul  5 16:13:41 2019
+\begin{table}[ht]
+\centering
+\begingroup\scriptsize
+\begin{tabular}{lcccccccccr}
+  \hline
+ & 5\% & 25\% & 50\% & 75\% & 95\% & mean & = 0 (\%) & $>$= 0 (\%) & $>$ 0 (\%) & No adj. est. (\%) \\ 
+  \hline
+z: Fixed - Copas & -0.05 & -0.01 & -0.00 & 0.01 & 0.05 & -271.73 & 4.76 & 48.67 & 43.91 & 71.54 \\ 
+  z: Random - Copas & -0.00 & 0.00 & 0.00 & 0.00 & 0.04 & -263.62 & 71.65 & 89.42 & 17.77 & 71.54 \\ 
+  z: Fixed - Regression & -0.13 & -0.03 & 0.01 & 0.05 & 0.14 & 0.01 & 0.00 & 52.44 & 52.44 & 0.17 \\ 
+  z: Random - Regression & -0.15 & -0.03 & 0.02 & 0.07 & 0.18 & 0.02 & 0.00 & 57.64 & 57.64 & 0.17 \\ 
+  g: Fixed - Copas & -0.05 & -0.01 & 0.00 & 0.01 & 0.09 & 0.02 & 22.76 & 59.14 & 36.38 & 60.96 \\ 
+  g: Random - Copas & -0.00 & 0.00 & 0.00 & 0.00 & 0.14 & 0.03 & 63.29 & 87.49 & 24.20 & 60.96 \\ 
+  g: Fixed - Regression & -0.23 & -0.04 & 0.03 & 0.13 & 0.38 & 0.05 & 0.00 & 61.96 & 61.96 & 0.00 \\ 
+  g: Random - Regression & -0.24 & -0.03 & 0.05 & 0.16 & 0.42 & 0.06 & 0.00 & 64.06 & 64.06 & 0.00 \\ 
+  Log h.r.: Fixed - Copas & -0.02 & 0.00 & 0.00 & 0.00 & 0.02 & -0.00 & 46.15 & 35.90 & 82.05 & 56.41 \\ 
+  Log h.r.: Random - Copas & -0.02 & 0.00 & 0.00 & 0.00 & 0.00 & -0.01 & 61.54 & 17.95 & 79.49 & 56.41 \\ 
+  Log h.r.: Fixed - Regression & -0.20 & -0.13 & -0.06 & 0.02 & 0.14 & -0.05 & 0.00 & 33.33 & 33.33 & 0.00 \\ 
+  Log h.r.: Random - Regression & -0.22 & -0.14 & -0.07 & 0.03 & 0.14 & -0.06 & 0.00 & 33.33 & 33.33 & 0.00 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Quantiles and Means of the differences between meta-analysis pooled treatment effects and small study adjusted treatment effects. The column with the names ``> 0'' give the percentages of estimates larger than zero or larger or equal zero. The column ``No adj. est.'' gives the percentage of missing estimates due to non-significant publication bias test (for Copas) and computational errors. The row names indicate which outcome measure, meta-analysis method and adjustment method is used. Abbreviations are used for z-score (= z) and Hedges g (= g).} 
+\label{adjustment.difference}
+\end{table}
+
+
+
+\subsection{Change in Evidence for Treatment Effects} \label{sec:change.evidence}
+Adjustment for small study effects in meta-analysis will not only provide new effect sizes, but also standard errors thereof. Thus, also the evidence for efficacy of a treatment can be obtained, which is usually summarized in a suitable test statistic or $p$-value. It is of interest if and how the evidence for treatment effects changes if adjusted for publication bias.\\
+The Wald test statistics $p$-value for fixed and random effects meta-analyses and Copas and regression adjusted treatment effects have been calculated. They are shown in Figure \ref{fig:adjustment.stat} for meta-analysis based on $z$-score, Hedges $g$ and log hazard ratios. \\
+It can be seen that evidence for a treatment effect decreases after adjusting for publication bias. It does so more for Hedge's $g$ compared to $z$-scores, and for regression adjustment compared to Copas selection model. 
+%Also, the evidence decreases for random effects meta-analyses compared to fixed effects meta-analyses. 
+In the case of log-hazard ratio adjustment, the adjustment has only negligible impact on the $p$-values. \\
+Also, Copas selection method has a very small impact on the evidence compared to random effects meta-analysis, at least using $z$-scores (again, we should rely on comparisons to random effects meta-analysis to evaluate Copas method). \\ 
+% Interestingly, in contrast to the small study effect tests, there seems to be no large difference between adjusted continuous and binary meta-analysis test statistics --appendix--
+%Figures \ref{fig:adjustment.stat.z} for the adjusted $z$-scores, \ref{fig:adjustment.stat.smd} for the adjusted Hedges $g$ and Cohen's d and \ref{fig:adjustment.stat.log.hazard.ratio} for the adjusted log hazard ratios.
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-18-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Histogram of the Wald test-statistic $p$-value of meta-analysis and adjusted pooled treatment effect, based on different treatment effect measures. The method is indicated in the header, bin width is set to 0.05. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
+\label{fig:adjustment.stat}
+\end{figure}
+
+The Copas selection model also gives an estimate of the number of missing studies. It finds that 0 are missing, which corresponds to 0\% from all \ensuremath{2.8945\times 10^{4}} analysed studies. Figure \ref{fig:copas.missing} shows a histogram of the overall fraction of missing studies. Note that we have excluded 0 out of 1806, for which no Copas selection model estimate, but a random effects estimate was retained because the algorithm initially found no evidence for small study effects.
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-19-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Histogram of the fraction of missing studies from the total number of studies in a meta-analyses (only data shown where Copas estimate was obtained, thus \\$n =$ 0)}
+\label{fig:copas.missing}
+\end{figure}
+
+We can see that in some occasions, the method finds more than half of all studies are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}. The discrepancy between mean and median may indicate that the estimate of 0\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie 0 meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for 0, more than 30\% of missing studies.
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Fri Jul  5 16:13:42 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{lrrrrrrr}
+  \hline
+ & = 0 & 5\% & 25\% & 50\% & 75\% & 95\% & mean \\ 
+  \hline
+Missing fraction & 323 & 0 & 0 & 0.1 & 0.3 & 1.0 & 0.2 \\ 
+  Missing study number & 323 & 0 & 0 & 1.4 & 5.2 & 17.9 & 4.2 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Fraction of missing studies and estimates of missing studies with their zero counts (``= 0''), quantiles and means.} 
+\label{copas.missing}
+\end{table}
+
+
+
+
+
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Fri Jul  5 16:13:42 2019
+\begin{table}[ht]
+\centering
+\begingroup\tiny
+\begin{tabular}{lcccrrrrrrrr}
+  \hline
+meta.id & file.nr & comparison.nr & subgroup.nr & z fixed & z random & z Copas & z regression & g fixed & g random & g Copas & g regression \\ 
+  \hline
+2009 & 2009 & 1 & 1 & 0.31 & 0.36 & 0.31 & 0.43 & 0.70 & 0.70 & 0.70 & 2.48 \\ 
+  2068 & 2068 & 2 & 0 & 0.29 & 0.35 & 0.29 & 0.42 & 0.68 & 0.68 & 0.68 & 2.57 \\ 
+  52528 & 52528 & 1 & 0 & -0.75 & -0.69 & -0.50 & -0.26 & -1.19 & -1.53 & 0.18 & -0.52 \\ 
+  60546 & 60546 & 1 & 1 & 0.17 & 0.24 & 0.17 & 0.34 & 0.53 & 0.53 & 0.53 & 1.65 \\ 
+  70389 & 70389 & 1 & 1 & -0.08 & -0.07 & 15.62 & -0.04 & -0.13 & -0.13 & -0.13 & -0.05 \\ 
+  73769 & 73769 & 3 & 1 & -0.09 & 0.00 & 7148.96 & 0.02 & -0.01 & -0.12 & 0.01 & 0.04 \\ 
+  79113 & 79113 & 2 & 0 & -0.38 & -0.38 & -0.38 & -0.48 & -0.93 & -0.93 & -2.00 & -3.47 \\ 
+  90138 & 90138 & 3 & 0 & 0.30 & 0.80 & 0.30 & 0.53 & 0.72 & 0.71 & 0.71 & 2.16 \\ 
+  97356 & 97356 & 2 & 0 & -0.06 & -0.33 & -0.06 & -0.11 & -0.42 & -0.35 & -1.58 & -1.82 \\ 
+  98030 & 98030 & 1 & 0 & -0.09 & -0.07 & -0.09 & -0.04 & -0.41 & -0.41 & -1.50 & -2.79 \\ 
+  101436 & 101436 & 1 & 5 & 0.54 & 0.62 & 0.80 & 0.90 & 1.21 & 1.21 & 1.21 & 2.74 \\ 
+  118121 & 118121 & 4 & 1 & 0.25 & 0.23 & 47.73 & -0.03 & 0.44 & 0.44 & 0.44 & 0.14 \\ 
+  119537 & 119537 & 3 & 0 & 0.07 & 0.15 & 0.07 & 0.29 & 0.50 & 0.50 & 1.43 & 1.81 \\ 
+  119818 & 119818 & 3 & 3 & -0.25 & -0.25 & -0.20 & -0.04 & -0.50 & -0.54 & 28.44 & -0.03 \\ 
+  146301 & 146301 & 1 & 0 & 0.14 & 0.26 & 472149.03 & 0.28 & 0.56 & 0.37 & 0.60 & 0.52 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Missing meta-analysis pooled treatment effect and adjusted treatment effects. Abbreviations are used for z-score (= z) and Hedges g (= g).} 
+\label{missing.differences}
+\end{table}
+
+
+
+
+\subsection{Comparison of adjustment methods}
+Regression adjusted estimates are compared to the estimates of Copas selection model if these are not equal to random effects meta-analysis. A Tukey mean difference plot can serve to reveal systematic differences and biases between the two measurement methods. We will compare estimates based on all three outcome measures, i.e. original measure, $z$-score and Hedges $g$ in Figure \ref{fig:adjustment.mean.diff}. Note that the 39 survival outcome data is not included when using $z$-score and Hedges $g$.
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-22-1} 
+
+}
+
+
+
+\end{knitrout}
+\caption{Mean - difference plots for publication bias adjustment methods. The mean of the adjusted treatment effects is displayed on the $x$-axis and the difference on the $y$-axis. Blue and red lines display the systematic error and the confidence intervals of the systematic error (limits of agreement). Two values have been omitted in the middle plot for Hedges $g$ and one for $z$-score (see Table \ref{missing.differences}).}
+\label{fig:adjustment.mean.diff}
+\end{figure}
+
+No formal tests are provided, but the at least there seems to be no clear bias or systematic error. The limits of agreement in Figure \ref{fig:adjustment.mean.diff} are large. We conclude thus that the impact of regression adjustment on the effect sizes is in general not substantially larger than the impact of Copas selection model in the subset of data where the estimate of the Copas selection model is not equal to a random effects estimate. There is however a small difference, with regression estimates to have a little bit a larger absolute value. There might be some bias between adjusted $z$-scores, where regression estimates seem to be somewhat smaller when the mean is a little above zero, and somewhat larger when the mean is a little below zero. \\
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

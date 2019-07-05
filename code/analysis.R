@@ -45,7 +45,7 @@ load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 #--------------------------------------------------------------------------------------------------------------------#
 
 # # ---------- Uncomment to run pre-analysis --------------
-# Get exclusion critetia (I-squared, n. sig. findings, s.e. ratio, dupl.index):
+# # Get exclusion critetia (I-squared, n. sig. findings, s.e. ratio, dupl.index):
 # meta.info.bin <- data.ext2 %>%
 #   group_by(meta.id) %>%
 #   mutate(n = n()) %>% filter(n >= 10) %>% filter(!is.na(outcome.type)) %>%
@@ -103,12 +103,13 @@ load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 # 
 # meta.info.pre2 <- merge(meta.info, exclusion.estimates, by = "meta.id")
 # 
-# meta.info.pre2 <- meta.info.pre2 %>% rowwise() %>% mutate(I2  = max(0, (Q - n + 1)/Q)) #calculate I2
+# meta.info.I2 <- meta.info.pre2 %>% rowwise() %>% mutate(I2  = max(0, (Q - n + 1)/Q)) #calculate I2
 # 
-# meta.info <- meta.info.pre2 %>% filter(n > 9) %>% filter(I2 < 0.5)
+# meta.info <- meta.info.I2 %>% filter(n > 9) %>% filter(I2 < 0.5)
 # 
 # meta.id.vector <- meta.info$meta.id #Vector of meta-ids that match the criteria.
 # save(meta.id.vector, file =  file.path(PATH_RESULTS, "meta_id_vector.RData"))
+# save(meta.info.I2, file =  file.path(PATH_RESULTS, "meta_id_I2.RData"))
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Get more extensive information from the original dataset about the meta-analyses:

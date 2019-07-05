@@ -47,13 +47,16 @@ meta.f <- meta.f %>%
 		sig.change.ranef.reg = sig.change(sig.before = sig.ranef, sig.after =  sig.reg), #Function to register if significance of estimate has changed after correction
 		sig.change.ranef.copas = sig.change(sig.before = sig.ranef, sig.after =  sig.copas),
 		sig.change.fixef.reg = sig.change(sig.before = sig.fixef, sig.after =  sig.reg),
-		sig.change.fixef.copas = sig.change(sig.before = sig.fixef, sig.after =  sig.copas))
+		sig.change.fixef.copas = sig.change(sig.before = sig.fixef, sig.after =  sig.copas),
+		
+		se.stat.c = ifelse(outcome.type == "bin", stat.rucker, stat.thompson),
+		thompson.test = factor(ifelse(se.stat.c > 1.64, 1, 0)))
 
 
 sig.level <- 0.1
 meta.f <- meta.f %>% 
 	mutate(egger.test = ifelse(pval.egger < sig.level, 1, 0),
-				 thompson.test = ifelse(pval.thompson < sig.level, 1, 0),
+				 #thompson.test = ifelse(pval.thompson < sig.level, 1, 0),
 				 begg.test = ifelse(pval.begg < sig.level, 1, 0),
 				 
 				 schwarzer.test = ifelse(pval.schwarzer < sig.level, 1, 0),
@@ -97,11 +100,12 @@ effect.diff <- effect.diff %>%
 ####################################################################################################
 
 #Significance of pbbias based on variance of total ss:
-meta.f %>% filter(var.samplesize < 60000) %>% ggplot(aes(stat(count), x = var.samplesize, fill = factor(thompson.test))) + 
+meta.f %>% filter(var.samplesize < 20000) %>% ggplot(aes(stat(count), x = var.samplesize, fill = factor(thompson.test))) + 
 	geom_density(position = "fill")
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Mean and Total study sample size
+meta.f %>%  ggplot(aes(x = k)) + geom_histogram()
 meta.f %>% filter(mean.samplesize < 1500) %>%  ggplot(aes(x = mean.samplesize)) + geom_histogram()
 meta.f %>% filter(total.samplesize < 50000) %>% ggplot(aes(x = total.samplesize)) + geom_histogram()
 meta.f %>% filter(total.samplesize < 1000) %>% ggplot(aes(x = total.samplesize, fill = factor(thompson.test))) + 
@@ -111,14 +115,14 @@ meta.f %>% filter(mean.samplesize < 100) %>% ggplot(aes(x = mean.samplesize, fil
 #--------------------------------------------------------------------------------------------------------------------#
 
 #meta.f analysis sample size
-meta.f %>% filter(n < 100) %>% ggplot(aes(x = n, fill = factor(thompson.test))) + 
+meta.f %>% filter(k < 100) %>% ggplot(aes(x = k, fill = factor(thompson.test))) + 
 	geom_histogram()
-meta.f %>% filter(n < 40) %>% ggplot(aes(stat(count), x = n, fill = factor(thompson.test))) + 
+meta.f %>% filter(k < 30) %>% ggplot(aes(stat(count), x = k, fill = factor(thompson.test))) + 
 	geom_density(position = "fill")
 
-meta.f %>% filter(n < 100) %>% ggplot(aes(x = n, fill = factor(sig.fixef))) + 
+meta.f %>% filter(k < 100) %>% ggplot(aes(x = k, fill = factor(sig.fixef))) + 
 	geom_histogram()
-meta.f %>% filter(n < 40) %>% ggplot(aes(stat(count), x = n, fill = factor(sig.fixef))) + 
+meta.f %>% filter(k< 30) %>% ggplot(aes(stat(count), x = k, fill = factor(sig.fixef))) + 
 	geom_density(position = "fill")
 #--------------------------------------------------------------------------------------------------------------------#
 
@@ -207,7 +211,7 @@ ggpairs(topairsplot.pb.stats.cont, columns = 1:3, aes(alpha = 0.7))
 
 #$Complete dataset pairsplot:
 topairsplot <- meta.f %>% select(comparison.nr, pval.Q, pval.thompson, n.sig.single,	missing.copas,
-																G.squared, n, var.samplesize,mean.publication.year
+																G.squared, k, var.samplesize,mean.publication.year
 )
 topairsplot <- topairsplot %>% filter(var.samplesize < 100000 & comparison.nr < 20)
 
