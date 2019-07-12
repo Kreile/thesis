@@ -22,15 +22,15 @@ opts_chunk$set(fig.path='figure/ch02_fig',
 options(width=74)
 @
 
-<<echo = FALSE, warning=FALSE, message=FALSE>>=
+<<echo = FALSE, warning=FALSE, message=FALSE, cache = TRUE>>=
 rm(list = ls())
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
 PATH2 = file.path(PATH_HOME, 'PubBias')
-FILE = 'cochrane_2018-06-09.csv'
+FILE = 'cochrane_2019-07-04.csv'
 PATH_DATA = file.path(PATH, 'data')
 PATH_CODE = file.path(PATH2, 'code')
-PATH_RESULTS = file.path(PATH2, 'results')
+PATH_RESULTS = file.path(PATH2, 'results_new')
 PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
 
 file_results = "pb.RData"
@@ -41,73 +41,69 @@ file.dat <- "data.RData"
 if (file.exists(file.path(PATH_RESULTS, file.dat))) {
 	load(file.path(PATH_RESULTS, file.dat))
 } else {
-	data = pb.readData(path = PATH_DATA, file = FILE)
+	data = pb.readData2(path = PATH_DATA, file = FILE)
 	tmp = pb.clean(data)
 	data = tmp[[1]]
 	aliases = tmp[[2]]
 	save(data, file =  file.path(PATH_RESULTS, file.dat))
 }
 
-load(file.path(PATH_RESULTS, "meta_analyses_summary_bin_cont_surv.RData"))
 load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
 load(file.path(PATH_RESULTS, "meta.bin.RData"))
 load(file.path(PATH_RESULTS, "meta.cont.RData"))
-load(file.path(PATH_RESULTS, "meta.surv.RData"))
+load(file.path(PATH_RESULTS, "meta.iv.RData"))
 load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
+load(file.path(PATH_RESULTS, "meta_id_I2.RData"))
 
 ###################################################################################################################
 ###################################################################################################################
 
 #Barbiturate Examples
-barbi1 <- arrange(filter(data, file.nr == 21) %>% 
-          select(Study = study.name, Comparison = comparison.name, Outcome = outcome.name, 
-                 Events = events1, Total = total1, Events_c = events2, Total_c = total2) %>% 
+barbi1 <- arrange(filter(data, id == "CD000033") %>% 
+          select(study.name, comparison.name, outcome.name, 
+                 events1, total1, events2, total2) %>% 
             slice(c(1,3)), Study) 
-barbi2 <- arrange(filter(data, file.nr == 21) %>% 
+barbi2 <- arrange(filter(data, id == "CD000033") %>% 
           select(Study = study.name, Comparison = comparison.name,Outcome = outcome.name), Study)
 barbi2[barbi2$Study == "P\303\251rez-B\303\241rcena 2008", 1] = "Perez-Barcena 2008"
+#----------------------------------------------------------------------------------------------#
 
 #Missing values
-cont.out <- data %>% filter(outcome.measure.new == "Mean Difference" | outcome.measure.new == "Std. Mean Difference" | 
-                                 outcome.measure.new == "Hedges' G") 
+cont.out <- data %>% filter(outcome.flag == "CONT") 
 
-missing.mean <- which(is.na(cont.out$mean1) | is.na(cont.out$mean2))
-missing.effect <- which(is.na(cont.out$effect))
-missing.means <- intersect(missing.mean, missing.effect) #Cont. results that have neither complete means nor an effect
-wrong.effect <- which(cont.out$mean1 == 0 & cont.out$mean2 == 0 & cont.out$effect == 0) #Cont.results that have only zeros
-missing.effects <- length(c(missing.means, wrong.effect))
+zero.effect.cont <- which(cont.out$mean1 == 0 & cont.out$mean2 == 0 & cont.out$effect == 0) #Cont.results that have only zeros
+zero.sds.cont <- which(cont.out$sd1 == 0 & cont.out$sd2 == 0 & cont.out$se == 0) #Cont.results that have only zeros
+zero.both.cont <- intersect(zero.effect.cont, zero.sds.cont)
+zero.counts.cont <- length(zero.both.cont)
 
-missing.sd <- which(is.na(cont.out$sd1) | is.na(cont.out$sd2))
-missing.se <- which(is.na(cont.out$se))
-missing.sds <- intersect(missing.se, missing.sd) #Cont. results that have neither complete means nor an effect
-wrong.sds <- which(cont.out$sd1 == 0 & cont.out$sd2 == 0 & cont.out$se == 0) #Cont.results that have only zeros
-missing.sds <- length(c(missing.sds, wrong.sds))
+missing.arm <- which(data$total1 == 0 | data$total2 == 0) #One arm without patients..
+missing.arm.count <- length(missing.arm)
 
-missing.ss <- which(is.na(data$total1) | is.na(data$total2))
-wrong.ss <- which(data$total1 <= 0 | data$total2 <= 0)
-missing.ssize <- length(c(missing.ss, wrong.ss))
+missing.year.count <- sum(is.na(data$study.year)) + length(c(which(data$study.year < 1920), which(data$study.year > 2019)))
 
-missing.year <- sum(is.na(data$study.year)) + length(c(which(data$study.year < 1920), which(data$study.year > 2019)))
-
-missing.table <- rbind("Missing mean values and mean differences" = missing.effects,
-                         "Missing standard deviations and standard errors" = missing.sds,
-                         "Missing sample sizes" = missing.ssize,
-                         "Missing study year" = missing.year)
+missing.table <- rbind("Neither means nor standard deviations (CONT)" = zero.counts.cont,
+                         "Zero participants in one group" = missing.arm.count,
+                         "Missing study publication year" = missing.year.count)
+#----------------------------------------------------------------------------------------------#
 
 #Mean and median number of different outcome types of reviews
-mean.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>%
-  ungroup() %>% group_by(file.nr) %>%
+mean.diff.out <- data %>% group_by(id, comparison.nr) %>% distinct(outcome.name) %>%
+  ungroup() %>% group_by(id) %>%
   count() %>% ungroup %>% summarise(mean = mean(n))
 
-median.diff.out <- data %>% group_by(file.nr, comparison.nr) %>% distinct(outcome.name) %>%
-  ungroup() %>% group_by(file.nr) %>%
+median.diff.out <- data %>% group_by(id, comparison.nr) %>% distinct(outcome.name) %>%
+  ungroup() %>% group_by(id) %>%
   count() %>% ungroup %>% summarise(mean = median(n))
+#----------------------------------------------------------------------------------------------#
 
 #Study.year quantiles:
 #data.ext2 <- data.ext %>% mutate(study.year = ifelse(study.year > 1920, study.year, NA))
 publication.year.range <- c(quantile(data.ext2$study.year, 0.05, na.rm = T), quantile(data.ext2$study.year, 0.25, na.rm = T), 
                             quantile(data.ext2$study.year, 0.5, na.rm = T), quantile(data.ext2$study.year, 0.75, na.rm = T),
                             round(mean(data.ext2$study.year, na.rm = T), 2), quantile(data.ext2$study.year, 0.95, na.rm = T))
+publication.year.2018 <- data.ext2 %>% filter(study.year == 2018) %>% count
+publication.year.2019 <- data.ext2 %>% filter(study.year == 2019) %>% count
+#----------------------------------------------------------------------------------------------#
 
 #Outcome.measure frequency table:
 outcome.measure.frequencies <- rbind(data %>% group_by(outcome.measure.new) %>% count() %>% 
@@ -119,6 +115,7 @@ outcome.measure.frequencies <- rbind(data %>% group_by(outcome.measure.new) %>% 
 outcome.measure.frequencies <- outcome.measure.frequencies %>% mutate(percentage = round(n/sum(n),3)*100)
 names(outcome.measure.frequencies) <- c("Outcome measure", "n", "Percentage")
 outcome.measure.frequencies$Percentage <- paste(outcome.measure.frequencies$Percentage, "%", sep = "")
+#----------------------------------------------------------------------------------------------#
 
 #Total and group size quantiles:
 data.ext2 <- data.ext2 %>% ungroup() %>%  mutate(total.n = total1 + total2)
@@ -128,142 +125,167 @@ samplesize.range <- c(quantile(data.ext2$total.n, 0.05, na.rm = T), quantile(dat
 treatment.group.size.range <- c(quantile(data.ext2$total1, 0.05, na.rm = T), quantile(data.ext2$total1, 0.25, na.rm = T), 
                       quantile(data.ext2$total1, 0.5, na.rm = T), quantile(data.ext2$total1, 0.75, na.rm = T),
                       round(mean(data.ext2$total1, na.rm = T), 2), quantile(data.ext2$total1, 0.95, na.rm = T))
+#----------------------------------------------------------------------------------------------#
 
 #Frequencies of results:
-comp.freq <- data %>% group_by(file.nr) %>% summarise(n = n())
+comp.freq <- data %>% group_by(id) %>% summarise(n = n())
 comp.range <- c(length(which(comp.freq$n < 6)), quantile(comp.freq$n, 0.25, na.rm = T), 
                       quantile(comp.freq$n, 0.5, na.rm = T), quantile(comp.freq$n, 0.75, na.rm = T),
-                      round(mean(comp.freq$n, na.rm = T), 2), quantile(comp.freq$n, 0.95, na.rm = T))
+                      round(mean(comp.freq$n, na.rm = T), 2), quantile(comp.freq$n, 0.95, na.rm = T),
+                quantile(comp.freq$n, 0.05, na.rm = T))
+#----------------------------------------------------------------------------------------------#
 
 #Frequencies of studies:
-study.freq <- data %>% group_by(file.nr) %>% distinct(study.name) %>% count()
+study.freq <- data %>% group_by(id) %>% distinct(study.name) %>% count()
 study.range <- c(length(which(study.freq$n < 3)), quantile(study.freq$n, 0.25, na.rm = T), 
                       quantile(study.freq$n, 0.5, na.rm = T), quantile(study.freq$n, 0.75, na.rm = T),
                       round(mean(study.freq$n, na.rm = T), 2), quantile(study.freq$n, 0.95, na.rm = T))
+#----------------------------------------------------------------------------------------------#
 
 #Pooling studies
-cum.repr.trials.subg <- data %>% group_by(file.nr, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
+cum.repr.trials.subg <- data %>% group_by(id, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% count %>%
   filter(n < 15) %>%
-  full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
+  full_join( data %>% group_by(id, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
                filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>% 
   ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
-# cum.repr.trials.nosub <- data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
-#   filter(n < 15) %>%
-#   full_join( data %>% group_by(file.nr, comparison.nr, outcome.nr) %>% count %>% group_by(n) %>% count %>%
-#                filter(n > 14) %>% ungroup %>% summarise(n = 15, nn = sum(nn))) %>% 
-#   ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
-
-# cum.repr.trials <- cbind(cum.repr.trials.nosub, cum.repr.trials.subg)[,c(1,3,6)]
 
 colnames(cum.repr.trials.subg)  <- c("n","Number of groups", "Cumulative sum of groups")
+#----------------------------------------------------------------------------------------------#
 
-
-
-
-
-
-
-
-
-
-
-
-
-	data <- data %>% mutate(
-		outcome.type = ifelse(outcome.measure.new == "Hazard Ratio", "surv", 
-													ifelse(outcome.measure.new == "Odds Ratio" | outcome.measure.new == "Risk Ratio" |
-																 	outcome.measure.new == "Peto Odds Ratio" | outcome.measure.new == "Risk Difference", "bin", "cont")),
-		outcome.type = ifelse(outcome.measure.new == "Rate Ratio" | outcome.measure.new == "Rate difference", "rate", outcome.type),
-		lrr = NA,
-		var.lrr = NA,
-		smd = NA,
-		var.smd = NA,
-		smd.pbit = NA,
-		var.smd.pbit = NA,
-		smd.ordl = NA,
-		var.smd.ordl = NA,
-		cor.phi = NA,
-		var.cor.phi = NA,
-		pval.single = NA, 
-		cor.pearson = NA,
-		var.cor.pearson = NA,
-		z = NA,
-		var.z = NA,
-		events1c = NA,
-		events2c = NA,
-		sig.single = NA)
-	cont.ind <- which(data$outcome.type == "cont" & !is.na(data$outcome.type))
-	
-	data[cont.ind, "outcome.type"] <- data[cont.ind, ] %>% 
-		mutate(outcome.type = ifelse(outcome.measure.new == "Std. Mean Difference"  | outcome.measure.new == "Mean Difference", 
-																 outcome.type, NA)) %>% select(outcome.type)
-	
-	cont.ind <- which(data$outcome.type == "cont" & !is.na(data$outcome.type))
-	
-	
-	nomean1.ind <- which(data$outcome.type == "cont" & is.na(data$mean1))
-	nomean2.ind <- which(data$outcome.type == "cont" & is.na(data$mean2))
-	noeffects.ind <- which(data$outcome.type == "cont" & !is.na(data$effect))
-	nomeans.ind <- intersect(nomean1.ind, nomean2.ind)
-	nomeans.ind <- intersect(noeffects.ind, nomeans.ind) #no means, but a (std.) mean difference is provided.
-	
-	data[nomeans.ind,"mean1"] <- data[nomeans.ind,"effect"]
-	data[nomeans.ind,"mean2"] <- 0
-	
-	data[cont.ind,] <- escalc(data = data[cont.ind,], m1i = mean1, m2i = mean2, 
-														sd1i = sd1, sd2i = sd2, n1i = total1, n2i = total2,
-														measure = "SMD" , append = T, var.names = c("smd", "var.smd"))
-	
-	inpute.given.ind <- which(is.na(data[cont.ind, "smd"]) & data[cont.ind, "outcome.measure.new"] == "Std. Mean Difference")
-	
-	
 	#Counts of meta-analyses with only zeros:
-all.zero.events.number <- data.ext2 %>% filter(outcome.type == "bin") %>% 
+both.arms.zero.events.count <- data.ext2 %>% filter(outcome.flag == "DICH") %>% 
   group_by(meta.id) %>% 
     mutate(n = n()) %>% filter(n >= 10) %>% 
   filter(all(events1 == 0) & all(events2 == 0)) %>% 
   distinct(meta.id) %>% ungroup() %>%  count()
+#----------------------------------------------------------------------------------------------#
 
-#Counts of meta-analyses with means and sds only zeros:
-all.zero.means.number <- data.ext2 %>% filter(outcome.type == "cont") %>% group_by(meta.id) %>% 
-    mutate(n = n()) %>% filter(n >= 10) %>% filter(all(mean1 == 0) & all(mean2 == 0)) %>% 
-    filter(all(sd1 == 0) | all(sd2 == 0)) %>% distinct(meta.id) %>% ungroup() %>% count()
+#Inital dataset properties:
+initial.id.count <- length(unique(data$id))
+initial.study.count <- length(unique(data$study.name))
+initial.result.count <- dim(data)[1]
+
+#outcome.flag reduction:
+tp <- data %>% filter(outcome.flag == "DICH" | outcome.flag == "CONT" | outcome.flag == "IV")
+flag.id.count <- length(unique(tp$id))
+flag.study.count <- length(unique(tp$study.name))
+flag.result.count <- dim(tp)[1]
+
+#----------------------------------------------------------------------------------------------#
 
 #Counts of meta-analyses with n larger ten:
-m.a.largerten.number <- meta %>% filter(k > 9) %>% ungroup %>% count()
-#smaller I2 than 0.5:
-m.a.smaller.5.number <- meta %>% filter(k > 9 & I2 < 0.5) %>% ungroup %>% count()
+m.a.largerten.bin <- data.ext2 %>% filter(outcome.flag == "DICH") %>% 
+  filter(total1 != 0 & total2 != 0) %>% 
+  group_by(meta.id) %>% filter(n() > 9) %>%  filter(any(events1 != 0) | any(events2 != 0)) %>% 
+  distinct(meta.id) %>% ungroup() %>% mutate(n = n())
+
+m.a.largerten.cont <- data.ext2 %>% filter(outcome.flag == "CONT") %>% 
+  filter(sd1 != 0 & sd2 != 0) %>% 
+  filter(total1 > 0 & total2 > 0) %>% group_by(meta.id) %>% 
+  filter(n() > 9) %>% distinct(meta.id) %>% ungroup() %>% mutate(n = n())
+  
+
+m.a.largerten.iv <- data.ext2 %>% filter(outcome.flag == "IV") %>% 
+  filter(se != 0) %>% group_by(meta.id) %>% filter(n() > 9) %>% 
+  distinct(meta.id) %>% ungroup() %>% mutate(n = n())
+
+m.a.largerten.id <- rbind(m.a.largerten.bin, m.a.largerten.cont, m.a.largerten.iv)
+tp2 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) 
+
+ten.id.count <- length(unique(tp2$id))
+ten.study.count <- length(unique(tp2$study.name))
+ten.result.count <- dim(tp2)[1]
+m.a.largerten.count <- unique(m.a.largerten.bin$n) + unique(m.a.largerten.cont$n) + unique(m.a.largerten.iv$n)
+
+
+#----------------------------------------------------------------------------------------------#
+
 #variance ratio > 4:
-m.a.variance4.number <- meta %>% filter(k > 9 & I2 < 0.5) %>% filter((se.max^2)/(se.min^2) > 4) %>% ungroup %>% count()
+m.a.variance4.count <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% summarise(ratio = (max(se.new)^2)/(min(se.new)^2)) %>% 
+  filter(ratio >= 4) %>% count
+tp3 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(ratio = (max(se.new)^2)/(min(se.new)^2)) %>% 
+  filter(ratio >= 4)
+var.id.count <- length(unique(tp3$id))
+var.study.count <- length(unique(tp3$study.name))
+var.result.count <- dim(tp3)[1]
+
 #At least on sig. estimate:
-m.a.one.sig.number <- meta %>% filter(k > 9 & I2 < 0.5) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(n.sig.single > 0) %>% ungroup %>% count()
-#Single patient meta-analyses:
-tmp <- data.ext2 %>% filter(outcome.type == "cont") %>% group_by(meta.id) %>% 
-	mutate(n = n()) %>% filter(n >= 10) %>% filter(!all(mean1 == 0) & !all(mean2 == 0)) %>% 
-	filter(!all(sd1 == 0) | !all(sd2 == 0)) 
+m.a.one.sig.count <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% summarise(ratio = (max(se.new)^2)/(min(se.new)^2),
+                                  n.sig = sum(sig.single)) %>% 
+  filter(ratio >= 4 & n.sig > 0) %>% count
+tp4 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(ratio = (max(se.new)^2)/(min(se.new)^2),
+                                  n.sig = sum(sig.single)) %>% 
+  filter(ratio >= 4 & n.sig > 0)
+sig.id.count <- length(unique(tp4$id))
+sig.study.count <- length(unique(tp4$study.name))
+sig.result.count <- dim(tp4)[1]
 
-meta.id.vector <- unique(tmp$meta.id)
-m.a.singlepatient.number <- length(meta.id.vector[c(which(meta.id.vector > 42716 & meta.id.vector < 42725))] )
+#Without duplicates:
+m.a.no.dupl.number <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% summarise(ratio = (max(se.new)^2)/(min(se.new)^2),
+                                  n.sig = sum(sig.single),
+                                  dupl = unique(dupl.remove)) %>% 
+  filter(ratio >= 4 & n.sig > 0 & dupl == 0) %>% count
+tp5 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(ratio = (max(se.new)^2)/(min(se.new)^2),
+                                  n.sig = sum(sig.single),
+                                  dupl = unique(dupl.remove)) %>% 
+  filter(ratio >= 4 & n.sig > 0 & dupl == 0)
+dupl.id.count <- length(unique(tp5$id))
+dupl.study.count <- length(unique(tp5$study.name))
+dupl.result.count <- dim(tp5)[1]
+
+#smaller I2 than 0.5:
+m.a.smaller.5.count <- meta.info.I2 %>% filter(I2 < 0.5) %>% ungroup %>% count()
+
+meta.id.vector <- meta.info.I2 %>% filter(I2 < 0.5) %>% select(meta.id)
+meta.data <- data.ext2 %>% filter(meta.id %in% meta.id.vector$meta.id)
+
+I2.id.count <- length(unique(meta.data$id))
+I2.study.count <- length(unique(meta.data$study.name))
+I2.result.count <- dim(meta.data)[1]
+#----------------------------------------------------------------------------------------------#
+
+#Adjustment dataset:
+meta.adj <- meta.f %>% filter(outcome.flag == "DICH" | outcome.flag == "CONT")
+tp6 <- data.ext2 %>% filter(meta.id %in% meta.adj$meta.id)
+#----------------------------------------------------------------------------------------------#
+
+#Adjustment dataset:
+meta.adj <- meta.f %>% filter(outcome.flag == "DICH" | outcome.flag == "CONT")
+tp6 <- data.ext2 %>% filter(meta.id %in% meta.adj$meta.id)
+
+adj.id.count <- length(unique(tp6$id))
+adj.study.count <- length(unique(tp6$study.name))
+adj.result.count <- dim(tp6)[1]
+#----------------------------------------------------------------------------------------------#
+
 #How many z-score meta-analyses are excluded due to total <= 3, and how many m.a. have then n < 10:
-tmp <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %>%
-	filter(outcome.type != "rate" & !is.na(outcome.type))
+# meta.id.vector <- meta.info.I2 %>% filter(I2 < 0.5) %>% select(meta.id)
+# tmp <- data.ext2 %>% filter(meta.id %in% meta.id.vector) %>% filter(outcome.flag != "IV")
+# 
+# meta.id.vector.z <- unique(tmp$meta.id)
+# tobe.excluded.z <- c(which(meta.id.vector.z == 220949))
+# meta.id.vector.z <- meta.id.vector.z[-tobe.excluded.z]
+# 
+# tmp <- tmp %>% filter(meta.id %in% meta.id.vector.z)
+# z.seq3.count <- tmp %>% filter(total1 + total2 < 4) %>% ungroup() %>% count() 
+# m.a.seq3.seq10.number <- tmp %>% filter(total1 + total2 > 3) %>% count() %>% 
+#   filter(nn < 10) %>% ungroup %>% count()
 
-metac <- meta %>% filter(k > 9) %>% filter(n.sig.single > 0) %>% filter((se.max^2)/(se.min^2) > 4) %>% filter(I2 < 0.5)
 
-meta.id.vector <- metac$meta.id[-which(metac$outcome.type == "surv")]
-meta.id.vector <- meta.id.vector[-c(which(meta.id.vector == 157083),
-																which(meta.id.vector == 159329),
-																# which(meta.id.vector == 12459),
-																# which(meta.id.vector == 12465),
-																# which(meta.id.vector == 22087),
-																which(meta.id.vector == 182298))] 
+#----------------------------------------------------------------------------------------------#
+# "IV" outcome.flag meta-analyses
+dt <- meta.iv %>% group_by(outcome.measure.new) %>% count
+first.iv.outcome.count <- dt$n[1]
+second.iv.outcome.count <- dt$n[2]
+third.iv.outcome.count <- dt$n[3]
+fourth.iv.outcome.count <- dt$n[4]
 
-meta.data.zscore <- tmp[which(tmp$meta.id %in% meta.id.vector),]
-total.seq3.number <- meta.data.zscore %>% filter(total1 + total2 < 4) %>% select(var.z) %>% ungroup() %>% count() 
-m.a.seq3.seq10.number <- meta.data.zscore %>% filter(total1 + total2 > 3) %>% count() %>% filter(nn < 10) %>% ungroup %>% count()
-
-meta.id.vector <- metac$meta.id
-meta.data <- data.ext2[which(data.ext2$meta.id %in% meta.id.vector),]
 
 
 @
@@ -310,9 +332,10 @@ There are different sources that are being used to search for studies.
 
 
 \subsection{Structure and Content}
-The dataset consists of \Sexpr{length(unique(data$file.nr))} systematic reviews from the Cochrane Library with \Sexpr{length(unique(data$study.name))} studies and \Sexpr{dim(data)[1]} results. A result compares a clinical or medical intervention or treatments to a control. Each study provides (multiple) results of clinical interventions. \\
-In Table \ref{barbiturate.row}, two results from a systematic review about effects of barbiturates are shown as they are given in the dataset. As can be seen, further specifications are provided by the variables in the columns. \\
-The comparison variable specifies \textit{what kind} of treatments or interventions are compared, the outcome variable \textit{how} it is compared, and the subgroup variable (not indicated in table) if the result belongs to a certain subgroup. Here, the result is of a binary type, so the counts of events in the barbiturate treatment group and the total number of participants are given in columns ``Events'' and ``Total'' and the number of events in the control group ``Events\_c'' and participants ``Total\_c''. A event is here death at the end of follow up.
+The dataset consists of \Sexpr{length(unique(data$id))} systematic reviews from the Cochrane Library with \Sexpr{length(unique(data$study.name))} studies and \Sexpr{dim(data)[1]} results. The results all stem from comparisons of a healthcare interventions or treatments to a reference. The reference may be a placebo control group or a other intervention or treatment. A result can not only be about efficacy of the treatments, but also about safety (adverse effects).\\
+In Table \ref{barbiturate.row}, two results from a systematic review about barbiturates are shown as they are given in the dataset. As can be seen, further specifications are provided by the variables in the columns. \\
+The \texttt{comparison.name} variable specifies \textit{what kind} of treatments or interventions are compared, the \texttt{outcome.name} variable \textit{how} it is compared, and the \texttt{subgroup.name} variable (not indicated in table) \textit{if and to what experimental subgroup} the result belongs. \\
+The result is of a binary type, and the counts of events in the treatment group are in \texttt{events1} and of the control group in \texttt{events2} and the total number of participants are given in columns \texttt{total1} and \texttt{total2}. As can be seen, events denote here "death at the end of follow-up".
 
 <<echo=FALSE, results = 'asis'>>=
 print(xtable(barbi1, label = "barbiturate.row", digits = 0,
@@ -320,21 +343,22 @@ print(xtable(barbi1, label = "barbiturate.row", digits = 0,
       include.rownames = F, size = "scriptsize")
 @
 
-A complete listing of the variables of a result is given in Table \ref{variable}. They can roughly be separated into variables that \textit{specify the review} in which the result is contained and variables that \textit{specify the result} itself (separated by a horizontal line in Table \ref{variable}):
+A complete listing of the variables of a result is given in Table \ref{variable}. Depending on the type of the data, \eg if it is binary or continuous, some variables are missing for the specific results.
 
 \begin{table}[ht]
   \begin{center}
     \begin{tabular}{l l}
       \textbf{Variable} & \textbf{Description}\\
       \hline
-      \texttt{file.nr} & The number of the file from which the review data has been \\&gathered. This file corresponds to a file available in the. \\& Cochrane library\\
-      \texttt{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
-      \texttt{file.index} & Internal index of the file in the Cochrane library.\\
-      \texttt{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
+      \texttt{id} & An id of the review for identification purposes \\
+      %\texttt{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
+      % \texttt{file.index} & Internal index of the file in the Cochrane library.\\
+      % \texttt{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
       %\multicolumn{2}{c}{textbf{Study level variables}}\\ 
       \hline
       \texttt{study.name} & Name of the study to which the result belongs\\
-      \texttt{study.year} & Year in which the study was published\\
+      \texttt{study.year} & Year in which the study was published \\
+      \texttt{study.data.source} & Source of the study, either ``Publ \\
       \hline
       \texttt{comparison.name/.nr} & Specification of the interventions compared in the study  \\ &and a unique number for the comparison\\
       \texttt{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome\\
@@ -348,7 +372,7 @@ A complete listing of the variables of a result is given in Table \ref{variable}
       \texttt{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
     \end{tabular}
   \caption{Dataset variable names and descriptions  \label{variable}}
-
+  \label{variable}
   \end{center}
 \end{table}
 
@@ -380,7 +404,7 @@ Results are part of studies that are again part of a (systematic) review. This s
 \end{figure}
 
 \vspace{0mm}
-The structure of a review will now be outlined based on an example of the dataset. Let us consider the previously mentioned barbiturate and head injury review. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates''. \\
+The structure of a review will now be outlined based on an example of the dataset. Let us consider the previously mentioned barbiturate and head injury review. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates'' %\citep{barbiturate}. \\
 %Since there are arguments for and against use of barbiturates, the authors of the review did a comprehensive literature search and collected all available study findings. 
 The review comprises five studies in total. Three of them compared barbiturate to placebo, one compared barbiturate to Mannitol and one Pentobarbital to Thiopental. The studies have different outcomes, for example, death or death and severe disability at follow up, but also dropout counts or adverse effects (secondary outcomes). 
 We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. Thus, it is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
@@ -389,16 +413,15 @@ We have continuous (e.g. mean body temperature) and binary outcome data (e.g. de
 print(xtable(barbi2, label = "barbiturates", caption = "Barbiturate and head injury review. In the columns, study names, comparison and outcome measure of the results are given"), include.rownames = F, size = "footnotesize")
 @
 
-Information about missing values in the dataset is given in Table \ref{missing}. For variables as research subject, outcome and subgroup name and event counts there are no missing values. The relative amount of missing values is very low except for study years. For continuous outcomes, the cases have been counted were no treatment effect and standard error is available: neither mean values and standard deviations, nor mean differences and standard error. Also Study years before 1920 and after 2019 are declared as missing, as well as sample sizes below zero.
+Information about missing values in the dataset is given in Table \ref{missing}. The relative amount of missing values is low, except for study years. For continuous outcomes, the cases are counted were neither a mean difference nor means are available. Similarly, the counts of cases where neither standard errors nor standard deviations are available are provided. Study years before 1920 and after 2019 are declared as missing, as well as sample sizes equal to zero.
 
 <<echo=FALSE, results='asis'>>=
 print(xtable(missing.table, label = "missing", caption = "Number of missing variables and measurements in the dataset", align = "lr"), include.colnames = F,
       size = "footnotesize", digits = 0)
 @
 
-The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = \Sexpr{publication.year.range[1]}, 95\% quantile = \Sexpr{publication.year.range[6]},). The median of the publication years is \Sexpr{publication.year.range[3]}, the mean \Sexpr{publication.year.range[5]} and the quartiles are \Sexpr{publication.year.range[2]} and \Sexpr{publication.year.range[4]}. Only a handful ($n = 18$) have been published in 2018, none in 2019. \\
-%No information is available concerning unpublished results and studies.
-The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.) abundances are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 30 \% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (> 65\%).
+The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = \Sexpr{publication.year.range[1]}, 95\% quantile = \Sexpr{publication.year.range[6]},). The median of the publication years is \Sexpr{publication.year.range[3]}, the mean \Sexpr{publication.year.range[5]} and the quartiles are \Sexpr{publication.year.range[2]} and \Sexpr{publication.year.range[4]}. \Sexpr{publication.year.2018} studies have been published in 2018, none in 2019. \\
+The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.) abundances are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 31 \% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (more than 65\%).
 
 <<echo=FALSE, results='asis'>>=
 print(xtable(outcome.measure.frequencies, label = "outcome.measure.frequencies", 
@@ -408,98 +431,172 @@ print(xtable(outcome.measure.frequencies, label = "outcome.measure.frequencies",
 @
 
 
-The sample sizes among results vary to some extent. There are 5\% of treatment group sample sizes that are smaller than \Sexpr{treatment.group.size.range[1]}, the 5\% quantile and 95\% smaller than \Sexpr{treatment.group.size.range[6]}. The first quartile is \Sexpr{treatment.group.size.range[2]}, the median \Sexpr{treatment.group.size.range[3]}, the mean \Sexpr{treatment.group.size.range[5]} and the third quartile \Sexpr{treatment.group.size.range[4]}. The large difference between median and mean is caused by very large groups with over 2,000,000 participants. Analogously, the quantiles of the total sample size are: 5\% quantile = \Sexpr{samplesize.range[1]}, first quartile = \Sexpr{samplesize.range[2]}, median = \Sexpr{samplesize.range[3]}, third quartile = \Sexpr{samplesize.range[4]} and 95\% = \Sexpr{samplesize.range[6]}. The mean is \Sexpr{samplesize.range[5]}. \\
-The mean and median number of results per review are \Sexpr{study.range[5]} and \Sexpr{study.range[3]}. There are \Sexpr{comp.range[1]} reviews with five or fewer results, and the quartiles are \Sexpr{comp.range[2]} and \Sexpr{comp.range[4]}. Similarly, the number of reviews with a maximum of two studies included is \Sexpr{study.range[1]}, the mean study number is \Sexpr{study.range[5]}, the median \Sexpr{study.range[3]} and the interquartile range \Sexpr{study.range[2]} and \Sexpr{study.range[4]} and the 95\% quantile \Sexpr{study.range[6]}. The discrepancy between mean and median is due to large reviews with a high number of studies and results, most extreme in \citet{largest.review} which is a systematic review about antibiotic prophylaxis for preventing infection after cesarean section, with 95 studies and 1497 results in total.\\
-For results to be suitable for usage in meta-analysis, they have to be identical with respect to comparison and outcome. More specifically, the studies in the dataset that have the same comparison, outcome and subgroup can be pooled in a meta-analysis, since their research subject and experimental setup can be considered sufficiently homogeneous. Importantly, this distinction is also used by the Cochrane Organization itself, i.e. the meta-analyses are identical to the meta-analyses done in the systematic reviews.\\ %Another approach that is not made here is to analyze all subgroups together, which is possible if enough studies are given.
-The dataset is divided in meta-analyses with identical experimental setup. The size of a meta-analysis denotes how many results are included in a group.
-Table \ref{repr.groups} shows the number of meta-analysis with size $\geq n$ results. Practically, this number of meta analyses can be performed, with each having at least $n$ results.
+The sample sizes among results vary to some extent. There are 5\% of treatment group sample sizes that are smaller than \Sexpr{treatment.group.size.range[1]}, 95\% smaller than \Sexpr{treatment.group.size.range[6]}. The first quartile is \Sexpr{treatment.group.size.range[2]}, the median \Sexpr{treatment.group.size.range[3]}, the mean \Sexpr{treatment.group.size.range[5]} and the third quartile \Sexpr{treatment.group.size.range[4]}. The large difference between median and mean is caused by very large groups with over 2,000,000 participants. Analogously, the quantiles of the total sample size are: 5\% quantile = \Sexpr{samplesize.range[1]}, first quartile = \Sexpr{samplesize.range[2]}, median = \Sexpr{samplesize.range[3]}, third quartile = \Sexpr{samplesize.range[4]} and 95\% = \Sexpr{samplesize.range[6]}. The mean is \Sexpr{samplesize.range[5]}. \\
+There are \Sexpr{comp.range[1]} reviews with five or fewer results. The 5\% and 95\% quantiles are \Sexpr{comp.range[7]} and \Sexpr{comp.range[6]}. The mean and median number of results per review are \Sexpr{study.range[5]} and \Sexpr{study.range[3]}, and the quartiles are \Sexpr{comp.range[2]} and \Sexpr{comp.range[4]}. Similarly, the number of reviews with a maximum of two studies included is \Sexpr{study.range[1]}, the mean study number is \Sexpr{study.range[5]}, the median \Sexpr{study.range[3]} and the interquartile range \Sexpr{study.range[2]} and \Sexpr{study.range[4]} and the 95\% quantile \Sexpr{study.range[6]}. The discrepancy between mean and median is due to large reviews with a high number of studies and results, most extreme in %\citet{largest.review} 
+which is a systematic review about antibiotic prophylaxis for preventing infection after cesarean section, with 95 studies and 1,497 results in total.\\
+For results to be suitable for usage in meta-analysis, they have to be identical with respect to comparison and outcome. The studies in the dataset that have the same comparison, outcome and subgroup can be pooled in a meta-analysis. This distinction is also used by the Cochrane Organization itself, \ie the meta-analyses are identical to the meta-analyses done in the systematic reviews.\\ %Another approach that is not made here is to analyze all subgroups together, which is possible if enough studies are given.
+The size of a meta-analysis denotes how many results are included in a group. Table \ref{repr.groups} shows the number of meta-analysis with size $\geq n$ results. 
 
 <<echo=FALSE, results='asis'>>=
-
-print(xtable(cum.repr.trials.subg, label = "repr.groups", caption = "Cumulative number of groups with number of reproduction trials $\\geq$ n", align = "llrr", digits = 0), include.rownames = F, size = "footnotesize")
+rownames(cum.repr.trials.subg)[15] <- "$\\geq$ 15"
+print(xtable(cum.repr.trials.subg, label = "repr.groups", caption = "Number and cumulative number of groups with meta-analysis size n.", align = "llrr", digits = 0), include.rownames = F, size = "footnotesize")
 @
 
 \section{Data Tidying and Processing} \label{sec:Processing}
-The original dataset was provided by .. (some words how the dataset was obtained and processed by C.R.). \\
-The information in the previous pages are from a tidied and processed version of this dataset. \\
-
-\subsection{Modification of old variables}
-In some cases, reasonable assumptions led to small changes in the originally provided variables:
-\begin{itemize}
-\item \texttt{study.year}: It was assumed that studies that are declared to have been published before 1920 ($n$ = \Sexpr{length(which(data$study.year < 1920))}) are mis-specified, as well as after 2019 ($n$ = \Sexpr{length(which(data$study.year > 2019))}), so these have been set to NA. 
-\item \texttt{mean1} and \texttt{mean2}: When both \texttt{mean1} and \texttt{mean2} are equal to zero or NA, \texttt{outcome.measure.new} is equal to \texttt{(Std.) Mean Difference}, but a mean difference is given in \texttt{effect}, \texttt{mean1} is set equal to \texttt{effect} ($n$ = \Sexpr{length(nomeans.ind)}).
-\end{itemize}
-
+The dataset was scraped from the Cochrane Database of Systematic Reviews at the ... . A specialized code was used to convert the xtml. files from the webpage into the data at hand cite... . 
 
 \subsection{Newly Introduced Variables}
 Some new variables are added to the obtained dataset:
 \begin{itemize}
 \item \texttt{outcome.measure.new}: Outcome measure specifications given in \texttt{outcome.measure} were standardized whenever they were supposed to denote the same outcome measure. An example would be the formally different notations for odds ratios: ``Odds Ratio'', ``odds ratio'', ``OR'', which were all denoted as ``Odds Ratio''.
-\item \texttt{outcome.type}: A simplification of \texttt{outcome.measure.new}. The outcome.type ``bin'' indicates if \texttt{outcome.measure.new} is either one of ``Risk Ratio'', ''Odds Ratio'', ``Risk difference'' or ``Peto Odds Ratio''. ``cont'' is equivalent to \texttt{outcome.measure.new} equal to "Std. Mean Difference'' or ``Mean Difference''. ``surv'' equal to ``Hazard Ratio'' and ``rate'' equal to ''Rate Ratio'' or ``Rate Difference''.
-\item \texttt{lrr} and \texttt{var.lrr}: log risk ratio and variance of the log risk ratio for outcome.type ``bin''.
-\item \texttt{smd} and \texttt{var.smd}: Hedges $g$ and the variance of Hedges $g$ for outcome.type ``cont''. If not computable from \texttt{mean1}, \texttt{mean2}, \texttt{sd1} and \texttt{sd2}, and \texttt{outcome.measure.new} was equal to ``Std. Mean Difference'', it was set equal to \texttt{effect} (and \texttt{var.smd} equal to \texttt{se} squared, $n$ =  \Sexpr{length(inpute.given.ind)}).
-\item \texttt{smd.ordl} and \texttt{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for outcome.type ``bin''.
-\item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for outcome.type ``bin'') or $g$ (for outcome.type ``cont'') to $r$ transformation.
+% \item \texttt{outcome.flag}: A simplification of \texttt{outcome.measure.new}. The outcome.flag ``bin'' indicates if \texttt{outcome.measure.new} is either one of ``Risk Ratio'', ''Odds Ratio'', ``Risk difference'' or ``Peto Odds Ratio''. ``cont'' is equivalent to \texttt{outcome.measure.new} equal to "Std. Mean Difference'' or ``Mean Difference''. ``surv'' equal to ``Hazard Ratio'' and ``rate'' equal to ''Rate Ratio'' or ``Rate Difference''.
+\item \texttt{lrr} and \texttt{var.lrr}: log risk ratio and variance of the log risk ratio for outcome.flag ``bin''.
+\item \texttt{smd} and \texttt{var.smd}: Hedges $g$ and the variance of Hedges $g$ for outcome.flag ``cont''. 
+% If not computable from \texttt{mean1}, \texttt{mean2}, \texttt{sd1} and \texttt{sd2}, and \texttt{outcome.measure.new} was equal to ``Std. Mean Difference'', it was set equal to \texttt{effect} (and \texttt{var.smd} equal to \texttt{se} squared, $n$ =  \Sexpr{length(inpute.given.ind)}).
+\item \texttt{smd.ordl} and \texttt{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for outcome.flag ``bin''.
+\item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for outcome.flag ``bin'') or $g$ (for outcome.flag ``cont'') to $r$ transformation.
 \item \texttt{z} and \texttt{var.z}: Fisher's z score and it's variance obtained from the Pearson correlation $r$ to $z$ transformation.
-\item \texttt{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for outcome.type ``cont'' or Wald test for outcome.type ``bin''.
+\item \texttt{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for outcome.flag ``cont'' or Wald test for outcome.flag ``bin''.
 \item \texttt{events1c} and \texttt{events2c}: Correction of \texttt{events1} and \texttt{events2} zero event counts or event counts = patient number. When no events occurred, 0.5 was added, and when all patients experienced the event, 0.5 was subtracted. When one of \texttt{events} had zero counts while the other had maximum counts, no adjustment occurred.
 \item \texttt{meta.id}: Meta-analysis ID variable to uniquely identify any potential meta-analysis in the dataset. Consistent to what has been discussed before, all results that share a common comparison, outcome and subgroup (optional, subgroups not given in any case) may be combined in a meta-analysis.
-% \item \texttt{}:
+\item \texttt{se.new}: Depending on \texttt{outcome.flag}, \texttt{se.new} is equal to the square-root of \texttt{var.lrr} (\texttt{outcome.flag} = \texttt{DICH}), square-root of \texttt{var.smd} (\texttt{CONT})
+or \texttt{se} (\texttt{IV}).
 % \item \texttt{}:
 \end{itemize}
 
 
 \subsection{Eligibility criteria for Publication Bias Test and Adjustment} 
-Initially, the analysis is restricted to binary, continuous and survival outcomes. More formally:
-\begin{itemize}
-\item \textbf{Outcome measures}: The analysis has been restricted on the following outcome measures (from \texttt{outcome.measure.new}): ``Odds Ratio'', ``Risk Ratio'', ``Risk difference'', ``Peto Odds Ratio'', ``Std. Mean Difference'', ``Mean Difference'', ``Hazard Ratio'' 
-($n$ = \Sexpr{length(data.ext2$outcome.type[which(data.ext2$outcome.type == "bin" | data.ext2$outcome.type == "cont" | data.ext2$outcome.type == "surv")])} out of a total of \Sexpr{length(data.ext2$outcome.type)} results)
-\end{itemize}
 
-The suggestions of criteria for eligibility for publication bias tests of \citet{Ioannidis2007} have largely been followed:
+Initially, the analysis is restricted to results with \texttt{outcome.flag} \texttt{DICH}, \texttt{CONT} and \texttt{IV}. binary, continuous and survival outcomes. This corresponds to \Sexpr{length(data.ext2$outcome.flag[which(data.ext2$outcome.flag == "DICH" | data.ext2$outcome.flag == "CONT" | data.ext2$outcome.flag == "IV")])} out of a total of \Sexpr{length(data.ext2$outcome.flag)} results.
+\citet{Ioannidis2007} outlined criteria for application of small study effect tests:
 \begin{itemize}
-\item \textbf{Sample size}: A meta-analysis is comprised of at least ten studies ($n$ = \Sexpr{m.a.largerten.number} remaining). 
-\item \textbf{Heterogeneity}: The $I^2$ statistic of a given meta-analysis is smaller than 0.5, thus, the proportion of between study variance of the overall variance is smaller than 0.5 ($n$ = \Sexpr{m.a.smaller.5.number} remaining).
-\item \textbf{Study size}: The ratio between largest variance of an estimate and smallest variance of an estimate is larger than four ($n$ = \Sexpr{m.a.variance4.number} remaining).
-\item \textbf{Significance}: At least one treatment effect has a $p$-value below the significance threshold 0.05 ($n$ = \Sexpr{m.a.one.sig.number} remaining)
+\item \textbf{Sample size}: A meta-analysis is comprised of at least ten studies ($n$ = \Sexpr{m.a.largerten.count} remaining). 
+\item \textbf{Study size}: The ratio between largest variance of an estimate and smallest variance of an estimate is larger than four ($n$ = \Sexpr{m.a.variance4.count} remaining).
+\item \textbf{Significance}: At least one treatment effect has a $p$-value below the significance threshold 0.05 ($n$ = \Sexpr{m.a.one.sig.count} remaining)
+\item \textbf{Heterogeneity}: The $I^2$ statistic of a given meta-analysis is smaller than 0.5, thus, the proportion of between study variance of the overall variance is smaller than 0.5 ($n$ = \Sexpr{m.a.smaller.5.count} remaining).
 \end{itemize}
-
-After having excluded meta-analyses with less than ten studies, additional criteria for excluding inconvenient meta-analyses are:
+Additionally, the following criteria have been applied:
 \begin{itemize}
 \item \textbf{Sensitivity Analyses}: When the same results are used multiple times for different meta-analyses, only one is retained. More precisely, if a study hat the same \texttt{study.name} and same \texttt{effect}, it was considered a duplicate, and the smaller meta-analysis of the two was excluded. The intention is to exclude sensitivity analyses which are operated on subsets of the available results.
-\item \textbf{Zero events}: In the case of binary outcomes, meta-analyses with zero events in any study and any group are excluded ($n$ = \Sexpr{all.zero.events.number} out of meta-analyses with at least ten studies).
-\item \textbf{Missing means and sd's}: In the case of continuous outcomes, meta-analyses with means and sd's in any group being equal to zero are excluded ($n$ = \Sexpr{all.zero.means.number} out of meta-analyses with at least ten studies).
-\item \textbf{Single patient data}: Meta-analyses that are comprised of single patient data are excluded ($n$ = \Sexpr{m.a.singlepatient.number} out of meta-analyses with at least ten studies)
+\item \textbf{Zero events}: In the case of binary outcomes, meta-analyses with zero events in any study and any group are excluded ($n$ = \Sexpr{both.arms.zero.events.count} out of meta-analyses with at least ten studies).
 \end{itemize}
 
---Make Flowchart--
+The results of this reduction of the dataset are shown in the flow-chart in Figure \ref{Inclusion.criteria}. By applying the criteria, we are only able to analyse a subset of the original data. \\
+Only the data that had accesible all results data available was used for adjustment. Thus, all meta-analyses with \texttt{outcome.flag} == \texttt{IV} are ommitted in a second step of the analysis (Analysis dataset (1) and (2) in Figure \ref{Inclusion.criteria}).
+
+\begin{figure}
+\begin{center}
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=2.5em]
+\tikzstyle{btw} = [rectangle, node distance=0cm, minimum height =2em, fill= white]
+\tikzstyle{ublock} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=4em, text width = 10em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{final} = [rectangle, draw, fill=red!20, text centered, rounded corners, minimum height=2.8em]
+    
+\begin{tikzpicture}[node distance = 2cm, auto]
+    % Place nodes
+        \node [final] (1) {Inital dataset: 
+    \Sexpr{format(initial.id.count, big.mark = ",")} reviews,
+    \Sexpr{format(initial.study.count, big.mark = ",")} studies,
+    \Sexpr{format(initial.result.count, big.mark = ",")} results};
+    
+    \node [block, below of=1, node distance=2.2cm] (2) {
+    \Sexpr{format(flag.id.count, big.mark = ",")} reviews,
+    \Sexpr{format(flag.study.count, big.mark = ",")} studies,
+    \Sexpr{format(flag.result.count, big.mark = ",")} results};
+    
+    \node [block, below of=2, node distance=2.2cm] (3) {
+    \Sexpr{format(ten.id.count, big.mark = ",")} reviews,
+    \Sexpr{format(ten.study.count, big.mark = ",")} studies,
+    \Sexpr{format(ten.result.count, big.mark = ",")} results,
+    \Sexpr{format(m.a.largerten.count, big.mark = ",")} meta-analyses};
+
+    \node [block, below of=3, node distance=2.2cm] (4) {
+    \Sexpr{format(var.id.count, big.mark = ",")} reviews,
+    \Sexpr{format(var.study.count, big.mark = ",")} studies,
+    \Sexpr{format(var.result.count, big.mark = ",")} results,
+    \Sexpr{format(m.a.variance4.count$n, big.mark = ",")} meta-analyses};
+
+    \node [block, below of=4, node distance=2.2cm] (5) {
+    \Sexpr{format(sig.id.count, big.mark = ",")} reviews,
+    \Sexpr{format(sig.study.count, big.mark = ",")} studies,
+    \Sexpr{format(sig.result.count, big.mark = ",")} results,
+    \Sexpr{format(m.a.one.sig.count$n, big.mark = ",")} meta-analyses};
+
+    \node [block, below of=5, node distance=2.2cm] (6) {
+    \Sexpr{format(dupl.id.count, big.mark = ",")} reviews,
+    \Sexpr{format(dupl.study.count, big.mark = ",")} studies,
+    \Sexpr{format(dupl.result.count, big.mark = ",")} results,
+    \Sexpr{format(m.a.no.dupl.number$n, big.mark = ",")} meta-analyses};
+
+    \node [final, below of=6, node distance=2.2cm] (7) {Analysis dataset (1):
+    \Sexpr{format(I2.id.count, big.mark = ",")} reviews,
+    \Sexpr{format(I2.study.count, big.mark = ",")} studies,
+    \Sexpr{format(I2.result.count, big.mark = ",")} results,
+    \Sexpr{format(m.a.smaller.5.count$nn, big.mark = ",")} meta-analyses};
+    
+
+    % \node [final] (7) {Analysis dataset:
+    % \Sexpr{format(I2.id.count, big.mark = ",")} reviews,
+    % \Sexpr{format(I2.study.count, big.mark = ",")} studies,
+    % \Sexpr{format(I2.result.count, big.mark = ",")} results,
+    % \Sexpr{format(m.a.smaller.5.count$nn, big.mark = ",")} meta-analyses};
+
+    \node [ublock, below of=7, node distance=4cm] (8) {Binary data: \\
+    \Sexpr{format(dim(meta.bin)[1], big.mark = ",")} meta-analyses};
+
+    \node [ublock, right of=8, node distance=5cm] (9) {Continuous data: \\
+    \Sexpr{format(dim(meta.cont)[1], big.mark = ",")} meta-analyses};
+
+    \node [ublock, left of=8, node distance=5cm] (10) {Other data (IV): \\
+    \Sexpr{format(dim(meta.iv[1])[1], big.mark = ",")} meta-analyses};
+
+    \node [final, below of=8, node distance=2.4cm] (11) {Analysis dataset (2):
+    \Sexpr{format(adj.id.count, big.mark = ",")} reviews,
+    \Sexpr{format(adj.study.count, big.mark = ",")} studies,
+    \Sexpr{format(adj.result.count, big.mark = ",")} results,
+    \Sexpr{format(dim(meta.bin)[1] + dim(meta.cont)[1], big.mark = ",")} meta-analyses};
+    
+    
+    % Draw edges
+    \path [line] (1) -- node [btw, xshift = -1.8cm] {\texttt{outcome.flag} restriction} (2);
+    \path [line] (2) -- node [btw, xshift = -1.7cm] {study number $\geq$ 10}(3);
+    \path [line] (3) -- node [btw, xshift = -1.6cm] {variance ratio $>$ 4} (4);
+    \path [line] (4) -- node [btw, xshift = -2cm] {at least one significant result} (5);
+    \path [line] (5) -- node [btw, xshift = -1.2cm] {no duplicates} (6);
+    \path [line] (6) -- node [btw, xshift = -0.8cm] {$I^2$ $\leq$ 0.5} (7);
+    
+    \path [line] (7) -- node [btw, xshift = -1.8cm, yshift = 0.45cm] {\texttt{outcome.flag} = \texttt{DICH}} (8);
+    \path [line] (7) -- node [btw, xshift = -1.3cm, yshift = -0.75cm] {\texttt{outcome.flag} = \texttt{CONT}} (9);
+    \path [line] (7) -- node [btw, xshift = -1.8cm] {\texttt{outcome.flag} = \texttt{IV}} (10);
+    \path [line] (8) -- (11);
+    \path [line] (9) -- (11);
+    
+\end{tikzpicture}
+\caption{Flow-chart of the exclusion of meta-analyses for the final analysis. The exclusion criteria are given at the right of the arrows.}
+\label{Inclusion.criteria}
+\end{center}
+\end{figure}
+
+
 
 \subsubsection{Exclusions due to Computational Errors}
-In exceptional cases, the applied meta-analysis methods and publication bias tests and adjustment algorithms failed due to various reasons. Here, those cases are listed and if known, the reasons why computation failed are given.\\
-\textbf{Binary Outcomes}: Out of the meta-analyses that are of \texttt{outcome.type} bin, and have at least ten studies, two studies hat to be excluded:
-\begin{itemize}
-\item meta.id = 62301 (file.nr = 1531, comparison.nr = 8, outcome.nr = 6, subgroup.nr = 1):
-%A subgroup analysis for women with increased adverse pregnancy outcomes, where the effect of vitamin C supplements is tested on pre-eclampsia: 
-Largest study (se = 0.1) has risk ratio 1 and smallest study (se = 1) risk ratio 0.07. Copas publication bias adjustment methods has likelihood optimization issues.
-\item meta.id = 94519 (2519, 14, 1, 2): Largest study (se = 0.05) has risk ratio 0.9 and smallest study (se = 0.4) risk ratio 3. Again Copas publication bias adjustment methods has likelihood optimization issues.
-\end{itemize}
+There has been cases where meta-analyses could not be analysed with Copas selection model because the likelihood function could not be optimized based on the settings. It was ommitted in this case. The analysis failed when using $z$-scores, but not standardized mean differences, and in that case, it was not ommitted.\\
+The specific information about the meta-analysis is: \texttt{meta.id} = 220949, \texttt{id} = ``CD009908'', \texttt{subgroup.id} = ``CMP-001.05.02''.
 
-There were no issues with \texttt{outcome.type} ``cont'' and ``surv''. For the subsequent information, it is important to know that meta-analyses are only repeated with Hedges $g$, Pearson correlation coefficient and Fisher's Z-scores, if the outcome type is not survival and all of the above criteria are met ($n$ = \Sexpr{length(meta.f$n.sig.type[which(meta.f$outcome.type != "surv")])}). \\
-\textbf{Pearson Correlation Coefficient}: Three studies had to be excluded when analyzing the Pearson correlation coefficients:
-\begin{itemize}
-\item meta.id = 157083 (file.nr = 5061, comparison.nr = 1, outcome.nr = 5, subgroup.nr = 2): A meta-analysis with all results from the same study, and equal sample size (5 each group). The Copas selection model algorithm issued an error when optimizing the likelihood.
-\item meta.id = 159329 (5183, 3, 13): One very small study with group sizes of 2 and 1 patients and small risk ratio of 0.222 (compared to the largest of 1.05, se = 0.04). Also, the Copas selection model algorithm issued an error when optimizing the likelihood.
-\item meta.id = 182298 (6211, 1, 8, -): One very small study with 8 patients in each group and 0 event counts in both. The Copas selection model algorithm issued an error when optimizing the likelihood.
-\end{itemize}
+\subsubsection{The Analysis Dataset}
+The dataset that was ultimately tested and adjusted for publication bias comprises \Sexpr{length(meta.id.vector)} meta-analyses and \Sexpr{dim(meta.data)[1]} results. The mean number of participants in the treatment group is \Sexpr{mean(meta.data$total1, na.rm = T)} vs \Sexpr{mean(data.ext2$total1, na.rm = T)} in the unrestricted dataset and the mean total number of participants \Sexpr{mean(meta.data$total1 + meta.data$total2)} vs \Sexpr{mean(data.ext2$total1 + data.ext2$total2)}. The mean publication year is \Sexpr{mean(meta.data$study.year, na.rm = TRUE)} vs \Sexpr{mean(data.ext2$study.year, na.rm = TRUE)} in the unrestricted dataset. \\
+From the meta-analyses with incomplete data (\texttt{outcome.type} == \texttt{IV}}), there are \Sexpr{first.iv.outcome.count} with \texttt{outcome.measure.new} = ..., \Sexpr{second.iv.outcome.count} ...,  \Sexpr{third.iv.outcome.count} ... and \Sexpr{fourth.iv.outcome.count} ... .
 
-\textbf{Fisher's Z score}: The same issues as encountered for Pearson correlation coefficients (meta.id = 157083 and 159329). The variance of the z score $s_z^2$ can be calculated as:  $s_z^2 = \frac{1}{n-3}$, $n$ being the total sample size. Thus, studies that have total sample size $n \geq 3$ are discarded in the meta-analyses ($n$ = \Sexpr{total.seq3.number} studies). \Sexpr{m.a.seq3.seq10.number} meta-analyses have then less than 10 studies left for pooling: 
-\begin{itemize}
-\item meta.id = 10671: (file.nr = 5061, comparison.nr = 1, outcome.nr = 5, subgroup.nr = 2), 7 studies left.
-\item meta.id = 43324: (1019, 1, 3, 2), 9 studies left.
-\end{itemize}
 
-\subsubsection{The Publication Bias Test and Adjustment Dataset}
-The dataset that was ultimately tested and adjusted for publication bias comprises \Sexpr{dim(metac)[1]} meta-analyses and \Sexpr{dim(meta.data)[1]} results. ..
+\subsection{Analysis Procedure}
+All compuations were performed in the \texttt{R} computing environment \citep{R.base}. The \texttt{R} packages \texttt{meta} \citep{meta.package} and \texttt{metafor} \citep{metafor.package} were used for meta-analysis, small study effect tests and adjustments. The excess significance test was adapted from \citet{vanAert.2019}. For data manipulation procedures, the \texttt{tidyverse} packages were used \citep{tidyverse.package}, and for plotting the \texttt{ggplot2} package \citep{ggplot2}.\\
+The methods described in the methods chapter \ref{ch:methods} most often apply directly to the algorithms used in \texttt{meta} and \texttt{metafor}. For binary outcomes, log risk ratios were used as treatment effect estimates in the meta-analysis, and for continuous outcomes, Hedge's $g$. For the other outcomes, the \texttt{effect} and \texttt{se} as provided in the dataset was passed to \texttt{meta::metagen}. \\ 
+The effect sizes were transformed for adjustment in the way described in section \ref{sec:transformation.effectsizes}. The $p$-values for adjusted treatment effect estimates were calculated by the Wald method. \\
+In the case of the one-sided test procedure (small study effect and excess significance tests), the effect side in which bias was expected had to be prespecified. This was solved by comparing the number of significant findings on each side (original effect scale, i.e. for binary outcomes log risk ratios, \etc); the side with more significant findings (two-sided $p$-value < 0.05) was considered the side of potential bias. If numbers were equal, the side of the fixed effects treatment was used. \\
+Details to Copas selection model algorithm and its application can be found in \citet{limitmeta}. In short, two values for $a$ and $b$ in section \ref{sec:copas} were used; a limited range with $a$ between -1.7 and 2, and $b$ between 0.16 and 0.32 was applied first (analog to a most extreme selection process of $P$(select|small trial with sd = 0.4) = 0.1 and P(select|large trial w. sd  = 0.05) = 0.9). If the most extreme selection process is unable to pass the significance test of no small study effect ($p$-value > 0.1), then a wider range was applied ($a$  between -5.4 and 2 and $b$ between 0 and 0.32). If there is still no non-significant small study effect, the result was \texttt{NA}.
+
+
+
 
 
 % \begin{itemize}

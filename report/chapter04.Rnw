@@ -5,7 +5,7 @@
 library(knitr)
 opts_chunk$set(fig.path='figure/ch03_fig',
                echo=TRUE, message=FALSE,
-               fig.width=8, fig.height=3,
+               fig.width=8.1, fig.height=3,
                self.contained = FALSE,
                out.width='\\textwidth-3cm',
                message=FALSE, fig.align='center',
@@ -20,10 +20,10 @@ rm(list = ls())
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
 PATH2 = file.path(PATH_HOME, 'PubBias')
-FILE = 'cochrane_2018-06-09.csv'
+FILE = 'cochrane_2019-07-04.csv'
 PATH_DATA = file.path(PATH, 'data')
 PATH_CODE = file.path(PATH2, 'code')
-PATH_RESULTS = file.path(PATH2, 'results')
+PATH_RESULTS = file.path(PATH2, 'results_new')
 PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
 
 file_results = "pb.RData"
@@ -44,12 +44,12 @@ if (file.exists(file.path(PATH_RESULTS, file.dat))) {
 load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
 load(file.path(PATH_RESULTS, "meta.bin.RData"))
 load(file.path(PATH_RESULTS, "meta.cont.RData"))
-load(file.path(PATH_RESULTS, "meta.surv.RData"))
+load(file.path(PATH_RESULTS, "meta.iv.RData"))
 load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
 require(corrgram)
 
-# data.ext2 <- pb.process2(data)
+# data.ext2 <- pb.process3(data)
 @
 
 
@@ -63,34 +63,6 @@ require(corrgram)
 
 \section{Publication Bias Test Results} \label{sec:publication.bias.tests}
 <<echo=FALSE, warning=FALSE>>=
-meta.f <- meta.f %>% rowwise() %>% mutate(pval1.egger = onesided.p(stat = stat.egger, side = side, n = k, test.type = "reg"),
-                                pval1.thompson = onesided.p(stat = stat.thompson, side = side, n = k, test.type = "reg"),
-                                pval1.begg = onesided.p(stat = stat.begg, side = side, n = k, test.type = "rank"),
-                                
-                                pval1.harbord = onesided.p(stat = stat.harbord, side = side, n = k, test.type = "reg"),
-                                pval1.rucker = onesided.p(stat = stat.rucker, side = side, n = k, test.type = "reg"),
-                                pval1.peter = onesided.p(stat = stat.peter, side = side, n = k, test.type = "reg"),
-                                pval1.schwarzer = onesided.p(stat = stat.schwarzer, side = side, n = k, test.type = "rank"),
-                                pval1.d.tes = pval.d.tes)
-
-sig.level <- 0.1
-meta.f <- meta.f %>% 
-	mutate(egger.test = ifelse(pval1.egger < sig.level, 1, 0),
-				 thompson.test = ifelse(pval1.thompson < sig.level, 1, 0),
-				 begg.test = ifelse(pval1.begg < sig.level, 1, 0),
-				 
-				 tes.d.test = ifelse(pval1.d.tes < sig.level, 1, 0),
-				 
-				 schwarzer.test = ifelse(pval1.schwarzer < sig.level, 1, 0),
-				 rucker.test = ifelse(pval1.rucker < sig.level, 1, 0),
-				 harbord.test = ifelse(pval1.harbord < sig.level, 1, 0),
-				 peter.test = ifelse(pval1.peter < sig.level, 1, 0))
-
-meta.bin <- meta.f %>% filter(outcome.type == "bin")
-meta.cont <- meta.f %>% filter(outcome.type == "cont")
-meta.surv <- meta.f %>% filter(outcome.type == "surv")
-
-
 #Agreement proportions of publication bias tests:
 
 #Binary:
@@ -178,26 +150,26 @@ colnames(cont.tests.agreement) <- c( "Excess significance, Egger", "Excess signi
 #--------------------------------------------------------------------------------------------------------------------#
 
 
-#Survival:
-meta.surv <- meta.surv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
+#IV:
+meta.iv <- meta.iv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test == egger.test, "agree", "disagree"),
                                                 thompson.begg = ifelse(thompson.test == begg.test, "agree", "disagree"),
                                                 egger.begg = ifelse(egger.test == begg.test, "agree", "disagree"),
                                                 tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
                                                 thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
                                                 tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
-agreement.surv <- meta.surv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
+agreement.surv <- meta.iv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
                                                          thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
                                                          tes.d.begg = sum(tes.d.begg == "agree")/n(),
                                                          thompson.egger = sum(thompson.egger == "agree")/n(),
                                                          thompson.begg = sum(thompson.begg == "agree")/n(),
                                                          egger.begg = sum(egger.begg == "agree")/n())
-meta.surv <- meta.surv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test + egger.test > 1, "agree", "disagree"),
+meta.iv <- meta.iv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.test + egger.test > 1, "agree", "disagree"),
                                                 thompson.begg = ifelse(thompson.test + begg.test > 1, "agree", "disagree"),
                                                 egger.begg = ifelse(egger.test + begg.test > 1, "agree", "disagree"),
                                                 tes.d.egger = ifelse(tes.d.test + egger.test > 1, "agree", "disagree"),
                                                 thompson.tes.d = ifelse(thompson.test +tes.d.test > 1, "agree", "disagree"),
                                                 tes.d.begg = ifelse(tes.d.test + begg.test > 1, "agree", "disagree"))
-agreement.sig.surv <- meta.surv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/sum(egger.test),
+agreement.sig.surv <- meta.iv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/sum(egger.test),
                                                              thompson.tes.d = sum(thompson.tes.d == "agree")/sum(thompson.test),
                                                              tes.d.begg = sum(tes.d.begg == "agree")/sum(begg.test),
                                                              thompson.egger = sum(thompson.egger == "agree")/sum(thompson.test),
@@ -214,24 +186,15 @@ colnames(surv.tests.agreement) <- c("Excess significance, Egger (survival)", "Ex
 
 #Merging:
 test.agreement <- rbind(t(binary.tests.agreement), t(cont.tests.agreement), t(surv.tests.agreement))
-
+#--------------------------------------------------------------------------------------------------------------------#
 
 sig.level <- 0.1
 meta.f <- meta.f %>% rowwise() %>% 
-  mutate(egger.test = ifelse(pval1.egger < sig.level, 1, 0),
-         thompson.test = ifelse(pval1.thompson < sig.level, 1, 0),
-         begg.test = ifelse(pval1.begg < sig.level, 1, 0),
-         
-         schwarzer.test = ifelse(pval1.schwarzer < sig.level, 1, 0),
-         rucker.test = ifelse(pval1.rucker < sig.level, 1, 0),
-         harbord.test = ifelse(pval1.harbord < sig.level, 1, 0),
-         peter.test = ifelse(pval1.peter < sig.level, 1, 0),
-         I2 = max(c(0, 1 - (k-1)/Q)),
-         i2f = factor(ifelse(I2 == 0, 1, 0)))
+  mutate(i2f = factor(ifelse(I2 == 0, 1, 0)))
 
-meta.bin <- meta.f %>% filter(outcome.type == "bin")
-meta.cont <- meta.f %>% filter(outcome.type == "cont")
-meta.surv <- meta.f %>% filter(outcome.type == "surv")
+meta.bin <- meta.f %>% filter(outcome.flag == "DICH")
+meta.cont <- meta.f %>% filter(outcome.flag == "CONT")
+meta.iv <- meta.f %>% filter(outcome.flag == "IV")
 
 
 
@@ -274,12 +237,12 @@ p.dist.cont <- meta.cont %>% ungroup() %>%
 #--------------------------------------------------------------------------------------------------------------------#
 
 dat_text <- data.frame(
-  label = paste(c(sum(meta.surv$begg.test), sum(meta.surv$egger.test), sum(meta.surv$thompson.test), sum(meta.surv$tes.d.test, na.rm = T)), "< 0.1,",
-                round(c(mean(meta.surv$begg.test), mean(meta.surv$egger.test), mean(meta.surv$thompson.test), mean(meta.surv$tes.d.test, na.rm = T)),2)*100, "%"),
+  label = paste(c(sum(meta.iv$begg.test), sum(meta.iv$egger.test), sum(meta.iv$thompson.test), sum(meta.iv$tes.d.test, na.rm = T)), "< 0.1,",
+                round(c(mean(meta.iv$begg.test), mean(meta.iv$egger.test), mean(meta.iv$thompson.test), mean(meta.iv$tes.d.test, na.rm = T)),2)*100, "%"),
   test.type   = c("pval1.begg", "pval1.egger", "pval1.thompson", "pval1.d.tes"),
   i2f = factor(rep(0, times = 4)))
 
-p.dist.surv <- meta.surv %>% ungroup() %>% 
+p.dist.surv <- meta.iv %>% ungroup() %>% 
   select(i2f, pval1.egger, pval1.thompson, pval1.begg, pval1.d.tes) %>% 
   gather(key = "test.type", value = "p.value", pval1.egger:pval1.d.tes) %>% 
   ggplot(aes(x = p.value, fill = i2f)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
@@ -318,6 +281,7 @@ panel.pts.new <- function (x, y, corr = NULL, col.regions, cor.method, ...)
 
 # Tukey Mean difference plots;
 #--------------------------------------------------------------------------------------------------------------------#
+logit <- function(x) log(x/(1-x))
 
 egger.thompson.plot <- meta.f %>% 
   mutate(mean = ((logit(pval1.egger)+ logit(pval1.thompson)))/2, 
@@ -420,7 +384,7 @@ summary.bin <- round(meta.f %>%
 
 summary.else <- round(meta.f %>% group_by(test.sum.else) %>% 
                         summarise(n = n()) %>% 
-                        select(n)/(dim(meta.cont)[1] + dim(meta.surv)[1]) * 100, 1)
+                        select(n)/(dim(meta.cont)[1] + dim(meta.iv)[1]) * 100, 1)
 
 number.sig.tests <- data.frame(number = seq(from = 0, to = 5),
                                binary = paste(summary.bin$n[-7], "%"),
@@ -449,7 +413,7 @@ both.bin.b <- round(length(which(meta.f$test.sum.bin2 == 2))/
 both.else.b <- round(length(which(meta.f$test.sum.else2 == 2))/
                      length(which(!is.na(meta.f$test.sum.else2)))*100, 1)
 
-meta.f <- meta.f %>% mutate(egger.test = ifelse(pval1.egger < 0.1/3, 1, 0),
+meta.f <- meta.f %>% rowwise() %>% mutate(egger.test = ifelse(pval1.egger < 0.1/3, 1, 0),
                             thompson.test = ifelse(pval1.thompson < 0.1/3, 1, 0),
                             begg.test = ifelse(pval1.begg < 0.1/3, 1, 0),
                             
@@ -510,7 +474,7 @@ grid.arrange(p.dist.bin,
 \end{figure}
 
 %Agreement table -> Chunck 1
-The histograms in Figure \ref{fig:test} show that most distributions are clearly skewed to the right, indicating evidence for small study effects. Exceptions from this are the excess significance and Schwarzer's test, and the tests for survival outcomes. There, there is no evidence for publication bias, and the histograms are even skewed to the left (Schwarzer). But note that the sample size of survival outcomes is small ($n$ = \Sexpr{dim(meta.surv)[1]}). \\
+The histograms in Figure \ref{fig:test} show that most distributions are clearly skewed to the right, indicating evidence for small study effects. Exceptions from this are the excess significance and Schwarzer's test, and the tests for survival outcomes. There, there is no evidence for publication bias, and the histograms are even skewed to the left (Schwarzer). But note that the sample size of survival outcomes is small ($n$ = \Sexpr{dim(meta.iv)[1]}). \\
 There is discrepancy between continuous and binary data test results; the evidence for small study effects in continuous data is clearly larger. Also, we see that the $I^2$ statistic of the proportion of overall between-study heterogeneity is distributed differently for the tests, with results with $I^2 = 0$ being evenly distributed in binary outcomes along the range of $p$-values, while they are more similar to the meta-analyses with larger heterogeneity for continuous outcome.\\
 In the literature, the excess significance test is advised to be used in the case of no between study heterogeneity. Since there are no small $p$-values for such meta-analyses, one must conclude that there is no excess significance in the dataset. The obvious correspondence with the heterogeneity statistic however rather suggests that the test is another way to assess between study heterogeneity. Thompson test and R\"ucker's test are designed such that they take into account the between study heterogeneity when assessing small study effects. When no heterogeneity is given, Thompson's test results and Egger's test result should be equal, however, the $I^2$ statistic is computed by a more suitable estimator \citep{paulemandel} of $\tau^2$ as the estimator that Thompson and Sharp's test uses (method of moment estimator of \citet{tau.estimator}, which is more conservative by usually finding larger $\tau^2$). In the part of the histogram with $I^2 > 0$, the two tests are more reliable than the remaining tests, while the opposite is expected from simulations \citep{limitmeta} when $I^2 = 0$.\\
 
@@ -661,7 +625,7 @@ adjustment.p.d <- meta.f %>%
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Comparison of log hazard ratios:
-sig.d <- meta.f %>% filter(outcome.type == "surv") %>% 
+sig.d <- meta.f %>% filter(outcome.flag == "IV") %>% 
   mutate(d.fixef = est.fixef/se.est.fixef,
          d.ranef = est.ranef/se.est.ranef,
          d.reg = est.reg/se.est.reg,
@@ -680,7 +644,7 @@ method_names <- c(
   d.copas = "Copas"
 )
 
-adjustment.p.log.hazard.ratio <- meta.f %>% filter(outcome.type == "surv") %>% 
+adjustment.p.log.hazard.ratio <- meta.f %>% filter(outcome.flag == "IV") %>% 
   mutate(d.fixef = est.fixef/se.est.fixef,
          d.ranef = est.ranef/se.est.ranef,
          d.reg = est.reg/se.est.reg,
@@ -713,13 +677,13 @@ meta.f <- meta.f %>% rowwise() %>%
          peter.test = ifelse(pval1.peter < sig.level, 1, 0),
          I2 = max(c(0, 1 - (k-1)/Q)),
          i2f = factor(ifelse(I2 == 0, 1, 0)),
-         se.stat.c = ifelse(outcome.type == "bin", stat.rucker, stat.thompson),
+         se.stat.c = ifelse(outcome.flag == "DICH", stat.rucker, stat.thompson),
          se.stat = cut(se.stat.c,
                        breaks =  c(-7,1, 2, 4.5)))
 
-meta.bin <- meta.f %>% filter(outcome.type == "bin")
-meta.cont <- meta.f %>% filter(outcome.type == "cont")
-meta.surv <- meta.f %>% filter(outcome.type == "surv")
+meta.bin <- meta.f %>% filter(outcome.flag == "DICH")
+meta.cont <- meta.f %>% filter(outcome.flag == "CONT")
+meta.iv <- meta.f %>% filter(outcome.flag == "IV")
 
 #Meta-Analysis and adjusted treatment effect estimate difference:
 
@@ -878,7 +842,7 @@ xlab(expression(paste("Random effects - adjusted Hedges ", italic(g)))) + geom_v
 
 
 #Log hazard ratios:
-diff.log.hazard.ratio.fixef <- meta.surv %>% 
+diff.log.hazard.ratio.fixef <- meta.iv %>% 
   mutate(fixef = est.fixef, ranef = est.ranef,
          copas = est.copas, regression = est.reg) %>% 
   mutate(copas = case_when(sign(copas) == sign(fixef) ~  abs(copas),
@@ -893,7 +857,7 @@ diff.log.hazard.ratio.fixef <- meta.surv %>%
   facet_wrap(~method) + theme_bw() + xlab("Fixed effects - adjusted log hazard ratio") + geom_vline(xintercept = 0, linetype = "dashed" )
 #--------------------------------------------------------------------------------------------------------------------#
 
-diff.log.hazard.ratio.ranef <- meta.surv %>% 
+diff.log.hazard.ratio.ranef <- meta.iv %>% 
   mutate(fixef = est.fixef, ranef = est.ranef,
          copas = est.copas, regression = est.reg) %>% 
   mutate(copas = case_when(sign(copas) == sign(ranef) ~  abs(copas),
@@ -984,7 +948,7 @@ adjustment.diff <- adjustment.diff.keep %>%
 
 m.adjustment.diff <- as.matrix(adjustment.diff)
 
-adjustmend.diff.surv <- meta.surv %>% 
+adjustmend.diff.surv <- meta.iv %>% 
   transmute(est.copas.f = case_when(sign(est.copas) == sign(est.fixef) ~  abs(est.copas),
                                     sign(est.copas) != sign(est.fixef) ~ -abs(est.copas)),
             est.copas.r = case_when(sign(est.copas) == sign(est.ranef) ~  abs(est.copas),
@@ -1017,14 +981,14 @@ adjustment.diff.largerzero <- (apply(m.adjustment.diff, 2, FUN = function(column
 adjustment.diff.equalzero <- (apply(m.adjustment.diff, 2, FUN = function(column) length(which(column == 0)))/apply(m.adjustment.diff, 2, FUN = function(column) length(column)))*100
 adjustment.diff.largerequalzero <- (apply(m.adjustment.diff, 2, FUN = function(column) length(which(column >= 0)))/apply(m.adjustment.diff, 2, FUN = function(column) length(column)))*100
 adjustment.diff.comp.errors <- c(4,4,0,0,0,0,0,0)
-adjustment.diff.noest <- c(sum(meta.f$est.z.copas.na[meta.f$outcome.type != "surv"]), 
-                                sum(meta.f$est.z.copas.na[meta.f$outcome.type != "surv"]),
-                                sum(meta.f$est.z.reg.na[meta.f$outcome.type != "surv"]), 
-                                sum(meta.f$est.z.reg.na[meta.f$outcome.type != "surv"]),
-                                sum(meta.f$est.d.copas.na[meta.f$outcome.type != "surv"]), 
-                                sum(meta.f$est.d.copas.na[meta.f$outcome.type != "surv"]),
-                                sum(meta.f$est.d.reg.na[meta.f$outcome.type != "surv"]), 
-                                sum(meta.f$est.d.reg.na[meta.f$outcome.type != "surv"]))
+adjustment.diff.noest <- c(sum(meta.f$est.z.copas.na[meta.f$outcome.flag != "IV"]), 
+                                sum(meta.f$est.z.copas.na[meta.f$outcome.flag != "IV"]),
+                                sum(meta.f$est.z.reg.na[meta.f$outcome.flag != "IV"]), 
+                                sum(meta.f$est.z.reg.na[meta.f$outcome.flag != "IV"]),
+                                sum(meta.f$est.d.copas.na[meta.f$outcome.flag != "IV"]), 
+                                sum(meta.f$est.d.copas.na[meta.f$outcome.flag != "IV"]),
+                                sum(meta.f$est.d.reg.na[meta.f$outcome.flag != "IV"]), 
+                                sum(meta.f$est.d.reg.na[meta.f$outcome.flag != "IV"]))
 adjustment.diff.missing <- (adjustment.diff.comp.errors + adjustment.diff.noest)/apply(m.adjustment.diff, 2, FUN = function(column) length(column))*100
 
 
@@ -1043,8 +1007,8 @@ adjustment.diff.largerzero.surv <- (apply(m.adjustment.diff.surv, 2, FUN = funct
 adjustment.diff.equalzero.surv <- (apply(m.adjustment.diff.surv, 2, FUN = function(column) length(which(column == 0)))/apply(m.adjustment.diff.surv, 2, FUN = function(column) length(column)))*100
 adjustment.diff.largerequalzero.surv <- (apply(m.adjustment.diff.surv, 2, FUN = function(column) length(which(column > 0)))/apply(m.adjustment.diff.surv, 2, FUN = function(column) length(column)))*100
 adjustment.diff.comp.errors.surv <- c(0,0,0,0)
-adjustment.diff.noest.surv <- c(sum(meta.surv$est.copas.na), sum(meta.surv$est.copas.na),
-                                sum(meta.surv$est.reg.na), sum(meta.surv$est.reg.na))
+adjustment.diff.noest.surv <- c(sum(meta.iv$est.copas.na), sum(meta.iv$est.copas.na),
+                                sum(meta.iv$est.reg.na), sum(meta.iv$est.reg.na))
 adjustment.diff.missing.surv <- ((adjustment.diff.comp.errors.surv + adjustment.diff.noest.surv)/apply(m.adjustment.diff.surv, 2, FUN = function(column) length(column)))*100
 
 adjustment.diff.table.surv <- rbind(adjustment.diff.quantile.table.surv, mean = adjustment.diff.mean.surv,
@@ -1141,17 +1105,17 @@ missing.differences <- rbind(missing.z.fixef, missing.z.ranef, missing.d.fixef, 
 missing.differences <- missing.differences %>% distinct(meta.id)
 
 missing.differences <- merge(meta.f[,
-        c("meta.id", "file.nr", "comparison.nr", "subgroup.nr",
+        c("meta.id", "id", "comparison.nr", "subgroup.nr",
           "est.z.ranef", "est.z.fixef", "est.z.copas", "est.z.reg", 
           "est.d.fixef", "est.d.ranef", "est.d.copas", "est.d.reg")],
         missing.differences, by = "meta.id")
 
 missing.differences <- round(missing.differences, 2)
 
-missing.differences <- missing.differences %>% mutate(meta.id = as.character(meta.id), file.nr = as.character(meta.id),
+missing.differences <- missing.differences %>% mutate(meta.id = as.character(meta.id), id = as.character(meta.id),
                                                       comparison.nr = as.character(comparison.nr), subgroup.nr = as.character(subgroup.nr))
 
-colnames(missing.differences) <- c("meta.id", "file.nr", "comparison.nr", "subgroup.nr",
+colnames(missing.differences) <- c("meta.id", "id", "comparison.nr", "subgroup.nr",
                                    "z fixed", "z random", "z Copas", "z regression",
                                    "g fixed", "g random", "g Copas", "g regression")
 
@@ -1332,4 +1296,29 @@ grid.arrange(adjustment.mean.diff.orig,
 \end{figure}
 
 No formal tests are provided, but the at least there seems to be no clear bias or systematic error. The limits of agreement in Figure \ref{fig:adjustment.mean.diff} are large. We conclude thus that the impact of regression adjustment on the effect sizes is in general not substantially larger than the impact of Copas selection model in the subset of data where the estimate of the Copas selection model is not equal to a random effects estimate. There is however a small difference, with regression estimates to have a little bit a larger absolute value. There might be some bias between adjusted $z$-scores, where regression estimates seem to be somewhat smaller when the mean is a little above zero, and somewhat larger when the mean is a little below zero. \\
+
+
+
+
+
+
+
+
+
+
+
+<<echo = FALSE, results = 'asis'>>=
+print(xtable(test.agreement, align = "lcc", caption = "Overall proportion of agreement if significant or unsignificant, and for significance only. Horizontal lines separate binary, continuous and IV outcomes (order as in table). The reference significance test is the one with more significant results.",
+             label = "test.agreement"),, size = "scriptsize")
+@
+
+
+
+
+
+
+
+
+
+
 

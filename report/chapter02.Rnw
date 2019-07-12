@@ -401,7 +401,7 @@ Simulations in \citet{limitmeta} suggested that the latter estimate is slightly 
 
 
 
-\subsection{Copas Selection Model}
+\subsection{Copas Selection Model} \label{sec:copas}
 
 A method proposed in \cite{Copas1,Copas2,Copas3} 
 assumes that the given sample of treatment effects and standard errors is a selected part of a larger random sample. Selection of studies depends on their effect size and variance. Smaller variance is always accompanied by larger selection probability. \\

@@ -12,12 +12,11 @@ stringr
 forcats
 meta
 metasens
-survival
-biostatUZH
 gridExtra
 Matrix
 metafor
 xtable
-roadoi
+xml2
+rvest
 bindrcpp
 corrgram

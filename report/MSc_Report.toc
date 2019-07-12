@@ -29,19 +29,19 @@
 \contentsline {section}{\numberline {3.1}Cochrane Systematic Reviews}{15}{section.3.1}
 \contentsline {subsection}{\numberline {3.1.1}Methods for Cochrane Reviews}{16}{subsection.3.1.1}
 \contentsline {subsection}{\numberline {3.1.2}Structure and Content}{17}{subsection.3.1.2}
-\contentsline {section}{\numberline {3.2}Data Tidying and Processing}{21}{section.3.2}
-\contentsline {subsection}{\numberline {3.2.1}Modification of old variables}{21}{subsection.3.2.1}
-\contentsline {subsection}{\numberline {3.2.2}Newly Introduced Variables}{21}{subsection.3.2.2}
-\contentsline {subsection}{\numberline {3.2.3}Eligibility criteria for Publication Bias Test and Adjustment}{22}{subsection.3.2.3}
+\contentsline {section}{\numberline {3.2}Data Tidying and Processing}{20}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Newly Introduced Variables}{20}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}Eligibility criteria for Publication Bias Test and Adjustment}{21}{subsection.3.2.2}
 \contentsline {subsubsection}{Exclusions due to Computational Errors}{22}{section*.17}
-\contentsline {subsubsection}{The Publication Bias Test and Adjustment Dataset}{23}{section*.18}
+\contentsline {subsubsection}{The Analysis Dataset}{22}{section*.18}
+\contentsline {subsection}{\numberline {3.2.3}Analysis Procedure}{22}{subsection.3.2.3}
 \contentsline {chapter}{\numberline {4}Results}{25}{chapter.4}
 \contentsline {section}{\numberline {4.1}Publication Bias Test Results}{25}{section.4.1}
 \contentsline {subsection}{\numberline {4.1.1}Publication Bias Test Consistency}{27}{subsection.4.1.1}
-\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{29}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{29}{subsection.4.2.1}
+\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{30}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{30}{subsection.4.2.1}
 \contentsline {subsection}{\numberline {4.2.2}Change in Evidence for Treatment Effects}{31}{subsection.4.2.2}
 \contentsline {subsection}{\numberline {4.2.3}Comparison of adjustment methods}{33}{subsection.4.2.3}
-\contentsline {chapter}{\numberline {A}Appendix}{35}{appendix.A}
+\contentsline {chapter}{\numberline {A}Appendix}{39}{appendix.A}
 \vspace *{10mm}
-\contentsline {chapter}{\bfseries Bibliography}{37}{section*.31}
+\contentsline {chapter}{\bfseries Bibliography}{41}{section*.32}

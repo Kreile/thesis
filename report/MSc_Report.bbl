@@ -7,9 +7,15 @@ Begg, C.~B. (1988).
   price £22.50.
 \newblock {\em Statistics in Medicine}, {\bf7},  817--818.
 
-\bibitem[Borenstein {\it et~al.}, 2011]{Intro.meta}
+\bibitem[Borenstein {\it et~al.}, 2011a]{metaanalysis}
 Borenstein, M., Hedges, L.~V., Higgins, J. P.~T., Rothstein, H.~R., and
-  Higgins, D. J. P.~T. (2011).
+  Higgins, D. J. P.~T. (2011a).
+\newblock {\em Introduction to Meta-Analysis}.
+\newblock John Wiley \& Sons, Incorporated, Hoboken, UNKNOWN.
+
+\bibitem[Borenstein {\it et~al.}, 2011b]{Intro.meta}
+Borenstein, M., Hedges, L.~V., Higgins, J. P.~T., Rothstein, H.~R., and
+  Higgins, D. J. P.~T. (2011b).
 \newblock {\em Introduction to Meta-Analysis}.
 \newblock John Wiley \& Sons, Incorporated, Hoboken, UNKNOWN.
 
@@ -45,11 +51,22 @@ DerSimonian, R. and Laird, N. (1986).
 \newblock Meta-analysis in clinical trials.
 \newblock {\em Controlled Clinical Trials}, {\bf7},  177 -- 188.
 
+\bibitem[Dickersin {\it et~al.}, 1987]{pb.clinicalscience1}
+Dickersin, K., Chan, S., Chalmersx, T., Sacks, H., and Smith, H. (1987).
+\newblock Publication bias and clinical trials.
+\newblock {\em Controlled Clinical Trials}, {\bf8},  343 -- 353.
+
 \bibitem[Duval and Tweedie, 2000]{trimfill}
 Duval, S. and Tweedie, R. (2000).
 \newblock Trim and fill: A simple funnel-plot based method of testing and
   adjusting for publication bias in meta-analysis.
 \newblock {\em Biometrics}, {\bf56},  455--463.
+
+\bibitem[Egger {\it et~al.}, 2003]{grey.literature.3}
+Egger, M., Juni, P., Bartlett, C., Holenstein, F., and Sterne, J. (2003).
+\newblock How important are comprehensive literature searches and the
+  assessment of trial quality in systematic reviews? empirical study.
+\newblock {\em Health Technol Assess}, {\bf7},  1--76.
 
 \bibitem[Egger {\it et~al.}, 1997]{Egger}
 Egger, M., Smith, G.~D., Schneider, M., and Minder, C. (1997).
@@ -107,10 +124,41 @@ Ioannidis, J.~P. and Trikalinos, T.~A. (2007b).
 \newblock An exploratory test for an excess of significant findings.
 \newblock {\em Clinical Trials}, {\bf4},  245--253.
 
+\bibitem[Jones {\it et~al.}, 2013]{pb.clinicalscience.2013}
+Jones, C.~W., Handler, L., Crowell, K.~E., Keil, L.~G., Weaver, M.~A., and
+  Platts-Mills, T.~F. (2013).
+\newblock Non-publication of large randomized clinical trials: cross sectional
+  analysis.
+\newblock {\em BMJ (Clinical research ed.)}, {\bf347},  f6104--f6104.
+
 \bibitem[Kasuya, 2001]{t.test}
 Kasuya, E. (2001).
 \newblock Mann-whitney u test when variances are unequal.
 \newblock {\em Animal Behaviour}, {\bf6},  1247--1249.
+
+\bibitem[Kicinski {\it et~al.}, 2015]{kicinsky}
+Kicinski, M., Springate, D., and Kontopantelis, E. (2015).
+\newblock Publication bias in meta-analyses from the cochrane database of
+  systematic reviews.
+\newblock {\em Statistics in medicine}, {\bf34},  2781--2793.
+
+\bibitem[Lane and Dunlap, 1978]{dunlap1978}
+Lane, D.~M. and Dunlap, W.~P. (1978).
+\newblock Estimating effect size: Bias resulting from the significance
+  criterion in editorial decisions.
+\newblock {\em British Journal of Mathematical and Statistical Psychology},
+  {\bf31},  107--112.
+
+\bibitem[Law, 2007]{fda}
+Law, U.~P. (2007).
+\newblock {\em United States Code 110--85}.
+\newblock Food and Drug Administration Amendments Act.
+
+\bibitem[McAuley {\it et~al.}, 2000]{grey.literature.2}
+McAuley, L., Pham, B., Tugwell, P., and Moher, D. (2000).
+\newblock Does the inclusion of grey literature influence estimates of
+  intervention effectiveness reported in meta-analyses?
+\newblock {\em The Lancet}, {\bf356},  1228 -- 1231.
 
 \bibitem[McShane {\it et~al.}, 2016]{selection.assessment}
 McShane, B.~B., B{\"o}ckenholt, U., and Hansen, K.~T. (2016).
@@ -134,6 +182,11 @@ R{\"u}cker, G., Carpenter, J.~R., and Schwarzer, G. (2011).
 \newblock Detecting and adjusting for small-study effects in meta-analysis.
 \newblock {\em Biometrical Journal}, {\bf53},  351--368.
 
+\bibitem[Schwarzer, 2007]{meta.package}
+Schwarzer, G. (2007).
+\newblock meta: {A}n {R} package for meta-analysis.
+\newblock {\em R News}, {\bf7},  40--45.
+
 \bibitem[Schwarzer {\it et~al.}, 2007]{Schwarzer}
 Schwarzer, G., Antes, G., and Schumacher, M. (2007).
 \newblock A test for publication bias in meta-analysis with sparse binary data.
@@ -144,10 +197,29 @@ Schwarzer, G., Carpenter, J.~R., and R{\"u}cker, G. (2015).
 \newblock {\em Meta-analysis with R}, volume 4724.
 \newblock Springer.
 
+\bibitem[Sterne {\it et~al.}, 2001]{sterne2001}
+Sterne, J. A.~C., Egger, M., and Smith, G.~D. (2001).
+\newblock Investigating and dealing with publication and other biases in
+  meta-analysis.
+\newblock {\em BMJ}, {\bf323},  101--105.
+
 \bibitem[Thompson and Sharp, 1999]{thompson.sharp}
 Thompson, S.~G. and Sharp, S.~J. (1999).
 \newblock Explaining heterogeneity in meta-analysis: a comparison of methods.
 \newblock {\em Statistics in Medicine}, {\bf18},  2693--2708.
+
+\bibitem[Turner {\it et~al.}, 2008]{grey.literature.4}
+Turner, E.~H., Matthews, A.~M., Linardatos, E., Tell, R.~A., and Rosenthal, R.
+  (2008).
+\newblock Selective publication of antidepressant trials and its influence on
+  apparent efficacy.
+\newblock {\em New England Journal of Medicine}, {\bf358},  252--260.
+
+\bibitem[van Aert {\it et~al.}, 2019]{vanAert.2019}
+van Aert, R. C.~M., Wicherts, J.~M., and van Assen, M. A. L.~M. (2019).
+\newblock Publication bias examined in meta-analyses from psychology and
+  medicine: A meta-meta-analysis.
+\newblock {\em PLOS ONE}, {\bf14},  1--32.
 
 \bibitem[Veroniki {\it et~al.}, 2016]{tau.estimator.evaluation}
 Veroniki, A.~A., Jackson, D., Viechtbauer, W., Bender, R., Bowden, J., Knapp,
@@ -156,10 +228,20 @@ Veroniki, A.~A., Jackson, D., Viechtbauer, W., Bender, R., Bowden, J., Knapp,
   meta-analysis.
 \newblock {\em Research Synthesis Methods}, {\bf7},  55--79.
 
+\bibitem[Viechtbauer, 2010]{metafor.package}
+Viechtbauer, W. (2010).
+\newblock Conducting meta-analyses in {R} with the {metafor} package.
+\newblock {\em Journal of Statistical Software}, {\bf36},  1--48.
+
 \bibitem[Whitehead and Whitehead, 1991]{whitehead}
 Whitehead, A. and Whitehead, J. (1991).
 \newblock A general parametric approach to the meta-analysis of randomized
   clinical trials.
 \newblock {\em Statistics in Medicine}, {\bf10},  1665--1677.
+
+\bibitem[Wickham, 2016]{ggplot2}
+Wickham, H. (2016).
+\newblock {\em ggplot2: Elegant Graphics for Data Analysis}.
+\newblock Springer-Verlag New York.
 
 \end{thebibliography}

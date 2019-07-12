@@ -7,6 +7,7 @@
 \usepackage{tikz}
 \usepackage{amssymb}
 \usetikzlibrary{trees}
+\usetikzlibrary{shapes,arrows}
 
 
 \begin{document}
@@ -30,7 +31,7 @@ opts_chunk$set(
 \thispagestyle{empty}
 \begin{center}
   \vspace*{6cm}{\bfseries\Huge
-  Publication Bias in the Cochrane Database of Systematic Reviews
+  Publication Bias in the Cochrane \vspace{3mm} Database of Systematic Reviews
   }
   \vfill
   \rm
