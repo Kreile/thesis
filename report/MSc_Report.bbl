@@ -7,15 +7,14 @@ Begg, C.~B. (1988).
   price £22.50.
 \newblock {\em Statistics in Medicine}, {\bf7},  817--818.
 
-\bibitem[Borenstein {\it et~al.}, 2011a]{metaanalysis}
-Borenstein, M., Hedges, L.~V., Higgins, J. P.~T., Rothstein, H.~R., and
-  Higgins, D. J. P.~T. (2011a).
-\newblock {\em Introduction to Meta-Analysis}.
-\newblock John Wiley \& Sons, Incorporated, Hoboken, UNKNOWN.
+\bibitem[Bishop, 2019]{Bishop.2019}
+Bishop, D. (2019).
+\newblock Rein in the four horsemen of irreproducibility.
+\newblock {\em Nature}, {\bf568},  435.
 
-\bibitem[Borenstein {\it et~al.}, 2011b]{Intro.meta}
+\bibitem[Borenstein {\it et~al.}, 2011]{Intro.meta}
 Borenstein, M., Hedges, L.~V., Higgins, J. P.~T., Rothstein, H.~R., and
-  Higgins, D. J. P.~T. (2011b).
+  Higgins, D. J. P.~T. (2011).
 \newblock {\em Introduction to Meta-Analysis}.
 \newblock John Wiley \& Sons, Incorporated, Hoboken, UNKNOWN.
 
@@ -45,6 +44,12 @@ Cox, D.~R. (1972).
 \newblock Regression models and life-tables.
 \newblock {\em Journal of the Royal Statistical Society: Series B
   (Methodological)}, {\bf34},  187--202.
+
+\bibitem[Decullier {\it et~al.}, 2005]{publication.fate}
+Decullier, E., Lh{\'e}ritier, V., and Chapuis, F. (2005).
+\newblock Fate of biomedical research protocols and publication bias in france:
+  retrospective cohort study.
+\newblock {\em BMJ (Clinical research ed.)}, {\bf331},  19--19.
 
 \bibitem[DerSimonian and Laird, 1986]{tau.estimator}
 DerSimonian, R. and Laird, N. (1986).
@@ -77,6 +82,11 @@ Egger, M., Smith, G.~D., Schneider, M., and Minder, C. (1997).
 Fleiss, J.~L., Levin, B., and Paik, M.~C. (2013).
 \newblock {\em Statistical methods for rates and proportions}.
 \newblock John Wiley \& Sons.
+
+\bibitem[Franco {\it et~al.}, 2014]{social.sciences.publication.bias}
+Franco, A., Malhotra, N., and Simonovits, G. (2014).
+\newblock Publication bias in the social sciences: Unlocking the file drawer.
+\newblock {\em Science}, {\bf345},  1502--1505.
 
 \bibitem[Galbraith, 1988]{galbraith}
 Galbraith, R.~F. (1988).
@@ -124,6 +134,11 @@ Ioannidis, J.~P. and Trikalinos, T.~A. (2007b).
 \newblock An exploratory test for an excess of significant findings.
 \newblock {\em Clinical Trials}, {\bf4},  245--253.
 
+\bibitem[Ioannidis and Thombs, 2019]{ioannidis.2019}
+Ioannidis, J. P.~A. and Thombs, B.~D. (2019).
+\newblock A user's guide to inflated and manipulated impact factors.
+\newblock {\em European Journal of Clinical Investigation}, {\bf0},  e13151.
+
 \bibitem[Jones {\it et~al.}, 2013]{pb.clinicalscience.2013}
 Jones, C.~W., Handler, L., Crowell, K.~E., Keil, L.~G., Weaver, M.~A., and
   Platts-Mills, T.~F. (2013).
@@ -141,13 +156,6 @@ Kicinski, M., Springate, D., and Kontopantelis, E. (2015).
 \newblock Publication bias in meta-analyses from the cochrane database of
   systematic reviews.
 \newblock {\em Statistics in medicine}, {\bf34},  2781--2793.
-
-\bibitem[Lane and Dunlap, 1978]{dunlap1978}
-Lane, D.~M. and Dunlap, W.~P. (1978).
-\newblock Estimating effect size: Bias resulting from the significance
-  criterion in editorial decisions.
-\newblock {\em British Journal of Mathematical and Statistical Psychology},
-  {\bf31},  107--112.
 
 \bibitem[Law, 2007]{fda}
 Law, U.~P. (2007).
@@ -171,6 +179,11 @@ Paule, R.~C. and Mandel, J. (1982).
 \newblock Consensus values and weighting factors.
 \newblock {\em Journal of Research of the National Bureau of Standards},
   {\bf87},  377--385.
+
+\bibitem[{R Core Team}, 2018]{R.base}
+{R Core Team} (2018).
+\newblock {\em R: A Language and Environment for Statistical Computing}.
+\newblock R Foundation for Statistical Computing, Vienna, Austria.
 
 \bibitem[Rosenthal and Rubin, 1982]{fixed.effects.rosenthal}
 Rosenthal, R. and Rubin, D.~B. (1982).
@@ -243,5 +256,10 @@ Whitehead, A. and Whitehead, J. (1991).
 Wickham, H. (2016).
 \newblock {\em ggplot2: Elegant Graphics for Data Analysis}.
 \newblock Springer-Verlag New York.
+
+\bibitem[Wickham, 2017]{tidyverse.package}
+Wickham, H. (2017).
+\newblock {\em tidyverse: Easily Install and Load the 'Tidyverse'}.
+\newblock R package version 1.2.1.
 
 \end{thebibliography}

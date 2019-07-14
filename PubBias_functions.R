@@ -595,7 +595,7 @@ setting.id <- function(meta.id.tolook){
 }
 
 est.id <- function(meta.id.tolook){
-  return(meta %>% filter(meta.id == meta.id.tolook) %>% select(est.fixef, est.ranef, est.copas, est.trimfill.fixef, est.reg.ranef))
+  return(meta %>% filter(meta.id == meta.id.tolook) %>% select(est.fixef, est.ranef, est.copas, est.reg))
 }
 
 data.id <- function(meta.id.tolook){

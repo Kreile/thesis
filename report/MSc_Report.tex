@@ -123,15 +123,41 @@
 
 \chapter{Introduction}
 
-Already in 1978, scientists raised concern that effect sizes could be overestimated systematically if journals were ``not willing to drop their policy to use statistical significance as one of their criteria for publication'' \citep{dunlap1978}. Scientific findings get more attention and are more likely to be published, read and cited if they are implying large effects. The issue has been pin-pointed in clinical science by many researchers (\citet{pb.clinicalscience1}, \citet{sterne2001}). The concern is that overestimated efficacy of the treatments could lead to harm to patients. \\
-A measure to counter the presence of single, overestimated study results is a meta-analysis \citep{metaanalysis}, a practice originally developped in psychology. Summarized treatment effects and uncertainities should be more robust and reliable. The pitfall is that when the entire body of evidence is again a biased sample of studies with high effects, the estimate is again overestimating the true effect. There is extensive literature on publication bias in meta-analyses, e.g. (\citet{pb.clinicalscience.2013}, %\citet{Hopewell02}, 
+Studies get more attention and are more likely to be published, read and cited if they are implying large effects. Studies with no evidence for an effect are less likely to get published. This generates a bias called ``publication bias'', which distorts the view of the evidence for an effect. Recently, publication bias has been identified as one of the major concerns in irreproducible research \citep{Bishop.2019}. The issue has been pin-pointed in clinical science by many researchers (\citet{pb.clinicalscience1}, \citet{sterne2001}). In medical research, clinical trials study the efficacy of therapies and drugs. The gold standard in such intervention studies are randomized, (placebo) controlled, trials (RCTs). Results from such clinical studies influence the treatment of patients in daily clinical practice. The results from multiple intervention studies are summarized in meta-analyses and reflect the overall evidence for a treatment effect. Summarized treatment effects and uncertainities should be more robust and reliable. Publication bias can bias the overall effect estimates from meta-analyses and eventually lead to ineffective treatments that could lead to patient harm. \\
+There is extensive literature on publication bias in meta-analyses, e.g. (\citet{pb.clinicalscience.2013}, %\citet{Hopewell02}, 
 \citet{grey.literature.4}, \citet{grey.literature.3}, \citet{grey.literature.2}). 
-All authors agree in that the inclusion of unpublished results in meta-analyses is insufficient and responsible for overestimation of treatment efficacy. Although there are policies that make it mandatory to make accessible all study results \citep{fda}, it is not clear if the situation has improved yet.\\
-The Cochrane Organisation has specialized on systematic reviews of healthcare interventions. Methodological and field experts collect data, review them and try to provide up-to-date information about specific treatment efficacies \citep{cochrane.handbook}. By extensive literature scrutinization, they try to circumvent the issue of publication bias. Earlier research however suggests that the efforts are only partially succesfull, and that there still is publication bias within the reviews (\citet{Egger}, \citet{Ioannidis2007}, \citet{kicinsky}, \citet{vanAert.2019}). 
-However, none of the research so far has estimated the amount and impact of publication bias on meta-analytical findings thoroughly and with the most suitable methods. Also, the results are often presented in the form of dichotomized hypothesis tests, a practice known to contribute to publication bias itself (cite sb).\\
+All authors agree in that the exclusion of unpublished results in meta-analyses is responsible for overestimation of treatment effects. Although there are policies that make it mandatory to make accessible all study results \citep{fda}, it is not clear if the situation has improved yet.\\
+The Cochrane Organisation has specialized on systematic reviews of healthcare interventions. Researchers that write a systematic review collect data across studies, review them and try to provide up-to-date information about specific treatment efficacies \citep{cochrane.handbook}. By extensive literature scrutinization, they try to circumvent the issue of publication bias. Earlier research however suggests that the efforts are only partially succesful, and that there still is publication bias within the reviews (\citet{Egger}, \citet{Ioannidis2007}, \citet{kicinsky}, \citet{vanAert.2019}). In this publications, the results of a part of the Cochrane Database of systematic reviews is analysed with small study effect tests or bayesian hierarchical selection models \citep{kicinsky}. They all find moderate to large evidence for publication bias in the Database. A more thorough discussion of their methods and results will follow in chapter \ref{ch:Discussion}. None of the research so far has estimated the amount and impact of publication bias on meta-analytical findings thoroughly and with the most suitable methods. Also, the results are often presented in the form of dichotomized hypothesis tests, a practice known to contribute to publication bias itself (cite sb).\\
 The aim of this thesis is to use prevailed methods to detect publication bias, and make use of the full amount of data that the Cochrane Organisation provides. At the end, an up-to-date estimate of the prevalence of publication bias in the data shall be given, as well as its implications regarding the effect sizes of the treatments. To achieve this, methods to detect and adjust for publication bias in meta-analysis are applied on the data.
 
-% 
+\subsection{Analysing publication bias}
+There are multiple ways to assess the amount of publication bias. For instance, one can follow studies and control if they are getting published depending on their findings \citep{publication.fate}. One often finds that positive findings (\ie large effects) are reported and published more often (see also an example in social sciences: \citet{social.sciences.publication.bias}). Another way is to compare results in study registries with results published in journals (\eg \citet{pb.clinicalscience.2013}). Again one finds systematic differences between published and unpublished results. \\
+A third way is to assess the so-called small study effect in a meta-analysis, that is, a systematic difference between effects of large and small studies. Evidence for small study effects can oftentimes be interpreted as evidence for publication bias \citep{Egger}. The underlying rational is that journal editors are guided by two simple rules (\citet{excess.significance}, \citet{ioannidis.2019}): 
+\begin{itemize}
+\item Publish new and trend-setting findings that lead to many citations, increasing the journal impact factor (JIF).
+\item Publish large trials that are likely to set the standard for a given scientific question, again to increase the JIF.
+\end{itemize}
+This then leads to the so-called asymmetry in the funnel plot of published studies; small studies show larger effect sizes than larger studies do. By means of simple linear regression, one can investigate how much evidence there is for this asymmetry. For illustration purposes, a meta-analysis with large funnel plot asymmetry is shown %\citep{pre.eclampsia}:
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-1-1} 
+
+\end{knitrout}
+\end{figure}
+
+The purpose of a funnel plot is to visualise if an how the estimated treatment effects converge to a common ``real'' treatment effect value (here, the weighted mean treatment effect with weights = inverse variances). This is also shown by the triangle depicted by the dotted line (the spire is at the weighted mean). \\
+We see that while the studies in the meta-analysis on the left are not filling the triangle evenly, but rather accumulate at the left side, they seem to be more evenly distributed in the left triangle. From this, we would ultimately conclude that some sort of bias or heterogeneity is distorting the estimate of the overall treatment effect.\\
+Importantly, this method does not assess publication bias directly. But note that publication bias is also not assessable with the other methods if no complete study registries are available. Thus, the estimation of small study effects is oftentimes the most efficient and simple way to analyse publication bias.
+
+
+
+
+
+% Already in 1978, scientists raised concern that effect sizes could be overestimated systematically if journals were ``not willing to drop their policy to use statistical significance as one of their criteria for publication'' \citep{dunlap1978}. Scientific findings get more attention and are more likely to be published, read and cited if they are implying large effects. The issue has been pin-pointed in clinical science by many researchers (\citet{pb.clinicalscience1}, \citet{sterne2001}). The concern is that overestimated efficacy of the treatments could lead to harm to patients. \\
+% A measure to counter the presence of single, overestimated study results is a meta-analysis \citep{metaanalysis}, a practice originally developped in psychology. Summarized treatment effects and uncertainities should be more robust and reliable. The pitfall is that when the entire body of evidence is again a biased sample of studies with high effects, the estimate is again overestimating the true effect. 
+% % 
 % 
 % Also after the introduction of mandatory registration of clinical trials
 % 
@@ -565,7 +591,7 @@ with $p = E/n$ and $X$ being a binomial random variable with probability $p$.
 \section{Small Study Effect and Publication Bias Adjustment}
 There are different approaches to correct for small study effects and publication bias. They can mainly be distinguished by their underlying methods: regression based approaches aim to regress the effect to a study with infinite precision (\ie very small standard error) or to a summary effect, corrected for publication bias. Selection models aim to simulate different, hypothetical selection processes and attain a approximate treatment effect by sensitivity analysis:
 
-\subsection{Adjustment by Regression}
+\subsection{Adjustment by Regression} \label{sec:regression.adjustment}
 \citet{limitmeta} use a random effects model %together with shrinkage procedure 
 to obtain an unbiased estimate. Similarly to 
 %what has been seen in Copas selection model, we let $y_i$ depend on the intercept $\beta_{0}$ and on its standard error $\sqrt{v_i}$ as in \ref{limitmeta.regression}.
@@ -1144,12 +1170,7 @@ s_z^2 &= \frac{1}{n-3}
 
 
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in arrange\_impl(.data, dots): Evaluation error: object 'Study' not found.}}\end{kframe}
-\end{knitrout}
 
 
 
@@ -1198,10 +1219,24 @@ In Table \ref{barbiturate.row}, two results from a systematic review about barbi
 The \texttt{comparison.name} variable specifies \textit{what kind} of treatments or interventions are compared, the \texttt{outcome.name} variable \textit{how} it is compared, and the \texttt{subgroup.name} variable (not indicated in table) \textit{if and to what experimental subgroup} the result belongs. \\
 The result is of a binary type, and the counts of events in the treatment group are in \texttt{events1} and of the control group in \texttt{events2} and the total number of participants are given in columns \texttt{total1} and \texttt{total2}. As can be seen, events denote here "death at the end of follow-up".
 
-\begin{kframe}
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Sun Jul 14 14:23:32 2019
+\begin{table}[ht]
+\centering
+\begingroup\scriptsize
+\begin{tabular}{lllrrrr}
+  \hline
+study.name & comparison.name & outcome.name & events1 & total1 & events2 & total2 \\ 
+  \hline
+Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up & 11 & 41 & 11 & 41 \\ 
+  Ward 1985 & Barbiturate vs no barbiturate & Death at the end of follow-up & 14 & 27 & 13 & 26 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Example of two results as given in the dataset. Events denotes the count of events in the treatment group while Events c the count of events in the group compared to. Further descriptive variables have been ommitted} 
+\label{barbiturate.row}
+\end{table}
 
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in xtable(barbi1, label = "{}barbiturate.row"{}, digits = 0, caption = "{}Example of two results as given in the dataset. Events denotes the count of events in the treatment group while Events c the count of events in the group compared to. Further descriptive variables have been ommitted"{}): object 'barbi1' not found}}\end{kframe}
 
 A complete listing of the variables of a result is given in Table \ref{variable}. Depending on the type of the data, \eg if it is binary or continuous, some variables are missing for the specific results.
 
@@ -1270,13 +1305,13 @@ The review comprises five studies in total. Three of them compared barbiturate t
 We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. Thus, it is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul 12 10:30:39 2019
+% Sun Jul 14 14:23:32 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
 \begin{tabular}{lll}
   \hline
-Study & Comparison & Outcome \\ 
+study.name & comparison.name & outcome.name \\ 
   \hline
 Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\ 
   Bohn 1989 & Barbiturate vs no barbiturate & Death or severe disability at the end of follow-up \\ 
@@ -1307,7 +1342,7 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
 Information about missing values in the dataset is given in Table \ref{missing}. The relative amount of missing values is low, except for study years. For continuous outcomes, the cases are counted were neither a mean difference nor means are available. Similarly, the counts of cases where neither standard errors nor standard deviations are available are provided. Study years before 1920 and after 2019 are declared as missing, as well as sample sizes equal to zero.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul 12 10:30:39 2019
+% Sun Jul 14 14:23:32 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1329,7 +1364,7 @@ The studies that are included in the reviews and have been published are most of
 The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.) abundances are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 31 \% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (more than 65\%).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul 12 10:30:39 2019
+% Sun Jul 14 14:23:32 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1366,7 +1401,7 @@ The size of a meta-analysis denotes how many results are included in a group. Ta
 
 
 {\ttfamily\noindent\color{warningcolor}{\#\# Warning: Setting row names on a tibble is deprecated.}}\end{kframe}% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul 12 10:30:39 2019
+% Sun Jul 14 14:23:32 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1497,19 +1532,19 @@ Only the data that had accesible all results data available was used for adjustm
     % format(m.a.smaller.5.count$nn, big.mark = ",") meta-analyses};
 
     \node [ublock, below of=7, node distance=4cm] (8) {Binary data: \\
-    2,226 meta-analyses};
+    2,217 meta-analyses};
 
     \node [ublock, right of=8, node distance=5cm] (9) {Continuous data: \\
-    629 meta-analyses};
+    604 meta-analyses};
 
     \node [ublock, left of=8, node distance=5cm] (10) {Other data (IV): \\
     238 meta-analyses};
 
     \node [final, below of=8, node distance=2.4cm] (11) {Analysis dataset (2):
-    860 reviews,
-    18,238 studies,
-    49,568 results,
-    2,855 meta-analyses};
+    848 reviews,
+    18,101 studies,
+    49,010 results,
+    2,821 meta-analyses};
     
     
     % Draw edges
@@ -1535,12 +1570,17 @@ Only the data that had accesible all results data available was used for adjustm
 
 
 \subsubsection{Exclusions due to Computational Errors}
-There has been cases where meta-analyses could not be analysed with Copas selection model because the likelihood function could not be optimized based on the settings. It was ommitted in this case. The analysis failed when using $z$-scores, but not standardized mean differences, and in that case, it was not ommitted.\\
-The specific information about the meta-analysis is: \texttt{meta.id} = 220949, \texttt{id} = ``CD009908'', \texttt{subgroup.id} = ``CMP-001.05.02''.
+There has been cases where meta-analyses could not be analysed with Copas selection model because the likelihood function could not be optimized based on the settings. It was ommitted in this case.\\
+\begin{itemize}
+\item Meta-analysis with \texttt{meta.id} = 93868,  \texttt{id} = ``CD004072'', \texttt{subgroup.id} = ``CMP-006.08.01''. One small meta-analysis (\texttt{se.new} = 1.02) with a risk ratio 0.072, while the remaining risk ratios were all larger than 0.45. (and the fixed effects estimate close to 1). It failed when analysed based on log risk ratios.
+\item Meta-analysis with \texttt{meta.id} = 144568,  \texttt{id} = ``CD006109'', \texttt{outcome.id} = ``CMP-001.06'' and \texttt{outcome.measure} ``MD''. $z$-score based analysis failed, although funnel plot looks more or less symmetric. Small studies with very similar \texttt{var.z} with $z$-scores 0.3 and -0.1.
+\item Meta-analysis with \texttt{meta.id} = 35673,  \texttt{id} = ``CD001790'', \texttt{outcome.id} = ``CMP-001.03'' and \texttt{outcome.measure} = ``PETO.OR''. Analysis failed when using Hedges $g$ transformed effects. Large studies have $g \sim 0$ while one smaller study ($\se = 0.3$) has $g = 1$ (and another with a little larger $\se$ has $g \sim 0$).
+\end{itemize}
+Because the number of errors is low, the meta-analyses have only been ommitted for the specific outcome measures, but are kept in the others. 
 
 \subsubsection{The Analysis Dataset}
-The dataset that was ultimately tested and adjusted for publication bias comprises 1 meta-analyses and 53012 results. The mean number of participants in the treatment group is 212.6072021 vs 256.7062871 in the unrestricted dataset and the mean total number of participants 465.5000189 vs 623.15692. The mean publication year is 2000.0251806 vs 2000.9710727 in the unrestricted dataset. \\
-From the meta-analyses with incomplete data (\texttt{outcome.type} == \texttt{IV}}), there are 1 with \texttt{outcome.measure.new} = ..., 1 ...,  1 ... and 2 ... .
+The dataset that was ultimately tested and adjusted for publication bias comprises 1 meta-analyses and 53012 results. The mean number of participants in the treatment group is 212.6 vs 256.7 in the unrestricted dataset and the mean total number of participants 465.5 vs 623.2. The mean publication year is 2000.0251806 vs 2000.9710727 in the unrestricted dataset. \\
+From the meta-analyses with incomplete data (\texttt{outcome.type} == \texttt{IV}), there are 55 with \\ \texttt{outcome.measure.new} = ``Risk Ratio'', 47 ``Std. Mean Difference'',  35 ``Hazard Ratio'' and 22 ``Odds Ratio'' (and 25 additional, different outcome measures).
 
 
 \subsection{Analysis Procedure}
@@ -1611,9 +1651,9 @@ Details to Copas selection model algorithm and its application can be found in \
 
 
 
-The meta-analyses fulfilling the criteria from chapter \ref{ch:dataset}, section \ref{sec:Processing}, are analysed with one-sided small study effects tests and excess significance tests. The direction in which bias is expected is the one on which more significant results are ($p$-value < 0.05, two-sided). The tests are applied on the original effect size measures, i.e. risk ratios, Hedges $g$ or log hazard ratios. Different tests are applied depending on the outcome type being binary, continuous or survival.\\
+The meta-analyses fulfilling the criteria from chapter \ref{ch:dataset}, section \ref{sec:Processing}, are analysed with one-sided small study effects tests and excess significance tests. The direction in which bias is expected is the one on which more significant results are ($p$-value < 0.05, two-sided). The tests are applied on the original effect size measures, i.e. risk ratios, Hedges $g$ or other effect measures (\texttt{outcome.flag} = \texttt{IV}). Different tests are applied depending on the outcome type being binary, continuous or IV.\\
 Thus, multiple tests are applied on the same data. The results can then be displayed separately to compare the results from the different tests. A histogram of $p$-values will summarize the overall evidence against the null-hypothesis of no publication bias, as displayed in Figure \ref{fig:test}. \\
-``Excess significance'' denotes the excess of significant $p$-values testing method from \citet{excess.significance}, see \ref{sec:excess.significance}. For continuous and survival outcomes, the names refer to: 
+``Excess significance'' denotes the excess of significant $p$-values testing method from \citet{excess.significance}, see \ref{sec:excess.significance}. For continuous and IV outcomes, the names refer to: 
 
 \begin{itemize}
 \item Egger's test, the weighted linear regression test as described in section \ref{sec:Egger}
@@ -1631,8 +1671,13 @@ For binary outcomes, the names refer to:
 
 \begin{figure}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-11-1} 
+
+}
+
+
 
 \end{knitrout}
 \caption{Histogram of one-sided $p$-values for small study effect in direction of larger effect sizes. The testing method is indicated in the header, bin width is equal to 0.1. The proportion of meta-analyses with signifiant publication bias based on the threshold of 0.1 is displayed inside the figures.}
@@ -1640,25 +1685,30 @@ For binary outcomes, the names refer to:
 \end{figure}
 
 %Agreement table -> Chunck 1
-The histograms in Figure \ref{fig:test} show that most distributions are clearly skewed to the right, indicating evidence for small study effects. Exceptions from this are the excess significance and Schwarzer's test, and the tests for survival outcomes. There, there is no evidence for publication bias, and the histograms are even skewed to the left (Schwarzer). But note that the sample size of survival outcomes is small ($n$ = 238). \\
+The histograms in Figure \ref{fig:test} show that most distributions are clearly skewed to the right, indicating evidence for small study effects. Exceptions from this are the excess significance and Schwarzer's test, and the tests for IV outcomes. There, there is no evidence for publication bias, and the histograms are even skewed to the left (Schwarzer). But note that the sample size of IV outcomes is small ($n$ = 238). \\
 There is discrepancy between continuous and binary data test results; the evidence for small study effects in continuous data is clearly larger. Also, we see that the $I^2$ statistic of the proportion of overall between-study heterogeneity is distributed differently for the tests, with results with $I^2 = 0$ being evenly distributed in binary outcomes along the range of $p$-values, while they are more similar to the meta-analyses with larger heterogeneity for continuous outcome.\\
 In the literature, the excess significance test is advised to be used in the case of no between study heterogeneity. Since there are no small $p$-values for such meta-analyses, one must conclude that there is no excess significance in the dataset. The obvious correspondence with the heterogeneity statistic however rather suggests that the test is another way to assess between study heterogeneity. Thompson test and R\"ucker's test are designed such that they take into account the between study heterogeneity when assessing small study effects. When no heterogeneity is given, Thompson's test results and Egger's test result should be equal, however, the $I^2$ statistic is computed by a more suitable estimator \citep{paulemandel} of $\tau^2$ as the estimator that Thompson and Sharp's test uses (method of moment estimator of \citet{tau.estimator}, which is more conservative by usually finding larger $\tau^2$). In the part of the histogram with $I^2 > 0$, the two tests are more reliable than the remaining tests, while the opposite is expected from simulations \citep{limitmeta} when $I^2 = 0$.\\
 
 
 \subsection{Publication Bias Test Consistency}
-It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects for the same meta-analyses. A simple method to check the consistency of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between survival and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and survival outcomes results. Also, the $I^2$ statistic is included. Since no test statistic is used for excess significance tests, it is not shown here
+It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects for the same meta-analyses. A simple method to check the consistency of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between IV and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and IV outcomes results. Also, the $I^2$ statistic is included. Since no test statistic is used for excess significance tests, it is not shown here
 
 \begin{figure}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-12-1} 
+
+}
+
+
 
 \end{knitrout}
 \caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots outside are statistically significant by 0.1 $p$-value threshold).}
 \label{fig:test.agreement}
 \end{figure}
 
-The observed patterns on the scatterplots differ, and some small study effect test statistics do align better than others. Regression based tests as Egger and Thompsons test which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. Continuous and survival outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics.\\
+The observed patterns on the scatterplots differ, and some small study effect test statistics do align better than others. Regression based tests as Egger and Thompsons test which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. Continuous and IV outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics.\\
 Because scatterplots and correlation coefficients can be misleading, also a Tukey mean-difference or Bland-Altman of transformed $p$-values plot is shown for four scenarios in Figure \ref{fig:mean.diff.test}:
 \begin{itemize}
 \item For Egger's and Thompson's tests, which is supposedly the most similar test and should show the least deviations and systematic errors
@@ -1679,8 +1729,13 @@ The confidence intervals from Figure \ref{fig:mean.diff.test} can be used as lim
 
 \begin{figure}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-12-1} 
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-13-1} 
+
+}
+
+
 
 \end{knitrout}
 \caption{Mean - difference plots for logit transformed $p$-values. The mean of logit transformed $p$-values is displayed on the $x$-axis and the difference on the $y$-axis. Blue and red lines display the systematic error and the confidence intervals of the systematic error (limits of agreement).}
@@ -1690,13 +1745,13 @@ The confidence intervals from Figure \ref{fig:mean.diff.test} can be used as lim
 The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. We expect that some proportion of the meta-analysis will only be significant for a certain test, and this is indeed observed in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul 12 20:14:43 2019
+% Sun Jul 14 14:40:23 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
 \begin{tabular}{ccc}
   \hline
-Count & Binary Outcomes & Continuous and Survival \\ 
+Count & Binary Outcomes & Continuous and IV \\ 
   \hline
 0 & 66.3 \% & 68.1 \% \\ 
   1 & 13.7 \% & 11.8 \% \\ 
@@ -1708,15 +1763,15 @@ Count & Binary Outcomes & Continuous and Survival \\
 \end{tabular}
 \endgroup
 \caption{Counts Number of significant test results per meta-analysis, separated
-       for outcome types. Last entry for continuous and survival outcomes is empty since one test less was 
+       for outcome types. Last entry for continuous and IV outcomes is empty since one test less was 
        applied} 
 \label{number.sig.tests}
 \end{table}
 
 
-Here, it is difficult to say if continuous and survival or binary outcome types show better agreement, since more tests are applied in the binary case, and the continuous and survival outcome type tests have in general more positive findings. Very few meta-analyses are significant, irrespective of the test used, but around 67\% of the dataset is not significant, no matter which test is used. \\
-When only looking at small study effect tests, 29.5\% of binary outcome tests and 29.5\% of survival and continuous outcome tests had at least one significant result. After applying the Bonferroni correction for multiple testing, this shrinks to 12.6\% for binary and 12.7\% for continuous and survival outcomes. \\
-% To compare significant findings for small study effect tests and excess significance tests, we limit ourselves to comparison with Harbord's or Egger's test. mean.min.bin2\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, mean.min.else2\% for continuous and survival outcomes. The numbers change to mean.min.bin2.b\% for binary outcomes and mean.min.else2.b\% for continuous and survival outcomes after applying the Bonferroni correction. \\
+Here, it is difficult to say if continuous and IV or binary outcome types show better agreement, since more tests are applied in the binary case, and the continuous and IV outcome type tests have in general more positive findings. Very few meta-analyses are significant, irrespective of the test used, but around 67\% of the dataset is not significant, no matter which test is used. \\
+When only looking at small study effect tests, 29.5\% of binary outcome tests and 29.5\% of IV and continuous outcome tests had at least one significant result. After applying the Bonferroni correction for multiple testing, this shrinks to 12.6\% for binary and 12.7\% for continuous and IV outcomes. \\
+% To compare significant findings for small study effect tests and excess significance tests, we limit ourselves to comparison with Harbord's or Egger's test. mean.min.bin2\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, mean.min.else2\% for continuous and IV outcomes. The numbers change to mean.min.bin2.b\% for binary outcomes and mean.min.else2.b\% for continuous and IV outcomes after applying the Bonferroni correction. \\
 % both.bin\% have significant Harbord's test result and significant excess significance test result  (both.bin.b\% with Bonferroni). Of the continuous outcomes, we have both.else\% with Egger's test and both.else.b\% with Bonferroni correction. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1727,7 +1782,7 @@ When only looking at small study effect tests, 29.5\% of binary outcome tests an
 
 \section{Small Study Effects Adjustment}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}\begin{kframe}
 
 
 {\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in Math.data.frame(structure(list(meta.id = c(9957L, 12985L, 49559L, : non-numeric variable(s) in data frame: id}}\end{kframe}
@@ -1749,21 +1804,32 @@ Figure \ref{fig:adjustment.reg} displays the difference $\delta$ between the obs
 
 \begin{figure}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-15-1} 
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-16-1} 
+
+}
+
+
 
 \end{knitrout}
 \caption{Histogram of the treatment effect differences between meta-analysis and regression adjusted meta-analysis. Negative differences indicate greater adjusted effect sizes than meta-analysis effect sizes. The bins are centered at zero and binwidth is equal to 0.1. Deeper green color indicates more evidence for small study effects.}
 \label{fig:adjustment.reg}
 \end{figure}
 
-We see that more treatment effect sizes are negatively adjusted and diminished. Furthermore, we see that large adjustment is not necessarily connected with evidence for small study effects, but there is of course strong coincidence. The cases with no evidence and large adjustment indicate that between-study heterogeneity was not resolved by adjustment for small study effects. Adjustment was larger when random effects meta-analysis effect is used as reference, because there larger weights are given to small studies.\\
+We see that more treatment effect sizes are negatively adjusted and diminished. Furthermore, we see that large adjustment is not necessarily connected with evidence for small study effects, but there is coincidence. Adjustment was larger when random effects meta-analysis effect is used as reference, because there larger weights are given to small studies.\\
+The cases with no evidence (clear green color) and large adjustment indicate that between-study heterogeneity was not resolved by adjustment for small study effects. The regression adjustment method as described in section \ref{sec:regression.adjustment} adjusts for small study effects even if there is no evidence for small study effects. Thus, a large change in effect sizes does not necessarily have to be accompained by evidence for small study effects, because the unceratinity of the small study effect is not taken into account by the adjustment method. The uncertainity of the adjusted estimates is consequently larger in the clear green fraction of the histogramm than in the deeper green fraction.\\
 Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Copas; Copas selection model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Therefore, the effect of adjustment by Copas can be seen when comparing adjusted with random effects estimates. Again, we clearly see that more effect sizes are adjusted downwards. Additionally, there is more coincidence with the small study effect test statistics and adjustment, which is as expected. \\
 
 \begin{figure}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-16-1} 
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-17-1} 
+
+}
+
+
 
 \end{knitrout}
 \caption{Histogram of the treatment effect differences between meta-analysis and Copas adjusted meta-analysis. Negative differences indicate greater adjusted effect sizes than meta-analysis effect sizes. The bins are centered at zero and binwidth is equal to 0.1. Deeper green color indicates more evidence for small study effects.}
@@ -1773,7 +1839,7 @@ Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Co
 Table \ref{adjustment.difference} shows the quantiles and means for the various differences and additional information. When Hedge's $g$ is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small (the means of Copas in the first two rows for $z$-score are caused by one very large value, see Table \ref{missing.differences}). To recall some other findings out of Table \ref{adjustment.difference}: 5\% or 152 cases have their $z$-score reduced by more than 0.15 by regression adjustment (and 5\% or 152 increased by -0.13, fixed effects reference). Also, Hedges $g$ is reduced by 0.39 compared to fixed effects estimates in 5\% or 152 meta-analyses (or increased by 0.24). 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul 12 20:15:09 2019
+% Sun Jul 14 14:40:50 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1803,19 +1869,24 @@ z: Fixed - Copas & -0.05 & -0.01 & -0.00 & 0.01 & 0.05 & -252.84 & 4.97 & 45.54 
 
 
 \subsection{Change in Evidence for Treatment Effects} \label{sec:change.evidence}
-Adjustment for small study effects in meta-analysis will not only provide new effect sizes, but also standard errors thereof. Thus, also the evidence for efficacy of a treatment can be obtained, which is usually summarized in a suitable test statistic or $p$-value. It is of interest if and how the evidence for treatment effects changes if adjusted for publication bias.\\
-The Wald test statistics $p$-value for fixed and random effects meta-analyses and Copas and regression adjusted treatment effects have been calculated. They are shown in Figure \ref{fig:adjustment.stat} for meta-analysis based on $z$-score, Hedges $g$ and log hazard ratios. \\
+Adjustment for small study effects in meta-analysis will not only provide new effect sizes, but also standard errors thereof. Thus, also the evidence for efficacy of a treatment can be obtained, which is usually summarized in a suitable test statistic or $p$-value. It is of interest if and how the evidence for treatment effects changes if adjusted for publication bias. There is an important difference between Copas selection model and regression adjustment. The regression adjustment method incorporates an additional parameter with corresponding uncertainity in the treatment effect estimate, while the application of the Copas algorithm does not so. Instead, the copas selection model derives the uncertainity of the estimate from the inverse of the fisher information matrix of the likelihood. Additionally, the Copas selection model algorithm provides only an estimate when it can detect a small study effect with reasonable precision at the first place (see \ref{sec:copas}).\\
+The Wald test statistics $p$-value for fixed and random effects meta-analyses and Copas and regression adjusted treatment effects have been calculated. They are shown in Figure \ref{fig:adjustment.stat} for meta-analysis based on $z$-score, Hedges $g$ and other effect measures (\texttt{outcome.flag} = \texttt{IV}). \\
 It can be seen that evidence for a treatment effect decreases after adjusting for publication bias. It does so more for Hedge's $g$ compared to $z$-scores, and for regression adjustment compared to Copas selection model. 
 %Also, the evidence decreases for random effects meta-analyses compared to fixed effects meta-analyses. 
-In the case of log-hazard ratio adjustment, the adjustment has only negligible impact on the $p$-values. \\
+In the case of other effect measures (\texttt{outcome.flag} = \texttt{IV}) adjustment, the adjustment has only negligible impact on the $p$-values. \\
 Also, Copas selection method has a very small impact on the evidence compared to random effects meta-analysis, at least using $z$-scores (again, we should rely on comparisons to random effects meta-analysis to evaluate Copas method). \\ 
 % Interestingly, in contrast to the small study effect tests, there seems to be no large difference between adjusted continuous and binary meta-analysis test statistics --appendix--
 %Figures \ref{fig:adjustment.stat.z} for the adjusted $z$-scores, \ref{fig:adjustment.stat.smd} for the adjusted Hedges $g$ and Cohen's d and \ref{fig:adjustment.stat.log.hazard.ratio} for the adjusted log hazard ratios.
 
 \begin{figure}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-18-1} 
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-19-1} 
+
+}
+
+
 
 \end{knitrout}
 \caption{Histogram of the Wald test-statistic $p$-value of meta-analysis and adjusted pooled treatment effect, based on different treatment effect measures. The method is indicated in the header, bin width is set to 0.05. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
@@ -1826,8 +1897,13 @@ The Copas selection model also gives an estimate of the number of missing studie
 
 \begin{figure}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-19-1} 
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-20-1} 
+
+}
+
+
 
 \end{knitrout}
 \caption{Histogram of the fraction of missing studies from the total number of studies in a meta-analyses (only data shown where Copas estimate was obtained, thus \\$n =$ 0)}
@@ -1837,7 +1913,7 @@ The Copas selection model also gives an estimate of the number of missing studie
 We can see that in some occasions, the method finds more than half of all studies are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}. The discrepancy between mean and median may indicate that the estimate of 0\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie 0 meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for 0, more than 30\% of missing studies.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul 12 20:15:10 2019
+% Sun Jul 14 14:40:51 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1860,7 +1936,7 @@ Missing fraction & 576 & 0 & 0 & 0.1 & 0.3 & 0.9 & 0.2 \\
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul 12 20:15:10 2019
+% Sun Jul 14 14:40:51 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -1903,12 +1979,17 @@ meta.id & id & comparison.nr & subgroup.nr & z fixed & z random & z Copas & z re
 
 
 \subsection{Comparison of adjustment methods}
-Regression adjusted estimates are compared to the estimates of Copas selection model if these are not equal to random effects meta-analysis. A Tukey mean difference plot can serve to reveal systematic differences and biases between the two measurement methods. We will compare estimates based on all three outcome measures, i.e. original measure, $z$-score and Hedges $g$ in Figure \ref{fig:adjustment.mean.diff}. Note that the 39 survival outcome data is not included when using $z$-score and Hedges $g$.
+Regression adjusted estimates are compared to the estimates of Copas selection model if these are not equal to random effects meta-analysis. A Tukey mean difference plot can serve to reveal systematic differences and biases between the two measurement methods. We will compare estimates based on all three outcome measures, i.e. original measure, $z$-score and Hedges $g$ in Figure \ref{fig:adjustment.mean.diff}. Note that the 238 IV outcome data is not included when using $z$-score and Hedges $g$.
 
 \begin{figure}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-22-1} 
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-23-1} 
+
+}
+
+
 
 \end{knitrout}
 \caption{Mean - difference plots for publication bias adjustment methods. The mean of the adjusted treatment effects is displayed on the $x$-axis and the difference on the $y$-axis. Blue and red lines display the systematic error and the confidence intervals of the systematic error (limits of agreement). Two values have been omitted in the middle plot for Hedges $g$ and one for $z$-score (see Table \ref{missing.differences}).}
@@ -1928,7 +2009,7 @@ No formal tests are provided, but the at least there seems to be no clear bias o
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jul 12 20:15:11 2019
+% Sun Jul 14 14:40:52 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1951,12 +2032,12 @@ Excess significance, Schwarzer & 0.85 & 0.20 \\
   Thompson, Egger & 0.94 & 0.93 \\ 
   Thompson, Begg & 0.87 & 0.73 \\ 
   Egger, Begg & 0.84 & 0.72 \\ 
-  Excess significance, Egger (survival) & 0.84 & 0.08 \\ 
-  Excess significance, Thompson (survival) & 0.86 & 0.09 \\ 
-  Excess significance, Begg (survival) & 0.86 & 0.09 \\ 
-  Thompson, Egger (survival) & 0.96 & 0.94 \\ 
-  Thompson, Begg (survival) & 0.88 & 0.56 \\ 
-  Egger, Begg (survival) & 0.87 & 0.59 \\ 
+  Excess significance, Egger (IV) & 0.84 & 0.08 \\ 
+  Excess significance, Thompson (IV) & 0.86 & 0.09 \\ 
+  Excess significance, Begg (IV) & 0.86 & 0.09 \\ 
+  Thompson, Egger (IV) & 0.96 & 0.94 \\ 
+  Thompson, Begg (IV) & 0.88 & 0.56 \\ 
+  Egger, Begg (IV) & 0.87 & 0.59 \\ 
    \hline
 \end{tabular}
 \endgroup

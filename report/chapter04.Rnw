@@ -157,7 +157,7 @@ meta.iv <- meta.iv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.tes
                                                 tes.d.egger = ifelse(tes.d.test == egger.test, "agree", "disagree"),
                                                 thompson.tes.d = ifelse(thompson.test ==tes.d.test, "agree", "disagree"),
                                                 tes.d.begg = ifelse(tes.d.test == begg.test, "agree", "disagree"))
-agreement.surv <- meta.iv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
+agreement.iv <- meta.iv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/n(),
                                                          thompson.tes.d = sum(thompson.tes.d == "agree")/n(),
                                                          tes.d.begg = sum(tes.d.begg == "agree")/n(),
                                                          thompson.egger = sum(thompson.egger == "agree")/n(),
@@ -169,23 +169,23 @@ meta.iv <- meta.iv %>% ungroup() %>% mutate(thompson.egger = ifelse(thompson.tes
                                                 tes.d.egger = ifelse(tes.d.test + egger.test > 1, "agree", "disagree"),
                                                 thompson.tes.d = ifelse(thompson.test +tes.d.test > 1, "agree", "disagree"),
                                                 tes.d.begg = ifelse(tes.d.test + begg.test > 1, "agree", "disagree"))
-agreement.sig.surv <- meta.iv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/sum(egger.test),
+agreement.sig.iv <- meta.iv %>% ungroup() %>%  summarise(tes.d.egger = sum(tes.d.egger == "agree")/sum(egger.test),
                                                              thompson.tes.d = sum(thompson.tes.d == "agree")/sum(thompson.test),
                                                              tes.d.begg = sum(tes.d.begg == "agree")/sum(begg.test),
                                                              thompson.egger = sum(thompson.egger == "agree")/sum(thompson.test),
                                                              thompson.begg = sum(thompson.begg == "agree")/sum(begg.test),
                                                              egger.begg = sum(egger.begg == "agree")/sum(begg.test))
 
-surv.tests.agreement <- rbind(agreement.surv, agreement.sig.surv)
-rownames(surv.tests.agreement) <- c("Agreement (overall)","Agreement (significance)")
-colnames(surv.tests.agreement) <- c("Excess significance, Egger (survival)", "Excess significance, Thompson (survival)",
-                                    "Excess significance, Begg (survival)", "Thompson, Egger (survival)",
-                                    "Thompson, Begg (survival)", "Egger, Begg (survival)")
+iv.tests.agreement <- rbind(agreement.iv, agreement.sig.iv)
+rownames(iv.tests.agreement) <- c("Agreement (overall)","Agreement (significance)")
+colnames(iv.tests.agreement) <- c("Excess significance, Egger (IV)", "Excess significance, Thompson (IV)",
+                                    "Excess significance, Begg (IV)", "Thompson, Egger (IV)",
+                                    "Thompson, Begg (IV)", "Egger, Begg (IV)")
 
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Merging:
-test.agreement <- rbind(t(binary.tests.agreement), t(cont.tests.agreement), t(surv.tests.agreement))
+test.agreement <- rbind(t(binary.tests.agreement), t(cont.tests.agreement), t(iv.tests.agreement))
 #--------------------------------------------------------------------------------------------------------------------#
 
 sig.level <- 0.1
@@ -211,7 +211,8 @@ labels <- c(pval1.harbord = "Harbord", pval1.peter = "Peter", pval1.rucker = "Ru
 p.dist.bin <- meta.bin %>% ungroup() %>% 
   select(i2f, pval1.harbord, pval1.peter, pval1.rucker, pval1.d.tes, pval1.schwarzer) %>% 
   gather(key = "test.type", value = "p.value", pval1.harbord:pval1.schwarzer) %>% 
-  ggplot(aes(x = p.value, fill = i2f)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
+  ggplot(aes(x = p.value, fill = i2f)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
+  facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
   geom_text(data = dat_text, mapping = aes(x = 0.5, y = 200, label = label), color = "black") + 
   theme(strip.text.x = element_text(size=7)) + ggtitle("Binary Outcomes") + 
   theme(legend.position = "none")
@@ -242,16 +243,16 @@ dat_text <- data.frame(
   test.type   = c("pval1.begg", "pval1.egger", "pval1.thompson", "pval1.d.tes"),
   i2f = factor(rep(0, times = 4)))
 
-p.dist.surv <- meta.iv %>% ungroup() %>% 
+p.dist.iv <- meta.iv %>% ungroup() %>% 
   select(i2f, pval1.egger, pval1.thompson, pval1.begg, pval1.d.tes) %>% 
   gather(key = "test.type", value = "p.value", pval1.egger:pval1.d.tes) %>% 
   ggplot(aes(x = p.value, fill = i2f)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
   facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
   guides(fill=guide_legend(title=expression(paste(I^2, " Heterogeneity")))) + 
-  geom_text(data = dat_text, mapping = aes(x = 0.5, y = 10, label = label),  color = "black")  + 
+  geom_text(data = dat_text, mapping = aes(x = 0.5, y = 40, label = label),  color = "black")  + 
   scale_fill_discrete(labels = c("> 0", "= 0")) +
   theme(strip.text.x = element_text(size=7)) + 
-  ggtitle("Survival Outcomes") 
+  ggtitle("IV Outcomes") 
 #--------------------------------------------------------------------------------------------------------------------#
 
 
@@ -286,7 +287,7 @@ logit <- function(x) log(x/(1-x))
 egger.thompson.plot <- meta.f %>% 
   mutate(mean = ((logit(pval1.egger)+ logit(pval1.thompson)))/2, 
          difference = logit(pval1.egger) - logit(pval1.thompson)) %>% 
-  ggplot(aes(x = mean, y = difference)) + geom_point() + 
+  ggplot(aes(x = mean, y = difference)) + geom_point(size = .5) + 
   geom_abline(aes(slope = 0, intercept = mean(difference, na.rm = T), col = "blue")) +
   geom_abline(aes(slope = 0,
                   intercept = mean(difference, na.rm = T) + 1.96*sqrt(var(difference, na.rm = T)), 
@@ -304,7 +305,7 @@ egger.thompson.plot <- meta.f %>%
 egger.excess.plot <- meta.f %>% 
   mutate(mean = ((logit(pval1.egger)+ logit(pval1.d.tes)))/2, 
          difference = logit(pval1.egger) - logit(pval1.d.tes)) %>% 
-  ggplot(aes(x = mean, y = difference)) + geom_point() + 
+  ggplot(aes(x = mean, y = difference)) + geom_point(size = .5) + 
   geom_abline(aes(slope = 0, intercept = mean(difference, na.rm = T), col = "blue")) +
   geom_abline(aes(slope = 0,
                   intercept = mean(difference, na.rm = T) + 1.96*sqrt(var(difference, na.rm = T)), 
@@ -322,7 +323,7 @@ egger.excess.plot <- meta.f %>%
 harbord.rucker.plot <- meta.f %>% 
   mutate(mean = ((logit(pval1.harbord)+ logit(pval1.rucker)))/2, 
          difference = logit(pval1.harbord) - logit(pval1.rucker)) %>% 
-  ggplot(aes(x = mean, y = difference)) + geom_point(size = .5) + 
+  ggplot(aes(x = mean, y = difference)) + geom_point(size = .4) + 
   geom_abline(aes(slope = 0, intercept = mean(difference, na.rm = T), col = "blue")) +
   geom_abline(aes(slope = 0,
                   intercept = mean(difference, na.rm = T) + 1.96*sqrt(var(difference, na.rm = T)), 
@@ -340,7 +341,7 @@ harbord.rucker.plot <- meta.f %>%
 harbord.excess.plot <- meta.f %>% 
   mutate(mean = ((logit(pval1.harbord)+ logit(pval1.d.tes)))/2, 
          difference = logit(pval1.harbord) - logit(pval1.d.tes)) %>% 
-  ggplot(aes(x = mean, y = difference)) + geom_point(size = .5) + 
+  ggplot(aes(x = mean, y = difference)) + geom_point(size = .4) + 
   geom_abline(aes(slope = 0, intercept = mean(difference, na.rm = T), col = "blue")) +
   geom_abline(aes(slope = 0,
                   intercept = mean(difference, na.rm = T) + 1.96*sqrt(var(difference, na.rm = T)), 
@@ -394,7 +395,7 @@ number.sig.tests[6,3][1] <- "-"
 
 
 
-colnames(number.sig.tests) <- c("Count", "Binary Outcomes", "Continuous and Survival")
+colnames(number.sig.tests) <- c("Count", "Binary Outcomes", "Continuous and IV")
 
 meta.f <- meta.f %>% mutate(tes.d.test.b = ifelse(pval1.d.tes < 0.05, 1, 0),
                             harbord.test.b = ifelse(pval1.harbord < 0.05, 1, 0),
@@ -445,9 +446,9 @@ mean.min.else.b <- round(mean(meta.f$test.min.else, na.rm = T)*100, 1)
 
 
 
-The meta-analyses fulfilling the criteria from chapter \ref{ch:dataset}, section \ref{sec:Processing}, are analysed with one-sided small study effects tests and excess significance tests. The direction in which bias is expected is the one on which more significant results are ($p$-value < 0.05, two-sided). The tests are applied on the original effect size measures, i.e. risk ratios, Hedges $g$ or log hazard ratios. Different tests are applied depending on the outcome type being binary, continuous or survival.\\
+The meta-analyses fulfilling the criteria from chapter \ref{ch:dataset}, section \ref{sec:Processing}, are analysed with one-sided small study effects tests and excess significance tests. The direction in which bias is expected is the one on which more significant results are ($p$-value < 0.05, two-sided). The tests are applied on the original effect size measures, i.e. risk ratios, Hedges $g$ or other effect measures (\texttt{outcome.flag} = \texttt{IV}). Different tests are applied depending on the outcome type being binary, continuous or IV.\\
 Thus, multiple tests are applied on the same data. The results can then be displayed separately to compare the results from the different tests. A histogram of $p$-values will summarize the overall evidence against the null-hypothesis of no publication bias, as displayed in Figure \ref{fig:test}. \\
-``Excess significance'' denotes the excess of significant $p$-values testing method from \citet{excess.significance}, see \ref{sec:excess.significance}. For continuous and survival outcomes, the names refer to: 
+``Excess significance'' denotes the excess of significant $p$-values testing method from \citet{excess.significance}, see \ref{sec:excess.significance}. For continuous and IV outcomes, the names refer to: 
 
 \begin{itemize}
 \item Egger's test, the weighted linear regression test as described in section \ref{sec:Egger}
@@ -467,20 +468,20 @@ For binary outcomes, the names refer to:
 <<echo=FALSE, fig.height = 9>>=
 grid.arrange(p.dist.bin,
              p.dist.cont,
-             p.dist.surv, ncol = 1)
+             p.dist.iv, ncol = 1)
 @
 \caption{Histogram of one-sided $p$-values for small study effect in direction of larger effect sizes. The testing method is indicated in the header, bin width is equal to 0.1. The proportion of meta-analyses with signifiant publication bias based on the threshold of 0.1 is displayed inside the figures.}
 \label{fig:test}
 \end{figure}
 
 %Agreement table -> Chunck 1
-The histograms in Figure \ref{fig:test} show that most distributions are clearly skewed to the right, indicating evidence for small study effects. Exceptions from this are the excess significance and Schwarzer's test, and the tests for survival outcomes. There, there is no evidence for publication bias, and the histograms are even skewed to the left (Schwarzer). But note that the sample size of survival outcomes is small ($n$ = \Sexpr{dim(meta.iv)[1]}). \\
+The histograms in Figure \ref{fig:test} show that most distributions are clearly skewed to the right, indicating evidence for small study effects. Exceptions from this are the excess significance and Schwarzer's test, and the tests for IV outcomes. There, there is no evidence for publication bias, and the histograms are even skewed to the left (Schwarzer). But note that the sample size of IV outcomes is small ($n$ = \Sexpr{dim(meta.iv)[1]}). \\
 There is discrepancy between continuous and binary data test results; the evidence for small study effects in continuous data is clearly larger. Also, we see that the $I^2$ statistic of the proportion of overall between-study heterogeneity is distributed differently for the tests, with results with $I^2 = 0$ being evenly distributed in binary outcomes along the range of $p$-values, while they are more similar to the meta-analyses with larger heterogeneity for continuous outcome.\\
 In the literature, the excess significance test is advised to be used in the case of no between study heterogeneity. Since there are no small $p$-values for such meta-analyses, one must conclude that there is no excess significance in the dataset. The obvious correspondence with the heterogeneity statistic however rather suggests that the test is another way to assess between study heterogeneity. Thompson test and R\"ucker's test are designed such that they take into account the between study heterogeneity when assessing small study effects. When no heterogeneity is given, Thompson's test results and Egger's test result should be equal, however, the $I^2$ statistic is computed by a more suitable estimator \citep{paulemandel} of $\tau^2$ as the estimator that Thompson and Sharp's test uses (method of moment estimator of \citet{tau.estimator}, which is more conservative by usually finding larger $\tau^2$). In the part of the histogram with $I^2 > 0$, the two tests are more reliable than the remaining tests, while the opposite is expected from simulations \citep{limitmeta} when $I^2 = 0$.\\
 
 
 \subsection{Publication Bias Test Consistency}
-It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects for the same meta-analyses. A simple method to check the consistency of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between survival and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and survival outcomes results. Also, the $I^2$ statistic is included. Since no test statistic is used for excess significance tests, it is not shown here
+It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects for the same meta-analyses. A simple method to check the consistency of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between IV and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and IV outcomes results. Also, the $I^2$ statistic is included. Since no test statistic is used for excess significance tests, it is not shown here
 
 \begin{figure}
 <<echo=FALSE, fig.height = 7, fig.width = 8.5, warning=FALSE>>=
@@ -493,7 +494,7 @@ corrgram(cor.data,
 \label{fig:test.agreement}
 \end{figure}
 
-The observed patterns on the scatterplots differ, and some small study effect test statistics do align better than others. Regression based tests as Egger and Thompsons test which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. Continuous and survival outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics.\\
+The observed patterns on the scatterplots differ, and some small study effect test statistics do align better than others. Regression based tests as Egger and Thompsons test which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. Continuous and IV outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics.\\
 Because scatterplots and correlation coefficients can be misleading, also a Tukey mean-difference or Bland-Altman of transformed $p$-values plot is shown for four scenarios in Figure \ref{fig:mean.diff.test}:
 \begin{itemize}
 \item For Egger's and Thompson's tests, which is supposedly the most similar test and should show the least deviations and systematic errors
@@ -527,13 +528,13 @@ The previous results suggest that the results will also differ substantially aft
 
 <<echo = FALSE, results='asis'>>=
 print(xtable(number.sig.tests, caption = "Counts Number of significant test results per meta-analysis, separated
-       for outcome types. Last entry for continuous and survival outcomes is empty since one test less was 
+       for outcome types. Last entry for continuous and IV outcomes is empty since one test less was 
        applied", label = "number.sig.tests", align = "lccc"), include.rownames = F, size = "footnotesize")
 @
 
-Here, it is difficult to say if continuous and survival or binary outcome types show better agreement, since more tests are applied in the binary case, and the continuous and survival outcome type tests have in general more positive findings. Very few meta-analyses are significant, irrespective of the test used, but around 67\% of the dataset is not significant, no matter which test is used. \\
-When only looking at small study effect tests, \Sexpr{mean.min.bin}\% of binary outcome tests and \Sexpr{mean.min.else}\% of survival and continuous outcome tests had at least one significant result. After applying the Bonferroni correction for multiple testing, this shrinks to \Sexpr{mean.min.bin.b}\% for binary and \Sexpr{mean.min.else.b}\% for continuous and survival outcomes. \\
-% To compare significant findings for small study effect tests and excess significance tests, we limit ourselves to comparison with Harbord's or Egger's test. \Sexpr{mean.min.bin2}\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, \Sexpr{mean.min.else2}\% for continuous and survival outcomes. The numbers change to \Sexpr{mean.min.bin2.b}\% for binary outcomes and \Sexpr{mean.min.else2.b}\% for continuous and survival outcomes after applying the Bonferroni correction. \\
+Here, it is difficult to say if continuous and IV or binary outcome types show better agreement, since more tests are applied in the binary case, and the continuous and IV outcome type tests have in general more positive findings. Very few meta-analyses are significant, irrespective of the test used, but around 67\% of the dataset is not significant, no matter which test is used. \\
+When only looking at small study effect tests, \Sexpr{mean.min.bin}\% of binary outcome tests and \Sexpr{mean.min.else}\% of IV and continuous outcome tests had at least one significant result. After applying the Bonferroni correction for multiple testing, this shrinks to \Sexpr{mean.min.bin.b}\% for binary and \Sexpr{mean.min.else.b}\% for continuous and IV outcomes. \\
+% To compare significant findings for small study effect tests and excess significance tests, we limit ourselves to comparison with Harbord's or Egger's test. \Sexpr{mean.min.bin2}\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, \Sexpr{mean.min.else2}\% for continuous and IV outcomes. The numbers change to \Sexpr{mean.min.bin2.b}\% for binary outcomes and \Sexpr{mean.min.else2.b}\% for continuous and IV outcomes after applying the Bonferroni correction. \\
 % \Sexpr{both.bin}\% have significant Harbord's test result and significant excess significance test result  (\Sexpr{both.bin.b}\% with Bonferroni). Of the continuous outcomes, we have \Sexpr{both.else}\% with Egger's test and \Sexpr{both.else.b}\% with Bonferroni correction. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -656,9 +657,9 @@ adjustment.p.log.hazard.ratio <- meta.f %>% filter(outcome.flag == "IV") %>%
   geom_histogram(boundary = 0, bins = 20) + 
   theme_bw() + 
   facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
-  geom_text(data = sig.d, aes(x = 0.00003, y = 20, label = label), position = "dodge") + 
+  geom_text(data = sig.d, aes(x = 0.5, y = 100, label = label), position = "dodge") + 
   xlab(expression(paste(italic(p),"-value of test statistic of Hedges ", italic(g)))) +
-  ggtitle(expression(paste("Log hazard ratio ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
+  ggtitle(expression(paste("Log IV outcome measures ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
 #--------------------------------------------------------------------------------------------------------------------#
 
 
@@ -854,7 +855,7 @@ diff.log.hazard.ratio.fixef <- meta.iv %>%
   gather(key = "method", value = "adjusted.log.hazard.ratio", copas:regression)  %>% 
   ggplot(aes(x = (fixef - adjusted.log.hazard.ratio))) + 
   geom_histogram(binwidth = 0.1, center = 0) +
-  facet_wrap(~method) + theme_bw() + xlab("Fixed effects - adjusted log hazard ratio") + geom_vline(xintercept = 0, linetype = "dashed" )
+  facet_wrap(~method) + theme_bw() + xlab("Fixed effects - adjusted log effect") + geom_vline(xintercept = 0, linetype = "dashed" )
 #--------------------------------------------------------------------------------------------------------------------#
 
 diff.log.hazard.ratio.ranef <- meta.iv %>% 
@@ -869,7 +870,7 @@ diff.log.hazard.ratio.ranef <- meta.iv %>%
   gather(key = "method", value = "adjusted.log.hazard.ratio", copas:regression)  %>% 
   ggplot(aes(x = (ranef - adjusted.log.hazard.ratio))) + 
   geom_histogram(binwidth = 0.1, center = 0) +
-  facet_wrap(~method) + theme_bw() + xlab("Random effects - adjusted log hazard ratio") + geom_vline(xintercept = 0, linetype = "dashed" )
+  facet_wrap(~method) + theme_bw() + xlab("Random effects - adjusted log effect") + geom_vline(xintercept = 0, linetype = "dashed" )
 #--------------------------------------------------------------------------------------------------------------------#
 
 sig.level <- 0.1
@@ -948,7 +949,7 @@ adjustment.diff <- adjustment.diff.keep %>%
 
 m.adjustment.diff <- as.matrix(adjustment.diff)
 
-adjustmend.diff.surv <- meta.iv %>% 
+adjustmend.diff.iv <- meta.iv %>% 
   transmute(est.copas.f = case_when(sign(est.copas) == sign(est.fixef) ~  abs(est.copas),
                                     sign(est.copas) != sign(est.fixef) ~ -abs(est.copas)),
             est.copas.r = case_when(sign(est.copas) == sign(est.ranef) ~  abs(est.copas),
@@ -962,13 +963,13 @@ adjustmend.diff.surv <- meta.iv %>%
             est.fixef = abs(est.fixef),
             est.ranef = abs(est.ranef)) %>% 
   
-  transmute(copas.surv.f = est.fixef - est.copas.f,
-            copas.surv.r = est.ranef - est.copas.r,
+  transmute(copas.iv.f = est.fixef - est.copas.f,
+            copas.iv.r = est.ranef - est.copas.r,
             
-            reg.surv.f =  est.fixef - est.reg.f,
-            reg.surv.r = est.ranef - est.reg.r) 
+            reg.iv.f =  est.fixef - est.reg.f,
+            reg.iv.r = est.ranef - est.reg.r) 
 
-m.adjustment.diff.surv <- as.matrix(adjustmend.diff.surv)
+m.adjustment.diff.iv <- as.matrix(adjustmend.diff.iv)
 
 
 
@@ -999,24 +1000,24 @@ adjustment.diff.table <- rbind(adjustment.diff.quantile.table, mean = adjustment
                                missing = adjustment.diff.missing)
 
 
-adjustment.diff.quantile.table.surv <- apply(m.adjustment.diff.surv, 2, 
+adjustment.diff.quantile.table.iv <- apply(m.adjustment.diff.iv, 2, 
                                              FUN = function(column){quantile(x = column, 
                                                                              probs = c(0.05, 0.25, 0.5, 0.75, 0.95), na.rm = T)})
-adjustment.diff.mean.surv <- apply(m.adjustment.diff.surv, 2, FUN = function(column) mean(column, na.rm = T))
-adjustment.diff.largerzero.surv <- (apply(m.adjustment.diff.surv, 2, FUN = function(column) length(which(column >= 0)))/apply(m.adjustment.diff.surv, 2, FUN = function(column) length(column)))*100
-adjustment.diff.equalzero.surv <- (apply(m.adjustment.diff.surv, 2, FUN = function(column) length(which(column == 0)))/apply(m.adjustment.diff.surv, 2, FUN = function(column) length(column)))*100
-adjustment.diff.largerequalzero.surv <- (apply(m.adjustment.diff.surv, 2, FUN = function(column) length(which(column > 0)))/apply(m.adjustment.diff.surv, 2, FUN = function(column) length(column)))*100
-adjustment.diff.comp.errors.surv <- c(0,0,0,0)
-adjustment.diff.noest.surv <- c(sum(meta.iv$est.copas.na), sum(meta.iv$est.copas.na),
+adjustment.diff.mean.iv <- apply(m.adjustment.diff.iv, 2, FUN = function(column) mean(column, na.rm = T))
+adjustment.diff.largerzero.iv <- (apply(m.adjustment.diff.iv, 2, FUN = function(column) length(which(column >= 0)))/apply(m.adjustment.diff.iv, 2, FUN = function(column) length(column)))*100
+adjustment.diff.equalzero.iv <- (apply(m.adjustment.diff.iv, 2, FUN = function(column) length(which(column == 0)))/apply(m.adjustment.diff.iv, 2, FUN = function(column) length(column)))*100
+adjustment.diff.largerequalzero.iv <- (apply(m.adjustment.diff.iv, 2, FUN = function(column) length(which(column > 0)))/apply(m.adjustment.diff.iv, 2, FUN = function(column) length(column)))*100
+adjustment.diff.comp.errors.iv <- c(0,0,0,0)
+adjustment.diff.noest.iv <- c(sum(meta.iv$est.copas.na), sum(meta.iv$est.copas.na),
                                 sum(meta.iv$est.reg.na), sum(meta.iv$est.reg.na))
-adjustment.diff.missing.surv <- ((adjustment.diff.comp.errors.surv + adjustment.diff.noest.surv)/apply(m.adjustment.diff.surv, 2, FUN = function(column) length(column)))*100
+adjustment.diff.missing.iv <- ((adjustment.diff.comp.errors.iv + adjustment.diff.noest.iv)/apply(m.adjustment.diff.iv, 2, FUN = function(column) length(column)))*100
 
-adjustment.diff.table.surv <- rbind(adjustment.diff.quantile.table.surv, mean = adjustment.diff.mean.surv,
-                                    equalzero = adjustment.diff.equalzero.surv,
-                                    largerequal = adjustment.diff.largerequalzero.surv, larger = adjustment.diff.largerzero.surv,
-                                    missing = adjustment.diff.missing.surv)
+adjustment.diff.table.iv <- rbind(adjustment.diff.quantile.table.iv, mean = adjustment.diff.mean.iv,
+                                    equalzero = adjustment.diff.equalzero.iv,
+                                    largerequal = adjustment.diff.largerequalzero.iv, larger = adjustment.diff.largerzero.iv,
+                                    missing = adjustment.diff.missing.iv)
 
-adjustment.diff.table <- cbind(adjustment.diff.table, (adjustment.diff.table.surv))
+adjustment.diff.table <- cbind(adjustment.diff.table, (adjustment.diff.table.iv))
 
 adjustment.diff.table <- round(t(adjustment.diff.table), 4)
 
@@ -1125,7 +1126,7 @@ colnames(missing.differences) <- c("meta.id", "id", "comparison.nr", "subgroup.n
 
 adjustment.mean.diff.orig <- adjustment.diff.keep %>% filter(est.copas.na != 1) %>% 
   mutate(mean = (est.copas + est.reg)/2, 
-         difference = est.copas - est.reg) %>% 
+         difference = est.copas - est.reg) %>% filter(difference < 10 & mean < 20) %>% 
   ggplot(aes(x = mean, y = difference)) + geom_point(size = .5) + 
   geom_abline(aes(slope = 0, intercept = mean(difference, na.rm = T), col = "blue")) +
   geom_abline(aes(slope = 0,
@@ -1143,7 +1144,7 @@ adjustment.mean.diff.orig <- adjustment.diff.keep %>% filter(est.copas.na != 1) 
 
 adjustment.mean.diff.z <- adjustment.diff.keep %>% filter(est.z.copas.na != 1) %>% 
   mutate(mean = (est.z.copas + est.z.reg)/2, 
-         difference = est.z.copas - est.z.reg) %>% filter(mean < 7) %>% 
+         difference = est.z.copas - est.z.reg) %>% filter(mean < 2.5 & difference < 5) %>% 
   ggplot(aes(x = mean, y = difference)) + geom_point(size = 0.5) + 
   geom_abline(aes(slope = 0, intercept = mean(difference, na.rm = T), col = "blue")) +
   geom_abline(aes(slope = 0,
@@ -1212,7 +1213,8 @@ grid.arrange(diff.z.fixef.reg, diff.z.ranef.reg, diff.d.fixef.reg, diff.d.ranef.
 \label{fig:adjustment.reg}
 \end{figure}
 
-We see that more treatment effect sizes are negatively adjusted and diminished. Furthermore, we see that large adjustment is not necessarily connected with evidence for small study effects, but there is of course strong coincidence. The cases with no evidence and large adjustment indicate that between-study heterogeneity was not resolved by adjustment for small study effects. Adjustment was larger when random effects meta-analysis effect is used as reference, because there larger weights are given to small studies.\\
+We see that more treatment effect sizes are negatively adjusted and diminished. Furthermore, we see that large adjustment is not necessarily connected with evidence for small study effects, but there is coincidence. Adjustment was larger when random effects meta-analysis effect is used as reference, because there larger weights are given to small studies.\\
+The cases with no evidence (clear green color) and large adjustment indicate that between-study heterogeneity was not resolved by adjustment for small study effects. The regression adjustment method as described in section \ref{sec:regression.adjustment} adjusts for small study effects even if there is no evidence for small study effects. Thus, a large change in effect sizes does not necessarily have to be accompained by evidence for small study effects, because the unceratinity of the small study effect is not taken into account by the adjustment method. The uncertainity of the adjusted estimates is consequently larger in the clear green fraction of the histogramm than in the deeper green fraction.\\
 Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Copas; Copas selection model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Therefore, the effect of adjustment by Copas can be seen when comparing adjusted with random effects estimates. Again, we clearly see that more effect sizes are adjusted downwards. Additionally, there is more coincidence with the small study effect test statistics and adjustment, which is as expected. \\
 
 \begin{figure}
@@ -1233,11 +1235,11 @@ print(xtable(adjustment.diff.table, label = "adjustment.difference", caption = "
 
 
 \subsection{Change in Evidence for Treatment Effects} \label{sec:change.evidence}
-Adjustment for small study effects in meta-analysis will not only provide new effect sizes, but also standard errors thereof. Thus, also the evidence for efficacy of a treatment can be obtained, which is usually summarized in a suitable test statistic or $p$-value. It is of interest if and how the evidence for treatment effects changes if adjusted for publication bias.\\
-The Wald test statistics $p$-value for fixed and random effects meta-analyses and Copas and regression adjusted treatment effects have been calculated. They are shown in Figure \ref{fig:adjustment.stat} for meta-analysis based on $z$-score, Hedges $g$ and log hazard ratios. \\
+Adjustment for small study effects in meta-analysis will not only provide new effect sizes, but also standard errors thereof. Thus, also the evidence for efficacy of a treatment can be obtained, which is usually summarized in a suitable test statistic or $p$-value. It is of interest if and how the evidence for treatment effects changes if adjusted for publication bias. There is an important difference between Copas selection model and regression adjustment. The regression adjustment method incorporates an additional parameter with corresponding uncertainity in the treatment effect estimate, while the application of the Copas algorithm does not so. Instead, the copas selection model derives the uncertainity of the estimate from the inverse of the fisher information matrix of the likelihood. Additionally, the Copas selection model algorithm provides only an estimate when it can detect a small study effect with reasonable precision at the first place (see \ref{sec:copas}).\\
+The Wald test statistics $p$-value for fixed and random effects meta-analyses and Copas and regression adjusted treatment effects have been calculated. They are shown in Figure \ref{fig:adjustment.stat} for meta-analysis based on $z$-score, Hedges $g$ and other effect measures (\texttt{outcome.flag} = \texttt{IV}). \\
 It can be seen that evidence for a treatment effect decreases after adjusting for publication bias. It does so more for Hedge's $g$ compared to $z$-scores, and for regression adjustment compared to Copas selection model. 
 %Also, the evidence decreases for random effects meta-analyses compared to fixed effects meta-analyses. 
-In the case of log-hazard ratio adjustment, the adjustment has only negligible impact on the $p$-values. \\
+In the case of other effect measures (\texttt{outcome.flag} = \texttt{IV}) adjustment, the adjustment has only negligible impact on the $p$-values. \\
 Also, Copas selection method has a very small impact on the evidence compared to random effects meta-analysis, at least using $z$-scores (again, we should rely on comparisons to random effects meta-analysis to evaluate Copas method). \\ 
 % Interestingly, in contrast to the small study effect tests, there seems to be no large difference between adjusted continuous and binary meta-analysis test statistics --appendix--
 %Figures \ref{fig:adjustment.stat.z} for the adjusted $z$-scores, \ref{fig:adjustment.stat.smd} for the adjusted Hedges $g$ and Cohen's d and \ref{fig:adjustment.stat.log.hazard.ratio} for the adjusted log hazard ratios.
@@ -1283,7 +1285,7 @@ print(xtable(missing.differences,
 
 
 \subsection{Comparison of adjustment methods}
-Regression adjusted estimates are compared to the estimates of Copas selection model if these are not equal to random effects meta-analysis. A Tukey mean difference plot can serve to reveal systematic differences and biases between the two measurement methods. We will compare estimates based on all three outcome measures, i.e. original measure, $z$-score and Hedges $g$ in Figure \ref{fig:adjustment.mean.diff}. Note that the 39 survival outcome data is not included when using $z$-score and Hedges $g$.
+Regression adjusted estimates are compared to the estimates of Copas selection model if these are not equal to random effects meta-analysis. A Tukey mean difference plot can serve to reveal systematic differences and biases between the two measurement methods. We will compare estimates based on all three outcome measures, i.e. original measure, $z$-score and Hedges $g$ in Figure \ref{fig:adjustment.mean.diff}. Note that the \Sexpr{dim(meta.iv)[1]} IV outcome data is not included when using $z$-score and Hedges $g$.
 
 \begin{figure}
 <<echo = FALSE, fig.height = 7.5>>=

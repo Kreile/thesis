@@ -16,17 +16,57 @@ Studies get more attention and are more likely to be published, read and cited i
 There is extensive literature on publication bias in meta-analyses, e.g. (\citet{pb.clinicalscience.2013}, %\citet{Hopewell02}, 
 \citet{grey.literature.4}, \citet{grey.literature.3}, \citet{grey.literature.2}). 
 All authors agree in that the exclusion of unpublished results in meta-analyses is responsible for overestimation of treatment effects. Although there are policies that make it mandatory to make accessible all study results \citep{fda}, it is not clear if the situation has improved yet.\\
-The Cochrane Organisation has specialized on systematic reviews of healthcare interventions. Researchers that write a systematic review collect data across studies, review them and try to provide up-to-date information about specific treatment efficacies \citep{cochrane.handbook}. By extensive literature scrutinization, they try to circumvent the issue of publication bias. Earlier research however suggests that the efforts are only partially succesful, and that there still is publication bias within the reviews (\citet{Egger}, \citet{Ioannidis2007}, \citet{kicinsky}, \citet{vanAert.2019}). In this publications, the results of a part of the Cochrane Database of systematic reviews is analysed with small study effect tests or bayesian hierarchical selection models \citep{kicinsky}. They all find moderate to large evidence for publication bias in the Database. A more thorough discussion of their methods and results will follow in chapter \ref{ch:Discussion}. However, none of the research so far has estimated the amount and impact of publication bias on meta-analytical findings thoroughly and with the most suitable methods. Also, the results are often presented in the form of dichotomized hypothesis tests, a practice known to contribute to publication bias itself (cite sb).\\
+The Cochrane Organisation has specialized on systematic reviews of healthcare interventions. Researchers that write a systematic review collect data across studies, review them and try to provide up-to-date information about specific treatment efficacies \citep{cochrane.handbook}. By extensive literature scrutinization, they try to circumvent the issue of publication bias. Earlier research however suggests that the efforts are only partially succesful, and that there still is publication bias within the reviews (\citet{Egger}, \citet{Ioannidis2007}, \citet{kicinsky}, \citet{vanAert.2019}). In this publications, the results of a part of the Cochrane Database of systematic reviews is analysed with small study effect tests or bayesian hierarchical selection models \citep{kicinsky}. They all find moderate to large evidence for publication bias in the Database. A more thorough discussion of their methods and results will follow in chapter \ref{ch:Discussion}. None of the research so far has estimated the amount and impact of publication bias on meta-analytical findings thoroughly and with the most suitable methods. Also, the results are often presented in the form of dichotomized hypothesis tests, a practice known to contribute to publication bias itself (cite sb).\\
 The aim of this thesis is to use prevailed methods to detect publication bias, and make use of the full amount of data that the Cochrane Organisation provides. At the end, an up-to-date estimate of the prevalence of publication bias in the data shall be given, as well as its implications regarding the effect sizes of the treatments. To achieve this, methods to detect and adjust for publication bias in meta-analysis are applied on the data.
 
+\subsection{Analysing publication bias}
+There are multiple ways to assess the amount of publication bias. For instance, one can follow studies and control if they are getting published depending on their findings \citep{publication.fate}. One often finds that positive findings (\ie large effects) are reported and published more often (see also an example in social sciences: \citet{social.sciences.publication.bias}). Another way is to compare results in study registries with results published in journals (\eg \citet{pb.clinicalscience.2013}). Again one finds systematic differences between published and unpublished results. \\
+A third way is to assess the so-called small study effect in a meta-analysis, that is, a systematic difference between effects of large and small studies. Evidence for small study effects can oftentimes be interpreted as evidence for publication bias \citep{Egger}. The underlying rational is that journal editors are guided by two simple rules (\citet{excess.significance}, \citet{ioannidis.2019}): 
+\begin{itemize}
+\item Publish new and trend-setting findings that lead to many citations, increasing the journal impact factor (JIF).
+\item Publish large trials that are likely to set the standard for a given scientific question, again to increase the JIF.
+\end{itemize}
+This then leads to the so-called asymmetry in the funnel plot of published studies; small studies show larger effect sizes than larger studies do. By means of simple linear regression, one can investigate how much evidence there is for this asymmetry. For illustration purposes, a meta-analysis with large funnel plot asymmetry is shown %\citep{pre.eclampsia}:
+
+\begin{figure}
+<<echo = FALSE, fig.height = 3>>=
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
+FILE = 'cochrane_2019-07-04.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH2, 'code')
+PATH_RESULTS = file.path(PATH2, 'results_new')
+PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
+load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+
+pb.ex <- 111673
+require(meta)
+require(tidyverse)
+par(mfrow = c(1,2))
+tp <- data.ext2 %>% filter(meta.id == pb.ex)
+funnel(metabin(event.e = events1, event.c = events2, n.e = total1, n.c = total2, data = tp),
+       comb.fixed = F, comb.random = F)
+
+nopb.ex <- meta.f$meta.id[32]
+tp <- data.ext2 %>% filter(meta.id == nopb.ex)
+funnel(metabin(event.e = events1, event.c = events2, n.e = total1, n.c = total2, data = tp),
+       comb.fixed = F, comb.random = F)
+@
+\end{figure}
+
+The purpose of a funnel plot is to visualise if an how the estimated treatment effects converge to a common ``real'' treatment effect value (here, the weighted mean treatment effect with weights = inverse variances). This is also shown by the triangle depicted by the dotted line (the spire is at the weighted mean). \\
+We see that while the studies in the meta-analysis on the left are not filling the triangle evenly, but rather accumulate at the left side, they seem to be more evenly distributed in the left triangle. From this, we would ultimately conclude that some sort of bias or heterogeneity is distorting the estimate of the overall treatment effect.\\
+Importantly, this method does not assess publication bias directly. But note that publication bias is also not assessable with the other methods if no complete study registries are available. Thus, the estimation of small study effects is oftentimes the most efficient and simple way to analyse publication bias.
 
 
 
 
 
-Already in 1978, scientists raised concern that effect sizes could be overestimated systematically if journals were ``not willing to drop their policy to use statistical significance as one of their criteria for publication'' \citep{dunlap1978}. Scientific findings get more attention and are more likely to be published, read and cited if they are implying large effects. The issue has been pin-pointed in clinical science by many researchers (\citet{pb.clinicalscience1}, \citet{sterne2001}). The concern is that overestimated efficacy of the treatments could lead to harm to patients. \\
-A measure to counter the presence of single, overestimated study results is a meta-analysis \citep{metaanalysis}, a practice originally developped in psychology. Summarized treatment effects and uncertainities should be more robust and reliable. The pitfall is that when the entire body of evidence is again a biased sample of studies with high effects, the estimate is again overestimating the true effect. 
-% 
+% Already in 1978, scientists raised concern that effect sizes could be overestimated systematically if journals were ``not willing to drop their policy to use statistical significance as one of their criteria for publication'' \citep{dunlap1978}. Scientific findings get more attention and are more likely to be published, read and cited if they are implying large effects. The issue has been pin-pointed in clinical science by many researchers (\citet{pb.clinicalscience1}, \citet{sterne2001}). The concern is that overestimated efficacy of the treatments could lead to harm to patients. \\
+% A measure to counter the presence of single, overestimated study results is a meta-analysis \citep{metaanalysis}, a practice originally developped in psychology. Summarized treatment effects and uncertainities should be more robust and reliable. The pitfall is that when the entire body of evidence is again a biased sample of studies with high effects, the estimate is again overestimating the true effect. 
+% % 
 % 
 % Also after the introduction of mandatory registration of clinical trials
 % 

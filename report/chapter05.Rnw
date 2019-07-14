@@ -105,7 +105,7 @@ rownames(comparison.ioannidis) <- c("Wider dataset (n)", "study number > 10", "v
 
 @
 
-\chapter{Discussion}\ref{ch:Discussion}
+\chapter{Discussion}\label{ch:Discussion}
 
 \section{Results in the light of the Literature}\label{sec:discussion.results}
 

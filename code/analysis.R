@@ -152,11 +152,11 @@ meta.info.extended <- data.ext2 %>%
 settings.meta(method.tau = "PM", method = "Inverse")
 
 #Load previously constructed lists (to skip analysis):
-# load(file.path(PATH_RESULTS, "meta_complete_list_bin.RData"))
-# load(file.path(PATH_RESULTS, "meta_complete_list_cont.RData"))
-# load(file.path(PATH_RESULTS, "meta_complete_list_iv.RData"))
-# load(file.path(PATH_RESULTS, "meta_complete_list_zscore.RData"))
-# load(file.path(PATH_RESULTS, "meta_complete_list_cohensd.RData"))
+load(file.path(PATH_RESULTS, "meta_complete_list_bin.RData"))
+load(file.path(PATH_RESULTS, "meta_complete_list_cont.RData"))
+load(file.path(PATH_RESULTS, "meta_complete_list_iv.RData"))
+load(file.path(PATH_RESULTS, "meta_complete_list_zscore.RData"))
+load(file.path(PATH_RESULTS, "meta_complete_list_cohensd.RData"))
 
 
 
@@ -422,41 +422,41 @@ cont.results <- data.frame(
 
 
 # # -------- Uncomment to run analysis ----------
-meta.id.vector.iv <- meta.info.extended$meta.id[which(meta.info.extended$outcome.flag == "IV")]
-meta.analyses <- list()
-meta.analyses.reg <- list()
-meta.analyses.copas <- list()
-meta.analyses.trimfill <- list()
-meta.tests.linreg <- list()
-meta.tests.begg <- list()
-meta.tests.mm <- list()
-meta.tests.excess <- list()
-counter <- 0
-for(u in meta.id.vector.iv){
-	counter <- counter + 1
-
-	meta.analyses[[counter]] <- metagen(TE = effect, seTE = se, studlab = study.name, sm = "HR",
-                           data = data.ext2[data.ext2$meta.id == u,])
-	print(c(u, counter))
-	# print(c(u, counter, unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.fixed}))[counter]))
-	meta.analyses.reg[[counter]] <- limitmeta(meta.analyses[[counter]])
-	meta.analyses.trimfill[[counter]] <- trimfill(meta.analyses[[counter]])
-	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
-
-	meta.tests.excess[[counter]] <- tes.fct2(data = data.ext2[data.ext2$meta.id == u,])
-	meta.tests.linreg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "linreg", k.min = 2)
-	meta.tests.begg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "rank", k.min = 2)
-	meta.tests.mm[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "mm", k.min = 2)
-}
-iv.meta.list <- list(data.ext2, meta.id.vector.iv, meta.analyses,
-											 meta.analyses.reg,
-											 meta.analyses.copas,
-											 meta.analyses.trimfill,
-											 meta.tests.linreg,
-											 meta.tests.begg,
-											 meta.tests.mm,
-											 meta.tests.excess)
-save(iv.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_iv.RData"))
+# meta.id.vector.iv <- meta.info.extended$meta.id[which(meta.info.extended$outcome.flag == "IV")]
+# meta.analyses <- list()
+# meta.analyses.reg <- list()
+# meta.analyses.copas <- list()
+# meta.analyses.trimfill <- list()
+# meta.tests.linreg <- list()
+# meta.tests.begg <- list()
+# meta.tests.mm <- list()
+# meta.tests.excess <- list()
+# counter <- 0
+# for(u in meta.id.vector.iv){
+# 	counter <- counter + 1
+# 
+# 	meta.analyses[[counter]] <- metagen(TE = effect, seTE = se, studlab = study.name, sm = "HR",
+#                            data = data.ext2[data.ext2$meta.id == u,])
+# 	print(c(u, counter))
+# 	# print(c(u, counter, unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.fixed}))[counter]))
+# 	meta.analyses.reg[[counter]] <- limitmeta(meta.analyses[[counter]])
+# 	meta.analyses.trimfill[[counter]] <- trimfill(meta.analyses[[counter]])
+# 	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
+# 
+# 	meta.tests.excess[[counter]] <- tes.fct2(data = data.ext2[data.ext2$meta.id == u,])
+# 	meta.tests.linreg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "linreg", k.min = 2)
+# 	meta.tests.begg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "rank", k.min = 2)
+# 	meta.tests.mm[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "mm", k.min = 2)
+# }
+# iv.meta.list <- list(data.ext2, meta.id.vector.iv, meta.analyses,
+# 											 meta.analyses.reg,
+# 											 meta.analyses.copas,
+# 											 meta.analyses.trimfill,
+# 											 meta.tests.linreg,
+# 											 meta.tests.begg,
+# 											 meta.tests.mm,
+# 											 meta.tests.excess)
+# save(iv.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_iv.RData"))
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Load analysis data:
@@ -533,25 +533,25 @@ iv.results <- data.frame(
 #--------------------------------------------------------------------------------------------------------------------#
 
 # # -------- Uncomment to run analysis ----------
-meta.id.vector.z <- meta.info.extended$meta.id[-which(meta.info.extended$outcome.flag == "IV")]
-tobe.excluded.z <- which(meta.id.vector.z == 144568)
-meta.id.vector.z <- meta.id.vector.z[-tobe.excluded.z] #5229- total ss = 3
-tmp.z <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %>%
-  filter(outcome.flag != "IV") %>% filter(total1 + total2 > 3) %>%
-  filter(!is.na(effect)) %>% filter(!is.na(se))
-meta.analyses <- list()
-meta.analyses.reg <- list()
-meta.analyses.copas <- list()
-counter <- 0
-for(u in meta.id.vector.z){
-	counter <- counter + 1
-	print(c(u,counter))
-	meta.analyses[[counter]] <- metagen(TE = z, seTE = sqrt(var.z), studlab = study.name, tmp.z[tmp.z$meta.id == u,])
-	meta.analyses.reg[[counter]] <- limitmeta(meta.analyses[[counter]])
-	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
-}
-zscore.meta.list <- list(tmp.z, meta.id.vector.z, meta.analyses, meta.analyses.reg, meta.analyses.copas)
-save(zscore.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_zscore.RData"))
+# meta.id.vector.z <- meta.info.extended$meta.id[-which(meta.info.extended$outcome.flag == "IV")]
+# tobe.excluded.z <- which(meta.id.vector.z == 144568)
+# meta.id.vector.z <- meta.id.vector.z[-tobe.excluded.z] #5229- total ss = 3
+# tmp.z <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %>%
+#   filter(outcome.flag != "IV") %>% filter(total1 + total2 > 3) %>%
+#   filter(!is.na(effect)) %>% filter(!is.na(se))
+# meta.analyses <- list()
+# meta.analyses.reg <- list()
+# meta.analyses.copas <- list()
+# counter <- 0
+# for(u in meta.id.vector.z){
+# 	counter <- counter + 1
+# 	print(c(u,counter))
+# 	meta.analyses[[counter]] <- metagen(TE = z, seTE = sqrt(var.z), studlab = study.name, tmp.z[tmp.z$meta.id == u,])
+# 	meta.analyses.reg[[counter]] <- limitmeta(meta.analyses[[counter]])
+# 	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
+# }
+# zscore.meta.list <- list(tmp.z, meta.id.vector.z, meta.analyses, meta.analyses.reg, meta.analyses.copas)
+# save(zscore.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_zscore.RData"))
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Load analysis data:
@@ -580,21 +580,21 @@ zscore.meta.analysis.estimates <- cbind(
 #--------------------------------------------------------------------------------------------------------------------#
 
 # # -------- Uncomment to run analysis ----------
-meta.id.vector.d <- meta.info.extended$meta.id[-which(meta.info.extended$outcome.flag == "IV")]
-meta.id.vector.d <- meta.id.vector.d[-c(which(meta.id.vector.d == 35673))]
-meta.analyses <- list()
-meta.analyses.reg <- list()
-meta.analyses.copas <- list()
-counter <- 0
-for(u in meta.id.vector.d){
-  counter <- counter + 1
-  print(c(u,counter))
-  meta.analyses[[counter]] <- metagen.bincont2(data.ext2[data.ext2$meta.id == u,])
-  meta.analyses.reg[[counter]] <- limitmeta(meta.analyses[[counter]])
-  meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
-}
-cohensd.meta.list <- list(data.ext2, meta.id.vector.d, meta.analyses, meta.analyses.reg, meta.analyses.copas)
-save(cohensd.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cohensd.RData"))
+# meta.id.vector.d <- meta.info.extended$meta.id[-which(meta.info.extended$outcome.flag == "IV")]
+# meta.id.vector.d <- meta.id.vector.d[-c(which(meta.id.vector.d == 35673))]
+# meta.analyses <- list()
+# meta.analyses.reg <- list()
+# meta.analyses.copas <- list()
+# counter <- 0
+# for(u in meta.id.vector.d){
+#   counter <- counter + 1
+#   print(c(u,counter))
+#   meta.analyses[[counter]] <- metagen.bincont2(data.ext2[data.ext2$meta.id == u,])
+#   meta.analyses.reg[[counter]] <- limitmeta(meta.analyses[[counter]])
+#   meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
+# }
+# cohensd.meta.list <- list(data.ext2, meta.id.vector.d, meta.analyses, meta.analyses.reg, meta.analyses.copas)
+# save(cohensd.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cohensd.RData"))
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Load analysis data:

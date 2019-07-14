@@ -3,6 +3,7 @@
 \contentsline {chapter}{\bfseries {Preface}}{iii}{chapter*.2}
 \vspace *{10mm}
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
+\contentsline {subsection}{\numberline {1.0.1}Analysing publication bias}{2}{subsection.1.0.1}
 \contentsline {chapter}{\numberline {2}Methods}{3}{chapter.2}
 \contentsline {section}{\numberline {2.1}Introduction and Notation}{3}{section.2.1}
 \contentsline {section}{\numberline {2.2}Effect Measures and $p$-values}{3}{section.2.2}
@@ -12,14 +13,14 @@
 \contentsline {section}{\numberline {2.3}Fixed and Random Effects Meta-Analysis}{5}{section.2.3}
 \contentsline {section}{\numberline {2.4}Small Study Effects Tests}{6}{section.2.4}
 \contentsline {subsection}{\numberline {2.4.1}Continuous Outcome Tests}{7}{subsection.2.4.1}
-\contentsline {subsubsection}{Begg and Mazumdar: Rank Correlation Test}{7}{section*.3}
-\contentsline {subsubsection}{Egger's Test: Weighted Linear Regression Test}{7}{section*.4}
-\contentsline {subsubsection}{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{9}{section*.5}
+\contentsline {subsubsection}{Begg and Mazumdar: Rank Correlation Test}{7}{section*.4}
+\contentsline {subsubsection}{Egger's Test: Weighted Linear Regression Test}{7}{section*.5}
+\contentsline {subsubsection}{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{9}{section*.6}
 \contentsline {subsection}{\numberline {2.4.2}Dichotomous Outcomes Tests}{9}{subsection.2.4.2}
-\contentsline {subsubsection}{Peters Test: Weighted Linear Regression Test}{9}{section*.6}
-\contentsline {subsubsection}{Harbord's Test: Score based Test}{9}{section*.7}
-\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{9}{section*.8}
-\contentsline {subsubsection}{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{10}{section*.9}
+\contentsline {subsubsection}{Peters Test: Weighted Linear Regression Test}{9}{section*.7}
+\contentsline {subsubsection}{Harbord's Test: Score based Test}{9}{section*.8}
+\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{9}{section*.9}
+\contentsline {subsubsection}{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{10}{section*.10}
 \contentsline {subsection}{\numberline {2.4.3}Excess Significance Test}{10}{subsection.2.4.3}
 \contentsline {section}{\numberline {2.5}Small Study Effect and Publication Bias Adjustment}{11}{section.2.5}
 \contentsline {subsection}{\numberline {2.5.1}Adjustment by Regression}{11}{subsection.2.5.1}
@@ -32,16 +33,16 @@
 \contentsline {section}{\numberline {3.2}Data Tidying and Processing}{20}{section.3.2}
 \contentsline {subsection}{\numberline {3.2.1}Newly Introduced Variables}{20}{subsection.3.2.1}
 \contentsline {subsection}{\numberline {3.2.2}Eligibility criteria for Publication Bias Test and Adjustment}{21}{subsection.3.2.2}
-\contentsline {subsubsection}{Exclusions due to Computational Errors}{22}{section*.17}
-\contentsline {subsubsection}{The Analysis Dataset}{22}{section*.18}
+\contentsline {subsubsection}{Exclusions due to Computational Errors}{22}{section*.19}
+\contentsline {subsubsection}{The Analysis Dataset}{22}{section*.20}
 \contentsline {subsection}{\numberline {3.2.3}Analysis Procedure}{22}{subsection.3.2.3}
 \contentsline {chapter}{\numberline {4}Results}{25}{chapter.4}
 \contentsline {section}{\numberline {4.1}Publication Bias Test Results}{25}{section.4.1}
 \contentsline {subsection}{\numberline {4.1.1}Publication Bias Test Consistency}{27}{subsection.4.1.1}
-\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{30}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{30}{subsection.4.2.1}
+\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{29}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{29}{subsection.4.2.1}
 \contentsline {subsection}{\numberline {4.2.2}Change in Evidence for Treatment Effects}{31}{subsection.4.2.2}
-\contentsline {subsection}{\numberline {4.2.3}Comparison of adjustment methods}{33}{subsection.4.2.3}
-\contentsline {chapter}{\numberline {A}Appendix}{39}{appendix.A}
+\contentsline {subsection}{\numberline {4.2.3}Comparison of adjustment methods}{32}{subsection.4.2.3}
+\contentsline {chapter}{\numberline {A}Appendix}{37}{appendix.A}
 \vspace *{10mm}
-\contentsline {chapter}{\bfseries Bibliography}{41}{section*.32}
+\contentsline {chapter}{\bfseries Bibliography}{39}{section*.34}

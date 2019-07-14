@@ -17,6 +17,8 @@ load(file.path(PATH_RESULTS, "data2.RData"))
 # data.ext2 <- pb.process3(data)
 load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
+load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+
 load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 
 reg.dat <- data.ext2 %>% filter(meta.id %in% meta.id.vector) #Filter meta-analysis data
@@ -51,23 +53,42 @@ reg.dat <- reg.dat %>% group_by(meta.id) %>%
 reg.dat <- reg.dat %>% filter(se.smd != 0) %>% filter(!is.na(smd)) %>% 
   filter(!is.na(se.smd))
 
-reg.dat <- reg.dat %>% mutate(study.year.center = scale(scale = F, center = T, x = study.year),
-                              study.year.scale = scale(scale = T, center = T, x = study.year))
+reg.dat <- reg.dat %>% group_by(meta.id) %>% 
+  mutate(study.year.center = scale(scale = F, center = T, x = study.year)) %>% 
+  ungroup() %>% mutate(study.year.center.ov = scale(scale = T, center = T, x = study.year))
 
-plot(y = reg.dat$smd, x = reg.dat$se.smd)
+par(mfrow = c(1,1))
+# plot(y = reg.dat$smd, x = reg.dat$se.smd, cex = .1)
+# plot(y = reg.dat$smd, x = reg.dat$study.year.center, cex = .1)
 
-reg.dat <- reg.dat %>% filter(meta.id %in% meta.id.vector[c(1:2)])
-print(round(c(meta.f$est.reg, meta.f$est.d.reg, meta.f$est.se, meta.f$est.d.se)),1)
+#Check how largest m.a. looks like..
+# largest.id <- meta.f$meta.id[2957]
+# reg.dat <- reg.dat %>%  filter(meta.id == largest.id)
+# plot(y = reg.dat$smd, x = reg.dat$se.smd, cex = .1, xlim = c(0, 1.3), ylim = c(-2.4, 6))
+# plot(y = reg.dat$smd, x = reg.dat$study.year.center, cex = .1, xlim = c(-45, 38), ylim = c(-2.4, 6))
+
+# reg.dat <- reg.dat %>% filter(meta.id %in% meta.id.vector[c(1:2)])
+# print(round(c(meta.f$est.reg, meta.f$est.d.reg, meta.f$est.se, meta.f$est.d.se)),1)
 
 
-lm.fit <- lm(formula = smd ~ se.smd, weights = 1/se.smd, data = reg.dat)
+
+
+
+
+
+
+
+
+# lm.fit <- lm(formula = smd ~ se.smd, weights = 1/se.smd, data = reg.dat)
+# plot(y = reg.dat$smd, x = reg.dat$se.smd, cex = .1)
+abline(lm.fit, col = 2)
 
 coef(lm.fit)[1] + coef(lm.fit)[2]
 
 
-
-small.study.fit <- glmer(formula = smd ~ se.smd + (1 | meta.id) + (1 | id), weights = 1/se.smd,
-                       family = gaussian, data = reg.dat, nAGQ = 10)
+require(nlme)
+small.study.fit <- lme(fixed = smd ~ se.smd, random = ~ 1 | meta.id + 1 |id, #weigths = varFixed(~1/se.smd),
+                       data = reg.dat)
 
 coef(small.study.fit)[1] + coef(small.study.fit)[2]
 

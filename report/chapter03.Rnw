@@ -62,10 +62,10 @@ load(file.path(PATH_RESULTS, "meta_id_I2.RData"))
 barbi1 <- arrange(filter(data, id == "CD000033") %>% 
           select(study.name, comparison.name, outcome.name, 
                  events1, total1, events2, total2) %>% 
-            slice(c(1,3)), Study) 
+            slice(c(1,3)), study.name) 
 barbi2 <- arrange(filter(data, id == "CD000033") %>% 
-          select(Study = study.name, Comparison = comparison.name,Outcome = outcome.name), Study)
-barbi2[barbi2$Study == "P\303\251rez-B\303\241rcena 2008", 1] = "Perez-Barcena 2008"
+          select(study.name, comparison.name, outcome.name), study.name)
+barbi2[barbi2$study.name == "P\303\251rez-B\303\241rcena 2008", 1] = "Perez-Barcena 2008"
 #----------------------------------------------------------------------------------------------#
 
 #Missing values
@@ -280,7 +280,7 @@ adj.result.count <- dim(tp6)[1]
 
 #----------------------------------------------------------------------------------------------#
 # "IV" outcome.flag meta-analyses
-dt <- meta.iv %>% group_by(outcome.measure.new) %>% count
+dt <- meta.iv %>% group_by(outcome.measure.new) %>% count %>% arrange(desc(n))
 first.iv.outcome.count <- dt$n[1]
 second.iv.outcome.count <- dt$n[2]
 third.iv.outcome.count <- dt$n[3]
@@ -580,12 +580,17 @@ Only the data that had accesible all results data available was used for adjustm
 
 
 \subsubsection{Exclusions due to Computational Errors}
-There has been cases where meta-analyses could not be analysed with Copas selection model because the likelihood function could not be optimized based on the settings. It was ommitted in this case. The analysis failed when using $z$-scores, but not standardized mean differences, and in that case, it was not ommitted.\\
-The specific information about the meta-analysis is: \texttt{meta.id} = 220949, \texttt{id} = ``CD009908'', \texttt{subgroup.id} = ``CMP-001.05.02''.
+There has been cases where meta-analyses could not be analysed with Copas selection model because the likelihood function could not be optimized based on the settings. It was ommitted in this case.\\
+\begin{itemize}
+\item Meta-analysis with \texttt{meta.id} = 93868,  \texttt{id} = ``CD004072'', \texttt{subgroup.id} = ``CMP-006.08.01''. One small meta-analysis (\texttt{se.new} = 1.02) with a risk ratio 0.072, while the remaining risk ratios were all larger than 0.45. (and the fixed effects estimate close to 1). It failed when analysed based on log risk ratios.
+\item Meta-analysis with \texttt{meta.id} = 144568,  \texttt{id} = ``CD006109'', \texttt{outcome.id} = ``CMP-001.06'' and \texttt{outcome.measure} ``MD''. $z$-score based analysis failed, although funnel plot looks more or less symmetric. Small studies with very similar \texttt{var.z} with $z$-scores 0.3 and -0.1.
+\item Meta-analysis with \texttt{meta.id} = 35673,  \texttt{id} = ``CD001790'', \texttt{outcome.id} = ``CMP-001.03'' and \texttt{outcome.measure} = ``PETO.OR''. Analysis failed when using Hedges $g$ transformed effects. Large studies have $g \sim 0$ while one smaller study ($\se = 0.3$) has $g = 1$ (and another with a little larger $\se$ has $g \sim 0$).
+\end{itemize}
+Because the number of errors is low, the meta-analyses have only been ommitted for the specific outcome measures, but are kept in the others. 
 
 \subsubsection{The Analysis Dataset}
-The dataset that was ultimately tested and adjusted for publication bias comprises \Sexpr{length(meta.id.vector)} meta-analyses and \Sexpr{dim(meta.data)[1]} results. The mean number of participants in the treatment group is \Sexpr{mean(meta.data$total1, na.rm = T)} vs \Sexpr{mean(data.ext2$total1, na.rm = T)} in the unrestricted dataset and the mean total number of participants \Sexpr{mean(meta.data$total1 + meta.data$total2)} vs \Sexpr{mean(data.ext2$total1 + data.ext2$total2)}. The mean publication year is \Sexpr{mean(meta.data$study.year, na.rm = TRUE)} vs \Sexpr{mean(data.ext2$study.year, na.rm = TRUE)} in the unrestricted dataset. \\
-From the meta-analyses with incomplete data (\texttt{outcome.type} == \texttt{IV}}), there are \Sexpr{first.iv.outcome.count} with \texttt{outcome.measure.new} = ..., \Sexpr{second.iv.outcome.count} ...,  \Sexpr{third.iv.outcome.count} ... and \Sexpr{fourth.iv.outcome.count} ... .
+The dataset that was ultimately tested and adjusted for publication bias comprises \Sexpr{length(meta.id.vector)} meta-analyses and \Sexpr{dim(meta.data)[1]} results. The mean number of participants in the treatment group is \Sexpr{round(mean(meta.data$total1, na.rm = T),1)} vs \Sexpr{round(mean(data.ext2$total1, na.rm = T),1)} in the unrestricted dataset and the mean total number of participants \Sexpr{round(mean(meta.data$total1 + meta.data$total2),1)} vs \Sexpr{round(mean(data.ext2$total1 + data.ext2$total2),1)}. The mean publication year is \Sexpr{mean(meta.data$study.year, na.rm = TRUE)} vs \Sexpr{mean(data.ext2$study.year, na.rm = TRUE)} in the unrestricted dataset. \\
+From the meta-analyses with incomplete data (\texttt{outcome.type} == \texttt{IV}), there are \Sexpr{first.iv.outcome.count} with \\ \texttt{outcome.measure.new} = ``Risk Ratio'', \Sexpr{second.iv.outcome.count} ``Std. Mean Difference'',  \Sexpr{third.iv.outcome.count} ``Hazard Ratio'' and \Sexpr{fourth.iv.outcome.count} ``Odds Ratio'' (and 25 additional, different outcome measures).
 
 
 \subsection{Analysis Procedure}
