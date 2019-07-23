@@ -5,7 +5,7 @@
 library(knitr)
 opts_chunk$set(fig.path='figure/ch03_fig',
                echo=TRUE, message=FALSE,
-               fig.width=8.1, fig.height=3,
+               fig.width=8, fig.height=3,
                self.contained = FALSE,
                out.width='\\textwidth-3cm',
                message=FALSE, fig.align='center',
@@ -16,6 +16,7 @@ options(width=74)
 @
 
 <<'Data03', echo=FALSE, warning=FALSE>>= 
+#Load data:
 rm(list = ls())
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
@@ -24,32 +25,22 @@ FILE = 'cochrane_2019-07-04.csv'
 PATH_DATA = file.path(PATH, 'data')
 PATH_CODE = file.path(PATH2, 'code')
 PATH_RESULTS = file.path(PATH2, 'results_new')
-PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
-
-file_results = "pb.RData"
+# PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
 
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
+require(corrgram)
 
-file.dat <- "data.RData"
-if (file.exists(file.path(PATH_RESULTS, file.dat))) {
-	load(file.path(PATH_RESULTS, file.dat))
-} else {
-	data = pb.readData(path = PATH_DATA, file = FILE)
-	tmp = pb.clean(data)
-	data = tmp[[1]]
-	aliases = tmp[[2]]
-	save(data, file =  file.path(PATH_RESULTS, file.dat))
-}
-
+load(file.path(PATH_DATA, "PubBias_2019-07-19.RData"))
+load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
+load(file.path(PATH_RESULTS, "meta_id_I2.RData"))
 load(file.path(PATH_RESULTS, "meta.bin.RData"))
 load(file.path(PATH_RESULTS, "meta.cont.RData"))
 load(file.path(PATH_RESULTS, "meta.iv.RData"))
-load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 
-require(corrgram)
 
-# data.ext2 <- pb.process3(data)
+
 @
 
 
@@ -287,6 +278,7 @@ logit <- function(x) log(x/(1-x))
 egger.thompson.plot <- meta.f %>% 
   mutate(mean = ((logit(pval1.egger)+ logit(pval1.thompson)))/2, 
          difference = logit(pval1.egger) - logit(pval1.thompson)) %>% 
+  filter(difference < 10) %>% 
   ggplot(aes(x = mean, y = difference)) + geom_point(size = .5) + 
   geom_abline(aes(slope = 0, intercept = mean(difference, na.rm = T), col = "blue")) +
   geom_abline(aes(slope = 0,
@@ -490,7 +482,7 @@ corrgram(cor.data,
          cex.labels = 1, cex = .25, cex.cor = 2, pch = 1,
          text.panel=panel.txt, cor.method = "spearman")
 @
-\caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots outside are statistically significant by 0.1 $p$-value threshold).}
+\caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots inside are statistically not significant by 0.1 $p$-value threshold).}
 \label{fig:test.agreement}
 \end{figure}
 
@@ -1111,9 +1103,11 @@ missing.differences <- merge(meta.f[,
           "est.d.fixef", "est.d.ranef", "est.d.copas", "est.d.reg")],
         missing.differences, by = "meta.id")
 
-missing.differences <- round(missing.differences, 2)
+missing.differences[, c("est.z.ranef", "est.z.fixef", "est.z.copas", "est.z.reg", 
+          "est.d.fixef", "est.d.ranef", "est.d.copas", "est.d.reg")] <- round(missing.differences[, c("est.z.ranef", "est.z.fixef", "est.z.copas", "est.z.reg", 
+          "est.d.fixef", "est.d.ranef", "est.d.copas", "est.d.reg")], 2)
 
-missing.differences <- missing.differences %>% mutate(meta.id = as.character(meta.id), id = as.character(meta.id),
+missing.differences <- missing.differences %>% mutate(meta.id = as.character(meta.id), id = as.character(id),
                                                       comparison.nr = as.character(comparison.nr), subgroup.nr = as.character(subgroup.nr))
 
 colnames(missing.differences) <- c("meta.id", "id", "comparison.nr", "subgroup.nr",
@@ -1254,7 +1248,7 @@ grid.arrange(adjustment.p.z,
 \label{fig:adjustment.stat}
 \end{figure}
 
-The Copas selection model also gives an estimate of the number of missing studies. It finds that \Sexpr{round(sum(meta.f$missing.Copas, na.rm = T))} are missing, which corresponds to \Sexpr{round((sum(meta.f$missing.Copas, na.rm = T)/sum(meta.f$k))*100,1)}\% from all \Sexpr{round(sum(meta.f$k))} analysed studies. Figure \ref{fig:copas.missing} shows a histogram of the overall fraction of missing studies. Note that we have excluded \Sexpr{sum(is.na(meta.f$missing.Copas))} out of \Sexpr{dim(meta.f)[1]}, for which no Copas selection model estimate, but a random effects estimate was retained because the algorithm initially found no evidence for small study effects.
+The Copas selection model also gives an estimate of the number of missing studies. It finds that \Sexpr{round(sum(meta.f$missing.Copas, na.rm = T))} are missing, which corresponds to \Sexpr{round((sum(meta.f$missing.copas, na.rm = T)/sum(meta.f$k))*100,1)}\% from all \Sexpr{round(sum(meta.f$k))} analysed studies. Figure \ref{fig:copas.missing} shows a histogram of the overall fraction of missing studies. Note that we have excluded \Sexpr{sum(is.na(meta.f$missing.Copas))} out of \Sexpr{dim(meta.f)[1]}, for which no Copas selection model estimate, but a random effects estimate was retained because the algorithm initially found no evidence for small study effects.
 
 \begin{figure}
 <<echo = FALSE, warning = FALSE>>=

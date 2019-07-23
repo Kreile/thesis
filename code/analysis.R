@@ -13,26 +13,13 @@ FILE = 'cochrane_2019-07-04.csv'
 PATH_DATA = file.path(PATH, 'data')
 PATH_CODE = file.path(PATH2, 'code')
 PATH_RESULTS = file.path(PATH2, 'results_new')
-PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
-
-file_results = "pb.RData"
+# PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
 
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
-file.dat <- "data2.RData"
-if (file.exists(file.path(PATH_RESULTS, file.dat))) {
-  load(file.path(PATH_RESULTS, file.dat))
-} else {
-  data = pb.readData2(path = PATH_DATA, file = FILE)
-  tmp = pb.clean(data)
-  data = tmp[[1]]
-  aliases = tmp[[2]]
-  save(data, file =  file.path(PATH_RESULTS, file.dat))
-  
-}
-
-# data.ext2 <- pb.process3(data)
+load(file.path(PATH_DATA, "PubBias_2019-07-19.RData"))
 load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
+# data.ext2 <- pb.process3(data)
 
 
 #--------------------------------------------------------------------------------------------------------------------#
@@ -51,6 +38,8 @@ load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 #   # filter(meta.id != 94519 & meta.id != 62301) %>%  #Copas convergence..
 #   filter(!all(events1 == 0) & !all(events2 == 0)) %>% #No events
 #   summarize(dupl.remove = unique(dupl.remove),
+#             id = unique(id),
+#             outcome.desired = unique(outcome.desired),
 #             n.sig.single = sum(sig.single, na.rm = T),
 #             se.min = min(se.new, na.rm = T),
 #             se.max = max(se.new, na.rm = T))
@@ -62,6 +51,8 @@ load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 #   filter(!all(mean1 == 0) & !all(mean2 == 0)) %>% #No means
 #   filter(!all(sd1 == 0) | !all(sd2 == 0)) %>% #No sd's
 #   summarize(dupl.remove = unique(dupl.remove),
+#             id = unique(id),
+#             outcome.desired = unique(outcome.desired),
 #             n.sig.single = sum(sig.single, na.rm = T),
 #             se.min = min(se.new, na.rm = T),
 #             se.max = max(se.new, na.rm = T))
@@ -71,16 +62,22 @@ load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 #   mutate(n.pre = n()) %>% filter(n.pre >= 10) %>%
 #   filter(outcome.flag == "IV") %>%
 #   summarize(dupl.remove = unique(dupl.remove),
+#             id = unique(id),
+#             outcome.desired = unique(outcome.desired),
 #             n.sig.single = sum(sig.single, na.rm = T),
 #             se.min = min(se.new, na.rm = T),
 #             se.max = max(se.new, na.rm = T))
 # 
 # meta.info.pre <- rbind(meta.info.bin, meta.info.cont, meta.info.surv) #To save to control how many are excluded
 # 
+# meta.info.pre <- meta.info.pre %>% 
+#   filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) #No withdrawn meta-analyses
+# 
 # 
 # meta.info <- meta.info.pre %>% filter(n.sig.single > 0) %>% #At least one significant result
 #   filter((se.max^2)/(se.min^2) > 4) %>% #variance ratio > 4
-#   filter(dupl.remove == 0) #no duplicates
+#   filter(dupl.remove == 0) %>% #no duplicates
+#   filter(outcome.desired == "efficacy") #Only efficacy outcomes
 # #--------------------------------------------------------------------------------------------------------------------#
 # 
 # #Meta-analysis to get I2 (random effects meta-analysis):
@@ -123,8 +120,9 @@ meta.info.extended <- data.ext2 %>%
             outcome.nr = unique(outcome.nr),
             subgroup.name = unique(subgroup.name),
             subgroup.nr = unique(subgroup.nr),
-            outcome.measure.new = unique(outcome.measure.new),
-            outcome.measure.new = unique(outcome.measure),
+            outcome.measure.merged = unique(outcome.measure.merged),
+            outcome.measure = unique(outcome.measure),
+            outcome.desired = unique(outcome.desired),
             mean.samplesize = mean(total1 + total2, na.rm = T),
             total.samplesize = sum(total1 + total2),
             var.samplesize = var(total1 + total2, na.rm = T),
@@ -166,8 +164,6 @@ load(file.path(PATH_RESULTS, "meta_complete_list_cohensd.RData"))
 
 # # -------- Uncomment to run analysis ----------
 # meta.id.vector.bin <- meta.info.extended$meta.id[which(meta.info.extended$outcome.flag == "DICH")]
-# tobe.excluded.bin <- c(which(meta.id.vector.bin == 93868))
-# meta.id.vector.bin <- meta.id.vector.bin[-tobe.excluded.bin]
 # meta.analyses <- list()
 # meta.analyses.asd <- list()
 # meta.analyses.reg <- list()
@@ -199,10 +195,6 @@ load(file.path(PATH_RESULTS, "meta_complete_list_cohensd.RData"))
 # 	meta.tests.rucker.mm[[counter]] <- metabias(meta.analyses.asd[[counter]], method.bias = "mm", k.min = 2)
 # 	meta.tests.rucker.linreg[[counter]] <- metabias(meta.analyses.asd[[counter]], method.bias = "linreg", k.min = 2)
 # }
-# 
-# 
-# 
-# 
 # 
 # counter.unknown.bin.copas.error <- 0
 # for(u in meta.id.vector.bin){
@@ -324,8 +316,9 @@ bin.results <- data.frame(
 # for(u in meta.id.vector.cont){
 # 	counter <- counter + 1
 # 	print(c(u, counter))
+# 	outcome.measure.merged <- as.character(unique(data.ext2[data.ext2$meta.id == u,"outcome.measure.merged"])$outcome.measure.merged)
 # 	meta.analyses[[counter]] <- metacont(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2,
-# 																			 mean.c = mean2, sd.c = sd2, sm = "SMD", studlab = study.name,
+# 																			 mean.c = mean2, sd.c = sd2, sm = outcome.measure.merged, studlab = study.name,
 # 																			 data = data.ext2[data.ext2$meta.id == u,])
 # 	meta.analyses.reg[[counter]] <- limitmeta(meta.analyses[[counter]])
 # 	meta.analyses.trimfill[[counter]] <- trimfill(meta.analyses[[counter]])
@@ -535,7 +528,7 @@ iv.results <- data.frame(
 # # -------- Uncomment to run analysis ----------
 # meta.id.vector.z <- meta.info.extended$meta.id[-which(meta.info.extended$outcome.flag == "IV")]
 # tobe.excluded.z <- which(meta.id.vector.z == 144568)
-# meta.id.vector.z <- meta.id.vector.z[-tobe.excluded.z] #5229- total ss = 3
+# #meta.id.vector.z <- meta.id.vector.z[-tobe.excluded.z] #5229- total ss = 3
 # tmp.z <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %>%
 #   filter(outcome.flag != "IV") %>% filter(total1 + total2 > 3) %>%
 #   filter(!is.na(effect)) %>% filter(!is.na(se))
@@ -581,7 +574,7 @@ zscore.meta.analysis.estimates <- cbind(
 
 # # -------- Uncomment to run analysis ----------
 # meta.id.vector.d <- meta.info.extended$meta.id[-which(meta.info.extended$outcome.flag == "IV")]
-# meta.id.vector.d <- meta.id.vector.d[-c(which(meta.id.vector.d == 35673))]
+# #meta.id.vector.d <- meta.id.vector.d[-c(which(meta.id.vector.d == 35673))]
 # meta.analyses <- list()
 # meta.analyses.reg <- list()
 # meta.analyses.copas <- list()
@@ -668,8 +661,6 @@ for(u in 1:length(copas.names)){
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Some useful variables:
-
-
 meta.f <- meta.f %>% rowwise() %>% mutate(pval1.egger = onesided.p(stat = stat.egger, side = side, n = k, test.type = "reg"),
                                           pval1.thompson = onesided.p(stat = stat.thompson, side = side, n = k, test.type = "reg"),
                                           pval1.begg = onesided.p(stat = stat.begg, side = side, n = k, test.type = "rank"),
@@ -714,7 +705,6 @@ save(meta.bin, file =  file.path(PATH_RESULTS, "meta.bin.RData"))
 save(meta.cont, file =  file.path(PATH_RESULTS, "meta.cont.RData"))
 save(meta.iv, file =  file.path(PATH_RESULTS, "meta.iv.RData"))
 save(meta.id.vector, file =  file.path(PATH_RESULTS, "meta_id_vector.RData"))
-
 save(data.ext2, file =  file.path(PATH_RESULTS, "data_used_for_analysis.RData")) #Save data used for analysis
 
 

@@ -31,7 +31,7 @@ opts_chunk$set(
 \thispagestyle{empty}
 \begin{center}
   \vspace*{6cm}{\bfseries\Huge
-  Publication Bias in the Cochrane \vspace{3mm} Database of Systematic Reviews
+  Statistical Assessment and Adjustment of Publication Bias in the Cochrane Database of Systematic Reviews
   }
   \vfill
   \rm

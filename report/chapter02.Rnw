@@ -265,7 +265,7 @@ Let $\theta/s$ be the dependent variable $y$ and $1/\se$ the explanatory variabl
 Equation \eqref{eq:radial.plot} is often provided due to the correspondence to the radial plot. However, it is equivalent to
 
 \begin{align}
-\theta &= \beta_0 + \beta_1 \se + \epsilon, & \epsilon \sim N(0, w^{-1}\sigma^2) \label{eq:egger.plot}
+\theta &= \beta_0 + \beta_1 \se + \epsilon, & \epsilon \sim N(0, w^{-2}\sigma^2) \label{eq:egger.plot}
 \end{align}
 
 with weights $w = 1/\se^2$. Thus testing $\beta_0$ of \ref{eq:radial.plot} or $\beta_1$ is equivalent. The corresponding $p$-value is then used as evidence for a small study effect. Plugging in  $\theta_i/\se_i, 1/\se_i$ as $y_i, x_i$ into equation \ref{eq:regression.parameters} and \ref{eq:regression.variances} will give the estimates for $\hat{\beta}_0, \hat{\beta}_1,\hat{\se}_{\beta_0}$ and $\hat{\se}_{\beta_1}$.
@@ -394,7 +394,7 @@ The only difference between Thompson and Sharp's variant is $x = \sqrt{\se^2 + \
 After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen before in the simple linear regression framework. Now we have basically two possible estimates at hand:
 \begin{itemize}
 \item $\beta_0$ the treatment effect without any influence of study precision with standard error $s_{\beta_0}$
-\item $\beta_0 + \beta_1 \tau$ the treatment effect of a hypothetical study with infinite precision, corresponding standard error $s_{\beta_0} + s_{\beta_1}$
+\item $\beta_0 + \beta_1 \tau$ the treatment effect of a hypothetical study with infinite precision, corresponding standard error $\se = s_{\beta_0} + s_{\beta_1}$
 \end{itemize}
 
 Simulations in \citet{limitmeta} suggested that the latter estimate is slightly superior with respect to coverage (and mean squared error).
@@ -487,6 +487,7 @@ If one applies the model to a single meta-analysis, a sensitivity analysis is su
 \citet{limitmeta} have shown how the method can be implemented in a simulation for inference purposes. \\
 A range of values of $(a,b)$ are applied, and the test for residual small study effect as described in equation \ref{eq:copas.small.study} is applied. If all obtained $p$-values from the test are above a threshold 0.1, this is interpreted as no evidence, and no need for modelling, and the standard, classical random effects meta-analysis is retained. If none of the $p$-values is above the threshold, a wider range of values for $(a,b)$ is used. When some $p$-values are above, and some below the threshold, the pair $(a,b)$ with the smallest number of missing studies is retained (that is, the least intense underlying selection model is chosen).\\
 Currently, there is no test to detect miss-specifications in the model itself, the authors themselves have argued that a non-parametric test of the residuals would lack power.
+
 
 
 \section{Transformation between Effect Measures} \label{sec:transformation.effectsizes}

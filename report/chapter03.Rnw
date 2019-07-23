@@ -23,6 +23,7 @@ options(width=74)
 @
 
 <<echo = FALSE, warning=FALSE, message=FALSE, cache = TRUE>>=
+#Load data:
 rm(list = ls())
 PATH_HOME = path.expand("~") # user home
 PATH = file.path(PATH_HOME, 'Data/PubBias')
@@ -31,29 +32,19 @@ FILE = 'cochrane_2019-07-04.csv'
 PATH_DATA = file.path(PATH, 'data')
 PATH_CODE = file.path(PATH2, 'code')
 PATH_RESULTS = file.path(PATH2, 'results_new')
-PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
-
-file_results = "pb.RData"
+# PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
 
 source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
-file.dat <- "data.RData"
-if (file.exists(file.path(PATH_RESULTS, file.dat))) {
-	load(file.path(PATH_RESULTS, file.dat))
-} else {
-	data = pb.readData2(path = PATH_DATA, file = FILE)
-	tmp = pb.clean(data)
-	data = tmp[[1]]
-	aliases = tmp[[2]]
-	save(data, file =  file.path(PATH_RESULTS, file.dat))
-}
-
+load(file.path(PATH_DATA, "PubBias_2019-07-19.RData"))
+load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
+load(file.path(PATH_RESULTS, "meta_id_I2.RData"))
 load(file.path(PATH_RESULTS, "meta.bin.RData"))
 load(file.path(PATH_RESULTS, "meta.cont.RData"))
 load(file.path(PATH_RESULTS, "meta.iv.RData"))
-load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
-load(file.path(PATH_RESULTS, "meta_id_I2.RData"))
+
 
 ###################################################################################################################
 ###################################################################################################################
@@ -106,11 +97,11 @@ publication.year.2019 <- data.ext2 %>% filter(study.year == 2019) %>% count
 #----------------------------------------------------------------------------------------------#
 
 #Outcome.measure frequency table:
-outcome.measure.frequencies <- rbind(data %>% group_by(outcome.measure.new) %>% count() %>% 
+outcome.measure.frequencies <- rbind(data %>% group_by(outcome.measure.merged) %>% count() %>% 
                                        arrange(desc(n)) %>% ungroup() %>% filter(row_number() < 9),
-                                     data %>% group_by(outcome.measure.new) %>% count() %>% arrange(desc(n)) %>% 
+                                     data %>% group_by(outcome.measure.merged) %>% count() %>% arrange(desc(n)) %>% 
                                        ungroup() %>% filter(row_number() > 8) %>% 
-                                       summarise(outcome.measure.new = "other", n = sum(n)))
+                                       summarise(outcome.measure.merged = "other", n = sum(n)))
 
 outcome.measure.frequencies <- outcome.measure.frequencies %>% mutate(percentage = round(n/sum(n),3)*100)
 names(outcome.measure.frequencies) <- c("Outcome measure", "n", "Percentage")
@@ -165,27 +156,46 @@ initial.id.count <- length(unique(data$id))
 initial.study.count <- length(unique(data$study.name))
 initial.result.count <- dim(data)[1]
 
+#No withdrawn reviews:
+tp7 <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) 
+nowith.id.count <- length(unique(tp7$id))
+nowith.study.count <- length(unique(tp7$study.name))
+nowith.result.count <- dim(tp7)[1]
+
+#Only efficacy outcomes:
+tp8 <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.desired == "efficacy")
+efficacy.id.count <- length(unique(tp8$id))
+efficacy.study.count <- length(unique(tp8$study.name))
+efficacy.result.count <- dim(tp8)[1]
+
 #outcome.flag reduction:
-tp <- data %>% filter(outcome.flag == "DICH" | outcome.flag == "CONT" | outcome.flag == "IV")
+tp <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.flag == "DICH" | outcome.flag == "CONT" | outcome.flag == "IV")
 flag.id.count <- length(unique(tp$id))
 flag.study.count <- length(unique(tp$study.name))
 flag.result.count <- dim(tp)[1]
-
 #----------------------------------------------------------------------------------------------#
 
 #Counts of meta-analyses with n larger ten:
-m.a.largerten.bin <- data.ext2 %>% filter(outcome.flag == "DICH") %>% 
+m.a.largerten.bin <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.desired == "efficacy") %>% 
+  filter(outcome.flag == "DICH") %>% 
   filter(total1 != 0 & total2 != 0) %>% 
   group_by(meta.id) %>% filter(n() > 9) %>%  filter(any(events1 != 0) | any(events2 != 0)) %>% 
   distinct(meta.id) %>% ungroup() %>% mutate(n = n())
 
-m.a.largerten.cont <- data.ext2 %>% filter(outcome.flag == "CONT") %>% 
+m.a.largerten.cont <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.desired == "efficacy") %>% 
+  filter(outcome.flag == "CONT") %>% 
   filter(sd1 != 0 & sd2 != 0) %>% 
   filter(total1 > 0 & total2 > 0) %>% group_by(meta.id) %>% 
   filter(n() > 9) %>% distinct(meta.id) %>% ungroup() %>% mutate(n = n())
   
 
-m.a.largerten.iv <- data.ext2 %>% filter(outcome.flag == "IV") %>% 
+m.a.largerten.iv <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.desired == "efficacy") %>% 
+  filter(outcome.flag == "IV") %>% 
   filter(se != 0) %>% group_by(meta.id) %>% filter(n() > 9) %>% 
   distinct(meta.id) %>% ungroup() %>% mutate(n = n())
 
@@ -199,6 +209,7 @@ m.a.largerten.count <- unique(m.a.largerten.bin$n) + unique(m.a.largerten.cont$n
 
 
 #----------------------------------------------------------------------------------------------#
+
 
 #variance ratio > 4:
 m.a.variance4.count <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
@@ -280,7 +291,7 @@ adj.result.count <- dim(tp6)[1]
 
 #----------------------------------------------------------------------------------------------#
 # "IV" outcome.flag meta-analyses
-dt <- meta.iv %>% group_by(outcome.measure.new) %>% count %>% arrange(desc(n))
+dt <- meta.iv %>% group_by(outcome.measure.merged) %>% count %>% arrange(desc(n))
 first.iv.outcome.count <- dt$n[1]
 second.iv.outcome.count <- dt$n[2]
 third.iv.outcome.count <- dt$n[3]
@@ -448,11 +459,11 @@ The dataset was scraped from the Cochrane Database of Systematic Reviews at the 
 \subsection{Newly Introduced Variables}
 Some new variables are added to the obtained dataset:
 \begin{itemize}
-\item \texttt{outcome.measure.new}: Outcome measure specifications given in \texttt{outcome.measure} were standardized whenever they were supposed to denote the same outcome measure. An example would be the formally different notations for odds ratios: ``Odds Ratio'', ``odds ratio'', ``OR'', which were all denoted as ``Odds Ratio''.
-% \item \texttt{outcome.flag}: A simplification of \texttt{outcome.measure.new}. The outcome.flag ``bin'' indicates if \texttt{outcome.measure.new} is either one of ``Risk Ratio'', ''Odds Ratio'', ``Risk difference'' or ``Peto Odds Ratio''. ``cont'' is equivalent to \texttt{outcome.measure.new} equal to "Std. Mean Difference'' or ``Mean Difference''. ``surv'' equal to ``Hazard Ratio'' and ``rate'' equal to ''Rate Ratio'' or ``Rate Difference''.
+\item \texttt{outcome.measure.merged}: Outcome measure specifications given in \texttt{outcome.measure} were standardized whenever they were supposed to denote the same outcome measure. An example would be the formally different notations for odds ratios: ``Odds Ratio'', ``odds ratio'', ``OR'', which were all denoted as ``Odds Ratio''.
+% \item \texttt{outcome.flag}: A simplification of \texttt{outcome.measure.merged}. The outcome.flag ``bin'' indicates if \texttt{outcome.measure.merged} is either one of ``Risk Ratio'', ''Odds Ratio'', ``Risk difference'' or ``Peto Odds Ratio''. ``cont'' is equivalent to \texttt{outcome.measure.merged} equal to "Std. Mean Difference'' or ``Mean Difference''. ``surv'' equal to ``Hazard Ratio'' and ``rate'' equal to ''Rate Ratio'' or ``Rate Difference''.
 \item \texttt{lrr} and \texttt{var.lrr}: log risk ratio and variance of the log risk ratio for outcome.flag ``bin''.
 \item \texttt{smd} and \texttt{var.smd}: Hedges $g$ and the variance of Hedges $g$ for outcome.flag ``cont''. 
-% If not computable from \texttt{mean1}, \texttt{mean2}, \texttt{sd1} and \texttt{sd2}, and \texttt{outcome.measure.new} was equal to ``Std. Mean Difference'', it was set equal to \texttt{effect} (and \texttt{var.smd} equal to \texttt{se} squared, $n$ =  \Sexpr{length(inpute.given.ind)}).
+% If not computable from \texttt{mean1}, \texttt{mean2}, \texttt{sd1} and \texttt{sd2}, and \texttt{outcome.measure.merged} was equal to ``Std. Mean Difference'', it was set equal to \texttt{effect} (and \texttt{var.smd} equal to \texttt{se} squared, $n$ =  \Sexpr{length(inpute.given.ind)}).
 \item \texttt{smd.ordl} and \texttt{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for outcome.flag ``bin''.
 \item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for outcome.flag ``bin'') or $g$ (for outcome.flag ``cont'') to $r$ transformation.
 \item \texttt{z} and \texttt{var.z}: Fisher's z score and it's variance obtained from the Pearson correlation $r$ to $z$ transformation.
@@ -486,8 +497,8 @@ Only the data that had accesible all results data available was used for adjustm
 
 \begin{figure}
 \begin{center}
-\tikzstyle{block} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=2.5em]
-\tikzstyle{btw} = [rectangle, node distance=0cm, minimum height =2em, fill= white]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=2.3em]
+\tikzstyle{btw} = [rectangle, node distance=0cm, minimum height =1.8em, fill= white]
 \tikzstyle{ublock} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=4em, text width = 10em]
 \tikzstyle{line} = [draw, -latex']
 \tikzstyle{final} = [rectangle, draw, fill=red!20, text centered, rounded corners, minimum height=2.8em]
@@ -499,36 +510,46 @@ Only the data that had accesible all results data available was used for adjustm
     \Sexpr{format(initial.study.count, big.mark = ",")} studies,
     \Sexpr{format(initial.result.count, big.mark = ",")} results};
     
-    \node [block, below of=1, node distance=2.2cm] (2) {
+        \node [block, below of=1, node distance=2cm] (12) {
+    \Sexpr{format(nowith.id.count, big.mark = ",")} reviews,
+    \Sexpr{format(nowith.study.count, big.mark = ",")} studies,
+    \Sexpr{format(nowith.result.count, big.mark = ",")} results};
+    
+        \node [block, below of=12, node distance=2cm] (13) {
+    \Sexpr{format(efficacy.id.count, big.mark = ",")} reviews,
+    \Sexpr{format(efficacy.study.count, big.mark = ",")} studies,
+    \Sexpr{format(efficacy.result.count, big.mark = ",")} results};
+    
+    \node [block, below of=13, node distance=2cm] (2) {
     \Sexpr{format(flag.id.count, big.mark = ",")} reviews,
     \Sexpr{format(flag.study.count, big.mark = ",")} studies,
     \Sexpr{format(flag.result.count, big.mark = ",")} results};
     
-    \node [block, below of=2, node distance=2.2cm] (3) {
+    \node [block, below of=2, node distance=2cm] (3) {
     \Sexpr{format(ten.id.count, big.mark = ",")} reviews,
     \Sexpr{format(ten.study.count, big.mark = ",")} studies,
     \Sexpr{format(ten.result.count, big.mark = ",")} results,
     \Sexpr{format(m.a.largerten.count, big.mark = ",")} meta-analyses};
 
-    \node [block, below of=3, node distance=2.2cm] (4) {
+    \node [block, below of=3, node distance=2cm] (4) {
     \Sexpr{format(var.id.count, big.mark = ",")} reviews,
     \Sexpr{format(var.study.count, big.mark = ",")} studies,
     \Sexpr{format(var.result.count, big.mark = ",")} results,
     \Sexpr{format(m.a.variance4.count$n, big.mark = ",")} meta-analyses};
 
-    \node [block, below of=4, node distance=2.2cm] (5) {
+    \node [block, below of=4, node distance=2cm] (5) {
     \Sexpr{format(sig.id.count, big.mark = ",")} reviews,
     \Sexpr{format(sig.study.count, big.mark = ",")} studies,
     \Sexpr{format(sig.result.count, big.mark = ",")} results,
     \Sexpr{format(m.a.one.sig.count$n, big.mark = ",")} meta-analyses};
 
-    \node [block, below of=5, node distance=2.2cm] (6) {
+    \node [block, below of=5, node distance=2cm] (6) {
     \Sexpr{format(dupl.id.count, big.mark = ",")} reviews,
     \Sexpr{format(dupl.study.count, big.mark = ",")} studies,
     \Sexpr{format(dupl.result.count, big.mark = ",")} results,
     \Sexpr{format(m.a.no.dupl.number$n, big.mark = ",")} meta-analyses};
 
-    \node [final, below of=6, node distance=2.2cm] (7) {Analysis dataset (1):
+    \node [final, below of=6, node distance=2cm] (7) {Analysis dataset (1):
     \Sexpr{format(I2.id.count, big.mark = ",")} reviews,
     \Sexpr{format(I2.study.count, big.mark = ",")} studies,
     \Sexpr{format(I2.result.count, big.mark = ",")} results,
@@ -558,7 +579,9 @@ Only the data that had accesible all results data available was used for adjustm
     
     
     % Draw edges
-    \path [line] (1) -- node [btw, xshift = -1.8cm] {\texttt{outcome.flag} restriction} (2);
+    \path [line] (1) -- node [btw, xshift = -1.95cm] {no withdrawn reviews} (12);
+    \path [line] (12) -- node [btw, xshift = -2.1cm] {only efficacy outcomes} (13);
+    \path [line] (13) -- node [btw, xshift = -2cm] {\texttt{outcome.flag} restriction} (2);
     \path [line] (2) -- node [btw, xshift = -1.7cm] {study number $\geq$ 10}(3);
     \path [line] (3) -- node [btw, xshift = -1.6cm] {variance ratio $>$ 4} (4);
     \path [line] (4) -- node [btw, xshift = -2cm] {at least one significant result} (5);
@@ -590,7 +613,7 @@ Because the number of errors is low, the meta-analyses have only been ommitted f
 
 \subsubsection{The Analysis Dataset}
 The dataset that was ultimately tested and adjusted for publication bias comprises \Sexpr{length(meta.id.vector)} meta-analyses and \Sexpr{dim(meta.data)[1]} results. The mean number of participants in the treatment group is \Sexpr{round(mean(meta.data$total1, na.rm = T),1)} vs \Sexpr{round(mean(data.ext2$total1, na.rm = T),1)} in the unrestricted dataset and the mean total number of participants \Sexpr{round(mean(meta.data$total1 + meta.data$total2),1)} vs \Sexpr{round(mean(data.ext2$total1 + data.ext2$total2),1)}. The mean publication year is \Sexpr{mean(meta.data$study.year, na.rm = TRUE)} vs \Sexpr{mean(data.ext2$study.year, na.rm = TRUE)} in the unrestricted dataset. \\
-From the meta-analyses with incomplete data (\texttt{outcome.type} == \texttt{IV}), there are \Sexpr{first.iv.outcome.count} with \\ \texttt{outcome.measure.new} = ``Risk Ratio'', \Sexpr{second.iv.outcome.count} ``Std. Mean Difference'',  \Sexpr{third.iv.outcome.count} ``Hazard Ratio'' and \Sexpr{fourth.iv.outcome.count} ``Odds Ratio'' (and 25 additional, different outcome measures).
+From the meta-analyses with incomplete data (\texttt{outcome.type} == \texttt{IV}), there are \Sexpr{first.iv.outcome.count} with \\ \texttt{outcome.measure.merged} = ``Risk Ratio'', \Sexpr{second.iv.outcome.count} ``Std. Mean Difference'',  \Sexpr{third.iv.outcome.count} ``Hazard Ratio'' and \Sexpr{fourth.iv.outcome.count} ``Odds Ratio'' (and 25 additional, different outcome measures).
 
 
 \subsection{Analysis Procedure}
