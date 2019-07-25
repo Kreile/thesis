@@ -168,6 +168,11 @@ McAuley, L., Pham, B., Tugwell, P., and Moher, D. (2000).
   intervention effectiveness reported in meta-analyses?
 \newblock {\em The Lancet}, {\bf356},  1228 -- 1231.
 
+\bibitem[McCullagh and Nelder, 1989]{Glm}
+McCullagh, P. and Nelder, J. (1989).
+\newblock {\em Generalized Linear Models}.
+\newblock Chapman \& Hall.
+
 \bibitem[McShane {\it et~al.}, 2016]{selection.assessment}
 McShane, B.~B., B{\"o}ckenholt, U., and Hansen, K.~T. (2016).
 \newblock Adjusting for publication bias in meta-analysis: An evaluation of

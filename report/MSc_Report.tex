@@ -513,6 +513,23 @@ A method proposed in \citet{thompson.sharp} allows for between study variance $\
 $\tau^2$ is estimated as in equation \ref{eq:Tau.definition} (method of moments). %or \ref{eq:paule.mandel}. 
 The weights are set as $w_i = 1/\sqrt{\se_i^2 + \tau^2})$. After adjusting for the weights as described in \ref{weighted.regression}, we can proceed analogous to Egger's test. The $p$-value for $\beta_{0} \neq 0$ reflects the evidence for a small study effect.
 
+\subsection{Generalized linear model} \label{random.intecepts}
+The introduction of group-sepific random effects allows to analyze grouped or repeated measurements by linear regression \citep{Glm}. Let $i$ be the group index, and
+
+\begin{align}
+\mathbf{Y}{_{ij}}|U{_i},\epsilon{_{ij}} = (1,x{_i}^\top)\beta + U{_i} + \epsilon{_{ij}} \label{eq:one.random.intercept}
+\end{align}
+
+the marginal distribution of $\mathbf{Y}{_{ij}}$ depending on $U{_i},\epsilon{_{ij}}$. The random effects $U{_i} \sim N(0, g)$ and the residual error term $\epsilon{_{ij}} \sim N(0, \tau^{2})$ are considered independent. If there are more groups in the data we can extend \eqref{eq:one.random.intercept} by adding a second random term $Q$ with an index $k$:
+
+\begin{align}
+\mathbf{Y}{_{ij}}|U_i, Q_k \epsilon{_{ij}} = (1,x_i^\top)\beta + U_i + Q_k + \epsilon{_{ij}} \label{eq:two.random.intercepts}
+\end{align}
+
+Again, $U, K, \epsilon$ are distributed independently. The random intercepts model will account for a nested group structure by accordingly indexing the groups. \\
+The conditional distribution in equations \eqref{eq:one.random.intercept} and \eqref{eq:two.random.intercepts} can be used to construct a conditional likelihood; A bayesian posterior distribution is integrated with respect to the random effects, such that it can be used for restricted or unrestricted maximum likelihood estimation.
+
+
 \subsection{Dichotomous Outcomes Tests}
  
 The issue with dichotomous outcomes is that effect size and variance of effect size are correlated, which can readily be seen in \ref{eq:risk.ratio} and \ref{eq:risk.ratio.variance}. For example, a small number of event counts in one or group will inflate the variance and the effect size. Consequently, the tests above will tend to reject the null-hypothesis too often, \ie report false positives. A number of solutions to this problem are provided in the literature.
@@ -1231,7 +1248,7 @@ The \texttt{comparison.name} variable specifies \textit{what kind} of treatments
 The result is of a binary type, and the counts of events in the treatment group are in \texttt{events1} and of the control group in \texttt{events2} and the total number of participants are given in columns \texttt{total1} and \texttt{total2}. As can be seen, events denote here "death at the end of follow-up".
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul 23 08:53:36 2019
+% Wed Jul 24 16:42:40 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1316,7 +1333,7 @@ The review comprises five studies in total. Three of them compared barbiturate t
 We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. Thus, it is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul 23 08:53:36 2019
+% Wed Jul 24 16:42:40 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1353,7 +1370,7 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
 Information about missing values in the dataset is given in Table \ref{missing}. The relative amount of missing values is low, except for study years. For continuous outcomes, the cases are counted were neither a mean difference nor means are available. Similarly, the counts of cases where neither standard errors nor standard deviations are available are provided. Study years before 1920 and after 2019 are declared as missing, as well as sample sizes equal to zero.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul 23 08:53:36 2019
+% Wed Jul 24 16:42:40 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1375,7 +1392,7 @@ The studies that are included in the reviews and have been published are most of
 The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.) abundances are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 31 \% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (more than 65\%).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul 23 08:53:36 2019
+% Wed Jul 24 16:42:40 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1412,7 +1429,7 @@ The size of a meta-analysis denotes how many results are included in a group. Ta
 
 
 {\ttfamily\noindent\color{warningcolor}{\#\# Warning: Setting row names on a tibble is deprecated.}}\end{kframe}% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul 23 08:53:36 2019
+% Wed Jul 24 16:42:40 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1768,7 +1785,7 @@ The confidence intervals from Figure \ref{fig:mean.diff.test} can be used as lim
 The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. We expect that some proportion of the meta-analysis will only be significant for a certain test, and this is indeed observed in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul 23 08:53:48 2019
+% Tue Jul 23 11:07:27 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1857,7 +1874,7 @@ Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Co
 Table \ref{adjustment.difference} shows the quantiles and means for the various differences and additional information. When Hedge's $g$ is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small (the means of Copas in the first two rows for $z$-score are caused by one very large value, see Table \ref{missing.differences}). To recall some other findings out of Table \ref{adjustment.difference}: 5\% or 70 cases have their $z$-score reduced by more than 0.15 by regression adjustment (and 5\% or 70 increased by -0.13, fixed effects reference). Also, Hedges $g$ is reduced by 0.39 compared to fixed effects estimates in 5\% or 70 meta-analyses (or increased by 0.24). 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul 23 08:54:03 2019
+% Tue Jul 23 11:07:42 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1931,7 +1948,7 @@ The Copas selection model also gives an estimate of the number of missing studie
 We can see that in some occasions, the method finds more than half of all studies are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}. The discrepancy between mean and median may indicate that the estimate of 0\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie 0 meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for 0, more than 30\% of missing studies.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul 23 08:54:04 2019
+% Tue Jul 23 11:07:44 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1954,7 +1971,7 @@ Missing fraction & 239 & 0 & 0 & 0.1 & 0.4 & 1.1 & 0.3 \\
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul 23 08:54:04 2019
+% Tue Jul 23 11:07:44 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -2008,7 +2025,7 @@ No formal tests are provided, but the at least there seems to be no clear bias o
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Tue Jul 23 08:54:05 2019
+% Tue Jul 23 11:07:45 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize

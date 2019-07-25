@@ -52,6 +52,54 @@ load(file.path(PATH_RESULTS, "meta.iv.RData"))
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+<<echo=FALSE, warning=FALSE>>=
+p.samplesize.z  <- data.ext2 %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% ungroup() %>%
+  mutate(std.z = abs(z), sample.size = total1 + total2) %>%
+  group_by(sample.size) %>%
+  summarize(median.effect = median(std.z, na.rm = T)) %>%
+  ggplot(aes(x = sample.size, y = median.effect)) + geom_point(size = 0.8) +
+  theme_bw() + xlab("sample size") + ylab("median absolute z-score") +
+  xlim(c(15, 300)) + ylim(c(0, 0.25)) +
+  scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
+
+p.samplesize.effect.sep <- data %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>%
+  filter(outcome.measure.new == "Risk Ratio" |
+           outcome.measure.new == "Odds Ratio" |
+           outcome.measure.new == "Mean Difference" |
+           outcome.measure.new == "Std. Mean Difference") %>%
+  group_by(outcome.measure.new) %>%
+  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  group_by(sample.size, outcome.measure.new) %>%
+  summarize(median.effect = median(scaled.effect, na.rm = T)) %>%
+  ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure.new)) + geom_point(size = .5) + facet_wrap(~outcome.measure.new, scales = "free") +
+  theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size") +
+  xlim(c(15, 300)) +
+  scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
+@
+
+The median $z$-score for a given sample size of a trial is shown in Figure \ref{z.samplesize}. It is clearly visible that the absolute value decreases with increasing sample size, i.e. that the effect size is becoming smaller. The trend flattens off after $\sim$ sample size = 400 (not shown).
+-- Appendix -- \\
+
+\begin{figure}
+<<echo=FALSE, warning=FALSE>>=
+plot(p.samplesize.z)
+@
+\caption{Median of the absolute $z$-score plotted against the total sample size.}
+\label{z.samplesize}
+\end{figure}
+
+Only for illustration, the same trend is reproduced in Figure \ref{effect.samplesize.separated} with a similar method, using the original effect size measures ``Odds Ratio'', ``Risk Ratio'', ``Mean Difference'' and ``Std. Mean Difference'' (the most commonly used in the dataset). The ``normalized effect'' is the original effect size, normalized with respect to all other effect sizes of the same measure (i.e. subtraction of mean and division through standard error of the mean).
+
+\begin{figure}
+<<echo=FALSE>>=
+plot(p.samplesize.effect.sep)
+@
+\caption{Median of the absolute value of the normalized, original effect size plotted against the total sample size.}
+\label{effect.samplesize.separated}
+\end{figure}
+
+
+
 \section{Publication Bias Test Results} \label{sec:publication.bias.tests}
 <<echo=FALSE, warning=FALSE>>=
 #Agreement proportions of publication bias tests:

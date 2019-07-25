@@ -20,6 +20,8 @@ load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
 
 load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
+
+load(file.path(PATH_DATA, "PubBias_2019-07-19.RData"))
 #----------------------------------------------------------------------------------------------#
 
 ##-------Prepare data--------#
@@ -29,9 +31,9 @@ reg.dat <- reg.dat %>%  mutate(smd = case_when(outcome.flag == "DICH" ~ smd.ordl
                                          outcome.flag == "CONT" ~ smd),
                          var.smd = case_when(outcome.flag == "DICH" ~ var.smd.ordl,
                                              outcome.flag == "CONT" ~ var.smd),
-                         smd = case_when(outcome.measure.new == "Std. Mean Difference" ~ effect, 
+                         smd = case_when(outcome.measure.merged == "SMD" ~ effect, 
                                          TRUE ~ smd),
-                         var.smd = case_when(outcome.measure.new == "Std. Mean Difference" ~ se^2,
+                         var.smd = case_when(outcome.measure.merged == "SMD" ~ se^2,
                                              TRUE ~ var.smd)) #put smd's all together
 
 #Mirror all effects on one positive side:
@@ -52,7 +54,103 @@ reg.dat <- reg.dat %>% filter(se.smd != 0) %>% filter(!is.na(smd)) %>%
 #Get centered study years (centered with respect to meta-analysis study years and all study years (ov))
 reg.dat <- reg.dat %>% group_by(meta.id) %>% 
   mutate(study.year.center = scale(scale = F, center = T, x = study.year)) %>% 
-  ungroup() %>% mutate(study.year.center.ov = scale(scale = T, center = T, x = study.year))
+  ungroup() %>% mutate(study.year.center.ov = scale(scale = F, center = T, x = study.year)[,1]) 
+
+reg.dat <- merge(reg.dat, data.review[,c("id", "year")], by = "id")
+
+reg.dat <- reg.dat %>% filter(se.smd < 3)
+#----------------------------------------------------------------------------------------------#
+
+##-------Modelling--------#
+small.study.fit <- lme(fixed = smd ~ se.smd, random = list(~ 1 | id, ~ 1 | meta.id),
+                       weights = ~ new.se.smd^2, method = "ML", data = reg.dat)
+anova(small.study.fit)
+
+#----------------------------------------------------------------------------------------------#
+
+##-------Illustration--------#
+lmer.table <- function(model){
+  sum <- summary(model)
+  estimate <- round(sum$coefficients$fixed)
+  ci <- intervals(model)
+  tb <- data.frame(estimate = round(ci$fixed[,2], 3), CI = round(ci$fixed[,c(1,3)], 3))
+  colnames(tb)[c(2,3)] <- c("2.5%CL", "97.5%CL")
+  return(tb)
+}
+
+require(GGally)
+#topairsplot.pb.stats.bin <- abs(topairsplot.pb.stats.bin)
+notplot.dat <- reg.dat %>%  filter(se.smd >= 2 | smd >= 5)
+plot.dat <- reg.dat %>% select(smd, se.smd, new.se.smd, study.year.center, 
+                               study.year.center.ov, id, meta.id, outcome.measure.merged) %>% 
+  filter(se.smd < 1.53) %>% filter(smd < 5)
+
+# pairs(plot.dat[,c(1,2,5)], lower.panel = NULL, cex = .1)
+ggpairs(plot.dat, columns = c(1,2,5), 
+        upper = list(continuous = wrap("points", size = 0.15, alpha = .1, )),
+        axisLabels = "show")
+ggpairs(topairsplot.pb.stats.bin, columns = 1:5, aes(alpha = 0.5))
+
+ggpairs(topairsplot.pb.stats.cont, columns = 1:3, aes(colour = factor(egger.test)))
+ggpairs(topairsplot.pb.stats.cont, columns = 1:3, aes(alpha = 0.7))
+
+
+anova.xtable <- xtable(anova(small.study.fit, small.study.year.ov.fit, small.study.year.ov.int.fit))
+
+small.study.fit.table <- lmer.table(small.study.fit)
+small.study.year.ov.table <- lmer.table(small.study.year.ov.fit)
+# small.study.year.ov.int.table <- lmer.table(small.study.year.ov.int.fit)
+
+
+
+
+# print(xtable(kreatinin.tba, align = "lcccc"), floating = F, size = "scriptsize")
+
+
+
+
+
+year.fit <- lme(fixed = smd ~ study.year.center, random = list(~ 1 | id, ~ 1 | meta.id),
+                weights = ~ new.se.smd^2, method = "ML", data = reg.dat)
+
+
+
+
+summary(small.study.year.fit)
+anova(small.study.fit, small.study.year.fit) 
+
+
+
+summary(small.study.year.ov.int.fit)
+
+reg.dat$prediction <- predict(object = small.study.year.ov.fit, newdata = reg.dat)
+
+plot(y = reg.dat$prediction, reg.dat$study.year.center.ov, cex = .1)
+plot(y = reg.dat$smd, reg.dat$study.year.center.ov, cex = .1)
+abline(small.study.year.ov.fit)
+
+plot(y = reg.dat$smd, x = reg.dat$se.smd, cex = .1)
+small.study.fit.coef <- summary(small.study.fit)$coefficients$fixed
+plot(small.study.fit)
+abline(a = small.study.fit.coef, col = "red", lty = 2)
+plot(small.study.year.ov.fit$fitted[,1], x=  reg.dat$study.year.center.ov, cex = .1)
+
+
+
+
+time.fit <- glmer(formula = smd ~ study.year.center + (1 | meta.id) + (1 | id), weights = 1/se.smd,
+                  family = gaussian, data = reg.dat, nAGQ = 10)
+time.small.study.fit <- glmer(formula = smd ~ se.smd + study.year.center + (1 | meta.id) + (1 | id), weights = 1/se.smd,
+                              family = gaussian, data = reg.dat, nAGQ = 10)
+summary(time.fit)
+anova(small.study.fit, time.small.study.fit)
+
+
+time.interaction.fit <- glmer(formula = smd ~  study.year.center + (1 | meta.id) + (1 | id), weights = 1/se.smd,
+                              family = gaussian, data = reg.dat, nAGQ = 10)
+
+
+#----------------------------------------------------------------------------------------------#
 
 #----------------------------------------------------------------------------------------------#
 
@@ -115,52 +213,6 @@ abline(lm2.fit)
 # coef(small.study.fit)
 #----------------------------------------------------------------------------------------------#
 
-#Modelling
-small.study.fit <- lme(fixed = smd ~ se.smd, random = list(~ 1 | id, ~ 1 | meta.id),
-                       weights = ~ new.se.smd^2, method = "ML", data = reg.dat)
-
-year.fit <- lme(fixed = smd ~ study.year.center, random = list(~ 1 | id, ~ 1 | meta.id),
-                weights = ~ new.se.smd^2, method = "ML", data = reg.dat)
-
-small.study.year.ov.fit <- lme(fixed = smd ~ se.smd + study.year.center.ov, random = list(~ 1 | id, ~ 1 | meta.id),
-                weights = ~ new.se.smd^2, method = "ML", data = reg.dat)
-summary(small.study.year.fit)
-anova(small.study.fit, small.study.year.fit) 
-small.study.year.ov.int.fit <- lme(fixed = smd ~ se.smd * study.year.center.ov, random = list(~ 1 | id, ~ 1 | meta.id),
-                                   weights = ~ new.se.smd^2, method = "ML", data = reg.dat)
-
-anova(small.study.year.ov.fit, small.study.year.ov.int.fit) 
-summary(small.study.year.ov.int.fit)
-
-reg.dat$prediction <- predict(object = small.study.year.ov.fit, newdata = reg.dat)
-
-plot(y = reg.dat$prediction, reg.dat$study.year.center.ov, cex = .1)
-plot(y = reg.dat$smd, reg.dat$study.year.center.ov, cex = .1)
-abline(small.study.year.ov.fit)
-
-plot(y = reg.dat$smd, x = reg.dat$se.smd, cex = .1)
-small.study.fit.coef <- summary(small.study.fit)$coefficients$fixed
-plot(small.study.fit)
-abline(a = small.study.fit.coef, col = "red", lty = 2)
-plot(small.study.year.ov.fit$fitted[,1], x=  reg.dat$study.year.center.ov, cex = .1)
-
-
-
-
-time.fit <- glmer(formula = smd ~ study.year.center + (1 | meta.id) + (1 | id), weights = 1/se.smd,
-                         family = gaussian, data = reg.dat, nAGQ = 10)
-time.small.study.fit <- glmer(formula = smd ~ se.smd + study.year.center + (1 | meta.id) + (1 | id), weights = 1/se.smd,
-                  family = gaussian, data = reg.dat, nAGQ = 10)
-summary(time.fit)
-anova(small.study.fit, time.small.study.fit)
-
-
-time.interaction.fit <- glmer(formula = smd ~  study.year.center + (1 | meta.id) + (1 | id), weights = 1/se.smd,
-                                             family = gaussian, data = reg.dat, nAGQ = 10)
-
-
-#----------------------------------------------------------------------------------------------#
-
 set.seed(894)
 data.ext2 %>% group_by(meta.id) %>% 
   filter(!is.na(study.year)) %>% 
@@ -179,3 +231,10 @@ data.ext2 %>% group_by(meta.id) %>% filter(n > 9) %>%
   ggplot(aes(x = sizerank, y = log(pval.single))) + geom_jitter(height = 0)
   
 
+
+# small.study.year.ov.fit <- lme(fixed = smd ~ se.smd + study.year.center.ov, random = list(~ 1 | id, ~ 1 | meta.id),
+#                                weights = ~ new.se.smd^2, method = "ML", data = reg.dat)
+# small.study.year.ov.int.fit <- lme(fixed = smd ~ se.smd * study.year.center.ov, random = list(~ 1 | id, ~ 1 | meta.id),
+#                                    weights = ~ new.se.smd^2, method = "ML", data = reg.dat)
+# 
+# anova(small.study.fit, small.study.year.ov.fit, small.study.year.ov.int.fit) 

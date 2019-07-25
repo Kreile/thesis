@@ -405,8 +405,25 @@ p.samplesize.effect.sep <- data %>% filter(total1 + total2 > 10 & total1 + total
   ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure.new)) + geom_point() + facet_wrap(~outcome.measure.new, scales = "free") + 
   theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size")
 
+#--------------------------------------------------------------------------------------------------------------------#
 
+meta.f$heterogeneity <- ifelse(meta.f$I2 == 0, 1, 0)
+meta.f <- meta.f %>% mutate(p.value = case_when(outcome.flag == "DICH" & heterogeneity == 1 ~ pval1.rucker,
+                                                outcome.flag == "DICH" & heterogeneity == 0 ~ pval1.rucker.linreg,
+                                                outcome.flag == "CONT" & heterogeneity == 1 ~ pval1.thompson,
+                                                outcome.flag == "CONT" & heterogeneity == 0 ~ pval1.egger,
+                                                outcome.flag == "IV" & heterogeneity == 1 ~ pval1.thompson,
+                                                outcome.flag == "IV" & heterogeneity == 0 ~ pval1.egger),
+                            
+                            classes = case_when(outcome.flag == "DICH" & heterogeneity == 1 ~ 1,
+                                                outcome.flag == "DICH" & heterogeneity == 0 ~ 2,
+                                                outcome.flag == "CONT" & heterogeneity == 1 ~ 3,
+                                                outcome.flag == "CONT" & heterogeneity == 0 ~ 4,
+                                                outcome.flag == "IV" & heterogeneity == 1 ~ 5,
+                                                outcome.flag == "IV" & heterogeneity == 0 ~ 6))
+levels(meta.f$outcome.flag) <- list("CONT" = "CONT", "DICH" = "DICH", "IV" = "IV")
 
-
+meta.f %>% ggplot(aes(x = p.value)) + facet_wrap(~ classes, nrow = 2) + geom_histogram(boundary = 0, binwidth = 0.1)
+#----------------------------------------------------------------------------------------------#
 
 

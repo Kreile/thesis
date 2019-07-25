@@ -286,6 +286,23 @@ A method proposed in \citet{thompson.sharp} allows for between study variance $\
 $\tau^2$ is estimated as in equation \ref{eq:Tau.definition} (method of moments). %or \ref{eq:paule.mandel}. 
 The weights are set as $w_i = 1/\sqrt{\se_i^2 + \tau^2})$. After adjusting for the weights as described in \ref{weighted.regression}, we can proceed analogous to Egger's test. The $p$-value for $\beta_{0} \neq 0$ reflects the evidence for a small study effect.
 
+\subsection{Generalized linear model} \label{random.intecepts}
+The introduction of group-sepific random effects allows to analyze grouped or repeated measurements by linear regression \citep{Glm}. Let $i$ be the group index, and
+
+\begin{align}
+\mathbf{Y}{_{ij}}|U{_i},\epsilon{_{ij}} = (1,x{_i}^\top)\beta + U{_i} + \epsilon{_{ij}} \label{eq:one.random.intercept}
+\end{align}
+
+the marginal distribution of $\mathbf{Y}{_{ij}}$ depending on $U{_i},\epsilon{_{ij}}$. The random effects $U{_i} \sim N(0, g)$ and the residual error term $\epsilon{_{ij}} \sim N(0, \tau^{2})$ are considered independent. If there are more groups in the data we can extend \eqref{eq:one.random.intercept} by adding a second random term $Q$ with an index $k$:
+
+\begin{align}
+\mathbf{Y}{_{ij}}|U_i, Q_k \epsilon{_{ij}} = (1,x_i^\top)\beta + U_i + Q_k + \epsilon{_{ij}} \label{eq:two.random.intercepts}
+\end{align}
+
+Again, $U, K, \epsilon$ are distributed independently. The random intercepts model will account for a nested group structure by accordingly indexing the groups. \\
+The conditional distribution in equations \eqref{eq:one.random.intercept} and \eqref{eq:two.random.intercepts} can be used to construct a conditional likelihood; A bayesian posterior distribution is integrated with respect to the random effects, such that it can be used for restricted or unrestricted maximum likelihood estimation.
+
+
 \subsection{Dichotomous Outcomes Tests}
  
 The issue with dichotomous outcomes is that effect size and variance of effect size are correlated, which can readily be seen in \ref{eq:risk.ratio} and \ref{eq:risk.ratio.variance}. For example, a small number of event counts in one or group will inflate the variance and the effect size. Consequently, the tests above will tend to reject the null-hypothesis too often, \ie report false positives. A number of solutions to this problem are provided in the literature.

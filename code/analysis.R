@@ -37,12 +37,13 @@ load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 #   mutate(n.pre = n()) %>% filter(n.pre >= 10) %>%
 #   # filter(meta.id != 94519 & meta.id != 62301) %>%  #Copas convergence..
 #   filter(!all(events1 == 0) & !all(events2 == 0)) %>% #No events
+#   mutate(se.lrr = sqrt(var.lrr)) %>%
 #   summarize(dupl.remove = unique(dupl.remove),
 #             id = unique(id),
 #             outcome.desired = unique(outcome.desired),
 #             n.sig.single = sum(sig.single, na.rm = T),
-#             se.min = min(se.new, na.rm = T),
-#             se.max = max(se.new, na.rm = T))
+#             se.min = min(se.lrr, na.rm = T),
+#             se.max = max(se.lrr, na.rm = T))
 # 
 # meta.info.cont <- data.ext2 %>% filter(outcome.flag == "CONT") %>%
 #   group_by(meta.id) %>%
@@ -54,10 +55,10 @@ load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 #             id = unique(id),
 #             outcome.desired = unique(outcome.desired),
 #             n.sig.single = sum(sig.single, na.rm = T),
-#             se.min = min(se.new, na.rm = T),
-#             se.max = max(se.new, na.rm = T))
+#             se.min = min(se, na.rm = T),
+#             se.max = max(se, na.rm = T))
 # 
-# meta.info.surv <- data.ext2 %>%
+# meta.info.iv <- data.ext2 %>%
 #   group_by(meta.id) %>%
 #   mutate(n.pre = n()) %>% filter(n.pre >= 10) %>%
 #   filter(outcome.flag == "IV") %>%
@@ -65,12 +66,12 @@ load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 #             id = unique(id),
 #             outcome.desired = unique(outcome.desired),
 #             n.sig.single = sum(sig.single, na.rm = T),
-#             se.min = min(se.new, na.rm = T),
-#             se.max = max(se.new, na.rm = T))
+#             se.min = min(se, na.rm = T),
+#             se.max = max(se, na.rm = T))
 # 
-# meta.info.pre <- rbind(meta.info.bin, meta.info.cont, meta.info.surv) #To save to control how many are excluded
+# meta.info.pre <- rbind(meta.info.bin, meta.info.cont, meta.info.iv) #To save to control how many are excluded
 # 
-# meta.info.pre <- meta.info.pre %>% 
+# meta.info.pre <- meta.info.pre %>%
 #   filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) #No withdrawn meta-analyses
 # 
 # 
@@ -131,9 +132,8 @@ meta.info.extended <- data.ext2 %>%
             mean.events = mean(events1 + events2),
             mean.publication.year = mean(study.year, na.rm = TRUE),
             first.publication.year = min(study.year, na.rm = T),
-            
-            side = bias.side.fct2(outcome = outcome.flag, lrr = lrr, var.lrr = var.lrr, smd = smd, var.smd = var.smd,
-                                 effect = effect, se = se),
+            side = bias.side.fct2(outcome = outcome.flag, outcome.measure.merged, lrr = lrr, var.lrr = var.lrr, 
+                                  smd = cohensd, var.smd = var.cohensd, effect = effect, se = se),
             n.sig.single = sum(sig.single, na.rm = T),
             NA.sig.single = sum(is.na(sig.single)),
             se.min = min(se, na.rm = T),
@@ -526,36 +526,40 @@ iv.results <- data.frame(
 #--------------------------------------------------------------------------------------------------------------------#
 
 # # -------- Uncomment to run analysis ----------
-# meta.id.vector.z <- meta.info.extended$meta.id[-which(meta.info.extended$outcome.flag == "IV")]
-# tobe.excluded.z <- which(meta.id.vector.z == 144568)
-# #meta.id.vector.z <- meta.id.vector.z[-tobe.excluded.z] #5229- total ss = 3
+# meta.id.vector.noiv <- meta.info.extended$meta.id[-which(meta.info.extended$outcome.flag == "IV")]
+# meta.id.vector.smd <- meta.info.extended$meta.id[which(meta.info.extended$outcome.measure.merged == "SMD")]
+# meta.id.vector.z <- union(meta.id.vector.smd, meta.id.vector.noiv)
+# meta.id.vector.z.c <- meta.id.vector.z[-c(which(meta.id.vector.z == 104613),
+#                                           which(meta.id.vector.z == 104616),
+#                                           which(meta.id.vector.z == 153452),
+#                                           which(meta.id.vector.z == 163246),
+#                                           which(meta.id.vector.z == 182958))] #Have zero total1..
 # tmp.z <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %>%
-#   filter(outcome.flag != "IV") %>% filter(total1 + total2 > 3) %>%
-#   filter(!is.na(effect)) %>% filter(!is.na(se))
+#   filter(total1 + total2 > 3) %>% filter(total1 != 0 & total2 != 0)
 # meta.analyses <- list()
 # meta.analyses.reg <- list()
 # meta.analyses.copas <- list()
 # counter <- 0
-# for(u in meta.id.vector.z){
+# for(u in meta.id.vector.z.c){
 # 	counter <- counter + 1
 # 	print(c(u,counter))
-# 	meta.analyses[[counter]] <- metagen(TE = z, seTE = sqrt(var.z), studlab = study.name, tmp.z[tmp.z$meta.id == u,])
+# 	meta.analyses[[counter]] <- metacor(cor = z, n = total1 + total2, studlab = study.name, tmp.z[tmp.z$meta.id == u,])
 # 	meta.analyses.reg[[counter]] <- limitmeta(meta.analyses[[counter]])
 # 	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
 # }
-# zscore.meta.list <- list(tmp.z, meta.id.vector.z, meta.analyses, meta.analyses.reg, meta.analyses.copas)
+# zscore.meta.list <- list(tmp.z, meta.id.vector.z.c, meta.analyses, meta.analyses.reg, meta.analyses.copas)
 # save(zscore.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_zscore.RData"))
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Load analysis data:
-meta.id.vector.z <- zscore.meta.list[[2]]
+meta.id.vector.z.c <- zscore.meta.list[[2]]
 meta.analyses <- zscore.meta.list[[3]]
 meta.analyses.reg <- zscore.meta.list[[4]]
 meta.analyses.copas <- zscore.meta.list[[5]]
 
 #List extraction:
 zscore.meta.analysis.estimates <- cbind(
-  meta.id = meta.id.vector.z,
+  meta.id = meta.id.vector.z.c,
   est.z.fixef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.fixed})),
   est.z.ranef = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.random})),
   se.est.z.fixef =  unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$seTE.fixed})),
@@ -573,8 +577,7 @@ zscore.meta.analysis.estimates <- cbind(
 #--------------------------------------------------------------------------------------------------------------------#
 
 # # -------- Uncomment to run analysis ----------
-# meta.id.vector.d <- meta.info.extended$meta.id[-which(meta.info.extended$outcome.flag == "IV")]
-# #meta.id.vector.d <- meta.id.vector.d[-c(which(meta.id.vector.d == 35673))]
+# meta.id.vector.d <- meta.id.vector.z[-c(which(meta.id.vector.z == 25407))]
 # meta.analyses <- list()
 # meta.analyses.reg <- list()
 # meta.analyses.copas <- list()

@@ -16,16 +16,17 @@
 \contentsline {subsubsection}{Begg and Mazumdar: Rank Correlation Test}{9}{section*.4}
 \contentsline {subsubsection}{Egger's Test: Weighted Linear Regression Test}{9}{section*.5}
 \contentsline {subsubsection}{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{11}{section*.6}
-\contentsline {subsection}{\numberline {2.4.2}Dichotomous Outcomes Tests}{11}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.2}Generalized linear model}{11}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.3}Dichotomous Outcomes Tests}{11}{subsection.2.4.3}
 \contentsline {subsubsection}{Peters Test: Weighted Linear Regression Test}{11}{section*.7}
 \contentsline {subsubsection}{Harbord's Test: Score based Test}{11}{section*.8}
-\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{11}{section*.9}
+\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{12}{section*.9}
 \contentsline {subsubsection}{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{12}{section*.10}
-\contentsline {subsection}{\numberline {2.4.3}Excess Significance Test}{12}{subsection.2.4.3}
+\contentsline {subsection}{\numberline {2.4.4}Excess Significance Test}{12}{subsection.2.4.4}
 \contentsline {section}{\numberline {2.5}Small Study Effect and Publication Bias Adjustment}{13}{section.2.5}
 \contentsline {subsection}{\numberline {2.5.1}Adjustment by Regression}{13}{subsection.2.5.1}
-\contentsline {subsection}{\numberline {2.5.2}Copas Selection Model}{13}{subsection.2.5.2}
-\contentsline {section}{\numberline {2.6}Transformation between Effect Measures}{15}{section.2.6}
+\contentsline {subsection}{\numberline {2.5.2}Copas Selection Model}{14}{subsection.2.5.2}
+\contentsline {section}{\numberline {2.6}Transformation between Effect Measures}{16}{section.2.6}
 \contentsline {chapter}{\numberline {3}The Cochrane Dataset}{17}{chapter.3}
 \contentsline {section}{\numberline {3.1}Cochrane Systematic Reviews}{17}{section.3.1}
 \contentsline {subsection}{\numberline {3.1.1}Methods for Cochrane Reviews}{18}{subsection.3.1.1}
