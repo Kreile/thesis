@@ -32,5 +32,55 @@ funnel(metagen(TE = effect, seTE = se, data = mtd))
 #                method = "FE", data = dt))
 
 
+mtd <- data.ext2 %>% filter(meta.id == meta.bin$meta.id[33])
+funnel(metagen(TE = smd.pool, seTE = se.smd.pool, data = mtd))
+funnel(metacor(cor = z, n = total1 + total2, studlab = study.name, data = dt, sm = "ZCOR"))
+funnel(metagen(TE = lrr, seTE = sqrt(var.lrr), data = mtd))
 
+plot(mtd$smd.pool, x = mtd$se.smd.pool, col = factor(mtd$study.id), pch = 20)
+plot(mtd$z, x = sqrt(mtd$var.z), col = factor(mtd$study.id), pch = 20)
+rank(mtd$z); rank(mtd$smd.pool); rank(mtd$effect)
+rank(1/mtd$n); rank(sqrt(mtd$var.z)); rank(sqrt(mtd$var.smd.ordl))
+
+
+#Variance/study sample size check: 
+#Correspondance of variance of different measures with study sample size:
+#----------------------------------------------------------------------------------------------#
+data.ext2 <- data.ext2 %>% mutate(n = total1 + total2)
+
+#Play through two scenarios; large difference, large error and vice versa:
+mean1 <- c(30, 15); mean2 <- c(10, 10)
+sd1 <- c(10, 10); sd2 <- c(10, 10)
+total1 <- c(20, 100); total2 <- c(20, 100)
+
+escalc(measure = "MD", m1i = mean1, m2i = mean2, sd1i = sd1, sd2i = sd2, n1i = total1, n2i = total2)
+escalc(measure = "SMD", m1i = mean1, m2i = mean2, sd1i = sd1, sd2i = sd2, n1i = total1, n2i = total2)
+
+
+#----------------------------------------------------------------------------------------------#
+# examples <- data.ext2 %>% filter(outcome.measure.merged == "MD")
+# examples <- examples[c(4987, 33200, 660),]
+examples <- data.ext2 %>% filter(meta.id == meta.cont$meta.id[59])
+
+plot(x = examples$se, y = examples$effect)
+abline(lm(effect~ se, data = examples))
+plot(x = examples$se.smd.pool, y = examples$smd.pool)
+abline(lm(smd.pool ~ se.smd.pool, data = examples))
+plot(x = examples$n, y = examples$effect)
+abline(lm(effect ~ n, data = examples))
+examples$se.z <- sqrt(examples$var.z)
+plot(y = examples$z, x = examples$se.z)
+abline(lm(z ~ se.z, data = examples))
+
+
+plot(x = examples$n, y = examples$se)
+plot(x = examples$n, y = examples$se.smd.pool)
+plot(x = examples$effect, y = examples$smd.pool)
+
+#----------------------------------------------------------------------------------------------#
+#pvalue test results:
+example.md <- data.ext2 %>% filter(meta.id == meta.cont$meta.id[59])
+
+metabias(metagen(TE = effect, seTE = se, data = example.md))
+metabias(metagen(TE = smd.pool, seTE = se.smd.pool, data = example.md))
 

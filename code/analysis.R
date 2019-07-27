@@ -35,7 +35,6 @@ load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 # meta.info.bin <- data.ext2 %>% filter(outcome.flag == "DICH") %>%
 #   group_by(meta.id) %>%
 #   mutate(n.pre = n()) %>% filter(n.pre >= 10) %>%
-#   # filter(meta.id != 94519 & meta.id != 62301) %>%  #Copas convergence..
 #   filter(!all(events1 == 0) & !all(events2 == 0)) %>% #No events
 #   mutate(se.lrr = sqrt(var.lrr)) %>%
 #   summarize(dupl.remove = unique(dupl.remove),
@@ -48,7 +47,6 @@ load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 # meta.info.cont <- data.ext2 %>% filter(outcome.flag == "CONT") %>%
 #   group_by(meta.id) %>%
 #   mutate(n.pre = n()) %>% filter(n.pre >= 10) %>%
-#   # filter(meta.id < 42716 | meta.id > 42725) %>% #Single patient data
 #   filter(!all(mean1 == 0) & !all(mean2 == 0)) %>% #No means
 #   filter(!all(sd1 == 0) | !all(sd2 == 0)) %>% #No sd's
 #   summarize(dupl.remove = unique(dupl.remove),
@@ -692,6 +690,7 @@ meta.f <- meta.f %>% rowwise() %>%
          
          schwarzer.test = ifelse(pval1.schwarzer < sig.level, 1, 0),
          rucker.test = ifelse(pval1.rucker < sig.level, 1, 0),
+         rucker.test.linreg = ifelse(pval1.rucker.linreg < sig.level, 1, 0),
          harbord.test = ifelse(pval1.harbord < sig.level, 1, 0),
          peter.test = ifelse(pval1.peter < sig.level, 1, 0))
 #--------------------------------------------------------------------------------------------------------------------#

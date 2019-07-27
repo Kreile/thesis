@@ -3,7 +3,7 @@
 \contentsline {chapter}{\bfseries {Preface}}{iii}{chapter*.2}
 \vspace *{10mm}
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
-\contentsline {section}{\numberline {1.1}Aim of the study}{2}{section.1.1}
+\contentsline {section}{\numberline {1.1}Aim of the Study}{2}{section.1.1}
 \contentsline {chapter}{\numberline {2}Methods}{5}{chapter.2}
 \contentsline {section}{\numberline {2.1}Introduction and Notation}{5}{section.2.1}
 \contentsline {section}{\numberline {2.2}Effect Measures and $p$-values}{5}{section.2.2}
@@ -39,11 +39,11 @@
 \contentsline {subsection}{\numberline {3.2.3}Analysis Procedure}{24}{subsection.3.2.3}
 \contentsline {chapter}{\numberline {4}Results}{27}{chapter.4}
 \contentsline {section}{\numberline {4.1}Publication Bias Test Results}{27}{section.4.1}
-\contentsline {subsection}{\numberline {4.1.1}Publication Bias Test Consistency}{29}{subsection.4.1.1}
-\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{31}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{31}{subsection.4.2.1}
-\contentsline {subsection}{\numberline {4.2.2}Change in Evidence for Treatment Effects}{34}{subsection.4.2.2}
-\contentsline {subsection}{\numberline {4.2.3}Comparison of adjustment methods}{35}{subsection.4.2.3}
-\contentsline {chapter}{\numberline {A}Appendix}{39}{appendix.A}
+\contentsline {subsection}{\numberline {4.1.1}Publication Bias Test Consistency}{31}{subsection.4.1.1}
+\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{34}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{34}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Change in Evidence for Treatment Effects}{37}{subsection.4.2.2}
+\contentsline {subsection}{\numberline {4.2.3}Comparison of adjustment methods}{40}{subsection.4.2.3}
+\contentsline {chapter}{\numberline {A}Appendix}{43}{appendix.A}
 \vspace *{10mm}
-\contentsline {chapter}{\bfseries Bibliography}{41}{section*.34}
+\contentsline {chapter}{\bfseries Bibliography}{45}{section*.37}
