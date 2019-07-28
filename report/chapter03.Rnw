@@ -616,7 +616,7 @@ The dataset that was ultimately tested and adjusted for publication bias compris
 From the meta-analyses with incomplete data (\texttt{outcome.type} == \texttt{IV}), there are \Sexpr{first.iv.outcome.count} with \\ \texttt{outcome.measure.merged} = ``Risk Ratio'', \Sexpr{second.iv.outcome.count} ``Std. Mean Difference'',  \Sexpr{third.iv.outcome.count} ``Hazard Ratio'' and \Sexpr{fourth.iv.outcome.count} ``Odds Ratio'' (and 25 additional, different outcome measures).
 
 
-\subsection{Analysis Procedure}
+\subsection{Analysis Procedure} \label{sec:procedure}
 All compuations were performed in the \texttt{R} computing environment \citep{R.base}. The \texttt{R} packages \texttt{meta} \citep{meta.package} and \texttt{metafor} \citep{metafor.package} were used for meta-analysis, small study effect tests and adjustments. The excess significance test was adapted from \citet{vanAert.2019}. For data manipulation procedures, the \texttt{tidyverse} packages were used \citep{tidyverse.package}, and for plotting the \texttt{ggplot2} package \citep{ggplot2}.\\
 The methods described in the methods chapter \ref{ch:methods} most often apply directly to the algorithms used in \texttt{meta} and \texttt{metafor}. For binary outcomes, log risk ratios were used as treatment effect estimates in the meta-analysis, and for continuous outcomes, Hedge's $g$. For the other outcomes, the \texttt{effect} and \texttt{se} as provided in the dataset was passed to \texttt{meta::metagen}. \\ 
 The effect sizes were transformed for adjustment in the way described in section \ref{sec:transformation.effectsizes}. The $p$-values for adjusted treatment effect estimates were calculated by the Wald method. \\

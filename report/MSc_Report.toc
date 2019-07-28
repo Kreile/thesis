@@ -38,12 +38,12 @@
 \contentsline {subsubsection}{The Analysis Dataset}{24}{section*.20}
 \contentsline {subsection}{\numberline {3.2.3}Analysis Procedure}{24}{subsection.3.2.3}
 \contentsline {chapter}{\numberline {4}Results}{27}{chapter.4}
-\contentsline {section}{\numberline {4.1}Publication Bias Test Results}{27}{section.4.1}
-\contentsline {subsection}{\numberline {4.1.1}Publication Bias Test Consistency}{31}{subsection.4.1.1}
-\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{34}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{34}{subsection.4.2.1}
-\contentsline {subsection}{\numberline {4.2.2}Change in Evidence for Treatment Effects}{37}{subsection.4.2.2}
-\contentsline {subsection}{\numberline {4.2.3}Comparison of adjustment methods}{40}{subsection.4.2.3}
-\contentsline {chapter}{\numberline {A}Appendix}{43}{appendix.A}
+\contentsline {section}{\numberline {4.1}Publication Bias Test Results}{28}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Publication Bias Test Consistency}{29}{subsection.4.1.1}
+\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{32}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{32}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Comparison of adjustment methods}{35}{subsection.4.2.2}
+\contentsline {subsection}{\numberline {4.2.3}Change in Evidence for Treatment Effects}{36}{subsection.4.2.3}
+\contentsline {chapter}{\numberline {A}Appendix}{41}{appendix.A}
 \vspace *{10mm}
-\contentsline {chapter}{\bfseries Bibliography}{45}{section*.37}
+\contentsline {chapter}{\bfseries Bibliography}{43}{section*.37}

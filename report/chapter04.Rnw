@@ -52,7 +52,7 @@ load(file.path(PATH_RESULTS, "meta.iv.RData"))
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<echo=FALSE, warning=FALSE>>=
+<<echo=FALSE, warning=FALSE, message = FALSE>>=
 p.samplesize.z  <- data.ext2 %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% ungroup() %>%
   mutate(std.z = abs(z), sample.size = total1 + total2) %>%
   group_by(sample.size) %>%
@@ -105,7 +105,7 @@ plot(p.samplesize.effect.sep)
 
 
 \section{Publication Bias Test Results} \label{sec:publication.bias.tests}
-<<echo=FALSE, warning=FALSE>>=
+<<echo=FALSE, warning=FALSE, message = FALSE>>=
 #Agreement proportions of publication bias tests:
 
 #Binary:
@@ -615,123 +615,6 @@ print(xtable(test.agreement, align = "lcc", caption = "Overall proportion of agr
 \section{Small Study Effects Adjustment}
 <<echo=FALSE, warning=FALSE, message=FALSE>>=
 
-
-#HISTOGRAMS:  
-
-#Comparison of treatment effect p-values:
-sig.zcor <- meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
-                              z.ranef = est.z.ranef/se.est.z.ranef,
-                              z.reg = est.z.reg/se.est.z.reg,
-                              z.copas = est.z.copas/se.est.z.copas) %>%  
-  select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>% 
-  mutate(p.fisher.z = 2*(1-pnorm(abs(fisher.z)))) %>% 
-  group_by(method) %>% 
-  summarise(significant = length(which(abs(fisher.z) > 1.96)),
-            p.significant = significant/length(fisher.z))
-sig.zcor <- data.frame(method = sig.zcor$method,
-                       label = paste(round(sig.zcor$p.significant,3)*100, "% significant", ", (n = ", sig.zcor$significant, ")", sep = ""))
-
-method_names <- c(
-  z.fixef = "Fixed Effects",
-  z.ranef = "Random Effects",
-  z.reg = "Regression",
-  z.copas = "Copas"
-)
-
-adjustment.p.z <- meta.f %>% 
-  mutate(z.fixef = est.z.fixef/se.est.z.fixef,
-         z.ranef = est.z.ranef/se.est.z.ranef,
-         z.reg = est.z.reg/se.est.z.reg,
-         z.copas = est.z.copas/se.est.z.copas) %>%  
-  select(z.fixef, z.ranef, z.reg, z.copas) %>% 
-  gather(key = "method", value = "fisher.z") %>% 
-  mutate(method = factor(method, levels = c("z.fixef", "z.ranef", "z.reg", "z.copas"))) %>% 
-  mutate(p.fisher.z = 2*(1-pnorm(abs(fisher.z)))) %>% 
-  ggplot(aes(x = p.fisher.z)) + 
-  geom_histogram(boundary = 0, bins = 20) + 
-  theme_bw() + 
-  facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
-  geom_text(data = sig.zcor, aes(x = 0.5, y = 750, label = label), position = "dodge") + 
-  xlab(expression(paste(italic(p),"-value of test statistic of the ", italic(z),"-score"))) +
-  ggtitle(expression(paste(italic(z), " Score ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
-#--------------------------------------------------------------------------------------------------------------------#
-
-#Comparison of SMD's:
-sig.d <- meta.f %>% mutate(d.fixef = est.d.fixef/se.est.d.fixef,
-                           d.ranef = est.d.ranef/se.est.d.ranef,
-                           d.reg = est.d.reg/se.est.d.reg,
-                           d.copas = est.d.copas/se.est.d.copas) %>%  
-  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
-  mutate(p.smd = 2*(1-pnorm(abs(smd)))) %>% 
-  group_by(method) %>% 
-  summarise(significant = length(which(abs(smd) > 1.96)),
-            p.significant = significant/length(smd))
-sig.d <- data.frame(method = sig.d$method,
-                    label = paste(round(sig.d$p.significant,3)*100, "% significant", ", (n = ", sig.d$significant, ")", sep = ""))
-
-method_names <- c(
-  d.fixef = "Fixed Effects",
-  d.ranef = "Random Effects",
-  d.reg = "Regression",
-  d.copas = "Copas"
-)
-
-adjustment.p.d <- meta.f %>% 
-  mutate(d.fixef = est.d.fixef/se.est.d.fixef,
-         d.ranef = est.d.ranef/se.est.d.ranef,
-         d.reg = est.d.reg/se.est.d.reg,
-         d.copas = est.d.copas/se.est.d.copas) %>%  
-  select(d.fixef, d.ranef, d.reg, d.copas) %>% 
-  gather(key = "method", value = "smd") %>% 
-  mutate(method = factor(method, levels = c("d.fixef", "d.ranef", "d.reg", "d.copas"))) %>% 
-  mutate(p.smd = 2*(1-pnorm(abs(smd)))) %>% 
-  ggplot(aes(x = p.smd)) + 
-  geom_histogram(boundary = 0, bins = 20) + 
-  theme_bw() + 
-  facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
-  geom_text(data = sig.d, aes(x = 0.5, y = 750, label = label), position = "dodge") + 
-  xlab(expression(paste(italic(p),"-value of test statistic of std. mean differences"))) +
-  ggtitle(expression(paste("std. mean difference ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
-#--------------------------------------------------------------------------------------------------------------------#
-
-#Comparison of log hazard ratios:
-sig.d <- meta.f %>% filter(outcome.flag == "IV") %>% 
-  mutate(d.fixef = est.fixef/se.est.fixef,
-         d.ranef = est.ranef/se.est.ranef,
-         d.reg = est.reg/se.est.reg,
-         d.copas = est.copas/se.est.copas) %>%  
-  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
-  group_by(method) %>% 
-  summarise(significant = length(which(abs(smd) > 1.96)),
-            p.significant = (significant + sum(is.na(smd)))/(length(smd)))
-sig.d <- data.frame(method = sig.d$method,
-                    label = paste(round(sig.d$p.significant,3)*100, "% significant", ", (n = ", sig.d$significant, ")", sep = ""))
-
-method_names <- c(
-  d.fixef = "Fixed Effects",
-  d.ranef = "Random Effects",
-  d.reg = "Regression",
-  d.copas = "Copas"
-)
-
-adjustment.p.log.hazard.ratio <- meta.f %>% filter(outcome.flag == "IV") %>% 
-  mutate(d.fixef = est.fixef/se.est.fixef,
-         d.ranef = est.ranef/se.est.ranef,
-         d.reg = est.reg/se.est.reg,
-         d.copas = est.copas/se.est.copas) %>%  
-  select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
-  mutate(method = factor(method, levels = c("d.fixef", "d.ranef", "d.reg", "d.copas"))) %>% 
-  mutate(p.smd = 2*(1-pnorm(abs(smd)))) %>% 
-  ggplot(aes(x = p.smd)) + 
-  geom_histogram(boundary = 0, bins = 20) + 
-  theme_bw() + 
-  facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
-  geom_text(data = sig.d, aes(x = 0.5, y = 100, label = label), position = "dodge") + 
-  xlab(expression(paste(italic(p),"-value of test statistic of Hedges"))) +
-  ggtitle(expression(paste("Log IV outcome measures ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
-#--------------------------------------------------------------------------------------------------------------------#
-
-
 #Plots separated by effect measure:
 
 
@@ -851,7 +734,7 @@ diff.d.fixef.reg <- meta.f %>%
   ggplot(aes(x = difference, fill = se.stat)) + geom_histogram(binwidth = 0.1, center = 0) +
   theme_bw() + theme(legend.position = "none") + 
   scale_fill_manual(values  = c("seagreen1", "seagreen3", "green4")) + 
-  xlab(expression(paste("Fixed effects - adjusted Hedges"))) + geom_vline(xintercept = 0, linetype = "dashed" )
+  xlab(expression(paste("Fixed effects - adjusted std. mean difference"))) + geom_vline(xintercept = 0, linetype = "dashed" )
 #--------------------------------------------------------------------------------------------------------------------#
 
 diff.d.fixef.copas <- meta.f %>% 
@@ -888,7 +771,7 @@ diff.d.ranef.reg <- meta.f  %>%
   ggplot(aes(x = difference, fill = se.stat)) + geom_histogram(binwidth = 0.1, center = 0) +
   theme_bw() + guides(fill=guide_legend(title="test stat.")) + 
   scale_fill_manual(values  = c("seagreen1", "seagreen3", "green4")) +  ylab("") +
-xlab(expression(paste("Random effects - adjusted Hedges"))) + geom_vline(xintercept = 0, linetype = "dashed" )
+xlab(expression(paste("Random effects - adjusted std. mean difference"))) + geom_vline(xintercept = 0, linetype = "dashed" )
 #--------------------------------------------------------------------------------------------------------------------#
 
 diff.d.ranef.copas <- meta.f  %>% 
@@ -1191,6 +1074,33 @@ colnames(missing.differences) <- c("meta.id", "id", "comparison.nr", "subgroup.n
                                    "z fixed", "z random", "z Copas", "z regression",
                                    "g fixed", "g random", "g Copas", "g regression")
 
+
+#--------------------------------------------------------------------------------------------------------------------#
+#Change in evidence of treatment effect scatterplots:
+
+mid <- median(meta.f$pval.se)
+method.names <- c(z.reg = "Regression", z.copas = "Copas Selection Model")
+adjusted.evidence.fixed <- meta.f %>% 
+  select(pval.se, z.fixef, z.ranef, z.reg, z.copas) %>% 
+  gather(key = "method", value = "test.stat", z.reg:z.copas) %>%
+  ggplot(aes(x = test.stat, y = z.fixef, colour = pval.se)) + 
+  facet_wrap(~ method, labeller = as_labeller(method.names)) + 
+  scale_color_gradient2(midpoint=mid, low="firebrick4", mid = "gold",
+                        high="chartreuse2", space ="Lab") +
+  geom_point(size = .7) + theme_bw() + theme(legend.position = "none") + 
+  geom_abline(slope = 1, intercept = 0, linetype = 2, size = .3) +
+  xlab("Adjusted z test statistic") + ylab("Fixed effects test statistic")
+
+adjusted.evidence.ranef <- meta.f %>% 
+  select(pval.se, z.fixef, z.ranef, z.reg, z.copas) %>% 
+  gather(key = "method", value = "test.stat", z.reg:z.copas) %>%
+  ggplot(aes(x = test.stat, y = z.ranef, colour = pval.se)) + 
+  facet_wrap(~ method, labeller = as_labeller(method.names)) + 
+  scale_color_gradient2(midpoint=mid, low="firebrick4", mid = "gold",
+                          high="chartreuse2", space ="Lab", name = expression(paste(italic(p),"-value"))) +
+  geom_point(size = .7) + theme_bw() + guides(fill=guide_legend(title="p-value")) +
+  geom_abline(slope = 1, intercept = 0, linetype = 2, size = .3) +
+  xlab("Adjusted z test statistic") + ylab("Random effects test statistic")
 #--------------------------------------------------------------------------------------------------------------------#
 #Tukey mean difference plots for adjustment methods:
 
@@ -1305,36 +1215,54 @@ grid.arrange(diff.z.ranef.copas, diff.d.ranef.copas, ncol = 2)
 \label{fig:adjustment.copas}
 \end{figure}
 
-Table \ref{adjustment.difference} shows quantiles and means for the various differences and the overall proportion of downward adjusted effect sizes. When Hedge's $g$ is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small. To recall some other findings out of Table \ref{adjustment.difference}: 5\% or \Sexpr{floor(length(!is.na(meta.f$est.z.reg))*0.05)} cases have their $z$-score reduced by more than 0.15 by regression adjustment (and 5\% or \Sexpr{floor(length(!is.na(meta.f$est.z.reg))*0.05)} increased by -0.13, fixed effects reference). Also, std. mean difference is reduced by 0.39 compared to fixed effects estimates in 5\% or \Sexpr{floor(length(!is.na(meta.f$est.d.reg))*0.05)} meta-analyses (or increased by 0.24). 
+Table \ref{adjustment.difference} shows quantiles and means for the various differences and the overall proportion of downward adjusted effect sizes. When std. mean difference is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small. To recall some other findings out of Table \ref{adjustment.difference}: 5\% or \Sexpr{floor(length(!is.na(meta.f$est.z.reg))*0.05)} meta-analyses have their $z$-score reduced by more than 0.13 by regression adjustment (and 5\% or \Sexpr{floor(length(!is.na(meta.f$est.z.reg))*0.05)} increased by -0.11 or more, fixed effects reference). Also, std. mean difference is reduced by 0.39 compared to fixed effects estimates in 5\% or \Sexpr{floor(length(!is.na(meta.f$est.d.reg))*0.05)} meta-analyses (or increased by 0.24). 
 
 <<echo=FALSE, results='asis'>>=
-print(xtable(adjustment.diff.table, label = "adjustment.difference", caption = "Quantiles and Means of the differences between meta-analysis pooled treatment effects and small study adjusted treatment effects. The column with the names ``> 0'' give the percentages of estimates larger than zero or larger or equal zero. The column ``No adj. est.'' gives the percentage of missing estimates due to non-significant publication bias test (for Copas) and computational errors. The row names indicate which outcome measure, meta-analysis method and adjustment method is used. Abbreviations are used for z-score (= z) and Hedges g (= g).", align = "lcccccccccr"), include.rownames = T, size = "scriptsize",# sanitize.text.function=function(x){x},
+print(xtable(adjustment.diff.table, label = "adjustment.difference", caption = "Quantiles and Means of the differences between meta-analysis pooled treatment effects and small study adjusted treatment effects. The column with the names ``> 0'' give the percentages of estimates larger than zero or larger or equal zero. The column ``No adj. est.'' gives the percentage of missing estimates due to non-significant publication bias test (for Copas) and computational errors. The row names indicate which outcome measure, meta-analysis method and adjustment method is used. Abbreviations are used for z-score (= z) and std. mean difference (= d).", align = "lcccccccccr"), include.rownames = T, size = "scriptsize",# sanitize.text.function=function(x){x},
       # table.placement = "p"
       )
 @
 
-
-\subsection{Change in Evidence for Treatment Effects} \label{sec:change.evidence}
-Adjustment for small study effects in meta-analysis will not only provide new effect sizes, but also standard errors thereof. Thus, also the evidence for efficacy of a treatment can be obtained, which is usually summarized in a suitable test statistic or $p$-value. It is of interest if and how the evidence for treatment effects changes if adjusted for publication bias. There is an important difference between Copas selection model and regression adjustment. The regression adjustment method incorporates an additional parameter with corresponding uncertainity in the treatment effect estimate, while the application of the Copas algorithm does not so. Instead, the copas selection model derives the uncertainity of the estimate from the inverse of the fisher information matrix of the likelihood. Additionally, the Copas selection model algorithm provides only an estimate when it can detect a small study effect with reasonable precision at the first place (see \ref{sec:copas}).\\
-The Wald test statistics $p$-value for fixed and random effects meta-analyses and Copas and regression adjusted treatment effects have been calculated. They are shown in Figure \ref{fig:adjustment.stat} for meta-analysis based on $z$-score, std. mean difference and other effect measures (\texttt{outcome.flag} = \texttt{IV}). \\
-It can be seen that evidence for a treatment effect decreases after adjusting for publication bias. It does so more for Hedge's $g$ compared to $z$-scores, and for regression adjustment compared to Copas selection model. 
-%Also, the evidence decreases for random effects meta-analyses compared to fixed effects meta-analyses. 
-In the case of other effect measures (\texttt{outcome.flag} = \texttt{IV}) adjustment, the adjustment has only negligible impact on the $p$-values. \\
-Also, Copas selection method has a very small impact on the evidence compared to random effects meta-analysis, at least using $z$-scores (again, we should rely on comparisons to random effects meta-analysis to evaluate Copas method). \\ 
-% Interestingly, in contrast to the small study effect tests, there seems to be no large difference between adjusted continuous and binary meta-analysis test statistics --appendix--
-%Figures \ref{fig:adjustment.stat.z} for the adjusted $z$-scores, \ref{fig:adjustment.stat.smd} for the adjusted std. mean difference and Cohen's d and \ref{fig:adjustment.stat.log.hazard.ratio} for the adjusted log hazard ratios.
+\subsection{Comparison of adjustment methods}
+Regression adjusted estimates are compared to the estimates of Copas selection model if these are not equal to random effects meta-analysis in Figure \ref{fig:adjustment.mean.diff}. A Tukey mean difference plot can serve to reveal systematic differences and biases between the two measurement methods. Note that most \Sexpr{dim(meta.iv)[1]} \texttt{IV} outcome data is not included when using $z$-score and std. mean difference.
 
 \begin{figure}
-<<echo=FALSE, fig.height = 9, warning=FALSE>>=
-grid.arrange(adjustment.p.z,
-             adjustment.p.d,
-             adjustment.p.log.hazard.ratio, ncol = 1)
+<<echo = FALSE, fig.height = 5>>=
+grid.arrange(adjustment.mean.diff.z,
+             adjustment.mean.diff.d, ncol = 1)
 @
-\caption{Histogram of the Wald test-statistic $p$-value of meta-analysis and adjusted pooled treatment effect, based on different treatment effect measures. The method is indicated in the header, bin width is set to 0.05. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
-\label{fig:adjustment.stat}
+\caption{Mean - difference plots for publication bias adjustment methods. The mean of the adjusted treatment effects is displayed on the $x$-axis and the difference on the $y$-axis. Blue and red lines display the systematic error and the confidence intervals of the systematic error (limits of agreement). Two values have been omitted in the middle plot for std. mean difference and one for $z$-score (see Table \ref{missing.differences}).}
+\label{fig:adjustment.mean.diff}
 \end{figure}
 
-The Copas selection model also gives an estimate of the number of missing studies. It finds that \Sexpr{round(sum(meta.f$missing.Copas, na.rm = T))} are missing, which corresponds to \Sexpr{round((sum(meta.f$missing.copas, na.rm = T)/sum(meta.f$k))*100,1)}\% from all \Sexpr{round(sum(meta.f$k))} analysed studies. Figure \ref{fig:copas.missing} shows a histogram of the overall fraction of missing studies. Note that we have excluded \Sexpr{sum(is.na(meta.f$missing.Copas))} out of \Sexpr{dim(meta.f)[1]}, for which no Copas selection model estimate, but a random effects estimate was retained because the algorithm initially found no evidence for small study effects.
+No formal tests are provided, but the at least there seems to be no clear bias or systematic error. The limits of agreement in Figure \ref{fig:adjustment.mean.diff} are large. We conclude thus that the impact of regression adjustment on the effect sizes is in general not substantially larger than the impact of Copas selection model in the subset of data where the estimate of the Copas selection model is not equal to a random effects estimate. There is however a small difference, indicating that regression estimates have a little bit a larger absolute value. There might be some bias between adjusted $z$-scores, where regression estimates seem to be somewhat smaller when the mean is a little above zero, and somewhat larger when the mean is a little below zero. \\
+
+
+\subsection{Change in Evidence for Treatment Effects} \label{sec:change.evidence}
+Adjustment for small study effects in meta-analysis will provide new effect sizes and standard errors. The evidence for the treatment effect being different from zero can be computed. It is of interest if and how the evidence for treatment effects changes if adjusted for publication bias. The test statistics of random effects and fixed effects meta-analysis and the corresponding adjusted test statistics are shown in Figure \ref{fig:evidence.adjustment}. The original scale of the effects sizes is used since it is the measure on which policy-makers assess efficacy.
+
+\begin{figure}
+<<echo = FALSE, warning = FALSE, fig.height = 6>>=
+grid.arrange(adjusted.evidence.fixed,
+             adjusted.evidence.ranef)
+@
+\caption{Absolute value of z test statistics of meta-analyses and adjustment methods. The color indicates the evidence for publication bias (\textit{p} value of R\\"ucker's or Egger's test), and the dotted line depicts the diagonal through the origin.}
+\label{fig:evidence.adjustment}
+\end{figure}
+
+Points on the upper left side of the diagonal in Figure \ref{fig:evidence.adjustment} indicate that less evidence for a treatment effect is found in the corresponding evidence. Because by and large, the points are on this left side, adjustment leads mostly to smaller test statistics and $p$-values. The decrease in evidence is larger when using adjustment with regression, which can be expected as the uncertainity of the additional parameter from the linear regression fit to estimate publication bias is included in the uncertainity in the estimate. In contrast, as the Copas selection model algorithm does a sensitivity analysis, the uncertainity of additional model parameters does not affect the estimate as they are not estimated but treated as fixed (see section \ref{sec:procedure} and section \ref{sec:copas}). \\
+Also, because the algorithm returns a random effects meta-analysis estimate if no publication bias can be detected, it is hard to compare the test statistics of Copas selection model to fixed effects meta-analysis estimates, as it is not clear when the test statistic has been adjusted. The effect of adjustment by copas can be seen when comparing it to random effects meta-analysis. There, less of an effect of adjustment on the evidence can be seen. \\
+Large adjustment in effect sizes and test statistics is not necessarily accompained by evidence for publication bias in regression adjustment, as discussed previously. It is also illustrated by the clear green dots in Figure \ref{fig:evidence.adjustment} far off from the diagonal. Evidence for publication bias and large decrease in evidence seem to be correlated.\\
+Some cases which have more evidence for treatment efficacy after adjustment (dots below the diagonal) have evidence for publication bias, which is not expected, since the publication bias tests applied are one-sided and only test for bias towards large effects. Thus, dots below the diagonal should all be clear green. \\
+After investigation, it has been found that the increase in evidence for treatment effect is most often because the sign of the treatment effect changes, which can not be seen when the absolute value of the z statistic is plotted (24 out of 37 cases where evidence increased after adjustment by regression compared to fixed effects meta-analysis and the $p$-value for publication bias was below 0.1). In other cases, the automatic detection of the side on which publication bias was expected (section \ref{sec:procedure}) may failed, because few significant effects are given (used to define side of bias) and the weighted mean effect is close to zero, in which case it is difficult to detect the side of publication bias beforehand.\\
+However, there are some adjustments with large increase in evidence and clear dark orange color, as in the left plot in Figure \ref{fig:evidence.adjustment} (the three points close to x = 10). 
+\begin{itemize}
+\item z-value of regression adjustment 10.5 vs fixed effects z-value 5.7: When the funnnel plot of these meta-analyses are investigated, it becomes clear that there is no reason to assume publication bias since the smaller studies are near to risk ratios equal to one, and larger studies show larger ratios. Publication bias tests disagree in their findings (R\"ucker's and Harbord's tests: 0.058 and 0.05, and Peters and Schwarzer's test: 0.467 and 0.79).
+\item z-value of regression adjustment 9.24 vs fixed effects z-value 2.51: Asymmetry of the funnel plot could be confirmed when analysing it with mean differences. The change to a larger treatment effect is rather due to large between study heterogeneity and the specific routine of the regression adjustment. Because it takes into account between-study heterogeneity, while fixed effects meta-analysis does not, it returns a larger treatment effect. The adjusted effect (MD = - 10.3) lies between the fixed effect estimate (-2.56) and the random effects estimate (-18.7).
+\item z-value of regression adjustment 9.5 vs fixed effects z-value 1.3: The increase of evidence is also because of the change of the sign of the effects, in combination with high confidence in the estimated publication bias parameters: the standard erros from the mean differences lie between 0.03 and 70 and the effects are somewhat aligned in the funnel plot. 
+\end{itemize}
+In the case of Copas selection model and when both test statistics are large (> 10), the explanation lies in a specialty of the model. The adjusted treatment effect estimates are not larger than the unadjusted, but their standard errors are different and sometimes smaller, because they are obtained from the Fisher information matrix of the log-likelihood (see section \ref{sec:copas}). \\
+The Copas selection model also allows to compute the number of missing studies, given that the model's assumptions are correct. It finds that \Sexpr{format(round(sum(meta.f$missing.copas, na.rm = T)), big.mark = ",")} are missing, which corresponds to \Sexpr{round((sum(meta.f$missing.copas, na.rm = T)/sum(meta.f$k))*100,1)}\% from all \Sexpr{format(round(sum(meta.f$k)), big.mark = ",")} analysed studies. Figure \ref{fig:copas.missing} shows a histogram of the overall fraction of missing studies. Note that random effects meta-analysis substitutes have been excluded (\Sexpr{sum(is.na(meta.f$missing.copas))} out of \Sexpr{format(dim(meta.f)[1], big.mark = ",")}.
 
 \begin{figure}
 <<echo = FALSE, warning = FALSE>>=
@@ -1344,7 +1272,7 @@ missing.copas.histogram
 \label{fig:copas.missing}
 \end{figure}
 
-We can see that in some occasions, the method finds more than half of all studies are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}. The discrepancy between mean and median may indicate that the estimate of \Sexpr{round((sum(meta.f$missing.Copas, na.rm = T)/sum(meta.f$k))*100,1)}\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie \Sexpr{round(sum(!is.na(meta.f$missing.Copas))*0.05)} meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for \Sexpr{sum(meta.f$missing.Copas[which(meta.f$missing.Copas >= 17.60)], na.rm = T)}, more than 30\% of missing studies.
+We can see that in some occasions, the method finds more than half of all studies are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}. The discrepancy between mean and median may indicate that the estimate of \Sexpr{round((sum(meta.f$missing.copas, na.rm = T)/sum(meta.f$k))*100,1)}\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie \Sexpr{round(sum(!is.na(meta.f$missing.copas))*0.05)} meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for \Sexpr{format(round(sum(meta.f$missing.copas[which(meta.f$missing.copas >= 17.60)], na.rm = T)), big.mark = ",")}, more than 30\% of missing studies.
 
 <<echo= FALSE, results='asis'>>=
 print(xtable(missing.copas.table, caption = "Fraction of missing studies and estimates of missing studies with their zero counts (``= 0''), quantiles and means.",
@@ -1358,26 +1286,12 @@ print(xtable(missing.copas.table, caption = "Fraction of missing studies and est
 
 <<echo=FALSE, results='asis'>>=
 print(xtable(missing.differences, 
-             caption = "Missing meta-analysis pooled treatment effect and adjusted treatment effects. Abbreviations are used for z-score (= z) and Hedges g (= g).", label = "missing.differences", align = "llcccrrrrrrrr"), 
+             caption = "Missing meta-analysis pooled treatment effect and adjusted treatment effects. Abbreviations are used for z-score (= z) and std. mean difference (= d).", label = "missing.differences", align = "llcccrrrrrrrr"), 
       include.rownames = F, size = "tiny")
 @
 
 
 
-\subsection{Comparison of adjustment methods}
-Regression adjusted estimates are compared to the estimates of Copas selection model if these are not equal to random effects meta-analysis. A Tukey mean difference plot can serve to reveal systematic differences and biases between the two measurement methods. We will compare estimates based on all three outcome measures, i.e. original measure, $z$-score and std. mean difference in Figure \ref{fig:adjustment.mean.diff}. Note that the \Sexpr{dim(meta.iv)[1]} \texttt{IV} outcome data is not included when using $z$-score and std. mean difference.
-
-\begin{figure}
-<<echo = FALSE, fig.height = 7.5>>=
-grid.arrange(adjustment.mean.diff.orig,
-             adjustment.mean.diff.z,
-             adjustment.mean.diff.d, ncol = 1)
-@
-\caption{Mean - difference plots for publication bias adjustment methods. The mean of the adjusted treatment effects is displayed on the $x$-axis and the difference on the $y$-axis. Blue and red lines display the systematic error and the confidence intervals of the systematic error (limits of agreement). Two values have been omitted in the middle plot for std. mean difference and one for $z$-score (see Table \ref{missing.differences}).}
-\label{fig:adjustment.mean.diff}
-\end{figure}
-
-No formal tests are provided, but the at least there seems to be no clear bias or systematic error. The limits of agreement in Figure \ref{fig:adjustment.mean.diff} are large. We conclude thus that the impact of regression adjustment on the effect sizes is in general not substantially larger than the impact of Copas selection model in the subset of data where the estimate of the Copas selection model is not equal to a random effects estimate. There is however a small difference, with regression estimates to have a little bit a larger absolute value. There might be some bias between adjusted $z$-scores, where regression estimates seem to be somewhat smaller when the mean is a little above zero, and somewhat larger when the mean is a little below zero. \\
 
 
 
@@ -1386,6 +1300,156 @@ No formal tests are provided, but the at least there seems to be no clear bias o
 
 
 
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \begin{figure}
+% <<echo=FALSE, fig.height = 9, warning=FALSE>>=
+% #HISTOGRAMS:  
+% 
+% #Comparison of treatment effect p-values:
+% sig.zcor <- meta.f %>% mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+%                               z.ranef = est.z.ranef/se.est.z.ranef,
+%                               z.reg = est.z.reg/se.est.z.reg,
+%                               z.copas = est.z.copas/se.est.z.copas) %>%
+%   select(z.fixef, z.ranef, z.reg, z.copas) %>% gather(key = "method", value = "fisher.z") %>%
+%   mutate(p.fisher.z = 2*(1-pnorm(abs(fisher.z)))) %>%
+%   group_by(method) %>%
+%   summarise(significant = length(which(abs(fisher.z) > 1.96)),
+%             p.significant = significant/length(fisher.z))
+% sig.zcor <- data.frame(method = sig.zcor$method,
+%                        label = paste(round(sig.zcor$p.significant,3)*100, "% significant", ", (n = ", sig.zcor$significant, ")", sep = ""))
+% 
+% method_names <- c(
+%   z.fixef = "Fixed Effects",
+%   z.ranef = "Random Effects",
+%   z.reg = "Regression",
+%   z.copas = "Copas"
+% )
+% 
+% adjustment.p.z <- meta.f %>%
+%   mutate(z.fixef = est.z.fixef/se.est.z.fixef,
+%          z.ranef = est.z.ranef/se.est.z.ranef,
+%          z.reg = est.z.reg/se.est.z.reg,
+%          z.copas = est.z.copas/se.est.z.copas) %>%
+%   select(z.fixef, z.ranef, z.reg, z.copas) %>%
+%   gather(key = "method", value = "fisher.z") %>%
+%   mutate(method = factor(method, levels = c("z.fixef", "z.ranef", "z.reg", "z.copas"))) %>%
+%   mutate(p.fisher.z = 2*(1-pnorm(abs(fisher.z)))) %>%
+%   ggplot(aes(x = p.fisher.z)) +
+%   geom_histogram(boundary = 0, bins = 20) +
+%   theme_bw() +
+%   facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
+%   geom_text(data = sig.zcor, aes(x = 0.5, y = 750, label = label), position = "dodge") +
+%   xlab(expression(paste(italic(p),"-value of test statistic of the ", italic(z),"-score"))) +
+%   ggtitle(expression(paste(italic(z), " Score ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
+% #--------------------------------------------------------------------------------------------------------------------#
+% 
+% #Comparison of SMD's:
+% sig.d <- meta.f %>% mutate(d.fixef = est.d.fixef/se.est.d.fixef,
+%                            d.ranef = est.d.ranef/se.est.d.ranef,
+%                            d.reg = est.d.reg/se.est.d.reg,
+%                            d.copas = est.d.copas/se.est.d.copas) %>%  
+%   select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+%   mutate(p.smd = 2*(1-pnorm(abs(smd)))) %>% 
+%   group_by(method) %>% 
+%   summarise(significant = length(which(abs(smd) > 1.96)),
+%             p.significant = significant/length(smd))
+% sig.d <- data.frame(method = sig.d$method,
+%                     label = paste(round(sig.d$p.significant,3)*100, "% significant", ", (n = ", sig.d$significant, ")", sep = ""))
+% 
+% method_names <- c(
+%   d.fixef = "Fixed Effects",
+%   d.ranef = "Random Effects",
+%   d.reg = "Regression",
+%   d.copas = "Copas"
+% )
+% 
+% adjustment.p.d <- meta.f %>% 
+%   mutate(d.fixef = est.d.fixef/se.est.d.fixef,
+%          d.ranef = est.d.ranef/se.est.d.ranef,
+%          d.reg = est.d.reg/se.est.d.reg,
+%          d.copas = est.d.copas/se.est.d.copas) %>%  
+%   select(d.fixef, d.ranef, d.reg, d.copas) %>% 
+%   gather(key = "method", value = "smd") %>% 
+%   mutate(method = factor(method, levels = c("d.fixef", "d.ranef", "d.reg", "d.copas"))) %>% 
+%   mutate(p.smd = 2*(1-pnorm(abs(smd)))) %>% 
+%   ggplot(aes(x = p.smd)) + 
+%   geom_histogram(boundary = 0, bins = 20) + 
+%   theme_bw() + 
+%   facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
+%   geom_text(data = sig.d, aes(x = 0.5, y = 750, label = label), position = "dodge") + 
+%   xlab(expression(paste(italic(p),"-value of test statistic of std. mean differences"))) +
+%   ggtitle(expression(paste("std. mean difference ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
+% #--------------------------------------------------------------------------------------------------------------------#
+% 
+% #Comparison of log hazard ratios:
+% sig.d <- meta.f %>% filter(outcome.flag == "IV") %>% 
+%   mutate(d.fixef = est.fixef/se.est.fixef,
+%          d.ranef = est.ranef/se.est.ranef,
+%          d.reg = est.reg/se.est.reg,
+%          d.copas = est.copas/se.est.copas) %>%  
+%   select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+%   group_by(method) %>% 
+%   summarise(significant = length(which(abs(smd) > 1.96)),
+%             p.significant = (significant + sum(is.na(smd)))/(length(smd)))
+% sig.d <- data.frame(method = sig.d$method,
+%                     label = paste(round(sig.d$p.significant,3)*100, "% significant", ", (n = ", sig.d$significant, ")", sep = ""))
+% 
+% method_names <- c(
+%   d.fixef = "Fixed Effects",
+%   d.ranef = "Random Effects",
+%   d.reg = "Regression",
+%   d.copas = "Copas"
+% )
+% 
+% adjustment.p.log.hazard.ratio <- meta.f %>% filter(outcome.flag == "IV") %>% 
+%   mutate(d.fixef = est.fixef/se.est.fixef,
+%          d.ranef = est.ranef/se.est.ranef,
+%          d.reg = est.reg/se.est.reg,
+%          d.copas = est.copas/se.est.copas) %>%  
+%   select(d.fixef, d.ranef, d.reg, d.copas) %>% gather(key = "method", value = "smd") %>% 
+%   mutate(method = factor(method, levels = c("d.fixef", "d.ranef", "d.reg", "d.copas"))) %>% 
+%   mutate(p.smd = 2*(1-pnorm(abs(smd)))) %>% 
+%   ggplot(aes(x = p.smd)) + 
+%   geom_histogram(boundary = 0, bins = 20) + 
+%   theme_bw() + 
+%   facet_wrap(~method, ncol = 2, labeller = as_labeller(method_names)) +
+%   geom_text(data = sig.d, aes(x = 0.5, y = 100, label = label), position = "dodge") + 
+%   xlab(expression(paste(italic(p),"-value of test statistic of std. mean difference"))) +
+%   ggtitle(expression(paste("Log IV outcome measures ", italic(p),"-value of Meta-Analysis and Adjustment Method")))
+% #--------------------------------------------------------------------------------------------------------------------#
+% 
+% grid.arrange(adjustment.p.z,
+%              adjustment.p.d,
+%              adjustment.p.log.hazard.ratio, ncol = 1)
+% @
+% \caption{Histogram of the Wald test-statistic $p$-value of meta-analysis and adjusted pooled treatment effect, based on different treatment effect measures. The method is indicated in the header, bin width is set to 0.05. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
+% \label{fig:adjustment.stat}
+% \end{figure}
 
 
 
