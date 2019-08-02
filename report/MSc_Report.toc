@@ -3,7 +3,7 @@
 \contentsline {chapter}{\bfseries {Preface}}{iii}{chapter*.2}
 \vspace *{10mm}
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
-\contentsline {section}{\numberline {1.1}Aim of the Study}{2}{section.1.1}
+\contentsline {section}{\numberline {1.1}Aim of the Study}{3}{section.1.1}
 \contentsline {chapter}{\numberline {2}Methods}{5}{chapter.2}
 \contentsline {section}{\numberline {2.1}Introduction and Notation}{5}{section.2.1}
 \contentsline {section}{\numberline {2.2}Effect Measures and $p$-values}{5}{section.2.2}
@@ -44,6 +44,22 @@
 \contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{32}{subsection.4.2.1}
 \contentsline {subsection}{\numberline {4.2.2}Comparison of adjustment methods}{35}{subsection.4.2.2}
 \contentsline {subsection}{\numberline {4.2.3}Change in Evidence for Treatment Effects}{36}{subsection.4.2.3}
-\contentsline {chapter}{\numberline {A}Appendix}{41}{appendix.A}
+\contentsline {section}{\numberline {4.3}Publication Bias over Time}{38}{section.4.3}
+\contentsline {chapter}{\numberline {5}Discussion}{43}{chapter.5}
+\contentsline {section}{\numberline {5.1}Results in the light of the Literature}{43}{section.5.1}
+\contentsline {subsection}{\numberline {5.1.1}\citet {Egger}}{43}{subsection.5.1.1}
+\contentsline {subsection}{\numberline {5.1.2}\citet {sutton.2000}}{43}{subsection.5.1.2}
+\contentsline {subsection}{\numberline {5.1.3}\citet {Ioannidis2007}}{43}{subsection.5.1.3}
+\contentsline {subsection}{\numberline {5.1.4}\citet {souza.2007}}{44}{subsection.5.1.4}
+\contentsline {subsection}{\numberline {5.1.5}\citet {kicinsky}}{44}{subsection.5.1.5}
+\contentsline {subsection}{\numberline {5.1.6}\citet {vanAert.2019}}{45}{subsection.5.1.6}
+\contentsline {subsection}{\numberline {5.1.7}Further Studies on Publication Bias}{45}{subsection.5.1.7}
+\contentsline {section}{\numberline {5.2}Interpretation}{45}{section.5.2}
+\contentsline {section}{\numberline {5.3}Limitations}{46}{section.5.3}
+\contentsline {section}{\numberline {5.4}Outlook}{47}{section.5.4}
+\contentsline {section}{\numberline {5.5}Implications}{47}{section.5.5}
+\contentsline {chapter}{\numberline {A}Appendix}{49}{appendix.A}
+\contentsline {section}{\numberline {A.1}Data Pre-processing}{50}{section.A.1}
+\contentsline {section}{\numberline {A.2}Analysis}{54}{section.A.2}
 \vspace *{10mm}
-\contentsline {chapter}{\bfseries Bibliography}{43}{section*.37}
+\contentsline {chapter}{\bfseries Bibliography}{75}{section*.44}

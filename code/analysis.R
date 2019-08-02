@@ -59,7 +59,11 @@ load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 # meta.info.iv <- data.ext2 %>%
 #   group_by(meta.id) %>%
 #   mutate(n.pre = n()) %>% filter(n.pre >= 10) %>%
-#   filter(outcome.flag == "IV") %>%
+#   filter(outcome.flag == "IV") %>% 
+#   filter(!all(effect == 0)) %>%  #Has no effects != 0
+#   filter(outcome.measure.merged == "Rate Ratio" | outcome.measure.merged == "SMD" |
+#            outcome.measure.merged == "MD" | outcome.measure.merged == "Hazard Ratio" |
+#            outcome.measure.merged == "OR" | outcome.measure.merged == "RR") %>%
 #   summarize(dupl.remove = unique(dupl.remove),
 #             id = unique(id),
 #             outcome.desired = unique(outcome.desired),
@@ -95,13 +99,14 @@ load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
 # exclusion.estimates <- cbind(
 #   meta.id = meta.id.vector.org.ranef,
 #   n = unlist(lapply(meta.org.ranef.list, FUN = function(meta.analysis){meta.analysis$k})),
-#   Q = unlist(lapply(meta.org.ranef.list, FUN = function(meta.analysis){meta.analysis$QE})))
+#   Q = unlist(lapply(meta.org.ranef.list, FUN = function(meta.analysis){meta.analysis$QE})),
+#   I2 = unlist(lapply(meta.org.ranef.list, FUN = function(meta.analysis){meta.analysis$I2})))
 # 
 # 
 # meta.info.pre2 <- merge(meta.info, exclusion.estimates, by = "meta.id")
-# meta.info.I2 <- meta.info.pre2 %>% rowwise() %>% mutate(I2  = max(0, (Q - n + 1)/Q)) #calculate I2
-# meta.info <- meta.info.I2 %>% filter(n > 9) %>% filter(I2 < 0.5)
-# meta.id.vector <- meta.info$meta.id #Vector of meta-ids that match the criteria.
+# #meta.info.I2 <- meta.info.pre2 %>% rowwise() %>% mutate(I2  = max(0, (Q - n + 1)/Q)) #calculate I2
+# meta.info.I2 <- meta.info.pre2 %>% filter(n > 9) %>% filter(I2 < 50)
+# meta.id.vector <- meta.info.I2$meta.id #Vector of meta-ids that match the criteria.
 # 
 # save(meta.id.vector, file =  file.path(PATH_RESULTS, "meta_id_vector.RData"))
 # save(meta.info.I2, file =  file.path(PATH_RESULTS, "meta_id_I2.RData"))
@@ -299,7 +304,6 @@ bin.results <- data.frame(
 # CONTINUOUS DATA META-ANALYSES: ------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------------------------------------#
 
-
 # # -------- Uncomment to run analysis ----------
 # meta.id.vector.cont <- meta.info.extended$meta.id[which(meta.info.extended$outcome.flag == "CONT")]
 # meta.analyses <- list()
@@ -425,11 +429,7 @@ cont.results <- data.frame(
 # counter <- 0
 # for(u in meta.id.vector.iv){
 # 	counter <- counter + 1
-# 
-# 	meta.analyses[[counter]] <- metagen(TE = effect, seTE = se, studlab = study.name, sm = "HR",
-#                            data = data.ext2[data.ext2$meta.id == u,])
-# 	print(c(u, counter))
-# 	# print(c(u, counter, unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$TE.fixed}))[counter]))
+# 	meta.analyses[[counter]] <- metagen.iv(data = data.ext2[data.ext2$meta.id == u,])
 # 	meta.analyses.reg[[counter]] <- limitmeta(meta.analyses[[counter]])
 # 	meta.analyses.trimfill[[counter]] <- trimfill(meta.analyses[[counter]])
 # 	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
@@ -438,6 +438,7 @@ cont.results <- data.frame(
 # 	meta.tests.linreg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "linreg", k.min = 2)
 # 	meta.tests.begg[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "rank", k.min = 2)
 # 	meta.tests.mm[[counter]] <- metabias(meta.analyses[[counter]], method.bias = "mm", k.min = 2)
+# 	print(c(u, counter))
 # }
 # iv.meta.list <- list(data.ext2, meta.id.vector.iv, meta.analyses,
 # 											 meta.analyses.reg,
@@ -695,56 +696,12 @@ meta.f <- meta.f %>% rowwise() %>%
          harbord.test = ifelse(pval1.harbord < sig.level, 1, 0),
          peter.test = ifelse(pval1.peter < sig.level, 1, 0))
 
-#Calculate test statistics for treatment effect - special IV outcomes need subtraction of 1:
+#Calculate test statistics for treatment effects:
 meta.f <- meta.f %>% mutate(
-  z.fixef = case_when(outcome.flag != "IV" ~ abs(est.fixef/se.est.fixef),
-                      outcome.flag == "IV" & outcome.measure.merged == "SMD" ~ abs(est.fixef/se.est.fixef),
-                      outcome.flag == "IV" & outcome.measure.merged == "Hazard Ratio" ~ abs((est.fixef - 1)/se.est.fixef),
-                      outcome.flag == "IV" & outcome.measure.merged == "Rate Ratio" ~ abs((est.fixef - 1)/se.est.fixef),
-                      outcome.flag == "IV" & outcome.measure.merged == "Ratio of means" ~ abs((est.fixef - 1)/se.est.fixef),
-                      outcome.flag == "IV" & outcome.measure.merged == "OR" ~ abs((est.fixef - 1)/se.est.fixef),
-                      outcome.flag == "IV" & outcome.measure.merged == "RR" ~ abs((est.fixef - 1)/se.est.fixef),
-                      outcome.flag == "IV" & outcome.measure.merged == "MD" ~ abs(est.fixef/se.est.fixef),
-                      outcome.flag == "IV" & outcome.measure.merged == "Mean hrs/night" ~ abs(est.fixef/se.est.fixef),
-                      outcome.flag == "IV" & outcome.measure.merged == "WMD" ~ abs(est.fixef/se.est.fixef),
-                      outcome.flag == "IV" & outcome.measure.merged == "Mean ES" ~ abs(est.fixef/se.est.fixef),
-                      TRUE ~ NA_real_),
-  z.ranef = case_when(outcome.flag != "IV" ~ abs(est.ranef/se.est.ranef),
-                      outcome.flag == "IV" & outcome.measure.merged == "SMD" ~ abs(est.ranef/se.est.ranef),
-                      outcome.flag == "IV" & outcome.measure.merged == "Hazard Ratio" ~ abs((est.ranef - 1)/se.est.ranef),
-                      outcome.flag == "IV" & outcome.measure.merged == "Rate Ratio" ~ abs((est.ranef - 1)/se.est.ranef),
-                      outcome.flag == "IV" & outcome.measure.merged == "Ratio of means" ~ abs((est.ranef - 1)/se.est.ranef),
-                      outcome.flag == "IV" & outcome.measure.merged == "OR" ~ abs((est.ranef - 1)/se.est.ranef),
-                      outcome.flag == "IV" & outcome.measure.merged == "RR" ~ abs((est.ranef - 1)/se.est.ranef),
-                      outcome.flag == "IV" & outcome.measure.merged == "MD" ~ abs(est.ranef/se.est.ranef),
-                      outcome.flag == "IV" & outcome.measure.merged == "Mean hrs/night" ~ abs(est.ranef/se.est.ranef),
-                      outcome.flag == "IV" & outcome.measure.merged == "WMD" ~ abs(est.ranef/se.est.ranef),
-                      outcome.flag == "IV" & outcome.measure.merged == "Mean ES" ~ abs(est.ranef/se.est.ranef),
-                      TRUE ~ NA_real_),
-  z.reg = case_when(outcome.flag != "IV" ~ abs(est.reg/se.est.reg),
-                    outcome.flag == "IV" & outcome.measure.merged == "SMD" ~ abs(est.reg/se.est.reg),
-                    outcome.flag == "IV" & outcome.measure.merged == "Hazard Ratio" ~ abs((est.reg - 1)/se.est.reg),
-                    outcome.flag == "IV" & outcome.measure.merged == "Rate Ratio" ~ abs((est.reg - 1)/se.est.reg),
-                    outcome.flag == "IV" & outcome.measure.merged == "Ratio of means" ~ abs((est.reg - 1)/se.est.reg),
-                    outcome.flag == "IV" & outcome.measure.merged == "OR" ~ abs((est.reg - 1)/se.est.reg),
-                    outcome.flag == "IV" & outcome.measure.merged == "RR" ~ abs((est.reg - 1)/se.est.reg),
-                    outcome.flag == "IV" & outcome.measure.merged == "MD" ~ abs(est.reg/se.est.reg),
-                    outcome.flag == "IV" & outcome.measure.merged == "Mean hrs/night" ~ abs(est.reg/se.est.reg),
-                    outcome.flag == "IV" & outcome.measure.merged == "WMD" ~ abs(est.reg/se.est.reg),
-                    outcome.flag == "IV" & outcome.measure.merged == "Mean ES" ~ abs(est.reg/se.est.reg),
-                    TRUE ~ NA_real_),
-  z.copas = case_when(outcome.flag != "IV" ~ abs(est.copas/se.est.copas),
-                      outcome.flag == "IV" & outcome.measure.merged == "SMD" ~ abs(est.copas/se.est.copas),
-                      outcome.flag == "IV" & outcome.measure.merged == "Hazard Ratio" ~ abs((est.copas - 1)/se.est.copas),
-                      outcome.flag == "IV" & outcome.measure.merged == "Rate Ratio" ~ abs((est.copas - 1)/se.est.copas),
-                      outcome.flag == "IV" & outcome.measure.merged == "Ratio of means" ~ abs((est.copas - 1)/se.est.copas),
-                      outcome.flag == "IV" & outcome.measure.merged == "OR" ~ abs((est.copas - 1)/se.est.copas),
-                      outcome.flag == "IV" & outcome.measure.merged == "RR" ~ abs((est.copas - 1)/se.est.copas),
-                      outcome.flag == "IV" & outcome.measure.merged == "MD" ~ abs(est.copas/se.est.copas),
-                      outcome.flag == "IV" & outcome.measure.merged == "Mean hrs/night" ~ abs(est.copas/se.est.copas),
-                      outcome.flag == "IV" & outcome.measure.merged == "WMD" ~ abs(est.copas/se.est.copas),
-                      outcome.flag == "IV" & outcome.measure.merged == "Mean ES" ~ abs(est.copas/se.est.copas),
-                      TRUE ~ NA_real_))
+  z.fixef = (est.fixef/se.est.fixef),
+  z.ranef = (est.ranef/se.est.ranef),
+  z.reg =   (est.reg/se.est.reg),
+  z.copas = (est.copas/se.est.copas))
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Separate outcome.types:

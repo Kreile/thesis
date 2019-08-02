@@ -213,10 +213,14 @@ m.a.largerten.count <- unique(m.a.largerten.bin$n) + unique(m.a.largerten.cont$n
 
 #variance ratio > 4:
 m.a.variance4.count <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
-  group_by(meta.id) %>% summarise(ratio = (max(se.new)^2)/(min(se.new)^2)) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  summarise(ratio = (max(se.new)^2)/(min(se.new)^2)) %>% 
   filter(ratio >= 4) %>% count
 tp3 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
-  group_by(meta.id) %>% mutate(ratio = (max(se.new)^2)/(min(se.new)^2)) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  mutate(ratio = (max(se.new)^2)/(min(se.new)^2)) %>% 
   filter(ratio >= 4)
 var.id.count <- length(unique(tp3$id))
 var.study.count <- length(unique(tp3$study.name))
@@ -224,11 +228,15 @@ var.result.count <- dim(tp3)[1]
 
 #At least on sig. estimate:
 m.a.one.sig.count <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
-  group_by(meta.id) %>% summarise(ratio = (max(se.new)^2)/(min(se.new)^2),
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  summarise(ratio = (max(se.new)^2)/(min(se.new)^2),
                                   n.sig = sum(sig.single)) %>% 
   filter(ratio >= 4 & n.sig > 0) %>% count
 tp4 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
-  group_by(meta.id) %>% mutate(ratio = (max(se.new)^2)/(min(se.new)^2),
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  mutate(ratio = (max(se.new)^2)/(min(se.new)^2),
                                   n.sig = sum(sig.single)) %>% 
   filter(ratio >= 4 & n.sig > 0)
 sig.id.count <- length(unique(tp4$id))
@@ -237,12 +245,16 @@ sig.result.count <- dim(tp4)[1]
 
 #Without duplicates:
 m.a.no.dupl.number <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
-  group_by(meta.id) %>% summarise(ratio = (max(se.new)^2)/(min(se.new)^2),
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  summarise(ratio = (max(se.new)^2)/(min(se.new)^2),
                                   n.sig = sum(sig.single),
                                   dupl = unique(dupl.remove)) %>% 
   filter(ratio >= 4 & n.sig > 0 & dupl == 0) %>% count
 tp5 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
-  group_by(meta.id) %>% mutate(ratio = (max(se.new)^2)/(min(se.new)^2),
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  mutate(ratio = (max(se.new)^2)/(min(se.new)^2),
                                   n.sig = sum(sig.single),
                                   dupl = unique(dupl.remove)) %>% 
   filter(ratio >= 4 & n.sig > 0 & dupl == 0)

@@ -18,6 +18,11 @@ Borenstein, M., Hedges, L.~V., Higgins, J. P.~T., Rothstein, H.~R., and
 \newblock {\em Introduction to Meta-Analysis}.
 \newblock John Wiley \& Sons, Incorporated, Hoboken, UNKNOWN.
 
+\bibitem[Cochran, 1954]{Cochran}
+Cochran, W.~G. (1954).
+\newblock The combination of estimates from different experiments.
+\newblock {\em Biometrics}, {\bf10},  101--129.
+
 \bibitem[Copas and Shi, 2000]{Copas2}
 Copas, J. and Shi, J.~Q. (2000).
 \newblock {Meta-analysis, funnel plots and sensitivity analysis }.
@@ -45,6 +50,12 @@ Cox, D.~R. (1972).
 \newblock {\em Journal of the Royal Statistical Society: Series B
   (Methodological)}, {\bf34},  187--202.
 
+\bibitem[Dechartres {\it et~al.}, 2013]{Dechartres.2013}
+Dechartres, A., Trinquart, L., Boutron, I., and Ravaud, P. (2013).
+\newblock Influence of trial sample size on treatment effect estimates:
+  meta-epidemiological study.
+\newblock {\em BMJ (Clinical research ed.)}, {\bf346},  f2304--f2304.
+
 \bibitem[Decullier {\it et~al.}, 2005]{publication.fate}
 Decullier, E., Lh{\'e}ritier, V., and Chapuis, F. (2005).
 \newblock Fate of biomedical research protocols and publication bias in france:
@@ -67,6 +78,12 @@ Duval, S. and Tweedie, R. (2000).
   adjusting for publication bias in meta-analysis.
 \newblock {\em Biometrics}, {\bf56},  455--463.
 
+\bibitem[Dwan {\it et~al.}, 2013]{Dwan2013}
+Dwan, K., Gamble, C., Williamson, P.~R., and Kirkham, J.~J. (2013).
+\newblock Systematic review of the empirical evidence of study publication bias
+  and outcome reporting bias --- an updated review.
+\newblock {\em PLOS ONE}, {\bf8},  1--37.
+
 \bibitem[Egger {\it et~al.}, 2003]{grey.literature.3}
 Egger, M., Juni, P., Bartlett, C., Holenstein, F., and Sterne, J. (2003).
 \newblock How important are comprehensive literature searches and the
@@ -77,6 +94,12 @@ Egger, M., Juni, P., Bartlett, C., Holenstein, F., and Sterne, J. (2003).
 Egger, M., Smith, G.~D., Schneider, M., and Minder, C. (1997).
 \newblock Bias in meta-analysis detected by a simple, graphical test.
 \newblock {\em BMJ}, {\bf315},  629--634.
+
+\bibitem[Fanelli {\it et~al.}, 2017]{ioannidis.2017}
+Fanelli, D., Costas, R., and Ioannidis, J. P.~A. (2017).
+\newblock Meta-assessment of bias in science.
+\newblock {\em Proceedings of the National Academy of Sciences}, {\bf114},
+  3714--3719.
 
 \bibitem[Fleiss {\it et~al.}, 2013]{mantel.haenszel}
 Fleiss, J.~L., Levin, B., and Paik, M.~C. (2013).
@@ -116,13 +139,6 @@ Higgins~JPT, G.~S. (2011).
 \newblock {\em Cochrane Handbook for Systematic Reviews of Interventions}.
 \newblock The Cochrane Collaboration.
 
-\bibitem[Ioannidis and Trikalinos, 2005]{proteus}
-Ioannidis, J.~P. and Trikalinos, T.~A. (2005).
-\newblock Early extreme contradictory estimates may appear in published
-  research: The proteus phenomenon in molecular genetics research and
-  randomized trials.
-\newblock {\em Journal of Clinical Epidemiology}, {\bf58},  543 -- 549.
-
 \bibitem[Ioannidis and Trikalinos, 2007a]{Ioannidis2007}
 Ioannidis, J.~P. and Trikalinos, T.~A. (2007a).
 \newblock The appropriateness of asymmetry tests for publication bias in
@@ -133,6 +149,11 @@ Ioannidis, J.~P. and Trikalinos, T.~A. (2007a).
 Ioannidis, J.~P. and Trikalinos, T.~A. (2007b).
 \newblock An exploratory test for an excess of significant findings.
 \newblock {\em Clinical Trials}, {\bf4},  245--253.
+
+\bibitem[Ioannidis, 2005]{ioannidis.2005}
+Ioannidis, J. P.~A. (2005).
+\newblock Why most published research findings are false.
+\newblock {\em PLOS Medicine}, {\bf2}, .
 
 \bibitem[Ioannidis and Thombs, 2019]{ioannidis.2019}
 Ioannidis, J. P.~A. and Thombs, B.~D. (2019).
@@ -151,6 +172,11 @@ Kasuya, E. (2001).
 \newblock Mann-whitney u test when variances are unequal.
 \newblock {\em Animal Behaviour}, {\bf6},  1247--1249.
 
+\bibitem[Kicinski, 2013]{bayesian.selection.model}
+Kicinski, M. (2013).
+\newblock Correction: Publication bias in recent meta-analyses.
+\newblock {\em PLOS ONE}, {\bf8}, .
+
 \bibitem[Kicinski {\it et~al.}, 2015]{kicinsky}
 Kicinski, M., Springate, D., and Kontopantelis, E. (2015).
 \newblock Publication bias in meta-analyses from the cochrane database of
@@ -161,6 +187,17 @@ Kicinski, M., Springate, D., and Kontopantelis, E. (2015).
 Law, U.~P. (2007).
 \newblock {\em United States Code 110--85}.
 \newblock Food and Drug Administration Amendments Act.
+
+\bibitem[Lee {\it et~al.}, 2008]{Lee.2008}
+Lee, K., Bacchetti, P., and Sim, I. (2008).
+\newblock Publication of clinical trials supporting successful new drug
+  applications: a literature analysis.
+\newblock {\em PLoS Med}, {\bf5},  e191.
+
+\bibitem[(Leicester) {\it et~al.}, 2000]{sutton.2000}
+(Leicester), A. J.~S., Song, F., Gilbody, S.~M., and Abrams, K.~R. (2000).
+\newblock Modelling publication bias in meta-analysis: a review.
+\newblock {\em Statistical Methods in Medical Research}, {\bf9},  421--445.
 
 \bibitem[McAuley {\it et~al.}, 2000]{grey.literature.2}
 McAuley, L., Pham, B., Tugwell, P., and Moher, D. (2000).
@@ -178,6 +215,26 @@ McShane, B.~B., B{\"o}ckenholt, U., and Hansen, K.~T. (2016).
 \newblock Adjusting for publication bias in meta-analysis: An evaluation of
   selection methods and some cautionary notes.
 \newblock {\em Perspectives on Psychological Science}, {\bf11},  730--749.
+
+\bibitem[Mueller {\it et~al.}, 2016]{mueller.2016}
+Mueller, K.~F., Meerpohl, J.~J., Briel, M., Antes, G., von Elm, E., Lang, B.,
+  Motschall, E., Schwarzer, G., and Bassler, D. (2016).
+\newblock Methods for detecting, quantifying, and adjusting for dissemination
+  bias in meta-analysis are described.
+\newblock {\em Journal of Clinical Epidemiology}, {\bf80},  25 -- 33.
+
+\bibitem[N{\"u}esch {\it et~al.}, 2010]{Nusch}
+N{\"u}esch, E., Trelle, S., Reichenbach, S., Rutjes, A. W.~S., Tschannen, B.,
+  Altman, D.~G., Egger, M., and J{\"u}ni, P. (2010).
+\newblock Small study effects in meta-analyses of osteoarthritis trials:
+  meta-epidemiological study.
+\newblock {\em BMJ}, {\bf341}, .
+
+\bibitem[Onishi and Furukawa, 2014]{Onishi.2014}
+Onishi, A. and Furukawa, T.~A. (2014).
+\newblock Publication bias is underreported in systematic reviews published in
+  high-impact-factor journals: metaepidemiologic study.
+\newblock {\em Journal of Clinical Epidemiology}, {\bf67},  1320 -- 1326.
 
 \bibitem[Paule and Mandel, 1982]{paulemandel}
 Paule, R.~C. and Mandel, J. (1982).
@@ -215,8 +272,32 @@ Schwarzer, G., Carpenter, J.~R., and R{\"u}cker, G. (2015).
 \newblock {\em Meta-analysis with R}, volume 4724.
 \newblock Springer.
 
-\bibitem[Sterne {\it et~al.}, 2001]{sterne2001}
-Sterne, J. A.~C., Egger, M., and Smith, G.~D. (2001).
+\bibitem[Silliman, 1997]{bayesian.selection.model.2}
+Silliman, N.~P. (1997).
+\newblock Hierarchical selection models with applications in meta-analysis.
+\newblock {\em Journal of the American Statistical Association}, {\bf92},
+  926--936.
+
+\bibitem[Souza {\it et~al.}, 2007]{souza.2007}
+Souza, J.~P., Pileggi, C., and Cecatti, J. (2007).
+\newblock Assessment of funnel plot asymmetry and publication bias in
+  reproductive health meta-analyses: an analytic survey.
+\newblock {\em Reproductive Health}, {\bf4},  3.
+
+\bibitem[Stanley {\it et~al.}, 2010]{largest.study.only}
+Stanley, T.~D., Jarrell, S.~B., and Doucouliagos, H. (2010).
+\newblock Could it be better to discard 90\% of the data? a statistical
+  paradox.
+\newblock {\em The American Statistician}, {\bf64},  70--77.
+
+\bibitem[Sterne {\it et~al.}, 2001a]{sterne2001}
+Sterne, J. A.~C., Egger, M., and Smith, G.~D. (2001a).
+\newblock Investigating and dealing with publication and other biases in
+  meta-analysis.
+\newblock {\em BMJ}, {\bf323},  101--105.
+
+\bibitem[Sterne {\it et~al.}, 2001b]{Sterne}
+Sterne, J. A.~C., Egger, M., and Smith, G.~D. (2001b).
 \newblock Investigating and dealing with publication and other biases in
   meta-analysis.
 \newblock {\em BMJ}, {\bf323},  101--105.
@@ -238,6 +319,12 @@ van Aert, R. C.~M., Wicherts, J.~M., and van Assen, M. A. L.~M. (2019).
 \newblock Publication bias examined in meta-analyses from psychology and
   medicine: A meta-meta-analysis.
 \newblock {\em PLOS ONE}, {\bf14},  1--32.
+
+\bibitem[Van~Assen {\it et~al.}, 2015]{p.uniform}
+Van~Assen, M.~A., van Aert, R., and Wicherts, J.~M. (2015).
+\newblock Meta-analysis using effect size distributions of only statistically
+  significant studies.
+\newblock {\em Psychological methods}, {\bf20},  293.
 
 \bibitem[Veroniki {\it et~al.}, 2016]{tau.estimator.evaluation}
 Veroniki, A.~A., Jackson, D., Viechtbauer, W., Bender, R., Bowden, J., Knapp,
@@ -266,5 +353,11 @@ Wickham, H. (2016).
 Wickham, H. (2017).
 \newblock {\em tidyverse: Easily Install and Load the 'Tidyverse'}.
 \newblock R package version 1.2.1.
+
+\bibitem[Zhang {\it et~al.}, 2013]{Zhang.2013}
+Zhang, Z., Xu, X., and Ni, H. (2013).
+\newblock Small studies may overestimate the effect sizes in critical care
+  meta-analyses: a meta-epidemiological study.
+\newblock {\em Critical care (London, England)}, {\bf17},  R2--R2.
 
 \end{thebibliography}

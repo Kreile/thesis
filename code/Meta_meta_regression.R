@@ -50,12 +50,19 @@ reg.dat <- reg.dat %>% group_by(meta.id) %>%
 reg.dat <- merge(reg.dat, data.review[,c("id", "year")], by = "id")
 
 reg.dat <- reg.dat %>% filter(se.smd.pool < 3)
+
+reg.dat <- reg.dat %>% ungroup() %>% 
+  mutate(rev.year.center = scale(scale = F, center = T, x = year)[,1]) 
 #----------------------------------------------------------------------------------------------#
 
 ##-------Modelling--------#
 small.study.fit <- lme(fixed = smd.pool ~ se.smd.pool, random = list(~ 1 | id, ~ 1 | meta.id),
                        weights = ~ new.se.smd^2, method = "ML", data = reg.dat)
 anova(small.study.fit)
+
+plot(y = reg.dat$smd.pool, x = reg.dat$se.smd.pool, cex = .1)
+small.study.fit.coef <- summary(small.study.fit)$coefficients$fixed
+abline(a = small.study.fit.coef, col = "red", lty = 2)
 
 #----------------------------------------------------------------------------------------------#
 
@@ -101,7 +108,7 @@ small.study.year.ov.table <- lmer.table(small.study.year.ov.fit)
 
 
 
-year.fit <- lme(fixed = smd.pool ~ study.year.center, random = list(~ 1 | id, ~ 1 | meta.id),
+year.fit <- lme(fixed = smd.pool ~ se.smd + rev.year.center, random = list(~ 1 | id, ~ 1 | meta.id),
                 weights = ~ new.se.smd^2, method = "ML", data = reg.dat)
 
 
@@ -120,10 +127,9 @@ plot(y = reg.dat$prediction, reg.dat$study.year.center.ov, cex = .1)
 plot(y = reg.dat$smd.pool, reg.dat$study.year.center.ov, cex = .1)
 abline(small.study.year.ov.fit)
 
-plot(y = reg.dat$smd.pool, x = reg.dat$se.smd.pool, cex = .1)
-small.study.fit.coef <- summary(small.study.fit)$coefficients$fixed
+
 plot(small.study.fit)
-abline(a = small.study.fit.coef, col = "red", lty = 2)
+
 plot(small.study.year.ov.fit$fitted[,1], x=  reg.dat$study.year.center.ov, cex = .1)
 
 
