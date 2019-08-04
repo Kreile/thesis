@@ -1247,7 +1247,7 @@ The \texttt{comparison.name} variable specifies \textit{what kind} of treatments
 The result is of a binary type, and the counts of events in the treatment group are in \texttt{events1} and of the control group in \texttt{events2} and the total number of participants are given in columns \texttt{total1} and \texttt{total2}. As can be seen, events denote here "death at the end of follow-up".
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Aug  1 15:37:26 2019
+% Sun Aug  4 15:56:33 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1265,40 +1265,8 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up & 11 &
 \end{table}
 
 
-A complete listing of the variables of a result is given in Table \ref{variable}. Depending on the type of the data, \eg if it is binary or continuous, some variables are missing for the specific results.
 
-\begin{table}[ht]
-  \begin{center}
-    \begin{tabular}{l l}
-      \textbf{Variable} & \textbf{Description}\\
-      \hline
-      \texttt{id} & An id of the review for identification purposes \\
-      %\texttt{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
-      % \texttt{file.index} & Internal index of the file in the Cochrane library.\\
-      % \texttt{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
-      %\multicolumn{2}{c}{textbf{Study level variables}}\\ 
-      \hline
-      \texttt{study.name} & Name of the study to which the result belongs\\
-      \texttt{study.year} & Year in which the study was published \\
-      \texttt{study.data.source} & Source of the study, either ``Publ \\
-      \hline
-      \texttt{comparison.name/.nr} & Specification of the interventions compared in the study  \\ &and a unique number for the comparison\\
-      \texttt{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome\\
-      \texttt{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ &unique number for the subgroup\\
-      \texttt{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
-      \texttt{effect} & Measure of the effect given in the quantity denoted by \\ &\texttt{outcome measure}.\\
-      \texttt{se} & Standard error of the measure of the effect,\\
-      \texttt{events1/events2} & The counts of patients with an outcome \textit{if}\\ &measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
-      \texttt{total1/total2} & Number of patients in groups.\\
-      \texttt{mean1/mean2} & Mean of patient measurements \textit{if} outcome is continuous.\\
-      \texttt{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
-    \end{tabular}
-  \caption{Dataset variable names and descriptions  \label{variable}}
-  \label{variable}
-  \end{center}
-\end{table}
-
-Results are part of studies that are again part of a (systematic) review. This structure of a review is shown in Figure \ref{review}. 
+Results are part of studies that are again part of a (systematic) review. This structure of a review is shown in Figure \ref{review.structure}. 
 
 \begin{figure}
 \tikzstyle{every node}=[draw=black,thick,anchor=west]
@@ -1325,14 +1293,48 @@ Results are part of studies that are again part of a (systematic) review. This s
 \label{review.structure}
 \end{figure}
 
+A listing of important variables of a result is given in Table \ref{variable}. Depending on the type of the data, \eg if it is binary or continuous, some variables are missing for the specific results.
+
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{l l}
+      \textbf{Variable} & \textbf{Description}\\
+      \hline
+      \texttt{id} & An id of the review for identification purposes.\\
+      \hline
+      \texttt{study.name} & Name of the study to which the result belongs.\\
+      \texttt{study.year} & Year in which the study was published.\\
+      \hline
+      \texttt{comparison.name/.nr} & Specification of the interventions compared in the study and a \\ &unique number for the comparison.\\
+      \texttt{comparison.id} & Specification of the comparison by a string of the type ``CMP-xxx'' \\ &for the xxx. comparison within the review.\\
+      \texttt{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome.\\
+      \texttt{outcome.id} & Specification of the outcome by a string of the type \\ &``CMP-xxx.xx'' for the xx. outcome of the xxx. comparison \\ &within the review.\\
+      \texttt{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a unique \\ &number for the subgroup.\\
+      \texttt{subgroup.id} & Specification of the comparison by a string of the type \\ &``CMP-xxx.yy.xx'' for the xx. subgroup for the yy. outcome \\ & of the xxx. comparison within the review.\\
+      \texttt{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
+      \texttt{outcome.measure.merged} & Indication of the quantification method of the effect, \\ &merged such that each method is uniquely classified.\\
+      \texttt{outcome.flag} & A outcome flag to simplify programming; \\ &\texttt{DICH} for binary outcomes with fully available information \\ &on event counts,
+      as given in a two-by-two \\ &table. \\ &\texttt{CONT} for continuous outcomes with available means and \\ &standard deviations. \\ & \texttt{IV} for all results with effects and standard errors but without \\ & the data necessary for their computation. \\ &\texttt{IPD} for individual patient data.\\
+      \texttt{effect} & Measure of the effect given in the quantity denoted by \\ &\texttt{outcome measure}.\\
+      \texttt{se} & Standard error of the measure of the effect.\\
+      \texttt{events1/events2} & The counts of patients with an outcome if measurement/outcome \\ &is binary or dichotomous (1 for treatment group and 2 for control group).\\
+      \texttt{total1/total2} & Number of patients in groups.\\
+      \texttt{mean1/mean2} & Mean of patient measurements if outcome is continuous.\\
+      \texttt{sd1/sd2} & Standard deviation of mean if outcome is continuous.
+    \end{tabular}
+  \caption{Dataset variable names and descriptions  \label{variable}}
+  \label{variable}
+  \end{center}
+\end{table}
+
 \vspace{0mm}
-The structure of a review will now be outlined based on an example of the dataset. Let us consider the previously mentioned barbiturate and head injury review. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates'' %\citep{barbiturate}. \\
+The structure of a review will now be outlined based on an example of the dataset. The previously mentioned barbiturate and head injury review will be outlined. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates'' %\citep{barbiturate}. \\
 %Since there are arguments for and against use of barbiturates, the authors of the review did a comprehensive literature search and collected all available study findings. 
 The review comprises five studies in total. Three of them compared barbiturate to placebo, one compared barbiturate to Mannitol and one Pentobarbital to Thiopental. The studies have different outcomes, for example, death or death and severe disability at follow up, but also dropout counts or adverse effects (secondary outcomes). 
-We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. Thus, it is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
+We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. %It is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Aug  1 15:37:26 2019
+% Sun Aug  4 15:56:33 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1369,7 +1371,7 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
 Information about missing values in the dataset is given in Table \ref{missing}. The relative amount of missing values is low, except for study years. For continuous outcomes, the cases are counted were neither a mean difference nor means are available. Similarly, the counts of cases where neither standard errors nor standard deviations are available are provided. Study years before 1920 and after 2019 are declared as missing, as well as sample sizes equal to zero.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Aug  1 15:37:26 2019
+% Sun Aug  4 15:56:33 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1387,11 +1389,11 @@ Neither means nor standard deviations (CONT) & 775 \\
 \end{table}
 
 
-The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = 1982, 95\% quantile = 2014,). The median of the publication years is 2003, the mean 2000.97 and the quartiles are 1996 and 2008. 1075 studies have been published in 2018, none in 2019. \\
+The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = 1982, 95\% quantile = 2014,). The median of the publication years is 2003, the mean 2000.97 and the quartiles are 1996 and 2008. 1075 studies have been published in 2018, none in 2019.\\
 The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.) abundances are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 31 \% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (more than 65\%).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Aug  1 15:37:26 2019
+% Sun Aug  4 15:56:33 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1428,7 +1430,7 @@ The size of a meta-analysis denotes how many results are included in a group. Ta
 
 
 {\ttfamily\noindent\color{warningcolor}{\#\# Warning: Setting row names on a tibble is deprecated.}}\end{kframe}% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Aug  1 15:37:26 2019
+% Sun Aug  4 15:56:33 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1460,46 +1462,42 @@ n & Number of groups & Cumulative sum of groups \\
 
 
 \section{Data Tidying and Processing} \label{sec:Processing}
-The dataset was scraped from the Cochrane Database of Systematic Reviews at the ... . A specialized code was used to convert the xtml. files from the webpage into the data at hand cite... . 
 
 \subsection{Newly Introduced Variables}
 Some new variables are added to the obtained dataset:
 \begin{itemize}
-\item \texttt{outcome.measure.merged}: Outcome measure specifications given in \texttt{outcome.measure} were standardized whenever they were supposed to denote the same outcome measure. An example would be the formally different notations for odds ratios: ``Odds Ratio'', ``odds ratio'', ``OR'', which were all denoted as ``Odds Ratio''.
-% \item \texttt{outcome.flag}: A simplification of \texttt{outcome.measure.merged}. The outcome.flag ``bin'' indicates if \texttt{outcome.measure.merged} is either one of ``Risk Ratio'', ''Odds Ratio'', ``Risk difference'' or ``Peto Odds Ratio''. ``cont'' is equivalent to \texttt{outcome.measure.merged} equal to "Std. Mean Difference'' or ``Mean Difference''. ``surv'' equal to ``Hazard Ratio'' and ``rate'' equal to ''Rate Ratio'' or ``Rate Difference''.
-\item \texttt{lrr} and \texttt{var.lrr}: log risk ratio and variance of the log risk ratio for outcome.flag ``bin''.
-\item \texttt{smd} and \texttt{var.smd}: Hedges $g$ and the variance of Hedges $g$ for outcome.flag ``cont''. 
-% If not computable from \texttt{mean1}, \texttt{mean2}, \texttt{sd1} and \texttt{sd2}, and \texttt{outcome.measure.merged} was equal to ``Std. Mean Difference'', it was set equal to \texttt{effect} (and \texttt{var.smd} equal to \texttt{se} squared, $n$ =  length(inpute.given.ind)).
-\item \texttt{smd.ordl} and \texttt{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for outcome.flag ``bin''.
-\item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for outcome.flag ``bin'') or $g$ (for outcome.flag ``cont'') to $r$ transformation.
+\item \texttt{lrr} and \texttt{var.lrr}: log risk ratio and variance of the log risk ratio for \texttt{outcome.flag} \texttt{DICH}.
+\item \texttt{cohensd} and \texttt{var.cohensd}: Cohen's $d$ and the variance for \texttt{outcome.flag} \texttt{CONT}'. 
+\item \texttt{smd.ordl} and \texttt{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for \texttt{outcome.flag} \texttt{DICH}.
+\item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for \texttt{outcome.flag} \texttt{DICH}) or $d$ (for \texttt{outcome.flag} \texttt{CONT}') to $r$ transformation.
 \item \texttt{z} and \texttt{var.z}: Fisher's z score and it's variance obtained from the Pearson correlation $r$ to $z$ transformation.
-\item \texttt{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for outcome.flag ``cont'' or Wald test for outcome.flag ``bin''.
+\item \texttt{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for \texttt{outcome.flag} \texttt{CONT}' or Wald test for \texttt{outcome.flag} \texttt{DICH}.
 \item \texttt{events1c} and \texttt{events2c}: Correction of \texttt{events1} and \texttt{events2} zero event counts or event counts = patient number. When no events occurred, 0.5 was added, and when all patients experienced the event, 0.5 was subtracted. When one of \texttt{events} had zero counts while the other had maximum counts, no adjustment occurred.
 \item \texttt{meta.id}: Meta-analysis ID variable to uniquely identify any potential meta-analysis in the dataset. Consistent to what has been discussed before, all results that share a common comparison, outcome and subgroup (optional, subgroups not given in any case) may be combined in a meta-analysis.
-\item \texttt{se.new}: Depending on \texttt{outcome.flag}, \texttt{se.new} is equal to the square-root of \texttt{var.lrr} (\texttt{outcome.flag} = \texttt{DICH}), square-root of \texttt{var.smd} (\texttt{CONT})
+\item \texttt{smd.pool} and \texttt{se.smd.pool}: Depending on \texttt{outcome.flag}, \texttt{smd.pool} is equal to \texttt{smd.ordl} (\texttt{outcome.flag} = \texttt{DICH}), \texttt{cohensd} (\texttt{CONT}), or \texttt{effect} (\texttt{IV} and \texttt{outcome.measure.merged} = \texttt{SMD}).
 or \texttt{se} (\texttt{IV}).
-% \item \texttt{}:
 \end{itemize}
 
 
 \subsection{Eligibility criteria for Publication Bias Test and Adjustment} 
 
-Initially, the analysis is restricted to results with \texttt{outcome.flag} \texttt{DICH}, \texttt{CONT} and \texttt{IV}. binary, continuous and survival outcomes. This corresponds to 734954 out of a total of 744720 results.
+Initially, the analysis is restricted to results with \texttt{outcome.flag} \texttt{DICH}, \texttt{CONT} and \texttt{IV}. If \texttt{IV}, the only meta-analyses with \texttt{outcome.measure.merged} = \texttt{OR}, \texttt{RR}, \texttt{SMD}, \texttt{MD}, \texttt{Hazard Ratio} and \texttt{Rate Ratio} are used. 
 \citet{Ioannidis2007} outlined criteria for application of small study effect tests:
 \begin{itemize}
-\item \textbf{Sample size}: A meta-analysis is comprised of at least ten studies ($n$ = 9916 remaining). 
-\item \textbf{Study size}: The ratio between largest variance of an estimate and smallest variance of an estimate is larger than four ($n$ = 9616 remaining).
-\item \textbf{Significance}: At least one treatment effect has a $p$-value below the significance threshold 0.05 ($n$ = 7586 remaining)
-\item \textbf{Heterogeneity}: The $I^2$ statistic of a given meta-analysis is smaller than 0.5, thus, the proportion of between study variance of the overall variance is smaller than 0.5 ($n$ = 405 remaining).
+\item \textbf{Sample size}: A meta-analysis is comprised of at least ten studies ($n$ = 9772 remaining). 
+\item \textbf{Study size}: The ratio between largest variance of an estimate and smallest variance of an estimate is larger than four ($n$ = 9473 remaining).
+\item \textbf{Significance}: At least one treatment effect has a $p$-value below the significance threshold 0.05 ($n$ = 7452 remaining)
+\item \textbf{Heterogeneity}: The $I^2$ statistic of a given meta-analysis is smaller than 0.5, thus, the proportion of between study variance of the overall variance is smaller than 0.5 ($n$ = 1388 remaining).
 \end{itemize}
 Additionally, the following criteria have been applied:
 \begin{itemize}
 \item \textbf{Sensitivity Analyses}: When the same results are used multiple times for different meta-analyses, only one is retained. More precisely, if a study hat the same \texttt{study.name} and same \texttt{effect}, it was considered a duplicate, and the smaller meta-analysis of the two was excluded. The intention is to exclude sensitivity analyses which are operated on subsets of the available results.
 \item \textbf{Zero events}: In the case of binary outcomes, meta-analyses with zero events in any study and any group are excluded ($n$ = 20 out of meta-analyses with at least ten studies).
+\item \textbf{No withdrawn reviews}: Reviews that have been withdrawn are not included.
+\item \textbf{No adverse effects}: No results of adverse effects of treatment are used for meta-analyses. Exclusion is incomplete because only results with ``adverse'' in the comparison or outcome name could be removed, but not all adverse effect results are classified as such.
 \end{itemize}
 
-The results of this reduction of the dataset are shown in the flow-chart in Figure \ref{Inclusion.criteria}. By applying the criteria, we are only able to analyse a subset of the original data. \\
-Only the data that had accesible all results data available was used for adjustment. Thus, all meta-analyses with \texttt{outcome.flag} == \texttt{IV} are ommitted in a second step of the analysis (Analysis dataset (1) and (2) in Figure \ref{Inclusion.criteria}).
+The results of this reduction of the dataset are shown in the flow-chart in Figure \ref{Inclusion.criteria}. Only the data that had accesible all results data available was used for adjustment. Thus, all meta-analyses with \texttt{outcome.flag} == \texttt{IV} and \texttt{outcome.measure.merged} not equal to \texttt{SMD} are ommitted in a second step of the analysis (Analysis dataset (1) and (2) in Figure \ref{Inclusion.criteria}).
 
 \begin{figure}
 \begin{center}
@@ -1527,39 +1525,39 @@ Only the data that had accesible all results data available was used for adjustm
     632,438 results};
     
     \node [block, below of=13, node distance=2cm] (2) {
-    5,948 reviews,
-    65,962 studies,
-    695,992 results};
+    5,936 reviews,
+    65,296 studies,
+    687,517 results};
     
     \node [block, below of=2, node distance=2cm] (3) {
-    1,156 reviews,
-    26,580 studies,
-    175,351 results,
-    9,916 meta-analyses};
+    1,145 reviews,
+    26,094 studies,
+    172,212 results,
+    9,772 meta-analyses};
 
     \node [block, below of=3, node distance=2cm] (4) {
-    1,140 reviews,
-    26,306 studies,
-    170,096 results,
-    9,616 meta-analyses};
+    1,129 reviews,
+    25,819 studies,
+    166,968 results,
+    9,473 meta-analyses};
 
     \node [block, below of=4, node distance=2cm] (5) {
-    1,064 reviews,
-    24,277 studies,
-    137,613 results,
-    7,586 meta-analyses};
+    1,052 reviews,
+    23,781 studies,
+    134,596 results,
+    7,452 meta-analyses};
 
     \node [block, below of=5, node distance=2cm] (6) {
-    1,033 reviews,
-    22,668 studies,
-    47,607 results,
-    2,729 meta-analyses};
+    1,021 reviews,
+    22,183 studies,
+    45,888 results,
+    2,665 meta-analyses};
 
     \node [final, below of=6, node distance=2cm] (7) {Analysis dataset (1):
-    303 reviews,
-    5,355 studies,
-    6,592 results,
-    405 meta-analyses};
+    738 reviews,
+    14,320 studies,
+    22,937 results,
+    1,388 meta-analyses};
     
 
     % \node [final] (7) {Analysis dataset:
@@ -1578,9 +1576,9 @@ Only the data that had accesible all results data available was used for adjustm
     121 meta-analyses};
 
     \node [final, below of=8, node distance=2.4cm] (11) {Analysis dataset (2):
-    685 reviews,
-    13,396 studies,
-    21,074 results,
+    694 reviews,
+    13,581 studies,
+    21,482 results,
     1,267 meta-analyses};
     
     
@@ -1599,6 +1597,7 @@ Only the data that had accesible all results data available was used for adjustm
     \path [line] (7) -- node [btw, xshift = -1.8cm] {\texttt{outcome.flag} = \texttt{IV}} (10);
     \path [line] (8) -- (11);
     \path [line] (9) -- (11);
+    \path [line] (10) -- node [btw, xshift = -2.6cm, yshift = -0.5cm] {\texttt{outcome.measure.merged} = \texttt{SMD}} (11);
     
 \end{tikzpicture}
 \caption{Flow-chart of the exclusion of meta-analyses for the final analysis. The exclusion criteria are given at the right of the arrows.}
@@ -1608,26 +1607,23 @@ Only the data that had accesible all results data available was used for adjustm
 
 
 
-\subsubsection{Exclusions due to Computational Errors}
-There has been cases where meta-analyses could not be analysed with Copas selection model because the likelihood function could not be optimized based on the settings. It was ommitted in this case.\\
-\begin{itemize}
-\item Meta-analysis with \texttt{meta.id} = 93868,  \texttt{id} = ``CD004072'', \texttt{subgroup.id} = ``CMP-006.08.01''. One small meta-analysis (\texttt{se.new} = 1.02) with a risk ratio 0.072, while the remaining risk ratios were all larger than 0.45. (and the fixed effects estimate close to 1). It failed when analysed based on log risk ratios.
-\item Meta-analysis with \texttt{meta.id} = 144568,  \texttt{id} = ``CD006109'', \texttt{outcome.id} = ``CMP-001.06'' and \texttt{outcome.measure} ``MD''. $z$-score based analysis failed, although funnel plot looks more or less symmetric. Small studies with very similar \texttt{var.z} with $z$-scores 0.3 and -0.1.
-\item Meta-analysis with \texttt{meta.id} = 35673,  \texttt{id} = ``CD001790'', \texttt{outcome.id} = ``CMP-001.03'' and \texttt{outcome.measure} = ``PETO.OR''. Analysis failed when using Hedges $g$ transformed effects. Large studies have $g \sim 0$ while one smaller study ($\se = 0.3$) has $g = 1$ (and another with a little larger $\se$ has $g \sim 0$).
-\end{itemize}
-Because the number of errors is low, the meta-analyses have only been ommitted for the specific outcome measures, but are kept in the others. 
+\subsubsection{Exclusions for other Reasons}
+In some more cases, meta-analyses were excluded because their results seemed to be erroneous (1) or because participant numbers were missing (5), necessary to compute the variance of Fisher's z transformed correlation coefficient. The latter meta-analyses (all \texttt{outcome.flag} = \texttt{IV}) were only ommitted when doing the adjustment based on the $z$-scores, but kept when adjusting based on std. mean differences. The meta-analysis that is considered erroneous is from a review with the title ``School-based programs for preventing smoking''. The reason why it is suspected to be erroneous is because there are results from one study (Severson, 1991) with rather large effects (13, 0.4, 6.3, 2.4) compared to a mean std. mean difference in 12 other results of 0.22 (max.: 0.91) and very large standard errors (64, 60, 46, 70) compared to a mean \texttt{se} of 0.6 (max.: 3.8). It is not included in the analysis. 
 
 \subsubsection{The Analysis Dataset}
-The dataset that was ultimately tested and adjusted for publication bias comprises 1 meta-analyses and 6592 results. The mean number of participants in the treatment group is 206.9 vs 256.7 in the unrestricted dataset and the mean total number of participants 393.2 vs 623.2. The mean publication year is 1999.8575604 vs 2000.9711014 in the unrestricted dataset. \\
+The dataset that was ultimately tested and adjusted for publication bias comprises 1 meta-analyses and 22937 results. The mean number of participants in the treatment group is 253.5 vs 256.7 in the unrestricted dataset and the mean total number of participants 589.3 vs 623.2. The mean publication year is 2000.4408025 vs 2000.9711014 in the unrestricted dataset. \\
 From the meta-analyses with incomplete data (\texttt{outcome.type} == \texttt{IV}), there are 36 with \\ \texttt{outcome.measure.merged} = ``Risk Ratio'', 26 ``Std. Mean Difference'',  25 ``Hazard Ratio'' and 15 ``Odds Ratio'' (and 25 additional, different outcome measures).
 
 
 \subsection{Analysis Procedure} \label{sec:procedure}
-All compuations were performed in the \texttt{R} computing environment \citep{R.base}. The \texttt{R} packages \texttt{meta} \citep{meta.package} and \texttt{metafor} \citep{metafor.package} were used for meta-analysis, small study effect tests and adjustments. The excess significance test was adapted from \citet{vanAert.2019}. For data manipulation procedures, the \texttt{tidyverse} packages were used \citep{tidyverse.package}, and for plotting the \texttt{ggplot2} package \citep{ggplot2}.\\
-The methods described in the methods chapter \ref{ch:methods} most often apply directly to the algorithms used in \texttt{meta} and \texttt{metafor}. For binary outcomes, log risk ratios were used as treatment effect estimates in the meta-analysis, and for continuous outcomes, Hedge's $g$. For the other outcomes, the \texttt{effect} and \texttt{se} as provided in the dataset was passed to \texttt{meta::metagen}. \\ 
-The effect sizes were transformed for adjustment in the way described in section \ref{sec:transformation.effectsizes}. The $p$-values for adjusted treatment effect estimates were calculated by the Wald method. \\
+Meta-analysis groups within a review were obtained by grouping by comparison, outcome and subgroup. The last step is optional, and the Cochrane groups do also meta-analysis without taking into account subgroups. Subgroups are often specificaions of treatment, \eg the form of the medication or the protocoll. Thus, using the subgroups should increase the within-study homogeneity. However, the Cochrane Organisation disencourages meta-analyses based on subgroups only, because subgroups are often set up after the collection of the data analysis. Since the main interest of this study is not to precisely assess the efficacy of treatments, but the interest is merely on systematic differences between single studies investigating the same scientific question and not in the effect per se, it has been decided that the increase in precision is worthwile the loss of a number of studies. While it is possible that the use of subgroups introduces bias in the meta-analysis, it is also possible that ignoring subgroups will do (which is one of the reasons why subgroups are analyses as well). When one subgroup has substantially different real treatment effects, and the specific properties influence study size, publication bias assessment fails. Subgroups are not indicated in 50.8\% of the meta-analyses in the analysis dataset 1, thus, there the analyses are identical to the overall analyses that the Cochrane review groups did.
+The methods described in the methods chapter \ref{ch:methods} most often apply directly to the algorithms used in \texttt{meta} and \texttt{metafor}. \\
+For applying publication bias tests and adjustment methods, the analysis was applied such that the effects used are similar or identical to the effects on which journal editors decided upon publication bias. For \texttt{outcome.flag} = \texttt{DICH}, log risk ratios were used as treatment effect estimates in the meta-analysis, for \texttt{outcome.flag} = \texttt{CONT}, mean difference or standardised mean difference, depending on \texttt{outcome.measure.merged}. For \texttt{outcome.flag} = \texttt{IV}, the \texttt{effect} and \texttt{se} as provided in the dataset was passed to \texttt{meta::metagen}. \\ 
+To be able to compare the effects of adjustment among meta-analyses, the effect sizes were transformed on a common scale, as described in section \ref{sec:transformation.effectsizes}. As shown in the flow-chart in Figure \ref{Inclusion.criteria}, this leads to a reduced dataset (compare analysis dataset (1) and (2)). The $p$-values for adjusted treatment effect estimates were calculated by the Wald method. \\
 In the case of the one-sided test procedure (small study effect and excess significance tests), the effect side in which bias was expected had to be prespecified. This was solved by comparing the number of significant findings on each side (original effect scale, i.e. for binary outcomes log risk ratios, \etc); the side with more significant findings (two-sided $p$-value < 0.05) was considered the side of potential bias. If numbers were equal, the side of the fixed effects treatment was used. \\
 Details to Copas selection model algorithm and its application can be found in \citet{limitmeta}. In short, two values for $a$ and $b$ in section \ref{sec:copas} were used; a limited range with $a$ between -1.7 and 2, and $b$ between 0.16 and 0.32 was applied first (analog to a most extreme selection process of $P$(select|small trial with sd = 0.4) = 0.1 and P(select|large trial w. sd  = 0.05) = 0.9). If the most extreme selection process is unable to pass the significance test of no small study effect ($p$-value > 0.1), then a wider range was applied ($a$  between -5.4 and 2 and $b$ between 0 and 0.32). If there is still no non-significant small study effect, the result was \texttt{NA}.
+All compuations were performed in the \texttt{R} computing environment \citep{R.base}. The \texttt{R} packages \texttt{meta} \citep{meta.package} and \texttt{metafor} \citep{metafor.package} were used for meta-analysis, small study effect tests and adjustments. The excess significance test was adapted from \citet{vanAert.2019}. For data manipulation procedures, the \texttt{tidyverse} packages were used \citep{tidyverse.package}, and for plotting the \texttt{ggplot2} package \citep{ggplot2}.\\
+
 
 
 
@@ -1829,7 +1825,7 @@ In green, a linear regression fit is shown with 95\% CI bands.}
 The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. Some proportion of the meta-analyses will only be significant using a single test, while being non-significant otherwise. This can be seen in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results. For both outcome types, there is only marginal agreement, very few cases are significant in any test. Around 67\% of the dataset is not significant, no matter which test is used. When only using small study effect tests, 29.5\% of binary outcome tests and 31.9\% of \texttt{IV} and continuous outcome tests had at least one significant result. After applying the Bonferroni correction for multiple testing, this shrinks to 12.3\% for binary and 14.4\% for continuous and \texttt{IV} outcomes. To compare significant findings for small study effect tests and excess significance tests, Harbord's or Egger's test results are compared with excess significane tests. 24.1\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, 28.4\% for continuous and \texttt{IV} outcomes. The numbers change to 13.9\% for binary outcomes and 18.1\% for continuous and \texttt{IV} outcomes after applying the Bonferroni correction. 5.1\% have significant Harbord's test result and significant excess significance test result  (2.3\% with Bonferroni). Of the continuous outcomes, we have 3.9\% with Egger's test and 1.3\% with Bonferroni correction. \\
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug  2 14:32:32 2019
+% Sun Aug  4 16:15:09 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1856,7 +1852,7 @@ Count & Binary Outcomes & Continuous and IV \\
 The precise proportions of agreement are provided in table \ref{test.agreement}. We see that only in few cases when excess significance test indicates statistical significance, small study effect tests do so. Correspondence between excess significance tests and small study effects thus is considered rather random. Linear regression based tests agree more often with other linear regression based tests, and agreement between small study effect tests is in general well above 60 \% (at best, 95 \% test agreement in significance for \texttt{IV} \texttt{outcome.flag}).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug  2 14:32:32 2019
+% Sun Aug  4 16:15:09 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1967,7 +1963,7 @@ Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Co
 Table \ref{adjustment.difference} shows quantiles and means for the various differences and the overall proportion of downward adjusted effect sizes. When std. mean difference is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small. To recall some other findings out of Table \ref{adjustment.difference}: 5\% or 69 meta-analyses have their $z$-score reduced by more than 0.13 by regression adjustment (and 5\% or 69 increased by -0.11 or more, fixed effects reference). Also, std. mean difference is reduced by 0.39 compared to fixed effects estimates in 5\% or 69 meta-analyses (or increased by 0.24). 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug  2 14:32:47 2019
+% Sun Aug  4 16:15:36 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1997,7 +1993,7 @@ z: Fixed - Copas & -0.04 & -0.01 & 0.00 & 0.01 & 0.04 & 0.00 & 8.14 & 50.14 & 42
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug  2 14:32:47 2019
+% Sun Aug  4 16:15:36 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -2090,7 +2086,7 @@ The Copas selection model also allows to compute the number of missing studies, 
 We can see that in some occasions, the method finds more than half of all studies are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}. The discrepancy between mean and median may indicate that the estimate of 11.4\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie 28 meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for 1,060, more than 30\% of missing studies.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug  2 14:32:48 2019
+% Sun Aug  4 16:15:38 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -2130,7 +2126,7 @@ The dependent variable is the standardized mean differences (therefore, from \te
 \end{figure}
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug  2 14:32:57 2019
+% Sun Aug  4 16:15:46 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -2149,7 +2145,7 @@ null.fit &   1 & 4.00 & 18768.23 & 18800.12 & -9380.11 &  &  &  \\
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug  2 14:32:58 2019
+% Sun Aug  4 16:15:47 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -2170,7 +2166,7 @@ null.fit &   1 & 4.00 & 18768.23 & 18800.12 & -9380.11 &  &  &  \\
 It is possible to include meta-analysis specific random slopes. Before continuing, it is tested if incorporation of random slopes improves model fit. Table \ref{anova.random.slopes} shows the anova table for a model with and without random slopes.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug  2 14:32:59 2019
+% Sun Aug  4 16:15:49 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -2192,7 +2188,7 @@ Model diagnostics indicate that there is no benefit in including random slopes f
 To test if publication bias varies over time, we include the year of the publication of the review as an additional explanatory variable. Ulitmately, it is of interest if there is an interaction between the small study effect (publication bias) and time, i.e. if the slope varies depending on the year. Because such a model is nested in a more simpler model where the study year is only an additive effect, all these models are fitted. Table \ref{anova.lme} displays model fit diagnostics.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug  2 14:33:01 2019
+% Sun Aug  4 16:15:51 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -2214,7 +2210,7 @@ small.study.fit &   1 & 5.00 & 18230.52 & 18270.39 & -9110.26 &  &  &  \\
 Because neither AIC, BIC ot the F-test do show any improvement of model fit, it does not seem as if publication bias has substantially decreased or increased over the years. The review publication year is however not directly tied to the publication year of the studies that are affected by publication bias. Thus, using another measure of time, the results may be different. Thus, the models are re-fitted with the study publication years.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug  2 14:33:05 2019
+% Sun Aug  4 16:15:54 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -2426,7 +2422,7 @@ Data processing steps were however different, and only binary outcomes as used i
 % The results seem to be similar enough to claim that neither the methods nor the data and it's results are differing substantially. Because the thesis relies on more data, it is likely to be more accurate and can possibly add to the findings of \citet{Ioannidis2007}.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug  2 14:33:49 2019
+% Sun Aug  4 16:16:35 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrr}
@@ -2474,10 +2470,13 @@ There have been proposed a number of reasons for this tendencies in smaller stud
 The main cause for funnel plot asymmetry with smaller studies having larger effects is publication bias. Publication bias enforces questionable research practices from researchers such as selective outcome reporting, $p$-hacking and data fabrication. Larger studies are less affected, and have also in general higher methodological quality \citep{Egger}, which leads to smaller effect sizes.\\
 Presence of publication bias in meta-analyses can ultimately lead to patient harm, because decision makers in clinical practice use the meta-analyses to take decisions if they use a treatment. On the swiss Cochrane website, it is stated that Cochrane is the ``single most reliable source of evidence on the effects of health care''. However, publication bias does in general lead to too large confidence in the results of the meta-analyses. In some cases, it might be that the  evidence for a treatment in a meta-analysis is an artifact of publication bias. Besides harm to patient, this can cause a waste of ressources. \\
 The comparison of the results with previous analyses of publication bias in the Cochrane Database of Systematic Reviews implies gives more confidence in the results of this study, because they are largely in line. \\
+The term publication bias is frequently used in this study, but 1.7\% of the analysis dataset (1) are unpublished results. This mitigates the estimated extent of publication bias in this study since it has been shown repeatedly that effects in the grey literature are smaller.
 
 
 \section{Limitations}
-After application of the criteria of \citet{Ioannidis2007}, there are left 11.6 \% of the reviews and 32.9\% of the studies. It is not clear how the results would be in the remaining dataset if tests were applicable. The most restrictive criterium of exclusion was that a meta-analysis has to have at least ten studies. Thus, in the data that is scrutinized, there has been enforced and ongoing research. \citet{ioannidis.2005} state that publication bias is also a consequence of modern discovery oriented research, and thus it may well be that publication bias is also an issue when the number of studies are lower.\\
+After application of the criteria of \citet{Ioannidis2007}, there are left 11.6 \% of the reviews and 32.9\% of the studies. It is not clear how the results would be in the remaining dataset if tests were applicable. The most restrictive criterium of exclusion was that a meta-analysis has to have at least ten studies. Thus, in the data that is scrutinized, there has been enforced and ongoing research. \citet{ioannidis.2005} state that publication bias is also a consequence of modern discovery oriented research, and thus it may well be that publication bias is also an issue when the number of studies are lower. Also, it is possible that by excluding meta-analyses where $I^2 \geq 0.5$, the most extreme cases of publication bias are removed since publication bias increases the between-study heterogeneity.\\
+Furthermore, the sub-partitioning of meta-analyses based on conparison, outcome and subgroup is only one possibility%, which is in fact not recommended by the Cochrane Organisation. 
+Cochrane usually performs multiple meta-analyses with the same results, for example by doing sensitivity analyses (not an issue in this study, since they are removed) and subgroup analyses and overall analyses. One can as well repeat the analysis without considering subbgroups. This will have the advantage of increasing the sample size, but it will also result in increased heterogeneity in meta-analyses, and if one subgroup with small studies yields large effects, the cause must not be publication bias. \\
 It also has to be said that the removal of safety outcomes is only partially successfull. This is an issue, because it is not well known if and how publication bias affect safety outcomes. \citet{kicinsky} suggests that they are inversely affected, with editors publishing in favor of non-significant adverse effects. \\
 Also, it has been previously discussed that the method to detect the side on which bias is to be expected can fail and provide meaningless results, in which case a two-sided test is more meaningful. However, one could also discuss in more general terms if one can speak of publication bias in meta-analyses that have only one significant effect out of ten ($n$ = 417). \\
 There is also criticism that one can address on the methods. It is possible that the results are caused by systematic differences in the population of study participants only. This is considered rather unlikely. Other cirticism is more severe. The small study effect tests fail to account for statistical significance, however, this is a major component of publication bias. Small study effect test work because they take into account that smaller studies need larger effects to be significant. The only test that is applied that takes into account statistical significance per se is the excess significance test. When looking at it's results, it seems as if it is rather a test for between study heterogeneity per se, because it does agree very poorly with small study effect tests, and finds almost no excess significance in tests with $I^2 = 0$. The choice of the effect size and proxy of the study size is crucial when assessing publication bias. It is not clear which measure of effect size should be used when applying the test; the original measure (\eg a mean difference) may have standard errors that do not only depend on study size, but journal editors use this measure as the basis for their decision of publication. Fisher's $z$ transformed correlations have standard errors that are a function of study participant number only, but in contrast the effect size is bounded at$[-1,1]$, making it less suitable for linear regression. Standardized mean differences are possibly a good compromise.\\

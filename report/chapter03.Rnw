@@ -170,8 +170,15 @@ efficacy.study.count <- length(unique(tp8$study.name))
 efficacy.result.count <- dim(tp8)[1]
 
 #outcome.flag reduction:
-tp <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
-  filter(outcome.flag == "DICH" | outcome.flag == "CONT" | outcome.flag == "IV")
+tp.2 <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.flag == "IV") %>% 
+  filter(!all(effect == 0)) %>% 
+  filter(outcome.measure.merged == "Rate Ratio" | outcome.measure.merged == "SMD" |
+           outcome.measure.merged == "MD" | outcome.measure.merged == "Hazard Ratio" |
+           outcome.measure.merged == "OR" | outcome.measure.merged == "RR")
+tp.1 <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.flag == "DICH" | outcome.flag == "CONT")
+tp <- bind_rows(tp.1, tp.2)
 flag.id.count <- length(unique(tp$id))
 flag.study.count <- length(unique(tp$study.name))
 flag.result.count <- dim(tp)[1]
@@ -196,6 +203,10 @@ m.a.largerten.cont <- data.ext2 %>% filter(id %in% data.review$id[which(data.rev
 m.a.largerten.iv <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
   filter(outcome.desired == "efficacy") %>% 
   filter(outcome.flag == "IV") %>% 
+  filter(!all(effect == 0)) %>% 
+  filter(outcome.measure.merged == "Rate Ratio" | outcome.measure.merged == "SMD" |
+           outcome.measure.merged == "MD" | outcome.measure.merged == "Hazard Ratio" |
+           outcome.measure.merged == "OR" | outcome.measure.merged == "RR") %>% 
   filter(se != 0) %>% group_by(meta.id) %>% filter(n() > 9) %>% 
   distinct(meta.id) %>% ungroup() %>% mutate(n = n())
 
@@ -263,9 +274,9 @@ dupl.study.count <- length(unique(tp5$study.name))
 dupl.result.count <- dim(tp5)[1]
 
 #smaller I2 than 0.5:
-m.a.smaller.5.count <- meta.info.I2 %>% filter(I2 < 0.5) %>% ungroup %>% count()
+m.a.smaller.5.count <- meta.info.I2 %>% filter(I2 < 50) %>% ungroup %>% count()
 
-meta.id.vector <- meta.info.I2 %>% filter(I2 < 0.5) %>% select(meta.id)
+meta.id.vector <- meta.info.I2 %>% filter(I2 < 50) %>% select(meta.id)
 meta.data <- data.ext2 %>% filter(meta.id %in% meta.id.vector$meta.id)
 
 I2.id.count <- length(unique(meta.data$id))
@@ -274,12 +285,10 @@ I2.result.count <- dim(meta.data)[1]
 #----------------------------------------------------------------------------------------------#
 
 #Adjustment dataset:
-meta.adj <- meta.f %>% filter(outcome.flag == "DICH" | outcome.flag == "CONT")
-tp6 <- data.ext2 %>% filter(meta.id %in% meta.adj$meta.id)
-#----------------------------------------------------------------------------------------------#
-
-#Adjustment dataset:
-meta.adj <- meta.f %>% filter(outcome.flag == "DICH" | outcome.flag == "CONT")
+meta.adj.2 <- meta.f %>% filter(outcome.flag == "IV") %>%
+  filter(outcome.measure.merged == "SMD")
+meta.adj.1 <- meta.f %>% filter(outcome.flag == "DICH" | outcome.flag == "CONT") 
+meta.adj <- bind_rows(meta.adj.2, meta.adj.1)
 tp6 <- data.ext2 %>% filter(meta.id %in% meta.adj$meta.id)
 
 adj.id.count <- length(unique(tp6$id))
@@ -308,9 +317,12 @@ first.iv.outcome.count <- dt$n[1]
 second.iv.outcome.count <- dt$n[2]
 third.iv.outcome.count <- dt$n[3]
 fourth.iv.outcome.count <- dt$n[4]
+fifth.iv.outcome.count <- dt$n[5]
+sixth.iv.outcome.count <- dt$n[6]
 
-
-
+#----------------------------------------------------------------------------------------------#
+#Meta-analyses without sungroups in the analysis dataset (1)
+no.subgroup <- round((meta.data %>% group_by(meta.id) %>% filter(is.na(subgroup.id)) %>% distinct(meta.id) %>% ungroup() %>% count/dim(meta.f)[1])*100, 1)$n
 @
 
 
@@ -366,40 +378,8 @@ print(xtable(barbi1, label = "barbiturate.row", digits = 0,
       include.rownames = F, size = "scriptsize")
 @
 
-A complete listing of the variables of a result is given in Table \ref{variable}. Depending on the type of the data, \eg if it is binary or continuous, some variables are missing for the specific results.
 
-\begin{table}[ht]
-  \begin{center}
-    \begin{tabular}{l l}
-      \textbf{Variable} & \textbf{Description}\\
-      \hline
-      \texttt{id} & An id of the review for identification purposes \\
-      %\texttt{doi} & Digital object identifier. A unique id of the review such that  \\ &the full text of the review can be found on the web.\\
-      % \texttt{file.index} & Internal index of the file in the Cochrane library.\\
-      % \texttt{file.version} & Denotes the version of the review, since the reviews are \\ &occasionally updated.\\
-      %\multicolumn{2}{c}{textbf{Study level variables}}\\ 
-      \hline
-      \texttt{study.name} & Name of the study to which the result belongs\\
-      \texttt{study.year} & Year in which the study was published \\
-      \texttt{study.data.source} & Source of the study, either ``Publ \\
-      \hline
-      \texttt{comparison.name/.nr} & Specification of the interventions compared in the study  \\ &and a unique number for the comparison\\
-      \texttt{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome\\
-      \texttt{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a \\ &unique number for the subgroup\\
-      \texttt{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
-      \texttt{effect} & Measure of the effect given in the quantity denoted by \\ &\texttt{outcome measure}.\\
-      \texttt{se} & Standard error of the measure of the effect,\\
-      \texttt{events1/events2} & The counts of patients with an outcome \textit{if}\\ &measurement/outcome is binary or dichotomous \\ &2 (1 for treatment group and 2 for control group).\\
-      \texttt{total1/total2} & Number of patients in groups.\\
-      \texttt{mean1/mean2} & Mean of patient measurements \textit{if} outcome is continuous.\\
-      \texttt{sd1/sd2} & Standard deviation of mean \textit{if} \\ &outcome is continuous.
-    \end{tabular}
-  \caption{Dataset variable names and descriptions  \label{variable}}
-  \label{variable}
-  \end{center}
-\end{table}
-
-Results are part of studies that are again part of a (systematic) review. This structure of a review is shown in Figure \ref{review}. 
+Results are part of studies that are again part of a (systematic) review. This structure of a review is shown in Figure \ref{review.structure}. 
 
 \begin{figure}
 \tikzstyle{every node}=[draw=black,thick,anchor=west]
@@ -426,11 +406,45 @@ Results are part of studies that are again part of a (systematic) review. This s
 \label{review.structure}
 \end{figure}
 
+A listing of important variables of a result is given in Table \ref{variable}. Depending on the type of the data, \eg if it is binary or continuous, some variables are missing for the specific results.
+
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{l l}
+      \textbf{Variable} & \textbf{Description}\\
+      \hline
+      \texttt{id} & An id of the review for identification purposes.\\
+      \hline
+      \texttt{study.name} & Name of the study to which the result belongs.\\
+      \texttt{study.year} & Year in which the study was published.\\
+      \hline
+      \texttt{comparison.name/.nr} & Specification of the interventions compared in the study and a \\ &unique number for the comparison.\\
+      \texttt{comparison.id} & Specification of the comparison by a string of the type ``CMP-xxx'' \\ &for the xxx. comparison within the review.\\
+      \texttt{outcome.name/.nr} & Specification by which outcome the interventions are compared\\ &and a unique number for the outcome.\\
+      \texttt{outcome.id} & Specification of the outcome by a string of the type \\ &``CMP-xxx.xx'' for the xx. outcome of the xxx. comparison \\ &within the review.\\
+      \texttt{subgroup.name/.nr} & Potentially indication of affiliation to subgroups and a unique \\ &number for the subgroup.\\
+      \texttt{subgroup.id} & Specification of the comparison by a string of the type \\ &``CMP-xxx.yy.xx'' for the xx. subgroup for the yy. outcome \\ & of the xxx. comparison within the review.\\
+      \texttt{outcome.measure} & Indication of the quantification method of the effect \\ &(of one intervention compared to the other).\\
+      \texttt{outcome.measure.merged} & Indication of the quantification method of the effect, \\ &merged such that each method is uniquely classified.\\
+      \texttt{outcome.flag} & A outcome flag to simplify programming; \\ &\texttt{DICH} for binary outcomes with fully available information \\ &on event counts,
+      as given in a two-by-two \\ &table. \\ &\texttt{CONT} for continuous outcomes with available means and \\ &standard deviations. \\ & \texttt{IV} for all results with effects and standard errors but without \\ & the data necessary for their computation. \\ &\texttt{IPD} for individual patient data.\\
+      \texttt{effect} & Measure of the effect given in the quantity denoted by \\ &\texttt{outcome measure}.\\
+      \texttt{se} & Standard error of the measure of the effect.\\
+      \texttt{events1/events2} & The counts of patients with an outcome if measurement/outcome \\ &is binary or dichotomous (1 for treatment group and 2 for control group).\\
+      \texttt{total1/total2} & Number of patients in groups.\\
+      \texttt{mean1/mean2} & Mean of patient measurements if outcome is continuous.\\
+      \texttt{sd1/sd2} & Standard deviation of mean if outcome is continuous.
+    \end{tabular}
+  \caption{Dataset variable names and descriptions  \label{variable}}
+  \label{variable}
+  \end{center}
+\end{table}
+
 \vspace{0mm}
-The structure of a review will now be outlined based on an example of the dataset. Let us consider the previously mentioned barbiturate and head injury review. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates'' %\citep{barbiturate}. \\
+The structure of a review will now be outlined based on an example of the dataset. The previously mentioned barbiturate and head injury review will be outlined. The aim was to ``assess the effects of barbiturates in reducing mortality, disability and raised ICP (intra-cranial pressure) in people with acute traumatic brain injury'' as well as to ``quantify any side effects resulting from the use of barbiturates'' %\citep{barbiturate}. \\
 %Since there are arguments for and against use of barbiturates, the authors of the review did a comprehensive literature search and collected all available study findings. 
 The review comprises five studies in total. Three of them compared barbiturate to placebo, one compared barbiturate to Mannitol and one Pentobarbital to Thiopental. The studies have different outcomes, for example, death or death and severe disability at follow up, but also dropout counts or adverse effects (secondary outcomes). 
-We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. Thus, it is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
+We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. %It is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
 
 <<echo=FALSE, results='asis'>>=
 print(xtable(barbi2, label = "barbiturates", caption = "Barbiturate and head injury review. In the columns, study names, comparison and outcome measure of the results are given"), include.rownames = F, size = "footnotesize")
@@ -443,7 +457,7 @@ print(xtable(missing.table, label = "missing", caption = "Number of missing vari
       size = "footnotesize", digits = 0)
 @
 
-The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = \Sexpr{publication.year.range[1]}, 95\% quantile = \Sexpr{publication.year.range[6]},). The median of the publication years is \Sexpr{publication.year.range[3]}, the mean \Sexpr{publication.year.range[5]} and the quartiles are \Sexpr{publication.year.range[2]} and \Sexpr{publication.year.range[4]}. \Sexpr{publication.year.2018} studies have been published in 2018, none in 2019. \\
+The studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = \Sexpr{publication.year.range[1]}, 95\% quantile = \Sexpr{publication.year.range[6]},). The median of the publication years is \Sexpr{publication.year.range[3]}, the mean \Sexpr{publication.year.range[5]} and the quartiles are \Sexpr{publication.year.range[2]} and \Sexpr{publication.year.range[4]}. \Sexpr{publication.year.2018} studies have been published in 2018, none in 2019.\\
 The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.) abundances are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 31 \% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (more than 65\%).
 
 <<echo=FALSE, results='asis'>>=
@@ -466,31 +480,26 @@ print(xtable(cum.repr.trials.subg, label = "repr.groups", caption = "Number and 
 @
 
 \section{Data Tidying and Processing} \label{sec:Processing}
-The dataset was scraped from the Cochrane Database of Systematic Reviews at the ... . A specialized code was used to convert the xtml. files from the webpage into the data at hand cite... . 
 
 \subsection{Newly Introduced Variables}
 Some new variables are added to the obtained dataset:
 \begin{itemize}
-\item \texttt{outcome.measure.merged}: Outcome measure specifications given in \texttt{outcome.measure} were standardized whenever they were supposed to denote the same outcome measure. An example would be the formally different notations for odds ratios: ``Odds Ratio'', ``odds ratio'', ``OR'', which were all denoted as ``Odds Ratio''.
-% \item \texttt{outcome.flag}: A simplification of \texttt{outcome.measure.merged}. The outcome.flag ``bin'' indicates if \texttt{outcome.measure.merged} is either one of ``Risk Ratio'', ''Odds Ratio'', ``Risk difference'' or ``Peto Odds Ratio''. ``cont'' is equivalent to \texttt{outcome.measure.merged} equal to "Std. Mean Difference'' or ``Mean Difference''. ``surv'' equal to ``Hazard Ratio'' and ``rate'' equal to ''Rate Ratio'' or ``Rate Difference''.
-\item \texttt{lrr} and \texttt{var.lrr}: log risk ratio and variance of the log risk ratio for outcome.flag ``bin''.
-\item \texttt{smd} and \texttt{var.smd}: Hedges $g$ and the variance of Hedges $g$ for outcome.flag ``cont''. 
-% If not computable from \texttt{mean1}, \texttt{mean2}, \texttt{sd1} and \texttt{sd2}, and \texttt{outcome.measure.merged} was equal to ``Std. Mean Difference'', it was set equal to \texttt{effect} (and \texttt{var.smd} equal to \texttt{se} squared, $n$ =  \Sexpr{length(inpute.given.ind)}).
-\item \texttt{smd.ordl} and \texttt{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for outcome.flag ``bin''.
-\item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for outcome.flag ``bin'') or $g$ (for outcome.flag ``cont'') to $r$ transformation.
+\item \texttt{lrr} and \texttt{var.lrr}: log risk ratio and variance of the log risk ratio for \texttt{outcome.flag} \texttt{DICH}.
+\item \texttt{cohensd} and \texttt{var.cohensd}: Cohen's $d$ and the variance for \texttt{outcome.flag} \texttt{CONT}'. 
+\item \texttt{smd.ordl} and \texttt{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for \texttt{outcome.flag} \texttt{DICH}.
+\item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for \texttt{outcome.flag} \texttt{DICH}) or $d$ (for \texttt{outcome.flag} \texttt{CONT}') to $r$ transformation.
 \item \texttt{z} and \texttt{var.z}: Fisher's z score and it's variance obtained from the Pearson correlation $r$ to $z$ transformation.
-\item \texttt{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for outcome.flag ``cont'' or Wald test for outcome.flag ``bin''.
+\item \texttt{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for \texttt{outcome.flag} \texttt{CONT}' or Wald test for \texttt{outcome.flag} \texttt{DICH}.
 \item \texttt{events1c} and \texttt{events2c}: Correction of \texttt{events1} and \texttt{events2} zero event counts or event counts = patient number. When no events occurred, 0.5 was added, and when all patients experienced the event, 0.5 was subtracted. When one of \texttt{events} had zero counts while the other had maximum counts, no adjustment occurred.
 \item \texttt{meta.id}: Meta-analysis ID variable to uniquely identify any potential meta-analysis in the dataset. Consistent to what has been discussed before, all results that share a common comparison, outcome and subgroup (optional, subgroups not given in any case) may be combined in a meta-analysis.
-\item \texttt{se.new}: Depending on \texttt{outcome.flag}, \texttt{se.new} is equal to the square-root of \texttt{var.lrr} (\texttt{outcome.flag} = \texttt{DICH}), square-root of \texttt{var.smd} (\texttt{CONT})
+\item \texttt{smd.pool} and \texttt{se.smd.pool}: Depending on \texttt{outcome.flag}, \texttt{smd.pool} is equal to \texttt{smd.ordl} (\texttt{outcome.flag} = \texttt{DICH}), \texttt{cohensd} (\texttt{CONT}), or \texttt{effect} (\texttt{IV} and \texttt{outcome.measure.merged} = \texttt{SMD}).
 or \texttt{se} (\texttt{IV}).
-% \item \texttt{}:
 \end{itemize}
 
 
 \subsection{Eligibility criteria for Publication Bias Test and Adjustment} 
 
-Initially, the analysis is restricted to results with \texttt{outcome.flag} \texttt{DICH}, \texttt{CONT} and \texttt{IV}. binary, continuous and survival outcomes. This corresponds to \Sexpr{length(data.ext2$outcome.flag[which(data.ext2$outcome.flag == "DICH" | data.ext2$outcome.flag == "CONT" | data.ext2$outcome.flag == "IV")])} out of a total of \Sexpr{length(data.ext2$outcome.flag)} results.
+Initially, the analysis is restricted to results with \texttt{outcome.flag} \texttt{DICH}, \texttt{CONT} and \texttt{IV}. If \texttt{IV}, the only meta-analyses with \texttt{outcome.measure.merged} = \texttt{OR}, \texttt{RR}, \texttt{SMD}, \texttt{MD}, \texttt{Hazard Ratio} and \texttt{Rate Ratio} are used. 
 \citet{Ioannidis2007} outlined criteria for application of small study effect tests:
 \begin{itemize}
 \item \textbf{Sample size}: A meta-analysis is comprised of at least ten studies ($n$ = \Sexpr{m.a.largerten.count} remaining). 
@@ -502,10 +511,11 @@ Additionally, the following criteria have been applied:
 \begin{itemize}
 \item \textbf{Sensitivity Analyses}: When the same results are used multiple times for different meta-analyses, only one is retained. More precisely, if a study hat the same \texttt{study.name} and same \texttt{effect}, it was considered a duplicate, and the smaller meta-analysis of the two was excluded. The intention is to exclude sensitivity analyses which are operated on subsets of the available results.
 \item \textbf{Zero events}: In the case of binary outcomes, meta-analyses with zero events in any study and any group are excluded ($n$ = \Sexpr{both.arms.zero.events.count} out of meta-analyses with at least ten studies).
+\item \textbf{No withdrawn reviews}: Reviews that have been withdrawn are not included.
+\item \textbf{No adverse effects}: No results of adverse effects of treatment are used for meta-analyses. Exclusion is incomplete because only results with ``adverse'' in the comparison or outcome name could be removed, but not all adverse effect results are classified as such.
 \end{itemize}
 
-The results of this reduction of the dataset are shown in the flow-chart in Figure \ref{Inclusion.criteria}. By applying the criteria, we are only able to analyse a subset of the original data. \\
-Only the data that had accesible all results data available was used for adjustment. Thus, all meta-analyses with \texttt{outcome.flag} == \texttt{IV} are ommitted in a second step of the analysis (Analysis dataset (1) and (2) in Figure \ref{Inclusion.criteria}).
+The results of this reduction of the dataset are shown in the flow-chart in Figure \ref{Inclusion.criteria}. Only the data that had accesible all results data available was used for adjustment. Thus, all meta-analyses with \texttt{outcome.flag} == \texttt{IV} and \texttt{outcome.measure.merged} not equal to \texttt{SMD} are ommitted in a second step of the analysis (Analysis dataset (1) and (2) in Figure \ref{Inclusion.criteria}).
 
 \begin{figure}
 \begin{center}
@@ -605,6 +615,7 @@ Only the data that had accesible all results data available was used for adjustm
     \path [line] (7) -- node [btw, xshift = -1.8cm] {\texttt{outcome.flag} = \texttt{IV}} (10);
     \path [line] (8) -- (11);
     \path [line] (9) -- (11);
+    \path [line] (10) -- node [btw, xshift = -2.6cm, yshift = -0.5cm] {\texttt{outcome.measure.merged} = \texttt{SMD}} (11);
     
 \end{tikzpicture}
 \caption{Flow-chart of the exclusion of meta-analyses for the final analysis. The exclusion criteria are given at the right of the arrows.}
@@ -614,14 +625,8 @@ Only the data that had accesible all results data available was used for adjustm
 
 
 
-\subsubsection{Exclusions due to Computational Errors}
-There has been cases where meta-analyses could not be analysed with Copas selection model because the likelihood function could not be optimized based on the settings. It was ommitted in this case.\\
-\begin{itemize}
-\item Meta-analysis with \texttt{meta.id} = 93868,  \texttt{id} = ``CD004072'', \texttt{subgroup.id} = ``CMP-006.08.01''. One small meta-analysis (\texttt{se.new} = 1.02) with a risk ratio 0.072, while the remaining risk ratios were all larger than 0.45. (and the fixed effects estimate close to 1). It failed when analysed based on log risk ratios.
-\item Meta-analysis with \texttt{meta.id} = 144568,  \texttt{id} = ``CD006109'', \texttt{outcome.id} = ``CMP-001.06'' and \texttt{outcome.measure} ``MD''. $z$-score based analysis failed, although funnel plot looks more or less symmetric. Small studies with very similar \texttt{var.z} with $z$-scores 0.3 and -0.1.
-\item Meta-analysis with \texttt{meta.id} = 35673,  \texttt{id} = ``CD001790'', \texttt{outcome.id} = ``CMP-001.03'' and \texttt{outcome.measure} = ``PETO.OR''. Analysis failed when using Hedges $g$ transformed effects. Large studies have $g \sim 0$ while one smaller study ($\se = 0.3$) has $g = 1$ (and another with a little larger $\se$ has $g \sim 0$).
-\end{itemize}
-Because the number of errors is low, the meta-analyses have only been ommitted for the specific outcome measures, but are kept in the others. 
+\subsubsection{Exclusions for other Reasons}
+In some more cases, meta-analyses were excluded because their results seemed to be erroneous (1) or because participant numbers were missing (5), necessary to compute the variance of Fisher's z transformed correlation coefficient. The latter meta-analyses (all \texttt{outcome.flag} = \texttt{IV}) were only ommitted when doing the adjustment based on the $z$-scores, but kept when adjusting based on std. mean differences. The meta-analysis that is considered erroneous is from a review with the title ``School-based programs for preventing smoking''. The reason why it is suspected to be erroneous is because there are results from one study (Severson, 1991) with rather large effects (13, 0.4, 6.3, 2.4) compared to a mean std. mean difference in 12 other results of 0.22 (max.: 0.91) and very large standard errors (64, 60, 46, 70) compared to a mean \texttt{se} of 0.6 (max.: 3.8). It is not included in the analysis. 
 
 \subsubsection{The Analysis Dataset}
 The dataset that was ultimately tested and adjusted for publication bias comprises \Sexpr{length(meta.id.vector)} meta-analyses and \Sexpr{dim(meta.data)[1]} results. The mean number of participants in the treatment group is \Sexpr{round(mean(meta.data$total1, na.rm = T),1)} vs \Sexpr{round(mean(data.ext2$total1, na.rm = T),1)} in the unrestricted dataset and the mean total number of participants \Sexpr{round(mean(meta.data$total1 + meta.data$total2),1)} vs \Sexpr{round(mean(data.ext2$total1 + data.ext2$total2),1)}. The mean publication year is \Sexpr{mean(meta.data$study.year, na.rm = TRUE)} vs \Sexpr{mean(data.ext2$study.year, na.rm = TRUE)} in the unrestricted dataset. \\
@@ -629,11 +634,14 @@ From the meta-analyses with incomplete data (\texttt{outcome.type} == \texttt{IV
 
 
 \subsection{Analysis Procedure} \label{sec:procedure}
-All compuations were performed in the \texttt{R} computing environment \citep{R.base}. The \texttt{R} packages \texttt{meta} \citep{meta.package} and \texttt{metafor} \citep{metafor.package} were used for meta-analysis, small study effect tests and adjustments. The excess significance test was adapted from \citet{vanAert.2019}. For data manipulation procedures, the \texttt{tidyverse} packages were used \citep{tidyverse.package}, and for plotting the \texttt{ggplot2} package \citep{ggplot2}.\\
-The methods described in the methods chapter \ref{ch:methods} most often apply directly to the algorithms used in \texttt{meta} and \texttt{metafor}. For binary outcomes, log risk ratios were used as treatment effect estimates in the meta-analysis, and for continuous outcomes, Hedge's $g$. For the other outcomes, the \texttt{effect} and \texttt{se} as provided in the dataset was passed to \texttt{meta::metagen}. \\ 
-The effect sizes were transformed for adjustment in the way described in section \ref{sec:transformation.effectsizes}. The $p$-values for adjusted treatment effect estimates were calculated by the Wald method. \\
+Meta-analysis groups within a review were obtained by grouping by comparison, outcome and subgroup. The last step is optional, and the Cochrane groups do also meta-analysis without taking into account subgroups. Subgroups are often specificaions of treatment, \eg the form of the medication or the protocoll. Thus, using the subgroups should increase the within-study homogeneity. However, the Cochrane Organisation disencourages meta-analyses based on subgroups only, because subgroups are often set up after the collection of the data analysis. Since the main interest of this study is not to precisely assess the efficacy of treatments, but the interest is merely on systematic differences between single studies investigating the same scientific question and not in the effect per se, it has been decided that the increase in precision is worthwile the loss of a number of studies. While it is possible that the use of subgroups introduces bias in the meta-analysis, it is also possible that ignoring subgroups will do (which is one of the reasons why subgroups are analyses as well). When one subgroup has substantially different real treatment effects, and the specific properties influence study size, publication bias assessment fails. Subgroups are not indicated in \Sexpr{no.subgroup}\% of the meta-analyses in the analysis dataset 1, thus, there the analyses are identical to the overall analyses that the Cochrane review groups did.
+The methods described in the methods chapter \ref{ch:methods} most often apply directly to the algorithms used in \texttt{meta} and \texttt{metafor}. \\
+For applying publication bias tests and adjustment methods, the analysis was applied such that the effects used are similar or identical to the effects on which journal editors decided upon publication bias. For \texttt{outcome.flag} = \texttt{DICH}, log risk ratios were used as treatment effect estimates in the meta-analysis, for \texttt{outcome.flag} = \texttt{CONT}, mean difference or standardised mean difference, depending on \texttt{outcome.measure.merged}. For \texttt{outcome.flag} = \texttt{IV}, the \texttt{effect} and \texttt{se} as provided in the dataset was passed to \texttt{meta::metagen}. \\ 
+To be able to compare the effects of adjustment among meta-analyses, the effect sizes were transformed on a common scale, as described in section \ref{sec:transformation.effectsizes}. As shown in the flow-chart in Figure \ref{Inclusion.criteria}, this leads to a reduced dataset (compare analysis dataset (1) and (2)). The $p$-values for adjusted treatment effect estimates were calculated by the Wald method. \\
 In the case of the one-sided test procedure (small study effect and excess significance tests), the effect side in which bias was expected had to be prespecified. This was solved by comparing the number of significant findings on each side (original effect scale, i.e. for binary outcomes log risk ratios, \etc); the side with more significant findings (two-sided $p$-value < 0.05) was considered the side of potential bias. If numbers were equal, the side of the fixed effects treatment was used. \\
 Details to Copas selection model algorithm and its application can be found in \citet{limitmeta}. In short, two values for $a$ and $b$ in section \ref{sec:copas} were used; a limited range with $a$ between -1.7 and 2, and $b$ between 0.16 and 0.32 was applied first (analog to a most extreme selection process of $P$(select|small trial with sd = 0.4) = 0.1 and P(select|large trial w. sd  = 0.05) = 0.9). If the most extreme selection process is unable to pass the significance test of no small study effect ($p$-value > 0.1), then a wider range was applied ($a$  between -5.4 and 2 and $b$ between 0 and 0.32). If there is still no non-significant small study effect, the result was \texttt{NA}.
+All compuations were performed in the \texttt{R} computing environment \citep{R.base}. The \texttt{R} packages \texttt{meta} \citep{meta.package} and \texttt{metafor} \citep{metafor.package} were used for meta-analysis, small study effect tests and adjustments. The excess significance test was adapted from \citet{vanAert.2019}. For data manipulation procedures, the \texttt{tidyverse} packages were used \citep{tidyverse.package}, and for plotting the \texttt{ggplot2} package \citep{ggplot2}.\\
+
 
 
 

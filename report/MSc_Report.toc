@@ -34,7 +34,7 @@
 \contentsline {section}{\numberline {3.2}Data Tidying and Processing}{22}{section.3.2}
 \contentsline {subsection}{\numberline {3.2.1}Newly Introduced Variables}{22}{subsection.3.2.1}
 \contentsline {subsection}{\numberline {3.2.2}Eligibility criteria for Publication Bias Test and Adjustment}{23}{subsection.3.2.2}
-\contentsline {subsubsection}{Exclusions due to Computational Errors}{24}{section*.19}
+\contentsline {subsubsection}{Exclusions for other Reasons}{24}{section*.19}
 \contentsline {subsubsection}{The Analysis Dataset}{24}{section*.20}
 \contentsline {subsection}{\numberline {3.2.3}Analysis Procedure}{24}{subsection.3.2.3}
 \contentsline {chapter}{\numberline {4}Results}{27}{chapter.4}
@@ -57,7 +57,7 @@
 \contentsline {section}{\numberline {5.2}Interpretation}{45}{section.5.2}
 \contentsline {section}{\numberline {5.3}Limitations}{46}{section.5.3}
 \contentsline {section}{\numberline {5.4}Outlook}{47}{section.5.4}
-\contentsline {section}{\numberline {5.5}Implications}{47}{section.5.5}
+\contentsline {section}{\numberline {5.5}Implications}{48}{section.5.5}
 \contentsline {chapter}{\numberline {A}Appendix}{49}{appendix.A}
 \contentsline {section}{\numberline {A.1}Data Pre-processing}{50}{section.A.1}
 \contentsline {section}{\numberline {A.2}Analysis}{54}{section.A.2}

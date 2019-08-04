@@ -57,13 +57,13 @@
 \backcite {Intro.meta}{{16}{2.6}{section.2.6}}
 \backcite {cochrane.handbook}{{17}{3.1}{section.3.1}}
 \backcite {Ioannidis2007}{{23}{3.2.2}{subsection.3.2.2}}
-\backcite {R.base}{{24}{3.2.3}{subsection.3.2.3}}
-\backcite {meta.package}{{24}{3.2.3}{subsection.3.2.3}}
-\backcite {metafor.package}{{24}{3.2.3}{subsection.3.2.3}}
-\backcite {vanAert.2019}{{24}{3.2.3}{subsection.3.2.3}}
-\backcite {tidyverse.package}{{24}{3.2.3}{subsection.3.2.3}}
-\backcite {ggplot2}{{24}{3.2.3}{subsection.3.2.3}}
 \backcite {limitmeta}{{25}{3.2.3}{subsection.3.2.3}}
+\backcite {R.base}{{25}{3.2.3}{subsection.3.2.3}}
+\backcite {meta.package}{{25}{3.2.3}{subsection.3.2.3}}
+\backcite {metafor.package}{{25}{3.2.3}{subsection.3.2.3}}
+\backcite {vanAert.2019}{{25}{3.2.3}{subsection.3.2.3}}
+\backcite {tidyverse.package}{{25}{3.2.3}{subsection.3.2.3}}
+\backcite {ggplot2}{{25}{3.2.3}{subsection.3.2.3}}
 \backcite {excess.significance}{{28}{4.1}{section.4.1}}
 \backcite {Egger}{{43}{5.1.1}{subsection.5.1.1}}
 \backcite {sutton.2000}{{43}{5.1.2}{subsection.5.1.2}}
@@ -94,4 +94,4 @@
 \backcite {limitmeta}{{47}{5.4}{section.5.4}}
 \backcite {metafor.package}{{47}{5.4}{section.5.4}}
 \backcite {meta.package}{{47}{5.4}{section.5.4}}
-\backcite {largest.study.only}{{47}{5.5}{section.5.5}}
+\backcite {largest.study.only}{{48}{5.5}{section.5.5}}
