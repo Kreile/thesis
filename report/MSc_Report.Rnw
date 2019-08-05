@@ -99,8 +99,8 @@ opts_chunk$set(
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \appendix
-<<'child-chapterA1', child='chapterA1.Rnw'>>=
-@
+%<<'child-chapterA1', child='chapterA1.Rnw'>>=
+%@
 
 
 

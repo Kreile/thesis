@@ -151,43 +151,8 @@ Importantly, all proposed methods above assume normally distributed effect sizes
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
-
-
-
-\section{Small Study Effects Tests}
-The tests that will be presented on the following pages are a common way to detect publication bias. Importantly, they are however not interpretable directly as evidence for publication bias, but this is left for the discussion chapter. The tests are also often referred to as funnel plot asymmetry tests, because of the popularity of a recent test that has been used frequently to test and adjust for publication bias, which goes under the name of trim-and-fill \citep{trimfill}. However, it is known for some time that the method has disadvantageous properties, therefore, it will not be discussed here, as well as the funnel plot (the radial plot will be used as an alternative).\\
-A test for small study effects will test in some ways if the size of the estimated treatment effect of a study depends on some measure of its size. An association between study size and treatment effect size can be interpreted as an artifact of publication bias.
-
-\subsection{Continuous Outcome Tests}
-For a continuous outcomes that are normally distributed, the sample mean and variance are independent of each other \cite[120]{meta.w.R}. Thus, the estimated standard errors of treatment effects can be used as a proxy for study size, as they should in principle not be tied to the effect size.
-
-\subsubsection{Begg and Mazumdar: Rank Correlation Test} \label{sec:Begg}
-\citet{begg.ties} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
-A standardized effect size $\theta_i^\star$ can be computed as in \eqref{eq:begg.stand.eff}. $\se_i^{2\star}$ is the variance of $\theta_i - \theta_M$ as defined in \eqref{eq:begg.stand.var}, $\theta_M$ being the fixed effects pooled treatment effect (\eqref{eq:fixed.effects}. 
-
-\begin{align}
-\theta_i^\star &= (\theta_i - \theta_M)/\se_i^{2\star} \label{eq:begg.stand.eff}  \\
-\se_i^{2\star} &= \se_i^2 - 1/\sum_{i = 1}^n\frac{1}{\se_i^2}1 \label{eq:begg.stand.var} 
-\end{align}
-
-A rank correlation test based on Kendall's tau is then used. First, the pairs are ordered after their ranks based on $s^{2\star}$. Then, for each $s^{2\star}$ rank, the corresponding ranks based on $\theta^{2\star}$ that are larger are counted and summed up to $u$. The number of ranks based on $\theta^{2\star}$ that are in contrary, smaller, are counted and summed up to $l$. Then the normalized test statistic $Z$ is given as
-
-\begin{align}
-Z &= (u - l)/\sqrt{n(n-1)(2n + 5)/18} \nonumber
-\end{align}
-
-Thus, large number of concordance between pairs will reflect in large $\hat{u}$ and small $\hat{l}$ and thus lead to a large $\hat{Z}$. The $p$-value is obtained using the standard normal distribution $\Phi$:
-\begin{align}
-p &= 2\cdot(1-\Phi(\abs{Z})) \nonumber
-\end{align}
-
-The changes that have to be made int the case of ties are small and can be found in \cite[410]{begg.ties}.
-
-
-\subsubsection{Egger's Test: Weighted Linear Regression Test} \label{sec:Egger}
-First, the concept of simple linear regression is introduced. In short, the model assumes a dependent variable $y$ to be a linear function of another explanatory variable $x$:
+\section{Linear, Weighted and Linear Mixed Regression Models} \label{sec:regression}
+First, the concept of simple linear regression is introduced \citep{fahrmeir2007}. In short, the model assumes a dependent variable $y$ to be a linear function of another explanatory variable $x$, with the residuals being distributed independently and identically and following a normal distribution:
 
 \begin{align}
 y &= \beta_0 + \beta_1 x + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:simple.regression}
@@ -196,7 +161,7 @@ y &= \beta_0 + \beta_1 x + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:si
 $\epsilon$ is the residual noise term that becomes necessary when $n$ pairs $(x_i, y_i)$ are given and there is no exact solution. Then it is common to look for the solution that minimizes the squared residuals, the least-squares solution. Formally,
 
 \begin{align}
-\operatorname*{argmin}_{\beta_0, \beta_1}\big(\sum_{i = 1}^n y_i - \beta_0 - \beta_1 x_i\big) \label{eq:least.squares}
+\operatorname*{argmin}_{\beta_0, \beta_1}\Big(\sum_{i = 1}^n y_i - \beta_0 - \beta_1 x_i\Big) \label{eq:least.squares}
 \end{align}
 
 Let $\mathbf{X}$ be a matrix with the explanatory variables $x$ and $\mathbf{y}$ a corresponding vector for all $y$:
@@ -240,7 +205,7 @@ The estimate $\hat{\beta}_0$ is the intercept and $\hat{\beta}_1$ the slope of t
 \hat{\beta}_0 &= \bar{y} - \hat{\beta}_1 \bar{x} \nonumber
 \end{align}
 
-$\bar{x}, \bar{y}$ denoting the sample means of the corresponding values $x_1, .., x_n$ and $y_1, ..., y_n$. Thus, $\hat{\beta}_0$ is also called global mean.
+$\bar{x}$ and $\bar{y}$ denoting the sample means of the corresponding values $x_1, .., x_n$ and $y_1, ..., y_n$. Thus, $\hat{\beta}_0$ is also called the global mean.
 To test whether there is evidence for the intercept $\beta_0$ to be unequal to some value $\beta_{H0}$, a $t$-test can be used. 
 
 \begin{align}
@@ -248,15 +213,94 @@ p &= 2(1-F(\abs{(\beta_0 - \beta_{H0})/s_{\beta_0}})) \nonumber
 \end{align}
 
 where $F$ is the cumulative $t$ distribution with $n-2$ degrees of freedom. $p$ will give the evidence against the null hypothesis $\beta_0 = \beta_{H0}$. \\
-The concept is extendable to weighted linear regression. Weighted linear regression may be used if the residuals $\mathbf{r}$ have unequal variances, which is equivalent to ascribe different precision to the observed $y$. The least squares equation \eqref{eq:least.squares} is extended to
+The concept is extendable to weighted linear regression. Weighted linear regression may be used if the residuals $\mathbf{r}$ have unequal variances, which is equivalent to ascribe different precision to the observed $y$ (heteroscedasticity). The least squares equation \eqref{eq:least.squares} is extended as follows:
 
 \begin{align}
-\operatorname*{argmin}_{\beta_0, \beta_1}(\sum_{i = 1}^n w_i(y_i - \beta_0 - \beta_1 x_i)) \nonumber
+\operatorname*{argmin}_{\beta_0, \beta_1}\Big(\sum_{i = 1}^n w_i(y_i - \beta_0 - \beta_1 x_i)\Big) \nonumber
 \end{align}
 
-with positive weights $w_i$ that penalize large squared residuals for some $i$ more if $w_i$ is larger compared to other $w_i$. \\
-Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weights on the diagonal and zeros on the off-diagonals. The estimates in \eqref{eq:regression.parameters} and \eqref{eq:regression.variances} can still be used if $\mathbf{X}$ is exchanged with $\mathbf{X}^\star =  \mathbf{W} \mathbf{X}$ and $\mathbf{y}$ with $\mathbf{y}^\star = \mathbf{W} \mathbf{y}$. \label{weighted.regression} \\
-Now it is shown how linear regression can be used to test dependency of effect sizes on study sizes. The simplest application was introduced by \citet{Egger}.
+with the positive weights $w_i$ penalizing large squared residuals for some $i$ more if $w_i$ is larger. \\
+Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weights on the diagonal and zeros on the off-diagonals. The estimates in \eqref{eq:regression.parameters} and \eqref{eq:regression.variances} can again be used if $\mathbf{X}$ is exchanged with $\mathbf{X}^\star =  \mathbf{W} \mathbf{X}$ and $\mathbf{y}$ with $\mathbf{y}^\star = \mathbf{W} \mathbf{y}$. \label{weighted.regression} \\
+The introduction of group-specific random effects allows to analyze grouped or repeated measurements by linear regression. Let $i$ be the group index, $j$ the index of the single observation from the group $i$ and $x_j$ the $j^\textrm{th}$ row of $\mathbf{X}$. Then the equation
+
+\begin{align}
+\mathbf{y}_{j}|U_i,\epsilon_{j} =  x_j\beta + U_i + \epsilon_{j} \label{eq:one.random.intercept}
+\end{align}
+
+gives the marginal distribution of $\mathbf{y}{_{j}}$ depending on $U{_i}$ and $\epsilon{_{j}}$. The random effects $U{_i} \sim N(0, \mathbf{G})$ and the residual error term $\epsilon{_{j}} \sim N(0, \tau^{2})$ are independent from eahc other. The expectation $\mathbb{E}(\mathbf{y}_{j})$ is still $x_j \beta$, but now, the covariance between the observations within a group $i$, $\mathbf{y}_i$, is modeled as
+
+\begin{align}
+\Cov(\mathbf{y}_i) &= \mathbf{D}_i \mathbf{G} \mathbf{D}_i^\top + \tau^2 \mathbf{I}_{n_i} \label{eq:random.intercepts.covariance}
+\end{align}
+
+where $\D_i$ is in the case of the random intercept model a $1 \times n_i$ matrix of 1's and $\mathbf{G}$ is a scalar to be estimated. Thus, if $\mathbf{G} \neq 0$, the observations within a group will be uniformly correlated (uniform correlation between each observation). Nested groups are achieved by extending the design matrix $\mathbf{X}$ with an additional column of 1's and using according indices that specify the nesting structure.\\
+An extension of the random intercepts model is the random slopes model, which allows for additional, group-specific slopes with respect to a explanatory variable $x$. It can be implemented by modifying \eqref{eq:one.random.intercept}. Let $\mathbf{U}_i$ be a two-dimensional random vector with a $2 \times 2$ covariance matrix $\mathbf{G}$. Again, we can specify the marginal distribution of a observation $j$ within a group $i$:
+
+\begin{align}
+\mathbf{y}_j|U_i,\epsilon_j =  x_j\beta + x_j \mathbf{U}_i + \epsilon_j \label{eq:one.random.intercept.and.slope}
+\end{align}
+
+$\mathbf{D}_i$ is a $p + 1 \times n_i$ matrix where the $j^\textrm{th}$ column is equal to $(x_j)^\top$. The covariance matrix $\mathbf{V_i}$ for group $i$ is defined as in equation \eqref{eq:random.intercepts.covariance}, using the new $\mathbf{D}_i$. Defining $\mathbf{x}_i$ as all observations from group $i$ of $\mathbf{X}$, and equivalently $\mathbf{y}_i$, the estimated vector $\hat{\beta}$ is obtained by computing
+
+\begin{align}
+\hat{\beta} &= \Big( \sum_{i = 1}^m \mathbf{x}_i^\top \hat{\mathbf{V}}_i^{-1} \mathbf{x}_i \Big)^{-1} \sum_{i = 1}^m \mathbf{x}_i^\top \hat{\mathbf{V}}_i^{-1} \mathbf{y}_i
+\end{align}
+
+whith $m$ being the number of groups and $\hat{\mathbf{V}}_i$ being the estimated covariance, obtained by maximizing the log likelihood of the normal distribution, as $\mathbf{y}_i$ is distributed as
+
+\begin{align}
+\mathbf{y}_i \sim N(\mathbf{x}_i \beta, \mathbf{V}_i)
+\end{align}
+
+$\Big( \sum_{i = 1}^m \mathbf{x}_i^\top \hat{\mathbf{V}}_i^{-1} \mathbf{x}_i \Big)$ are assumed to be positive definite, as well as  $\hat{\mathbf{V}}_i^{-1}$. The approximate covariance matrix of $\hat{\beta}$ is given by
+
+\begin{align}
+\hat{\Cov(\hat{\beta})} &= \Big( \sum_{i = 1}^m \mathbf{x}_i^\top \hat{\mathbf{V}}_i^{-1} \mathbf{x}_i \Big)^{-1}
+\end{align}
+
+Weights can be introduced by replacing $\mathbf{I}_{n_i}$ in \eqref{eq:random.intercepts.covariance} with the previously introduced weight matrix $\mathbf{W}_i$ .Hypothesis tests for $\beta = \beta_\textrm{H0}$ can be made using the wald method. 
+
+
+
+
+
+
+
+
+
+
+\section{Small Study Effects Tests}
+The tests that will be presented on the following pages are a common way to detect publication bias. Importantly, they are however not interpretable directly as evidence for publication bias, but this is left for the discussion chapter. The tests are also often referred to as funnel plot asymmetry tests, because of the popularity of a recent test that has been used frequently to test and adjust for publication bias, which goes under the name of trim-and-fill \citep{trimfill}. However, it is known for some time that the method has disadvantageous properties, therefore, it will not be discussed here, as well as the funnel plot (the radial plot will be used as an alternative).\\
+A test for small study effects will test in some ways if the size of the estimated treatment effect of a study depends on some measure of its size. An association between study size and treatment effect size can be interpreted as an artifact of publication bias.
+
+\subsection{Continuous Outcome Tests}
+For a continuous outcomes that are normally distributed, the sample mean and variance are independent of each other \cite[120]{meta.w.R}. Thus, the estimated standard errors of treatment effects can be used as a proxy for study size, as they should in principle not be tied to the effect size.
+
+\subsubsection{Begg and Mazumdar: Rank Correlation Test} \label{sec:Begg}
+\citet{begg.ties} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
+A standardized effect size $\theta_i^\star$ can be computed as in \eqref{eq:begg.stand.eff}. $\se_i^{2\star}$ is the variance of $\theta_i - \theta_M$ as defined in \eqref{eq:begg.stand.var}, $\theta_M$ being the fixed effects pooled treatment effect (\eqref{eq:fixed.effects}. 
+
+\begin{align}
+\theta_i^\star &= (\theta_i - \theta_M)/\se_i^{2\star} \label{eq:begg.stand.eff}  \\
+\se_i^{2\star} &= \se_i^2 - 1/\sum_{i = 1}^n\frac{1}{\se_i^2}1 \label{eq:begg.stand.var} 
+\end{align}
+
+A rank correlation test based on Kendall's tau is then used. First, the pairs are ordered after their ranks based on $s^{2\star}$. Then, for each $s^{2\star}$ rank, the corresponding ranks based on $\theta^{2\star}$ that are larger are counted and summed up to $u$. The number of ranks based on $\theta^{2\star}$ that are in contrary, smaller, are counted and summed up to $l$. Then the normalized test statistic $Z$ is given as
+
+\begin{align}
+Z &= (u - l)/\sqrt{n(n-1)(2n + 5)/18} \nonumber
+\end{align}
+
+Thus, large number of concordance between pairs will reflect in large $\hat{u}$ and small $\hat{l}$ and thus lead to a large $\hat{Z}$. The $p$-value is obtained using the standard normal distribution $\Phi$:
+\begin{align}
+p &= 2\cdot(1-\Phi(\abs{Z})) \nonumber
+\end{align}
+
+The changes that have to be made int the case of ties are small and can be found in \cite[410]{begg.ties}.
+
+
+\subsubsection{Egger's Test: Weighted Linear Regression Test} \label{sec:Egger}
+Linear regression can be used to test dependency of effect sizes on study sizes. The simplest application was introduced by \citet{Egger}.
 Let $\theta/s$ be the dependent variable $y$ and $1/\se$ the explanatory variable $x$. If plotted, this corresponds to a radial or Galbraith plot \citep{galbraith}. The linear regression equation as introduced before in \eqref{eq:simple.regression} can be written in two ways:
 
 \begin{align}
@@ -287,21 +331,7 @@ A method proposed in \citet{thompson.sharp} allows for between study variance $\
 $\tau^2$ is estimated as in equation \eqref{eq:Tau.definition} (method of moments). %or \eqref{eq:paule.mandel}. 
 The weights are set as $w_i = 1/\sqrt{\se_i^2 + \tau^2})$. After adjusting for the weights as described in \ref{weighted.regression}, we can proceed analogous to Egger's test. The $p$-value for $\beta_{0} \neq 0$ reflects the evidence for a small study effect.
 
-\subsection{Generalized linear model} \label{random.intecepts}
-The introduction of group-sepific random effects allows to analyze grouped or repeated measurements by linear regression \citep{Glm}. Let $i$ be the group index, and
 
-\begin{align}
-\mathbf{Y}{_{ij}}|U{_i},\epsilon{_{ij}} = (1,x{_i}^\top)\beta + U{_i} + \epsilon{_{ij}} \label{eq:one.random.intercept}
-\end{align}
-
-the marginal distribution of $\mathbf{Y}{_{ij}}$ depending on $U{_i},\epsilon{_{ij}}$. The random effects $U{_i} \sim N(0, g)$ and the residual error term $\epsilon{_{ij}} \sim N(0, \tau^{2})$ are considered independent. If there are more groups in the data we can extend \eqref{eq:one.random.intercept} by adding a second random term $Q$ with an index $k$:
-
-\begin{align}
-\mathbf{Y}{_{ij}}|U_i, Q_k \epsilon{_{ij}} = (1,x_i^\top)\beta + U_i + Q_k + \epsilon{_{ij}} \label{eq:two.random.intercepts}
-\end{align}
-
-Again, $U, K, \epsilon$ are distributed independently. The random intercepts model will account for a nested group structure by accordingly indexing the groups. \\
-The conditional distribution in equations \eqref{eq:one.random.intercept} and \eqref{eq:two.random.intercepts} can be used to construct a conditional likelihood; A bayesian posterior distribution is integrated with respect to the random effects, such that it can be used for restricted or unrestricted maximum likelihood estimation.
 
 
 \subsection{Dichotomous Outcomes Tests}

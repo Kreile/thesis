@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.3.6)  4 AUG 2019 16:16
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.3.6)  5 AUG 2019 16:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1007,7 +1007,7 @@ Chapter 1.
 LaTeX Warning: Reference `small.study.effect.examples ' on page 2 undefined on 
 input line 138.
 
-<figure/unnamed-chunk-1-1.pdf, id=247, 505.89pt x 216.81pt>
+<figure/unnamed-chunk-1-1.pdf, id=237, 505.89pt x 216.81pt>
 File: figure/unnamed-chunk-1-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-1-1.pdf>
@@ -1037,876 +1037,212 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 
 Package amsmath Warning: Foreign command \atopwithdelims;
 (amsmath)                \frac or \genfrac should be used instead
-(amsmath)                 on input line 597.
+(amsmath)                 on input line 627.
 
-[13] [14] [15] [16]
+[13] [14] [15] [16] [17] [18
+
+]
 Chapter 3.
-[17
-
-] [18]
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 1246
+[19] [20]
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 1276
 .
  (/usr/local/texlive/2017/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-Overfull \hbox (2.00797pt too wide) in paragraph at lines 1291--1292
+Overfull \hbox (2.00797pt too wide) in paragraph at lines 1321--1322
 [][] 
  []
 
 
-Overfull \hbox (44.16743pt too wide) in paragraph at lines 1300--1325
+Overfull \hbox (44.16743pt too wide) in paragraph at lines 1330--1355
  [] 
  []
 
-[19]
-Overfull \hbox (26.79576pt too wide) in paragraph at lines 1341--1366
+[21]
+Overfull \hbox (26.79576pt too wide) in paragraph at lines 1371--1396
  [][] 
  []
 
-[20]
+[22]
 Underfull \vbox (badness 1629) has occurred while \output is active []
 
- [21]
-[22] [23]
+ [23]
+[24] [25]
 
-LaTeX Warning: Float too large for page by 16.40878pt on input line 1606.
+LaTeX Warning: Float too large for page by 16.40878pt on input line 1636.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1619--1626
+Underfull \hbox (badness 10000) in paragraph at lines 1649--1656
 
  []
 
-[24] [25] [26]
+[26] [27] [28]
 Chapter 4.
-<figure/ch03_figunnamed-chunk-11-1.pdf, id=613, 585.18625pt x 216.81pt>
+<figure/ch03_figunnamed-chunk-11-1.pdf, id=615, 585.18625pt x 216.81pt>
 File: figure/ch03_figunnamed-chunk-11-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-11-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-11-1.pdf used on input li
-ne 1695.
+ne 1725.
 (pdftex.def)             Requested size: 369.94295pt x 137.0674pt.
 
-<figure/ch03_figunnamed-chunk-12-1.pdf, id=614, 585.18625pt x 216.81pt>
+<figure/ch03_figunnamed-chunk-12-1.pdf, id=616, 585.18625pt x 216.81pt>
 File: figure/ch03_figunnamed-chunk-12-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-12-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-12-1.pdf used on input li
-ne 1710.
+ne 1740.
 (pdftex.def)             Requested size: 369.94295pt x 137.0674pt.
 
 Underfull \vbox (badness 2103) has occurred while \output is active []
 
- [27
+ [29
 
  <./figure/ch03_figunnamed-chunk-11-1.pdf> <./figure/ch03_figunnamed-chunk-12-1
 .pdf>]
-<figure/ch03_figunnamed-chunk-14-1.pdf, id=646, 585.18625pt x 650.43pt>
+<figure/ch03_figunnamed-chunk-14-1.pdf, id=649, 585.18625pt x 650.43pt>
 File: figure/ch03_figunnamed-chunk-14-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-14-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-14-1.pdf used on input li
-ne 1751.
+ne 1781.
 (pdftex.def)             Requested size: 369.94295pt x 411.20222pt.
- [28]
-<figure/ch03_figunnamed-chunk-15-1.pdf, id=658, 614.295pt x 505.89pt>
+ [30]
+<figure/ch03_figunnamed-chunk-15-1.pdf, id=661, 614.295pt x 505.89pt>
 File: figure/ch03_figunnamed-chunk-15-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-15-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-15-1.pdf used on input li
-ne 1779.
+ne 1809.
 (pdftex.def)             Requested size: 369.94295pt x 304.66335pt.
- [29 <./figure/ch03_figunnamed-chunk-14-1.pdf>] [30 <./figure/ch03_figunnamed-c
+ [31 <./figure/ch03_figunnamed-chunk-14-1.pdf>] [32 <./figure/ch03_figunnamed-c
 hunk-15-1.pdf>]
-<figure/ch03_figunnamed-chunk-16-1.pdf, id=683, 585.18625pt x 614.295pt>
+<figure/ch03_figunnamed-chunk-16-1.pdf, id=686, 585.18625pt x 614.295pt>
 File: figure/ch03_figunnamed-chunk-16-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-16-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-16-1.pdf used on input li
-ne 1813.
+ne 1843.
 (pdftex.def)             Requested size: 369.94295pt x 388.35765pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1825--1826
+Underfull \hbox (badness 10000) in paragraph at lines 1855--1856
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1906--1910
+Underfull \hbox (badness 10000) in paragraph at lines 1936--1940
 
  []
 
-[31] [32 <./figure/ch03_figunnamed-chunk-16-1.pdf>]
-<figure/ch03_figunnamed-chunk-20-1.pdf, id=712, 585.18625pt x 375.4025pt>
+[33] [34 <./figure/ch03_figunnamed-chunk-16-1.pdf>]
+<figure/ch03_figunnamed-chunk-20-1.pdf, id=714, 585.18625pt x 375.4025pt>
 File: figure/ch03_figunnamed-chunk-20-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-20-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-20-1.pdf used on input li
-ne 1915.
+ne 1945.
 (pdftex.def)             Requested size: 369.94295pt x 237.32968pt.
- [33]
-<figure/ch03_figunnamed-chunk-21-1.pdf, id=721, 585.18625pt x 216.81pt>
+ [35]
+<figure/ch03_figunnamed-chunk-21-1.pdf, id=724, 585.18625pt x 216.81pt>
 File: figure/ch03_figunnamed-chunk-21-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-21-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-21-1.pdf used on input li
-ne 1934.
+ne 1964.
 (pdftex.def)             Requested size: 369.94295pt x 137.0674pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1946--1947
+Underfull \hbox (badness 10000) in paragraph at lines 1976--1977
 
  []
 
-<figure/ch03_figunnamed-chunk-22-1.pdf, id=723, 585.18625pt x 289.08pt>
+<figure/ch03_figunnamed-chunk-22-1.pdf, id=726, 585.18625pt x 289.08pt>
 File: figure/ch03_figunnamed-chunk-22-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-22-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-22-1.pdf used on input li
-ne 1952.
+ne 1982.
 (pdftex.def)             Requested size: 369.94295pt x 182.75653pt.
- [34 <./figure/ch03_figunnamed-chunk-20-1.pdf> <./figure/ch03_figunnamed-chunk-
+ [36 <./figure/ch03_figunnamed-chunk-20-1.pdf> <./figure/ch03_figunnamed-chunk-
 21-1.pdf>]
-Overfull \hbox (31.60585pt too wide) in paragraph at lines 1970--1989
+Overfull \hbox (31.60585pt too wide) in paragraph at lines 2000--2019
  [][] 
  []
 
 
-Overfull \hbox (58.96916pt too wide) in paragraph at lines 2000--2012
+Overfull \hbox (58.96916pt too wide) in paragraph at lines 2030--2042
  [][] 
  []
 
-<figure/ch03_figunnamed-chunk-25-1.pdf, id=743, 585.18625pt x 361.35pt>
+<figure/ch03_figunnamed-chunk-25-1.pdf, id=746, 585.18625pt x 361.35pt>
 File: figure/ch03_figunnamed-chunk-25-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-25-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-25-1.pdf used on input li
-ne 2025.
+ne 2055.
 (pdftex.def)             Requested size: 369.94295pt x 228.44568pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 2036--2037
+Underfull \hbox (badness 10000) in paragraph at lines 2066--2067
 
  []
 
-[35 <./figure/ch03_figunnamed-chunk-22-1.pdf>]
-<figure/ch03_figunnamed-chunk-26-1.pdf, id=761, 585.18625pt x 433.62pt>
+[37 <./figure/ch03_figunnamed-chunk-22-1.pdf>]
+<figure/ch03_figunnamed-chunk-26-1.pdf, id=763, 585.18625pt x 433.62pt>
 File: figure/ch03_figunnamed-chunk-26-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-26-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-26-1.pdf used on input li
-ne 2046.
+ne 2076.
 (pdftex.def)             Requested size: 369.94295pt x 274.13483pt.
- [36 <./figure/ch03_figunnamed-chunk-25-1.pdf>] [37 <./figure/ch03_figunnamed-c
+ [38 <./figure/ch03_figunnamed-chunk-25-1.pdf>] [39 <./figure/ch03_figunnamed-c
 hunk-26-1.pdf>]
-<figure/ch03_figunnamed-chunk-27-1.pdf, id=792, 585.18625pt x 216.81pt>
+<figure/ch03_figunnamed-chunk-27-1.pdf, id=794, 585.18625pt x 216.81pt>
 File: figure/ch03_figunnamed-chunk-27-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-27-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-27-1.pdf used on input li
-ne 2075.
+ne 2105.
 (pdftex.def)             Requested size: 369.94295pt x 137.0674pt.
- [38 <./figure/ch03_figunnamed-chunk-27-1.pdf>]
-<figure/ch03_figunnamed-chunk-29-1.pdf, id=809, 585.18625pt x 289.08pt>
+ [40 <./figure/ch03_figunnamed-chunk-27-1.pdf>]
+<figure/ch03_figunnamed-chunk-29-1.pdf, id=812, 585.18625pt x 289.08pt>
 File: figure/ch03_figunnamed-chunk-29-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-29-1.pdf>
 Package pdftex.def Info: figure/ch03_figunnamed-chunk-29-1.pdf used on input li
-ne 2117.
+ne 2147.
 (pdftex.def)             Requested size: 369.94295pt x 182.75653pt.
- [39 <./figure/ch03_figunnamed-chunk-29-1.pdf>] [40] [41] [42
+ [41 <./figure/ch03_figunnamed-chunk-29-1.pdf>] [42] [43] [44
 
 ]
 Chapter 5.
-[43]
-Underfull \hbox (badness 10000) in paragraph at lines 2449--2454
+[45]
+Underfull \hbox (badness 10000) in paragraph at lines 2479--2484
 
  []
 
-[44] [45]
-Underfull \hbox (badness 10000) in paragraph at lines 2477--2486
+[46] [47]
+Underfull \hbox (badness 10000) in paragraph at lines 2507--2516
 
  []
 
-[46] [47] [48]
-Appendix A.
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 2511.
-
-Overfull \hbox (20.00195pt too wide) in paragraph at lines 2519--2519
-[]\T1/cmtt/m/n/10.95 ## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Reso
-urces/lib/libRblas.0.dylib[] 
- []
-
-
-Overfull \hbox (31.3187pt too wide) in paragraph at lines 2520--2520
-[]\T1/cmtt/m/n/10.95 ## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Re
-sources/lib/libRlapack.dylib[] 
- []
-
-[49
-
-]
-Overfull \hbox (20.00195pt too wide) in paragraph at lines 2580--2580
-[]  []\T1/cmtt/m/n/10.95 dupl.max.finder[][]([][]duplicate.index[] []= dupl.id,
-[] []study.number[] []= n,[] []metas[] []= meta.id))[] []%>%[][] 
- []
-
-
-Overfull \hbox (101.11972pt too wide) in paragraph at lines 2606--2606
-[]  []\T1/cmtt/m/it/10.95 #----------------------------------------------------
-------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (4.92741pt too wide) in paragraph at lines 2621--2621
-[]  []\T1/cmtt/m/n/10.95 var.names[] []=[] []c[][]([][]"smd.ordl"[][],[] []"var
-.smd.ordl"[][]))[] []\T1/cmtt/m/it/10.95 #Calculate SMD (w. logistic transf.)[]
-[] 
- []
-
-
-Overfull \hbox (25.66032pt too wide) in paragraph at lines 2645--2645
-[]    []\T1/cmtt/m/n/10.95 mutate[][]([][]pval.single[] []=[] []2[][]*[][]([][]
-1[][]-[][]pnorm[][]([][]abs[][](lrr[][]/[][]sqrt[][](var.lrr)))))[] []%>%[] []s
-elect[][](pval.single)[][] 
- []
-
-
-Overfull \hbox (101.11972pt too wide) in paragraph at lines 2646--2646
-[]  []\T1/cmtt/m/it/10.95 #----------------------------------------------------
-------------------------------------------#[][] 
- []
-
-LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 265
-2.
-(/usr/local/texlive/2017/texmf-dist/tex/latex/base/ts1cmtt.fd
-File: ts1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-Overfull \hbox (101.11972pt too wide) in paragraph at lines 2678--2678
-[]  []\T1/cmtt/m/it/10.95 #----------------------------------------------------
-------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (101.11972pt too wide) in paragraph at lines 2684--2684
-[]  []\T1/cmtt/m/it/10.95 #----------------------------------------------------
-------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (101.11972pt too wide) in paragraph at lines 2698--2698
-[]  []\T1/cmtt/m/it/10.95 #----------------------------------------------------
-------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (101.11972pt too wide) in paragraph at lines 2725--2725
-[]  []\T1/cmtt/m/it/10.95 #----------------------------------------------------
-------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (135.06995pt too wide) in paragraph at lines 2732--2732
-[][]\T1/cmtt/m/it/10.95 #######################################################
-#################################################[][] 
- []
-
-
-Overfull \hbox (4.92741pt too wide) in paragraph at lines 2751--2751
-[]    []\T1/cmtt/m/it/10.95 #If any meta-analysis has already duplicates, give 
-all the same double marker[][] 
- []
-
-
-Overfull \hbox (3.02684pt too wide) in paragraph at lines 2755--2755
-[]          []\T1/cmtt/m/n/10.95 meta.double.marker.2[] []<-[] []unique[][](res
-ults[double.indices[already.marked]])[][] 
- []
-
-[50]
-Underfull \vbox (badness 10000) detected at line 2806
- []
-
-
-Underfull \vbox (badness 10000) detected at line 2806
- []
-
-[51]
-Underfull \vbox (badness 10000) detected at line 2806
- []
-
-[52]
-Underfull \vbox (badness 10000) detected at line 2806
- []
-
-
-Underfull \vbox (badness 10000) detected at line 2806
- []
-
-[53] [54]
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 2836--2836
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 2838--2838
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 2842--2842
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (4.92741pt too wide) in paragraph at lines 2845--2845
-[][]\T1/cmtt/m/it/10.95 # # Get exclusion critetia (I-squared, n. sig. findings
-, s.e. ratio, dupl.index):[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 2900--2900
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (4.92741pt too wide) in paragraph at lines 2903--2903
-[]\T1/cmtt/m/n/10.95 meta.id.vector.org.ranef <- meta.info$meta.id []\T1/cmtt/m
-/it/10.95 #Do meta-analysis for each of those[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 2931--2931
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (10.58578pt too wide) in paragraph at lines 2933--2933
-[][]\T1/cmtt/m/it/10.95 #Get more extensive information from the original datas
-et about the meta-analyses:[][] 
- []
-
-
-Overfull \hbox (3.02684pt too wide) in paragraph at lines 2951--2951
-[]            \T1/cmtt/m/n/10.95 min.samplesize = []min[]([]min[](total1, na.rm
- = T), []min[](total2, na.rm = T)),[] 
- []
-
-
-Overfull \hbox (3.02684pt too wide) in paragraph at lines 2957--2957
-[]            \T1/cmtt/m/n/10.95 side = []bias.side.fct2[](outcome = outcome.fl
-ag, outcome.measure.merged,[] 
- []
-
-
-Overfull \hbox (14.34358pt too wide) in paragraph at lines 2959--2959
-[]                                  \T1/cmtt/m/n/10.95 var.smd = var.cohensd, e
-ffect = effect, se = se),[] 
- []
-
-
-Overfull \hbox (33.21927pt too wide) in paragraph at lines 2966--2966
-[][]\T1/cmtt/m/it/10.95 #######################################################
-###############################[][] 
- []
-
-
-Overfull \hbox (33.21927pt too wide) in paragraph at lines 2967--2967
-[][]\T1/cmtt/m/it/10.95 #######################################################
-###############################[][] 
- []
-
-
-Overfull \hbox (33.21927pt too wide) in paragraph at lines 2968--2968
-[][]\T1/cmtt/m/it/10.95 #######################################################
-###############################[][] 
- []
-
-
-Overfull \hbox (33.21927pt too wide) in paragraph at lines 2969--2969
-[][]\T1/cmtt/m/it/10.95 # ANALYSIS PART: META-ANALYSES, TESTS AND ADJUSTMENTS: 
-###############################[][] 
- []
-
-
-Overfull \hbox (33.21927pt too wide) in paragraph at lines 2970--2970
-[][]\T1/cmtt/m/it/10.95 #######################################################
-###############################[][] 
- []
-
-
-Overfull \hbox (33.21927pt too wide) in paragraph at lines 2971--2971
-[][]\T1/cmtt/m/it/10.95 #######################################################
-###############################[][] 
- []
-
-
-Overfull \hbox (33.21927pt too wide) in paragraph at lines 2972--2972
-[][]\T1/cmtt/m/it/10.95 #######################################################
-###############################[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 2987--2987
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 2988--2988
-[][]\T1/cmtt/m/it/10.95 # BINARY DATA META-ANALYSES: --------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 2989--2989
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (14.34358pt too wide) in paragraph at lines 3025--3025
-[]\T1/cmtt/m/n/10.95 meta.tests.excess[[counter]] <- []tes.fct2[](data = data.e
-xt2[data.ext2$meta.id == u,])[] 
- []
-
-
-Overfull \hbox (33.21927pt too wide) in paragraph at lines 3059--3059
-[][]\T1/cmtt/m/it/10.95 # save(bin.meta.list, file =  file.path(PATH_RESULTS, "
-meta_complete_list_bin.RData"))[][] 
- []
-
-
-Overfull \hbox (225.60388pt too wide) in paragraph at lines 3060--3060
-[][]\T1/cmtt/m/it/10.95 # #----------------------------------------------------
-----------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (20.00195pt too wide) in paragraph at lines 3104--3104
-[]  \T1/cmtt/m/n/10.95 Q = []unlist[]([]lapply[](meta.analyses, FUN = []functio
-n[](meta.analysis){meta.analysis$Q})),[] 
- []
-
-
-Overfull \hbox (50.19438pt too wide) in paragraph at lines 3107--3107
-[][]  \T1/cmtt/m/it/10.95 #I2 = unlist(lapply(meta.analyses, FUN = function(met
-a.analysis){meta.analysis$I2.w})),[][] 
- []
-
-
-Overfull \hbox (84.1446pt too wide) in paragraph at lines 3110--3110
-[][]  \T1/cmtt/m/it/10.95 #se.tau = unlist(lapply(meta.analyses, FUN = function
-(meta.analysis){meta.analysis$se.tau})),[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3180--3180
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3181--3181
-[][]\T1/cmtt/m/it/10.95 # CONTINUOUS DATA META-ANALYSES: ----------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3182--3182
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (44.53601pt too wide) in paragraph at lines 3229--3229
-[][]\T1/cmtt/m/it/10.95 # save(cont.meta.list, file =  file.path(PATH_RESULTS, 
-"meta_complete_list_cont.RData"))[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3230--3230
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (25.66032pt too wide) in paragraph at lines 3246--3246
-[]  \T1/cmtt/m/n/10.95 meta.es.measure = []rep[]([]"std. mean difference"[], ti
-mes = []length[](meta.id.vector.cont)),[] 
- []
-
-
-Overfull \hbox (229.36168pt too wide) in paragraph at lines 3248--3248
-[]  \T1/cmtt/m/n/10.95 n.sig.single2 = []unlist[]([]lapply[](meta.analyses, FUN
- = []function[](meta.analysis){[]length[]([]which[](meta.analysis$pval < 0.05))
-})),[] 
- []
-
-
-Overfull \hbox (20.00195pt too wide) in paragraph at lines 3277--3277
-[]  \T1/cmtt/m/n/10.95 k = []unlist[]([]lapply[](meta.analyses, FUN = []functio
-n[](meta.analysis){meta.analysis$k})),[] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3333--3333
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (180.33691pt too wide) in paragraph at lines 3334--3334
-[][]\T1/cmtt/m/it/10.95 # IV OUTCOME META-ANALYSIS: ---------------------------
---------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3335--3335
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (3.02684pt too wide) in paragraph at lines 3352--3352
-[]\T1/cmtt/m/n/10.95 meta.analyses[[counter]] <- []metagen.iv[](data = data.ext
-2[data.ext2$meta.id == u,])[] 
- []
-
-
-Overfull \hbox (21.90253pt too wide) in paragraph at lines 3377--3377
-[][]\T1/cmtt/m/it/10.95 # save(iv.meta.list, file =  file.path(PATH_RESULTS, "m
-eta_complete_list_iv.RData"))[][] 
- []
-
-
-Overfull \hbox (225.60388pt too wide) in paragraph at lines 3378--3378
-[][]\T1/cmtt/m/it/10.95 # #----------------------------------------------------
-----------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (3.02684pt too wide) in paragraph at lines 3394--3394
-[]  \T1/cmtt/m/n/10.95 meta.es.measure = []rep[](times = []length[](meta.id.vec
-tor.iv), []"[]unknown.effect[](IV)"[]),[] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3483--3483
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3484--3484
-[][]\T1/cmtt/m/it/10.95 # Z-SCORE BASED META-ANALYSES: ------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3485--3485
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (36.97707pt too wide) in paragraph at lines 3491--3491
-[]  \T1/cmtt/m/n/10.95 meta.info.extended$meta.id[[]which[](meta.info.extended$
-outcome.measure.merged == []"SMD"[])][] 
- []
-
-
-Overfull \hbox (8.68521pt too wide) in paragraph at lines 3498--3498
-[]\T1/cmtt/m/n/10.95 tmp.z <- data.ext2 %>% []group_by[](meta.id) %>% []mutate[
-](n = []n[]()) %>% []filter[](n > 9) %>%[] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3517--3517
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3548--3548
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3549--3549
-[][]\T1/cmtt/m/it/10.95 # HEDGES G BASED META-ANALYSES: -----------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3550--3550
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (8.68521pt too wide) in paragraph at lines 3561--3561
-[]  \T1/cmtt/m/n/10.95 meta.analyses[[counter]] <- []metagen.bincont2[](data.ex
-t2[data.ext2$meta.id == u,])[] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3570--3570
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3601--3601
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3603--3603
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3613--3613
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3615--3615
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3633--3633
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3654--3654
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (42.63544pt too wide) in paragraph at lines 3669--3669
-[]         \T1/cmtt/m/n/10.95 pval1.rucker.linreg = []onesided.p[](stat = stat.
-rucker.linreg, side = side, n = k,[] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3706--3706
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (214.28714pt too wide) in paragraph at lines 3712--3712
-[][]\T1/cmtt/m/it/10.95 #------------------------------------------------------
---------------------------------------------------------------#[][] 
- []
-
-
-Overfull \hbox (25.66032pt too wide) in paragraph at lines 3715--3715
-[][]\T1/cmtt/m/n/10.95 save[](meta.f, file =  []file.path[](PATH_RESULTS, []"me
-ta_analyses_summary_complete.RData"[]))[] 
- []
-
-
-Overfull \hbox (161.46123pt too wide) in paragraph at lines 3720--3720
-[][]\T1/cmtt/m/n/10.95 save[](data.ext2, file =  []file.path[](PATH_RESULTS, []
-"data_used_for_analysis.RData"[])) #Save data used for analysis[] 
- []
-
-
-Overfull \hbox (78.48624pt too wide) in paragraph at lines 3730--3730
-[][]\T1/cmtt/m/it/10.95 #           method = "Inverse", data = data.ext2[data.e
-xt2$meta.id == meta.id.vector.bin[i],])[][] 
- []
-
-
-Overfull \hbox (135.06995pt too wide) in paragraph at lines 3741--3741
-[][]\T1/cmtt/m/it/10.95 #######################################################
-#################################################[][] 
- []
-
-
-Overfull \hbox (135.06995pt too wide) in paragraph at lines 3742--3742
-[][]\T1/cmtt/m/it/10.95 #######################################################
-#################################################[][] 
- []
-
-
-Overfull \hbox (135.06995pt too wide) in paragraph at lines 3743--3743
-[][]\T1/cmtt/m/it/10.95 #######################################################
-#################################################[][] 
- []
-
-
-Overfull \hbox (135.06995pt too wide) in paragraph at lines 3744--3744
-[][]\T1/cmtt/m/it/10.95 #######################################################
-#################################################[][] 
- []
-
-
-Overfull \hbox (135.06995pt too wide) in paragraph at lines 3745--3745
-[][]\T1/cmtt/m/it/10.95 #######################################################
-#################################################[][] 
- []
-
-
-Overfull \hbox (135.06995pt too wide) in paragraph at lines 3746--3746
-[][]\T1/cmtt/m/it/10.95 #######################################################
-#################################################[][] 
- []
-
-
-Overfull \hbox (135.06995pt too wide) in paragraph at lines 3747--3747
-[][]\T1/cmtt/m/it/10.95 #######################################################
-#################################################[][] 
- []
-
-
-Overfull \hbox (135.06995pt too wide) in paragraph at lines 3748--3748
-[][]\T1/cmtt/m/it/10.95 #######################################################
-#################################################[][] 
- []
-
-
-Underfull \vbox (badness 1838) detected at line 3750
- []
-
-[55]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[56]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[57]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[58]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[59]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[60]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[61]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[62]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[63]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[64]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[65]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[66]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[67]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[68]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[69]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[70]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[71]
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-
-Underfull \vbox (badness 10000) detected at line 3750
- []
-
-[72] [73] [74
-
-] (./MSc_Report.bbl (./MSc_Report.brf)
+[48] [49] [50] (./MSc_Report.bbl (./MSc_Report.brf)
 \tf@brf=\write7
 \openout7 = `MSc_Report.brf'.
 
- [75
+ [51
 
-] [76] [77]) [78]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 3767.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 3767.
+
+] [52] [53]) [54]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 2547.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 2547.
 
 (./MSc_Report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 3767.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 3767.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 2547.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 2547.
 
 Package rerunfilecheck Info: File `MSc_Report.out' has not changed.
-(rerunfilecheck)             Checksum: 47E00057103C403C1672F1CA45E6F7D6;1729.
+(rerunfilecheck)             Checksum: CFD8BC1241B1098FD3B6EE419F088492;1659.
 Package rerunfilecheck Info: File `MSc_Report.brf' has not changed.
-(rerunfilecheck)             Checksum: 69B52A97426DB2BFC5F7FE712D42477D;4927.
+(rerunfilecheck)             Checksum: 23D18C5B3ACB921834CD81EB8B6E8790;4922.
 
 
 LaTeX Warning: There were undefined references.
@@ -1914,37 +1250,37 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 3767.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 2547.
  ) 
 Here is how much of TeX's memory you used:
- 23443 strings out of 492995
- 445792 string characters out of 6132705
- 735093 words of memory out of 5000000
- 26232 multiletter control sequences out of 15000+600000
- 35315 words of font info for 90 fonts, out of 8000000 for 9000
+ 23406 strings out of 492995
+ 445204 string characters out of 6132705
+ 553607 words of memory out of 5000000
+ 26223 multiletter control sequences out of 15000+600000
+ 34402 words of font info for 87 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,16n,67p,1740b,1572s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
-}{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}<
+{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
+{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<
 /usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></
-usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></u
-sr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></us
-r/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr
-/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/l
-ocal/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/loc
-al/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local
-/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/te
-xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texli
-ve/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texliv
-e/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
-/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2
-017/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texli
-ve/2017/texmf-dist/fonts/type1/public/cm-super/sfbx1095.pfb></usr/local/texlive
-/2017/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/local/texlive/2
-017/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/201
-7/texmf-dist/fonts/type1/public/cm-super/sfbx2074.pfb></usr/local/texlive/2017/
-texmf-dist/fonts/type1/public/cm-super/sfbx2488.pfb></usr/local/texlive/2017/te
-xmf-dist/fonts/type1/public/cm-super/sfit1095.pfb></usr/local/texlive/2017/texm
+usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></us
+r/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr
+/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/
+local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/l
+ocal/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/loc
+al/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local
+/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/t
+exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texl
+ive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive
+/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texlive/
+2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2
+017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/201
+7/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive
+/2017/texmf-dist/fonts/type1/public/cm-super/sfbx1095.pfb></usr/local/texlive/2
+017/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/local/texlive/201
+7/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/2017/
+texmf-dist/fonts/type1/public/cm-super/sfbx2074.pfb></usr/local/texlive/2017/te
+xmf-dist/fonts/type1/public/cm-super/sfbx2488.pfb></usr/local/texlive/2017/texm
 f-dist/fonts/type1/public/cm-super/sfrm0600.pfb></usr/local/texlive/2017/texmf-
 dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2017/texmf-di
 st/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2017/texmf-dist
@@ -1957,10 +1293,10 @@ e1/public/cm-super/sfsx1440.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1
 /public/cm-super/sfti1095.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/p
 ublic/cm-super/sfti1200.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/pub
 lic/cm-super/sftt1095.pfb>
-Output written on MSc_Report.pdf (86 pages, 3219464 bytes).
+Output written on MSc_Report.pdf (62 pages, 3149035 bytes).
 PDF statistics:
- 1342 PDF objects out of 1440 (max. 8388607)
- 1183 compressed objects within 12 object streams
- 275 named destinations out of 1000 (max. 500000)
- 294 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1228 PDF objects out of 1440 (max. 8388607)
+ 1094 compressed objects within 11 object streams
+ 253 named destinations out of 1000 (max. 500000)
+ 278 words of extra memory for PDF output out of 10000 (max. 10000000)
 

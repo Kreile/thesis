@@ -265,7 +265,7 @@ dupl.max.finder <- function(duplicate.index, study.number, metas){
 
 Data is subdivided into meta-analyses, and after all meta-analyses are excluded that are not suited for analysis, meta-analyses are done and saved.
 "data.ext2" is the dataset processed with the previously introduced "pb.process3" function. Functions defined in the global environment are marked with
-a "*USER.DEF*". They can be find in the next section.
+a "*USER.DEF*". They can be found at the end of the section.
 
 <<eval = FALSE>>=
 #Load data:
@@ -475,7 +475,8 @@ for(u in meta.id.vector.bin){
 	                         sig.level = 0.1) #*USER.DEF* Copas selection model.
 
 	#Publication bias tests.
-	meta.tests.excess[[counter]] <- tes.fct2(data = data.ext2[data.ext2$meta.id == u,])
+	meta.tests.excess[[counter]] <- 
+	  tes.fct2(data = data.ext2[data.ext2$meta.id == u,]) #*USER.DEF* excess sig. test
 	meta.tests.harbord[[counter]] <- 
 	  metabias(meta.analyses[[counter]], method.bias = "score", k.min = 2)
 	meta.tests.peter[[counter]] <- 
@@ -557,10 +558,8 @@ bin.results <- data.frame(
   Q = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$Q})),
   pval.Q = unlist(lapply(meta.analyses, 
                          FUN = function(meta.analysis){meta.analysis$pval.Q})),
-  #I2 = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$I2.w})),
   tau = unlist(lapply(meta.analyses, 
                       FUN = function(meta.analysis){meta.analysis$tau})),
-  #se.tau = unlist(lapply(meta.analyses, FUN = function(meta.analysis){meta.analysis$se.tau})),
   sparse = unlist(lapply(meta.analyses, 
                          FUN = function(meta.analysis){meta.analysis$sparse})),
   k = unlist(lapply(meta.analyses, 
@@ -698,8 +697,8 @@ cont.results <- data.frame(
   meta.id = meta.id.vector.cont,
   meta.es.measure = rep("std. mean difference", times = length(meta.id.vector.cont)),
   
-  n.sig.single2 = unlist(lapply(meta.analyses, FUN = function(meta.analysis){length(which(meta.analysis$pval < 0.05))})),
-  
+  n.sig.single2 = unlist(lapply(meta.analyses, 
+                    FUN = function(meta.analysis){length(which(meta.analysis$pval < 0.05))})),
   #Meta-Analysis
   est.fixef = unlist(lapply(meta.analyses, 
                     FUN = function(meta.analysis){meta.analysis$TE.fixed})),
@@ -948,8 +947,9 @@ meta.id.vector.z.c <- meta.id.vector.z[-c(which(meta.id.vector.z == 104613),
                                           which(meta.id.vector.z == 153452),
                                           which(meta.id.vector.z == 163246),
                       which(meta.id.vector.z == 182958))] #Have zero total1..
+#Dataset with total sample size > 3:
 tmp.z <- data.ext2 %>% group_by(meta.id) %>% mutate(n = n()) %>% filter(n > 9) %>%
-  filter(total1 + total2 > 3) %>% filter(total1 != 0 & total2 != 0)
+  filter(total1 + total2 > 3) %>% filter(total1 != 0 & total2 != 0) 
 meta.analyses <- list()
 meta.analyses.reg <- list()
 meta.analyses.copas <- list()
@@ -1011,7 +1011,8 @@ counter <- 0
 for(u in meta.id.vector.d){
   counter <- counter + 1
   print(c(u,counter))
-  meta.analyses[[counter]] <- metagen.bincont2(data.ext2[data.ext2$meta.id == u,])
+  meta.analyses[[counter]] <- metagen.bincont2(data.ext2[data.ext2$meta.id == u,]) 
+  #*USER.DEF*, meta-analysis based on std. mean differences.
   meta.analyses.reg[[counter]] <- limitmeta(meta.analyses[[counter]])
   meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], 
                                                sig.level = 0.1)
@@ -1109,7 +1110,9 @@ for(u in 1:length(copas.names)){
 #Some useful variables:
 meta.f <- meta.f %>% rowwise() %>% 
   mutate(pval1.egger = onesided.p(stat = stat.egger, side = side, n = k, 
-                                  test.type = "reg"),
+                                  test.type = "reg"), 
+         #*USER.DEF* calculate the one-sided p-value from a rank correlation 
+         #coefficient or regression test statistic.
          pval1.thompson = onesided.p(stat = stat.thompson, side = side, n = k, 
                                      test.type = "reg"),
          pval1.begg = onesided.p(stat = stat.begg, side = side, n = k, 
@@ -1119,17 +1122,17 @@ meta.f <- meta.f %>% rowwise() %>%
                                     test.type = "reg"),
          pval1.rucker = onesided.p(stat = stat.rucker, side = side, n = k, 
                                    test.type = "reg"),
-         pval1.rucker.linreg = onesided.p(stat = stat.rucker.linreg, side = side, n = k, 
-                                          test.type = "reg"),
+         pval1.rucker.linreg = onesided.p(stat = stat.rucker.linreg, 
+                                      side = side, n = k, test.type = "reg"),
          pval1.peter = onesided.p(stat = stat.peter, side = side, n = k, 
                                   test.type = "reg"),
-         pval1.schwarzer = onesided.p(stat = stat.schwarzer, side = side, n = k, 
-                                      test.type = "rank"),
+         pval1.schwarzer = onesided.p(stat = stat.schwarzer, side = side, 
+                                      n = k, test.type = "rank"),
          pval1.d.tes = pval.d.tes)
 
 #Summarise different tests for binary and continuous variables to one:
 meta.f <- meta.f %>% rowwise() %>% 
-  mutate(I2  = max(0, (Q - k + 1)/Q),
+  mutate(I2  = max(0, (Q - k + 1)/Q), #calculate I-squared.
          var.ratio = (se.max^2)/(se.min^2),
          pval.se = case_when(outcome.flag == "DICH" ~ pval1.rucker.linreg, 
                              TRUE ~ pval1.egger),
@@ -1165,28 +1168,14 @@ meta.iv <- meta.f %>% filter(outcome.flag == "IV")
 #--------------------------------------------------------------------------------------------------------------------#
 
 #Save the result datasets:
-save(meta.f, file =  file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
-save(meta.bin, file =  file.path(PATH_RESULTS, "meta.bin.RData"))
-save(meta.cont, file =  file.path(PATH_RESULTS, "meta.cont.RData"))
-save(meta.iv, file =  file.path(PATH_RESULTS, "meta.iv.RData"))
-save(meta.id.vector, file =  file.path(PATH_RESULTS, "meta_id_vector.RData"))
-save(data.ext2, file =  file.path(PATH_RESULTS, "data_used_for_analysis.RData")) #Save data used for analysis
-
-
-
-
-# x <- foreach(i = 1:length(meta.id.vector.bin)) %dopar% 
-#   # u <- meta.id.vector.bin[i]
-#   # counter <- counter + 1
-#   metabin(event.e = events1c, n.e = total1, event.c = events2c, n.c = total2,
-#           studlab = study.name, sm = "RR",
-#           method = "Inverse", data = data.ext2[data.ext2$meta.id == meta.id.vector.bin[i],])
-# 
-# cl<-makeCluster(7)
-# registerDoParallel(cl)
-# 
-# foreach(i = 1:length(meta.id.vector.bin)) %dopar%
-#   sqrt(i)
+# save(meta.f, file =  file.path(PATH_RESULTS, 
+#"meta_analyses_summary_complete.RData"))
+# save(meta.bin, file =  file.path(PATH_RESULTS, "meta.bin.RData"))
+# save(meta.cont, file =  file.path(PATH_RESULTS, "meta.cont.RData"))
+# save(meta.iv, file =  file.path(PATH_RESULTS, "meta.iv.RData"))
+# save(meta.id.vector, file =  file.path(PATH_RESULTS, "meta_id_vector.RData"))
+# save(data.ext2, file =  file.path(PATH_RESULTS, 
+#"data_used_for_analysis.RData")) #Save data used for analysis
 
 
 
@@ -1194,10 +1183,736 @@ save(data.ext2, file =  file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
 ########################################################################################################
 ########################################################################################################
 ########################################################################################################
+#--------USER DEFINED FUNCTIONS------------------------------------------------------------------------#
 ########################################################################################################
 ########################################################################################################
 ########################################################################################################
-########################################################################################################
-########################################################################################################
+
+#Random effects meta-analysis function. 
+#When outcome.flag = IV, effects have sometimes be log-transformed before usage.
+
+meta.fct.ranef.mom <- function(data){
+  outcome.flag <- unique(data$outcome.flag)
+  outcome.measure.merged <- unique(data$outcome.measure.merged)
+  
+  if(outcome.flag == "DICH"){
+    meta.result <- rma.uni(yi = lrr, sei = sqrt(var.lrr),
+                           method = "DL", measure = "RR",  data = data)
+  }
+  
+  if(outcome.flag == "CONT"){
+    if(outcome.measure.merged == "SMD"){
+      meta.result <- rma.uni(yi = cohensd, sei = sqrt(var.cohensd),
+                             method = "DL", measure = "SMD",  data = data)
+    }
+    else{
+    data <- data %>% filter(se != 0)
+    meta.result <- rma.uni(yi = effect, sei = se,
+                             method = "DL", data = data)
+    }
+  }
+  
+  if(outcome.flag == "IV"){
+    if(outcome.measure.merged == "SMD" | outcome.measure.merged == "MD"){
+      meta.result <- rma.uni(yi = effect, sei = se,
+                             method = "DL", measure = outcome.measure.merged,  
+                             data = data[data$se != 0,])
+    } else {
+      if(outcome.measure.merged == "RR" | outcome.measure.merged == "OR"){
+        meta.result <- rma.uni(yi = log(effect), sei = se,
+                               method = "DL", measure = outcome.measure.merged,  
+                               data = data[data$effect != 0 & data$se != 0,])
+      } else{
+        if(outcome.measure.merged == "Hazard Ratio"){
+          meta.result <- rma.uni(yi = log(effect), sei = se,
+                                 method = "DL",  
+                                 data = data[data$effect != 0 & data$se != 0,])
+        } else{
+          if(outcome.measure.merged == "Rate Ratio"){
+            meta.result <- rma.uni(yi = log(effect), sei = se,
+                                   method = "DL", measure = "IRR",  
+                                   data = data[data$effect != 0 & data$se != 0,])
+          } else{
+            yi = NA
+            sei = NA
+          }
+        }
+      }
+    }
+  }
+  
+  return(meta.result)
+}
+
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Function to use with "data %>% mutate(.. = dupl.finder(..))"
+dupl.finder <- function(effects, names, metas){
+  
+  results <- rep(NA, times = length(effects))
+  meta.double.marker <- 1
+  
+  
+  for(u in seq_along(effects)){
+    
+    if(is.na(results[u])){
+      
+      double.indices <- which(effects[u] == effects & names[u] == names)
+      
+      if(length(double.indices) > 1){
+        #If any meta-analysis has already duplicates give all the same double marker
+        if(any(!is.na(results[double.indices]))){ 
+          
+          already.marked <- which(!is.na(results[double.indices]))
+          meta.double.marker.2 <- unique(results[double.indices[already.marked]])
+          #Collect meta.ids with same double markers
+          meta.ids.2 <- unique(metas[which(results %in% meta.double.marker.2)]) 
+          #Collect metas with the same results
+          meta.ids <- metas[double.indices] 
+          
+          meta.ids.pooled <- union(meta.ids, meta.ids.2)
+          meta.indices <- which(metas %in% meta.ids.pooled)
+          results[meta.indices] <- meta.double.marker
+          
+        } else{
+          
+          meta.ids <- metas[double.indices]
+          meta.indices <- which(metas %in% meta.ids)
+          results[meta.indices] <- meta.double.marker
+          
+        }
+      } else results[u] <- 0
+      
+      meta.double.marker <- meta.double.marker + 1
+    }}
+  return(results)
+}
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Find the biggest meta-analysis within a duplicate set, 
+#again as "data %>% mutate(.. = dupl.finder(..))":
+dupl.max.finder <- function(duplicate.index, study.number, metas){
+  results <- rep(NA, length(duplicate.index))
+  
+  for(u in seq_along((duplicate.index))){
+    
+    duplicate.indices <- which(duplicate.index %in% duplicate.index[u])
+    
+    if(duplicate.index[u] != 0){
+      
+      meta.ids <- metas[duplicate.indices]
+      
+      max.meta.id <- meta.ids[which.max(study.number[duplicate.indices])]
+      max.meta.indices <- which(metas %in% max.meta.id)
+      if(length(unique(max.meta.id)) < 2){
+        results[max.meta.indices] <- 0
+      } else print("error")
+      
+    } else results[duplicate.indices] <- 0
+    
+  }
+  
+  results[is.na(results)] <- 1
+  
+  return(results)
+}
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Meta-analysis for IV outcomes:
+metagen.iv <- function(data){
+  if(all(data$outcome.measure.merged == "SMD") | 
+     all(data$outcome.measure.merged == "MD")){
+    meta <- metagen(TE = effect, seTE = se, studlab = study.name, 
+                    sm = unique(data$outcome.measure.merged), data = data)
+  } else {
+    if(all(data$outcome.measure.merged == "RR") | 
+       all(data$outcome.measure.merged == "OR")){
+      meta <- metagen(TE = log(effect), seTE = se, studlab = study.name, 
+                      sm = unique(data$outcome.measure.merged), data = data)
+    } else{
+      if(all(data$outcome.measure.merged == "Hazard Ratio")){
+        meta <- metagen(TE = log(effect), seTE = se, studlab = study.name, 
+                        sm = "HR", data = data)
+      } else{
+        if(all(data$outcome.measure.merged == "Rate Ratio")){
+          meta <- metagen(TE = log(effect), seTE = se, studlab = study.name, 
+                          data = data)
+        } else{
+          meta <- NA
+        }
+      }
+    }
+  }
+  return(meta)
+}
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Meta-analysis for standardized mean difference
+metagen.bincont2 <- function(data){
+  if (all(data$outcome.flag == "DICH")){
+    meta <- metagen(TE = smd.ordl, seTE = sqrt(var.smd.ordl), 
+                    studlab = study.name, data, sm = "SMD")
+  } else{
+    if(all(data$outcome.flag == "CONT")){
+      meta <- metagen(TE = cohensd, seTE = sqrt(var.cohensd), 
+                      studlab = study.name, data, sm = "SMD")
+    } else{
+      meta <- metagen(TE = effect, seTE = se, 
+                      studlab = study.name, data, sm = "SMD")
+    }
+  }
+}
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Excess significance test function:
+tes.fct2 <- function(data){
+  outcome.flag <- unique(data$outcome.flag)
+  outcome <- unique(data$outcome.measure.merged)
+  
+  if(outcome.flag == "DICH"){
+    yi <- data$lrr
+    sei <- sqrt(data$var.lrr)
+  }
+  
+  if(outcome.flag == "CONT"){
+    if(outcome == "MD"){
+      yi = data$effect
+      sei = data$se
+    } else{
+      yi <- data$cohensd
+      sei <- sqrt(data$var.cohensd)
+    }
+  }
+  
+  if(outcome.flag == "IV"){
+    if(outcome == "SMD" | outcome == "MD"){
+      yi = data$effect
+      sei = data$se
+    } else {
+      if(outcome == "RR" | outcome == "OR"){
+        yi = log(data$effect)
+        sei = data$se
+      } else{
+        if(outcome == "Hazard Ratio"){
+          yi = log(data$effect)
+          sei = data$se
+        } else{
+          if(outcome == "Rate Ratio"){
+            yi = log(data$effect)
+            sei = data$se
+          } else{
+            yi = NA
+            sei = NA
+          }
+        }
+      }
+    }
+  }
+  
+  
+  alpha = 0.05
+  
+  to.ommit <- which(is.na(yi) | is.na(sei))
+  
+  if(length(to.ommit) > 0){
+    yi <-  yi[-to.ommit]
+    sei <- sei[-to.ommit]
+  }
+  
+  to.ommit <- which(sei == 0)
+  
+  if(length(to.ommit) > 0){
+    yi <-  yi[-to.ommit]
+    sei <- sei[-to.ommit]
+  }
+  
+  ### FE meta-analysis for statistical power analysis
+  est.fe <- rma(yi = yi, sei = sei, method = "FE")$b[1] 
+  
+  side = ifelse(sum(pnorm(yi/sei) < .05) > sum(pnorm(yi/sei, lower.tail=FALSE) < .05), 
+                "left", "right")
+  
+  ### Compute statistical power and determine the number of observed 
+  # statistically significant results
+  if (side == "right") { 
+    pow <- pnorm(qnorm(alpha, lower.tail = FALSE, sd = sei), mean = est.fe,
+                 sd = sei, lower.tail = FALSE) #Probability to 
+    O <- sum(pnorm(yi/sei, lower.tail = FALSE) < alpha)
+  } else if (side == "left") {
+    pow <- pnorm(qnorm(alpha, sd = sei), mean = est.fe, sd = sei)
+    O <- sum(pnorm(yi/sei) < alpha)
+  }
+  
+  n <- length(yi) # Number of studies in meta-analysis
+  E <- sum(pow) # Expected number of statistically significant result  
+  
+  A <- (O - E)^2/E + (O - E)^2/(n - E) # Compute chi-square statistic
+  pval.chi <- pchisq(A, 1, lower.tail = FALSE) # Compute p-value
+  #Van Aert's test
+  pval.chi <- ifelse(pval.chi < 0.5, pval.chi*2, (1-pval.chi)*2) 
+  
+  pval.bin <- pbinom(q = O-1, size = n, prob = E/n, lower.tail = F)
+  
+  return(c(A = A, Expected = E, pval.chi = pval.chi, pval.bin = pval.bin, 
+           O = O, E = E, n = n))
+}
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Copas selection model automatic estimate and std. error and N.unpubl extraction:
+#The estimate with smallest N.unpubl and a p-value larger than 
+# sig.level + 0.05 is chosen.
+auto.copas <- function(meta.obj, sig.level){
+  sig.level <- sig.level
+  #analog to P(select|small trial w. sd = 0.4) = 0.1 and P(select|large trial 
+  #w. sd  = 0.05) = 0.9
+  #from limitmeta paper (Rücker 2011): "small range" procedure - if no 
+  #nonsignificance - "broad range"
+  gamma0 <- -1.7 
+  gamma1 <- 0.16 
+  copas <- copas(meta.obj, gamma0.range = c(gamma0, 2), 
+                 gamma1.range = c(0, gamma1))
+  pval.rsb <- copas$pval.rsb
+  N.unpubl <- copas$N.unpubl
+  if(all(pval.rsb < sig.level)){
+    copas <- copas(meta.obj, gamma0.range = c(2*gamma0 - 2, 2), 
+                   gamma1.range = c(0, 2*gamma1))
+    pval.rsb <- copas$pval.rsb
+    N.unpubl <- copas$N.unpubl
+    if(all(pval.rsb < sig.level)){
+      corr.est <- NA
+      se.corr.est <- NA
+      N.unpubl <- NA
+    } else{ 
+      ind.nonsig <- which(pval.rsb > sig.level)
+      ind.estimate <- which.min(N.unpubl[ind.nonsig])
+      corr.est <- copas$TE.slope[ind.nonsig[ind.estimate]]
+      se.corr.est <- copas$seTE.slope[ind.nonsig[ind.estimate]]
+      N.unpubl <- copas$N.unpubl[ind.nonsig[ind.estimate]]
+    }
+  } else{
+    if(all(pval.rsb > sig.level)){
+      corr.est <- NA
+      se.corr.est <- NA
+      N.unpubl <- NA
+    } else{
+      ind.nonsig <- which(pval.rsb > sig.level)
+      ind.estimate <- which.min(N.unpubl[ind.nonsig])
+      corr.est <- copas$TE.slope[ind.nonsig[ind.estimate]]
+      se.corr.est <- copas$seTE.slope[ind.nonsig[ind.estimate]]
+      N.unpubl <- copas$N.unpubl[ind.nonsig[ind.estimate]]
+    }
+  }
+  result <- c(est = corr.est, se =  se.corr.est, missing =  N.unpubl)
+  return(result)
+}
+
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Get sign of expected bias side direction:
+bias.side.fct2 <- function(outcome, outcome.measure.merged, lrr, 
+                           var.lrr, smd, var.smd, effect, se){
+  alpha = 0.05
+  outcome <- unique(outcome)
+  
+  if(outcome == "DICH"){
+    yi <- lrr
+    sei <- sqrt(var.lrr)
+  }
+  
+  if(outcome == "CONT"){
+    if(all(outcome.measure.merged == "MD")){
+      yi = effect
+      sei = se
+    } else{
+      yi <- smd
+      sei <- sqrt(var.smd)
+    }
+  }
+  
+  if(outcome == "IV"){
+    if(outcome.measure.merged == "SMD" | outcome.measure.merged == "MD"){
+      yi = effect
+      sei = se
+    } else {
+      if(outcome.measure.merged == "RR" | outcome.measure.merged == "OR"){
+        yi = log(effect)
+        sei = se
+      } else{
+        if(outcome.measure.merged == "Hazard Ratio"){
+          yi = log(effect)
+          sei = se
+        } else{
+          if(outcome.measure.merged == "Rate Ratio"){
+            yi = log(effect)
+            sei = se
+          } else{
+            yi = NA
+            sei = NA
+          }
+        }
+      }
+    }
+  }
+  
+  to.ommit <- which(is.na(yi) | is.na(sei))
+  
+  if(length(to.ommit) > 0){
+    yi <-  yi[-to.ommit]
+    sei <- sei[-to.ommit]
+  }
+  
+  to.ommit <- which(sei == 0)
+  
+  if(length(to.ommit) > 0){
+    yi <-  yi[-to.ommit]
+    sei <- sei[-to.ommit]
+  }
+  
+  
+  if(sum(pnorm(yi/sei) < .05) == sum(pnorm(yi/sei, lower.tail=FALSE) < .05)){
+      side <- sign(est.fe <- rma(yi = yi, sei = sei, method = "FE")$b[1] )
+  } else{
+    side = ifelse(sum(pnorm(yi/sei) < .05) > 
+                    sum(pnorm(yi/sei, lower.tail=FALSE) < .05), -1, 1)
+    }
+  
+  return(side)
+  
+}
+#--------------------------------------------------------------------------------------------------------------------#
+
+#Function to get one-sided p-value from publication bias test:
+onesided.p <- function(stat, side, n, test.type){
+  if(test.type == "reg"){
+    if(side == -1){
+      p <- pt(stat, df = n - 2)
+    } else{
+      p <- 1 - pt(stat, df = n -2)
+    }
+  } else if(side == -1){
+    p <- pnorm(stat)
+  } else{
+    p <- 1 - pnorm(stat)
+  }
+  return(p)
+}
 @
 
+
+
+\section{Report Code}
+After the analysis, a .RData file is loaded containing all important information about the meta-analyses. The name of the complete file is \texttt{meta.f}, and it is subdivided into \texttt{meta.bin} for meta-analyses with \texttt{outcome.flag} = \texttt{DICH}, \texttt{meta.cont} for \texttt{CONT} and \texttt{meta.iv} for \texttt{IV}. Furthermore, a vector with the \texttt{meta.id} is loaded (\texttt{meta.id.vector}) and a vector with the \texttt{meta.id} and the $I^2$ values used for excluding the meta-analyses with $I^2 > 0.5$.
+
+\subsection{Chapter 03 Code}
+Exploratory data analysis, properties of the report
+<<eval = FALSE>>=
+#Barbiturate Examples
+barbi1 <- arrange(filter(data, id == "CD000033") %>% 
+          select(study.name, comparison.name, outcome.name, 
+                 events1, total1, events2, total2) %>% 
+            slice(c(1,3)), study.name) 
+barbi2 <- arrange(filter(data, id == "CD000033") %>% 
+          select(study.name, comparison.name, outcome.name), study.name)
+barbi2[barbi2$study.name == "P\303\251rez-B\303\241rcena 2008", 1] = 
+  "Perez-Barcena 2008"
+#----------------------------------------------------------------------------------------------#
+
+#Missing values
+cont.out <- data %>% filter(outcome.flag == "CONT") 
+
+#Cont.results that have only zeros
+zero.effect.cont <- which(cont.out$mean1 == 0 & cont.out$mean2 == 0 & 
+                            cont.out$effect == 0) 
+#Cont.results that have only zeros
+zero.sds.cont <- which(cont.out$sd1 == 0 & cont.out$sd2 == 0 & cont.out$se == 0) 
+zero.both.cont <- intersect(zero.effect.cont, zero.sds.cont)
+zero.counts.cont <- length(zero.both.cont)
+
+missing.arm <- which(data$total1 == 0 | data$total2 == 0) #One arm without patients..
+missing.arm.count <- length(missing.arm)
+
+missing.year.count <- sum(is.na(data$study.year)) + 
+  length(c(which(data$study.year < 1920), which(data$study.year > 2019)))
+
+missing.table <- rbind("Neither means nor standard deviations (CONT)" = 
+                         zero.counts.cont,
+                         "Zero participants in one group" = 
+                         missing.arm.count,
+                         "Missing study publication year" = 
+                         missing.year.count)
+#----------------------------------------------------------------------------------------------#
+
+#Mean and median number of different outcome types of reviews
+mean.diff.out <- data %>% group_by(id, comparison.nr) %>% 
+  distinct(outcome.name) %>%
+  ungroup() %>% group_by(id) %>%
+  count() %>% ungroup %>% summarise(mean = mean(n))
+
+median.diff.out <- data %>% group_by(id, comparison.nr) %>% 
+  distinct(outcome.name) %>%
+  ungroup() %>% group_by(id) %>%
+  count() %>% ungroup %>% summarise(mean = median(n))
+#----------------------------------------------------------------------------------------------#
+
+#Study.year quantiles:
+publication.year.range <- c(quantile(data.ext2$study.year, 0.05, na.rm = T), 
+                            quantile(data.ext2$study.year, 0.25, na.rm = T), 
+                            quantile(data.ext2$study.year, 0.5, na.rm = T), 
+                            quantile(data.ext2$study.year, 0.75, na.rm = T),
+                            round(mean(data.ext2$study.year, na.rm = T), 2), 
+                            quantile(data.ext2$study.year, 0.95, na.rm = T))
+publication.year.2018 <- data.ext2 %>% filter(study.year == 2018) %>% count
+publication.year.2019 <- data.ext2 %>% filter(study.year == 2019) %>% count
+#----------------------------------------------------------------------------------------------#
+
+#Outcome.measure frequency table:
+outcome.measure.frequencies <- 
+  rbind(data %>% group_by(outcome.measure.merged) %>% 
+          count() %>% arrange(desc(n)) %>% 
+          ungroup() %>% filter(row_number() < 9),
+        data %>% group_by(outcome.measure.merged) %>% 
+          count() %>% arrange(desc(n)) %>% 
+          ungroup() %>% filter(row_number() > 8) %>% 
+          summarise(outcome.measure.merged = "other", n = sum(n)))
+
+outcome.measure.frequencies <- outcome.measure.frequencies %>% 
+  mutate(percentage = round(n/sum(n),3)*100)
+names(outcome.measure.frequencies) <- c("Outcome measure", "n", "Percentage")
+outcome.measure.frequencies$Percentage <- 
+  paste(outcome.measure.frequencies$Percentage, "%", sep = "")
+#----------------------------------------------------------------------------------------------#
+
+#Total and group size quantiles:
+data.ext2 <- data.ext2 %>% ungroup() %>%  mutate(total.n = total1 + total2)
+samplesize.range <- c(quantile(data.ext2$total.n, 0.05, na.rm = T), 
+                      quantile(data.ext2$total.n, 0.25, na.rm = T), 
+                            quantile(data.ext2$total.n, 0.5, na.rm = T), 
+                      quantile(data.ext2$total.n, 0.75, na.rm = T),
+                            round(mean(data.ext2$total.n, na.rm = T), 2), 
+                      quantile(data.ext2$total.n, 0.95, na.rm = T))
+treatment.group.size.range <- c(quantile(data.ext2$total1, 0.05, na.rm = T), 
+                                quantile(data.ext2$total1, 0.25, na.rm = T), 
+                      quantile(data.ext2$total1, 0.5, na.rm = T), 
+                      quantile(data.ext2$total1, 0.75, na.rm = T),
+                      round(mean(data.ext2$total1, na.rm = T), 2), 
+                      quantile(data.ext2$total1, 0.95, na.rm = T))
+#----------------------------------------------------------------------------------------------#
+
+#Frequencies of results:
+comp.freq <- data %>% group_by(id) %>% summarise(n = n())
+comp.range <- c(length(which(comp.freq$n < 6)), 
+                quantile(comp.freq$n, 0.25, na.rm = T), 
+                      quantile(comp.freq$n, 0.5, na.rm = T), 
+                quantile(comp.freq$n, 0.75, na.rm = T),
+                      round(mean(comp.freq$n, na.rm = T), 2), 
+                quantile(comp.freq$n, 0.95, na.rm = T),
+                quantile(comp.freq$n, 0.05, na.rm = T))
+#----------------------------------------------------------------------------------------------#
+
+#Frequencies of studies:
+study.freq <- data %>% group_by(id) %>% distinct(study.name) %>% count()
+study.range <- c(length(which(study.freq$n < 3)), 
+                 quantile(study.freq$n, 0.25, na.rm = T), 
+                      quantile(study.freq$n, 0.5, na.rm = T), 
+                 quantile(study.freq$n, 0.75, na.rm = T),
+                      round(mean(study.freq$n, na.rm = T), 2), 
+                 quantile(study.freq$n, 0.95, na.rm = T))
+#----------------------------------------------------------------------------------------------#
+
+#Pooling studies
+cum.repr.trials.subg <- data %>% 
+  group_by(id, comparison.nr, outcome.nr, subgroup.nr) %>% count %>% group_by(n) %>% 
+  count %>% filter(n < 15) %>%
+  full_join( data %>% group_by(id, comparison.nr, outcome.nr) %>% count %>% 
+               group_by(n) %>% count %>%  filter(n > 14) %>% ungroup %>% 
+               summarise(n = 15, nn = sum(nn))) %>% 
+  ungroup() %>% arrange(desc(n)) %>% mutate(csum  = cumsum(nn)) %>% arrange(n)
+
+colnames(cum.repr.trials.subg)  <- c("n","Number of groups", "Cumulative sum of groups")
+#----------------------------------------------------------------------------------------------#
+
+	#Counts of meta-analyses with only zeros:
+both.arms.zero.events.count <- data.ext2 %>% filter(outcome.flag == "DICH") %>% 
+  group_by(meta.id) %>% 
+    mutate(n = n()) %>% filter(n >= 10) %>% 
+  filter(all(events1 == 0) & all(events2 == 0)) %>% 
+  distinct(meta.id) %>% ungroup() %>%  count()
+#----------------------------------------------------------------------------------------------#
+
+#Inital dataset properties:
+initial.id.count <- length(unique(data$id))
+initial.study.count <- length(unique(data$study.name))
+initial.result.count <- dim(data)[1]
+
+#No withdrawn reviews:
+tp7 <- data.ext2 %>% filter(id %in% 
+                        data.review$id[which(data.review$withdrawn == FALSE)]) 
+nowith.id.count <- length(unique(tp7$id))
+nowith.study.count <- length(unique(tp7$study.name))
+nowith.result.count <- dim(tp7)[1]
+
+#Only efficacy outcomes:
+tp8 <- data.ext2 %>% filter(id %in% 
+                        data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.desired == "efficacy")
+efficacy.id.count <- length(unique(tp8$id))
+efficacy.study.count <- length(unique(tp8$study.name))
+efficacy.result.count <- dim(tp8)[1]
+
+#outcome.flag reduction:
+tp.2 <- data.ext2 %>% filter(id %in% 
+                        data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.flag == "IV") %>% 
+  filter(!all(effect == 0)) %>% 
+  filter(outcome.measure.merged == "Rate Ratio" | outcome.measure.merged == "SMD" |
+           outcome.measure.merged == "MD" | outcome.measure.merged == "Hazard Ratio" |
+           outcome.measure.merged == "OR" | outcome.measure.merged == "RR")
+tp.1 <- data.ext2 %>% filter(id %in%
+                        data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.flag == "DICH" | outcome.flag == "CONT")
+tp <- bind_rows(tp.1, tp.2)
+flag.id.count <- length(unique(tp$id))
+flag.study.count <- length(unique(tp$study.name))
+flag.result.count <- dim(tp)[1]
+#----------------------------------------------------------------------------------------------#
+
+#Counts of meta-analyses with n larger ten:
+m.a.largerten.bin <- data.ext2 %>% filter(id %in%
+                        data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.desired == "efficacy") %>% 
+  filter(outcome.flag == "DICH") %>% 
+  filter(total1 != 0 & total2 != 0) %>% 
+  group_by(meta.id) %>% filter(n() > 9) %>%  filter(any(events1 != 0) | 
+                                                    any(events2 != 0)) %>% 
+  distinct(meta.id) %>% ungroup() %>% mutate(n = n())
+
+m.a.largerten.cont <- data.ext2 %>% filter(id %in% 
+                      data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.desired == "efficacy") %>% 
+  filter(outcome.flag == "CONT") %>% 
+  filter(sd1 != 0 & sd2 != 0) %>% 
+  filter(total1 > 0 & total2 > 0) %>% group_by(meta.id) %>% 
+  filter(n() > 9) %>% distinct(meta.id) %>% ungroup() %>% mutate(n = n())
+  
+
+m.a.largerten.iv <- data.ext2 %>% filter(id %in% 
+                      data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.desired == "efficacy") %>% 
+  filter(outcome.flag == "IV") %>% 
+  filter(!all(effect == 0)) %>% 
+  filter(outcome.measure.merged == "Rate Ratio" | outcome.measure.merged == "SMD" |
+           outcome.measure.merged == "MD" | outcome.measure.merged == "Hazard Ratio" |
+           outcome.measure.merged == "OR" | outcome.measure.merged == "RR") %>% 
+  filter(se != 0) %>% group_by(meta.id) %>% filter(n() > 9) %>% 
+  distinct(meta.id) %>% ungroup() %>% mutate(n = n())
+
+m.a.largerten.id <- rbind(m.a.largerten.bin, m.a.largerten.cont, m.a.largerten.iv)
+tp2 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) 
+
+ten.id.count <- length(unique(tp2$id))
+ten.study.count <- length(unique(tp2$study.name))
+ten.result.count <- dim(tp2)[1]
+m.a.largerten.count <- unique(m.a.largerten.bin$n) + 
+  unique(m.a.largerten.cont$n) + unique(m.a.largerten.iv$n)
+
+
+#----------------------------------------------------------------------------------------------#
+
+
+#variance ratio > 4:
+m.a.variance4.count <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  summarise(ratio = (max(se.new)^2)/(min(se.new)^2)) %>% 
+  filter(ratio >= 4) %>% count
+tp3 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  mutate(ratio = (max(se.new)^2)/(min(se.new)^2)) %>% 
+  filter(ratio >= 4)
+var.id.count <- length(unique(tp3$id))
+var.study.count <- length(unique(tp3$study.name))
+var.result.count <- dim(tp3)[1]
+
+#At least on sig. estimate:
+m.a.one.sig.count <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  summarise(ratio = (max(se.new)^2)/(min(se.new)^2),
+                                  n.sig = sum(sig.single)) %>% 
+  filter(ratio >= 4 & n.sig > 0) %>% count
+tp4 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  mutate(ratio = (max(se.new)^2)/(min(se.new)^2),
+                                  n.sig = sum(sig.single)) %>% 
+  filter(ratio >= 4 & n.sig > 0)
+sig.id.count <- length(unique(tp4$id))
+sig.study.count <- length(unique(tp4$study.name))
+sig.result.count <- dim(tp4)[1]
+
+#Without duplicates:
+m.a.no.dupl.number <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  summarise(ratio = (max(se.new)^2)/(min(se.new)^2),
+                                  n.sig = sum(sig.single),
+                                  dupl = unique(dupl.remove)) %>% 
+  filter(ratio >= 4 & n.sig > 0 & dupl == 0) %>% count
+tp5 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% 
+  mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  mutate(ratio = (max(se.new)^2)/(min(se.new)^2),
+                                  n.sig = sum(sig.single),
+                                  dupl = unique(dupl.remove)) %>% 
+  filter(ratio >= 4 & n.sig > 0 & dupl == 0)
+dupl.id.count <- length(unique(tp5$id))
+dupl.study.count <- length(unique(tp5$study.name))
+dupl.result.count <- dim(tp5)[1]
+
+#smaller I2 than 0.5:
+m.a.smaller.5.count <- meta.info.I2 %>% filter(I2 < 50) %>% ungroup %>% count()
+
+meta.id.vector <- meta.info.I2 %>% filter(I2 < 50) %>% select(meta.id)
+meta.data <- data.ext2 %>% filter(meta.id %in% meta.id.vector$meta.id)
+
+I2.id.count <- length(unique(meta.data$id))
+I2.study.count <- length(unique(meta.data$study.name))
+I2.result.count <- dim(meta.data)[1]
+#----------------------------------------------------------------------------------------------#
+
+#Adjustment dataset:
+meta.adj.2 <- meta.f %>% filter(outcome.flag == "IV") %>%
+  filter(outcome.measure.merged == "SMD")
+meta.adj.1 <- meta.f %>% filter(outcome.flag == "DICH" | outcome.flag == "CONT") 
+meta.adj <- bind_rows(meta.adj.2, meta.adj.1)
+tp6 <- data.ext2 %>% filter(meta.id %in% meta.adj$meta.id)
+
+adj.id.count <- length(unique(tp6$id))
+adj.study.count <- length(unique(tp6$study.name))
+adj.result.count <- dim(tp6)[1]
+#----------------------------------------------------------------------------------------------#
+# "IV" outcome.flag meta-analyses
+dt <- meta.iv %>% group_by(outcome.measure.merged) %>% count %>% arrange(desc(n))
+first.iv.outcome.count <- dt$n[1]
+second.iv.outcome.count <- dt$n[2]
+third.iv.outcome.count <- dt$n[3]
+fourth.iv.outcome.count <- dt$n[4]
+fifth.iv.outcome.count <- dt$n[5]
+sixth.iv.outcome.count <- dt$n[6]
+
+#----------------------------------------------------------------------------------------------#
+#Meta-analyses without sungroups in the analysis dataset (1)
+no.subgroup <- round((meta.data %>% group_by(meta.id) %>% 
+              filter(is.na(subgroup.id)) %>% distinct(meta.id) %>% 
+                ungroup() %>% count/dim(meta.f)[1])*100, 1)$n
+@
+
+
+\subsection{Chapter 04 Code}
+<<eval = FALSE>>=
+
+@
+
+ 

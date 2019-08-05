@@ -376,43 +376,8 @@ Importantly, all proposed methods above assume normally distributed effect sizes
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
-
-
-
-\section{Small Study Effects Tests}
-The tests that will be presented on the following pages are a common way to detect publication bias. Importantly, they are however not interpretable directly as evidence for publication bias, but this is left for the discussion chapter. The tests are also often referred to as funnel plot asymmetry tests, because of the popularity of a recent test that has been used frequently to test and adjust for publication bias, which goes under the name of trim-and-fill \citep{trimfill}. However, it is known for some time that the method has disadvantageous properties, therefore, it will not be discussed here, as well as the funnel plot (the radial plot will be used as an alternative).\\
-A test for small study effects will test in some ways if the size of the estimated treatment effect of a study depends on some measure of its size. An association between study size and treatment effect size can be interpreted as an artifact of publication bias.
-
-\subsection{Continuous Outcome Tests}
-For a continuous outcomes that are normally distributed, the sample mean and variance are independent of each other \cite[120]{meta.w.R}. Thus, the estimated standard errors of treatment effects can be used as a proxy for study size, as they should in principle not be tied to the effect size.
-
-\subsubsection{Begg and Mazumdar: Rank Correlation Test} \label{sec:Begg}
-\citet{begg.ties} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
-A standardized effect size $\theta_i^\star$ can be computed as in \eqref{eq:begg.stand.eff}. $\se_i^{2\star}$ is the variance of $\theta_i - \theta_M$ as defined in \eqref{eq:begg.stand.var}, $\theta_M$ being the fixed effects pooled treatment effect (\eqref{eq:fixed.effects}. 
-
-\begin{align}
-\theta_i^\star &= (\theta_i - \theta_M)/\se_i^{2\star} \label{eq:begg.stand.eff}  \\
-\se_i^{2\star} &= \se_i^2 - 1/\sum_{i = 1}^n\frac{1}{\se_i^2}1 \label{eq:begg.stand.var} 
-\end{align}
-
-A rank correlation test based on Kendall's tau is then used. First, the pairs are ordered after their ranks based on $s^{2\star}$. Then, for each $s^{2\star}$ rank, the corresponding ranks based on $\theta^{2\star}$ that are larger are counted and summed up to $u$. The number of ranks based on $\theta^{2\star}$ that are in contrary, smaller, are counted and summed up to $l$. Then the normalized test statistic $Z$ is given as
-
-\begin{align}
-Z &= (u - l)/\sqrt{n(n-1)(2n + 5)/18} \nonumber
-\end{align}
-
-Thus, large number of concordance between pairs will reflect in large $\hat{u}$ and small $\hat{l}$ and thus lead to a large $\hat{Z}$. The $p$-value is obtained using the standard normal distribution $\Phi$:
-\begin{align}
-p &= 2\cdot(1-\Phi(\abs{Z})) \nonumber
-\end{align}
-
-The changes that have to be made int the case of ties are small and can be found in \cite[410]{begg.ties}.
-
-
-\subsubsection{Egger's Test: Weighted Linear Regression Test} \label{sec:Egger}
-First, the concept of simple linear regression is introduced. In short, the model assumes a dependent variable $y$ to be a linear function of another explanatory variable $x$:
+\section{Linear, Weighted and Linear Mixed Regression Models} \label{sec:regression}
+First, the concept of simple linear regression is introduced \citep{fahrmeir2007}. In short, the model assumes a dependent variable $y$ to be a linear function of another explanatory variable $x$, with the residuals being distributed independently and identically and following a normal distribution:
 
 \begin{align}
 y &= \beta_0 + \beta_1 x + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:simple.regression}
@@ -421,7 +386,7 @@ y &= \beta_0 + \beta_1 x + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:si
 $\epsilon$ is the residual noise term that becomes necessary when $n$ pairs $(x_i, y_i)$ are given and there is no exact solution. Then it is common to look for the solution that minimizes the squared residuals, the least-squares solution. Formally,
 
 \begin{align}
-\operatorname*{argmin}_{\beta_0, \beta_1}\big(\sum_{i = 1}^n y_i - \beta_0 - \beta_1 x_i\big) \label{eq:least.squares}
+\operatorname*{argmin}_{\beta_0, \beta_1}\Big(\sum_{i = 1}^n y_i - \beta_0 - \beta_1 x_i\Big) \label{eq:least.squares}
 \end{align}
 
 Let $\mathbf{X}$ be a matrix with the explanatory variables $x$ and $\mathbf{y}$ a corresponding vector for all $y$:
@@ -465,7 +430,7 @@ The estimate $\hat{\beta}_0$ is the intercept and $\hat{\beta}_1$ the slope of t
 \hat{\beta}_0 &= \bar{y} - \hat{\beta}_1 \bar{x} \nonumber
 \end{align}
 
-$\bar{x}, \bar{y}$ denoting the sample means of the corresponding values $x_1, .., x_n$ and $y_1, ..., y_n$. Thus, $\hat{\beta}_0$ is also called global mean.
+$\bar{x}$ and $\bar{y}$ denoting the sample means of the corresponding values $x_1, .., x_n$ and $y_1, ..., y_n$. Thus, $\hat{\beta}_0$ is also called the global mean.
 To test whether there is evidence for the intercept $\beta_0$ to be unequal to some value $\beta_{H0}$, a $t$-test can be used. 
 
 \begin{align}
@@ -473,15 +438,94 @@ p &= 2(1-F(\abs{(\beta_0 - \beta_{H0})/s_{\beta_0}})) \nonumber
 \end{align}
 
 where $F$ is the cumulative $t$ distribution with $n-2$ degrees of freedom. $p$ will give the evidence against the null hypothesis $\beta_0 = \beta_{H0}$. \\
-The concept is extendable to weighted linear regression. Weighted linear regression may be used if the residuals $\mathbf{r}$ have unequal variances, which is equivalent to ascribe different precision to the observed $y$. The least squares equation \eqref{eq:least.squares} is extended to
+The concept is extendable to weighted linear regression. Weighted linear regression may be used if the residuals $\mathbf{r}$ have unequal variances, which is equivalent to ascribe different precision to the observed $y$ (heteroscedasticity). The least squares equation \eqref{eq:least.squares} is extended as follows:
 
 \begin{align}
-\operatorname*{argmin}_{\beta_0, \beta_1}(\sum_{i = 1}^n w_i(y_i - \beta_0 - \beta_1 x_i)) \nonumber
+\operatorname*{argmin}_{\beta_0, \beta_1}\Big(\sum_{i = 1}^n w_i(y_i - \beta_0 - \beta_1 x_i)\Big) \nonumber
 \end{align}
 
-with positive weights $w_i$ that penalize large squared residuals for some $i$ more if $w_i$ is larger compared to other $w_i$. \\
-Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weights on the diagonal and zeros on the off-diagonals. The estimates in \eqref{eq:regression.parameters} and \eqref{eq:regression.variances} can still be used if $\mathbf{X}$ is exchanged with $\mathbf{X}^\star =  \mathbf{W} \mathbf{X}$ and $\mathbf{y}$ with $\mathbf{y}^\star = \mathbf{W} \mathbf{y}$. \label{weighted.regression} \\
-Now it is shown how linear regression can be used to test dependency of effect sizes on study sizes. The simplest application was introduced by \citet{Egger}.
+with the positive weights $w_i$ penalizing large squared residuals for some $i$ more if $w_i$ is larger. \\
+Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weights on the diagonal and zeros on the off-diagonals. The estimates in \eqref{eq:regression.parameters} and \eqref{eq:regression.variances} can again be used if $\mathbf{X}$ is exchanged with $\mathbf{X}^\star =  \mathbf{W} \mathbf{X}$ and $\mathbf{y}$ with $\mathbf{y}^\star = \mathbf{W} \mathbf{y}$. \label{weighted.regression} \\
+The introduction of group-specific random effects allows to analyze grouped or repeated measurements by linear regression. Let $i$ be the group index, $j$ the index of the single observation from the group $i$ and $x_j$ the $j^\textrm{th}$ row of $\mathbf{X}$. Then the equation
+
+\begin{align}
+\mathbf{y}_{j}|U_i,\epsilon_{j} =  x_j\beta + U_i + \epsilon_{j} \label{eq:one.random.intercept}
+\end{align}
+
+gives the marginal distribution of $\mathbf{y}{_{j}}$ depending on $U{_i}$ and $\epsilon{_{j}}$. The random effects $U{_i} \sim N(0, \mathbf{G})$ and the residual error term $\epsilon{_{j}} \sim N(0, \tau^{2})$ are independent from eahc other. The expectation $\mathbb{E}(\mathbf{y}_{j})$ is still $x_j \beta$, but now, the covariance between the observations within a group $i$, $\mathbf{y}_i$, is modeled as
+
+\begin{align}
+\Cov(\mathbf{y}_i) &= \mathbf{D}_i \mathbf{G} \mathbf{D}_i^\top + \tau^2 \mathbf{I}_{n_i} \label{eq:random.intercepts.covariance}
+\end{align}
+
+where $\D_i$ is in the case of the random intercept model a $1 \times n_i$ matrix of 1's and $\mathbf{G}$ is a scalar to be estimated. Thus, if $\mathbf{G} \neq 0$, the observations within a group will be uniformly correlated (uniform correlation between each observation). Nested groups are achieved by extending the design matrix $\mathbf{X}$ with an additional column of 1's and using according indices that specify the nesting structure.\\
+An extension of the random intercepts model is the random slopes model, which allows for additional, group-specific slopes with respect to a explanatory variable $x$. It can be implemented by modifying \eqref{eq:one.random.intercept}. Let $\mathbf{U}_i$ be a two-dimensional random vector with a $2 \times 2$ covariance matrix $\mathbf{G}$. Again, we can specify the marginal distribution of a observation $j$ within a group $i$:
+
+\begin{align}
+\mathbf{y}_j|U_i,\epsilon_j =  x_j\beta + x_j \mathbf{U}_i + \epsilon_j \label{eq:one.random.intercept.and.slope}
+\end{align}
+
+$\mathbf{D}_i$ is a $p + 1 \times n_i$ matrix where the $j^\textrm{th}$ column is equal to $(x_j)^\top$. The covariance matrix $\mathbf{V_i}$ for group $i$ is defined as in equation \eqref{eq:random.intercepts.covariance}, using the new $\mathbf{D}_i$. Defining $\mathbf{x}_i$ as all observations from group $i$ of $\mathbf{X}$, and equivalently $\mathbf{y}_i$, the estimated vector $\hat{\beta}$ is obtained by computing
+
+\begin{align}
+\hat{\beta} &= \Big( \sum_{i = 1}^m \mathbf{x}_i^\top \hat{\mathbf{V}}_i^{-1} \mathbf{x}_i \Big)^{-1} \sum_{i = 1}^m \mathbf{x}_i^\top \hat{\mathbf{V}}_i^{-1} \mathbf{y}_i
+\end{align}
+
+whith $m$ being the number of groups and $\hat{\mathbf{V}}_i$ being the estimated covariance, obtained by maximizing the log likelihood of the normal distribution, as $\mathbf{y}_i$ is distributed as
+
+\begin{align}
+\mathbf{y}_i \sim N(\mathbf{x}_i \beta, \mathbf{V}_i)
+\end{align}
+
+$\Big( \sum_{i = 1}^m \mathbf{x}_i^\top \hat{\mathbf{V}}_i^{-1} \mathbf{x}_i \Big)$ are assumed to be positive definite, as well as  $\hat{\mathbf{V}}_i^{-1}$. The approximate covariance matrix of $\hat{\beta}$ is given by
+
+\begin{align}
+\hat{\Cov(\hat{\beta})} &= \Big( \sum_{i = 1}^m \mathbf{x}_i^\top \hat{\mathbf{V}}_i^{-1} \mathbf{x}_i \Big)^{-1}
+\end{align}
+
+Weights can be introduced by replacing $\mathbf{I}_{n_i}$ in \eqref{eq:random.intercepts.covariance} with the previously introduced weight matrix $\mathbf{W}_i$ .Hypothesis tests for $\beta = \beta_\textrm{H0}$ can be made using the wald method. 
+
+
+
+
+
+
+
+
+
+
+\section{Small Study Effects Tests}
+The tests that will be presented on the following pages are a common way to detect publication bias. Importantly, they are however not interpretable directly as evidence for publication bias, but this is left for the discussion chapter. The tests are also often referred to as funnel plot asymmetry tests, because of the popularity of a recent test that has been used frequently to test and adjust for publication bias, which goes under the name of trim-and-fill \citep{trimfill}. However, it is known for some time that the method has disadvantageous properties, therefore, it will not be discussed here, as well as the funnel plot (the radial plot will be used as an alternative).\\
+A test for small study effects will test in some ways if the size of the estimated treatment effect of a study depends on some measure of its size. An association between study size and treatment effect size can be interpreted as an artifact of publication bias.
+
+\subsection{Continuous Outcome Tests}
+For a continuous outcomes that are normally distributed, the sample mean and variance are independent of each other \cite[120]{meta.w.R}. Thus, the estimated standard errors of treatment effects can be used as a proxy for study size, as they should in principle not be tied to the effect size.
+
+\subsubsection{Begg and Mazumdar: Rank Correlation Test} \label{sec:Begg}
+\citet{begg.ties} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
+A standardized effect size $\theta_i^\star$ can be computed as in \eqref{eq:begg.stand.eff}. $\se_i^{2\star}$ is the variance of $\theta_i - \theta_M$ as defined in \eqref{eq:begg.stand.var}, $\theta_M$ being the fixed effects pooled treatment effect (\eqref{eq:fixed.effects}. 
+
+\begin{align}
+\theta_i^\star &= (\theta_i - \theta_M)/\se_i^{2\star} \label{eq:begg.stand.eff}  \\
+\se_i^{2\star} &= \se_i^2 - 1/\sum_{i = 1}^n\frac{1}{\se_i^2}1 \label{eq:begg.stand.var} 
+\end{align}
+
+A rank correlation test based on Kendall's tau is then used. First, the pairs are ordered after their ranks based on $s^{2\star}$. Then, for each $s^{2\star}$ rank, the corresponding ranks based on $\theta^{2\star}$ that are larger are counted and summed up to $u$. The number of ranks based on $\theta^{2\star}$ that are in contrary, smaller, are counted and summed up to $l$. Then the normalized test statistic $Z$ is given as
+
+\begin{align}
+Z &= (u - l)/\sqrt{n(n-1)(2n + 5)/18} \nonumber
+\end{align}
+
+Thus, large number of concordance between pairs will reflect in large $\hat{u}$ and small $\hat{l}$ and thus lead to a large $\hat{Z}$. The $p$-value is obtained using the standard normal distribution $\Phi$:
+\begin{align}
+p &= 2\cdot(1-\Phi(\abs{Z})) \nonumber
+\end{align}
+
+The changes that have to be made int the case of ties are small and can be found in \cite[410]{begg.ties}.
+
+
+\subsubsection{Egger's Test: Weighted Linear Regression Test} \label{sec:Egger}
+Linear regression can be used to test dependency of effect sizes on study sizes. The simplest application was introduced by \citet{Egger}.
 Let $\theta/s$ be the dependent variable $y$ and $1/\se$ the explanatory variable $x$. If plotted, this corresponds to a radial or Galbraith plot \citep{galbraith}. The linear regression equation as introduced before in \eqref{eq:simple.regression} can be written in two ways:
 
 \begin{align}
@@ -512,21 +556,7 @@ A method proposed in \citet{thompson.sharp} allows for between study variance $\
 $\tau^2$ is estimated as in equation \eqref{eq:Tau.definition} (method of moments). %or \eqref{eq:paule.mandel}. 
 The weights are set as $w_i = 1/\sqrt{\se_i^2 + \tau^2})$. After adjusting for the weights as described in \ref{weighted.regression}, we can proceed analogous to Egger's test. The $p$-value for $\beta_{0} \neq 0$ reflects the evidence for a small study effect.
 
-\subsection{Generalized linear model} \label{random.intecepts}
-The introduction of group-sepific random effects allows to analyze grouped or repeated measurements by linear regression \citep{Glm}. Let $i$ be the group index, and
 
-\begin{align}
-\mathbf{Y}{_{ij}}|U{_i},\epsilon{_{ij}} = (1,x{_i}^\top)\beta + U{_i} + \epsilon{_{ij}} \label{eq:one.random.intercept}
-\end{align}
-
-the marginal distribution of $\mathbf{Y}{_{ij}}$ depending on $U{_i},\epsilon{_{ij}}$. The random effects $U{_i} \sim N(0, g)$ and the residual error term $\epsilon{_{ij}} \sim N(0, \tau^{2})$ are considered independent. If there are more groups in the data we can extend \eqref{eq:one.random.intercept} by adding a second random term $Q$ with an index $k$:
-
-\begin{align}
-\mathbf{Y}{_{ij}}|U_i, Q_k \epsilon{_{ij}} = (1,x_i^\top)\beta + U_i + Q_k + \epsilon{_{ij}} \label{eq:two.random.intercepts}
-\end{align}
-
-Again, $U, K, \epsilon$ are distributed independently. The random intercepts model will account for a nested group structure by accordingly indexing the groups. \\
-The conditional distribution in equations \eqref{eq:one.random.intercept} and \eqref{eq:two.random.intercepts} can be used to construct a conditional likelihood; A bayesian posterior distribution is integrated with respect to the random effects, such that it can be used for restricted or unrestricted maximum likelihood estimation.
 
 
 \subsection{Dichotomous Outcomes Tests}
@@ -1247,7 +1277,7 @@ The \texttt{comparison.name} variable specifies \textit{what kind} of treatments
 The result is of a binary type, and the counts of events in the treatment group are in \texttt{events1} and of the control group in \texttt{events2} and the total number of participants are given in columns \texttt{total1} and \texttt{total2}. As can be seen, events denote here "death at the end of follow-up".
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 15:56:33 2019
+% Mon Aug  5 12:24:17 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1334,7 +1364,7 @@ The review comprises five studies in total. Three of them compared barbiturate t
 We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. %It is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects. 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 15:56:33 2019
+% Mon Aug  5 12:24:17 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1371,7 +1401,7 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
 Information about missing values in the dataset is given in Table \ref{missing}. The relative amount of missing values is low, except for study years. For continuous outcomes, the cases are counted were neither a mean difference nor means are available. Similarly, the counts of cases where neither standard errors nor standard deviations are available are provided. Study years before 1920 and after 2019 are declared as missing, as well as sample sizes equal to zero.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 15:56:33 2019
+% Mon Aug  5 12:24:17 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1393,7 +1423,7 @@ The studies that are included in the reviews and have been published are most of
 The top treatment effect measure (risk ratio, mean difference, hazard ratio etc.) abundances are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 31 \% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (more than 65\%).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 15:56:33 2019
+% Mon Aug  5 12:24:17 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1430,7 +1460,7 @@ The size of a meta-analysis denotes how many results are included in a group. Ta
 
 
 {\ttfamily\noindent\color{warningcolor}{\#\# Warning: Setting row names on a tibble is deprecated.}}\end{kframe}% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 15:56:33 2019
+% Mon Aug  5 12:24:17 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1825,7 +1855,7 @@ In green, a linear regression fit is shown with 95\% CI bands.}
 The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. Some proportion of the meta-analyses will only be significant using a single test, while being non-significant otherwise. This can be seen in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results. For both outcome types, there is only marginal agreement, very few cases are significant in any test. Around 67\% of the dataset is not significant, no matter which test is used. When only using small study effect tests, 29.5\% of binary outcome tests and 31.9\% of \texttt{IV} and continuous outcome tests had at least one significant result. After applying the Bonferroni correction for multiple testing, this shrinks to 12.3\% for binary and 14.4\% for continuous and \texttt{IV} outcomes. To compare significant findings for small study effect tests and excess significance tests, Harbord's or Egger's test results are compared with excess significane tests. 24.1\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, 28.4\% for continuous and \texttt{IV} outcomes. The numbers change to 13.9\% for binary outcomes and 18.1\% for continuous and \texttt{IV} outcomes after applying the Bonferroni correction. 5.1\% have significant Harbord's test result and significant excess significance test result  (2.3\% with Bonferroni). Of the continuous outcomes, we have 3.9\% with Egger's test and 1.3\% with Bonferroni correction. \\
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 16:15:09 2019
+% Mon Aug  5 16:02:46 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1852,7 +1882,7 @@ Count & Binary Outcomes & Continuous and IV \\
 The precise proportions of agreement are provided in table \ref{test.agreement}. We see that only in few cases when excess significance test indicates statistical significance, small study effect tests do so. Correspondence between excess significance tests and small study effects thus is considered rather random. Linear regression based tests agree more often with other linear regression based tests, and agreement between small study effect tests is in general well above 60 \% (at best, 95 \% test agreement in significance for \texttt{IV} \texttt{outcome.flag}).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 16:15:09 2019
+% Mon Aug  5 16:02:46 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1963,7 +1993,7 @@ Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Co
 Table \ref{adjustment.difference} shows quantiles and means for the various differences and the overall proportion of downward adjusted effect sizes. When std. mean difference is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small. To recall some other findings out of Table \ref{adjustment.difference}: 5\% or 69 meta-analyses have their $z$-score reduced by more than 0.13 by regression adjustment (and 5\% or 69 increased by -0.11 or more, fixed effects reference). Also, std. mean difference is reduced by 0.39 compared to fixed effects estimates in 5\% or 69 meta-analyses (or increased by 0.24). 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 16:15:36 2019
+% Mon Aug  5 16:02:59 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1993,7 +2023,7 @@ z: Fixed - Copas & -0.04 & -0.01 & 0.00 & 0.01 & 0.04 & 0.00 & 8.14 & 50.14 & 42
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 16:15:36 2019
+% Mon Aug  5 16:02:59 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -2086,7 +2116,7 @@ The Copas selection model also allows to compute the number of missing studies, 
 We can see that in some occasions, the method finds more than half of all studies are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}. The discrepancy between mean and median may indicate that the estimate of 11.4\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie 28 meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for 1,060, more than 30\% of missing studies.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 16:15:38 2019
+% Mon Aug  5 16:03:01 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -2126,7 +2156,7 @@ The dependent variable is the standardized mean differences (therefore, from \te
 \end{figure}
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 16:15:46 2019
+% Mon Aug  5 16:03:10 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -2145,7 +2175,7 @@ null.fit &   1 & 4.00 & 18768.23 & 18800.12 & -9380.11 &  &  &  \\
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 16:15:47 2019
+% Mon Aug  5 16:03:10 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -2166,7 +2196,7 @@ null.fit &   1 & 4.00 & 18768.23 & 18800.12 & -9380.11 &  &  &  \\
 It is possible to include meta-analysis specific random slopes. Before continuing, it is tested if incorporation of random slopes improves model fit. Table \ref{anova.random.slopes} shows the anova table for a model with and without random slopes.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 16:15:49 2019
+% Mon Aug  5 16:03:12 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -2188,7 +2218,7 @@ Model diagnostics indicate that there is no benefit in including random slopes f
 To test if publication bias varies over time, we include the year of the publication of the review as an additional explanatory variable. Ulitmately, it is of interest if there is an interaction between the small study effect (publication bias) and time, i.e. if the slope varies depending on the year. Because such a model is nested in a more simpler model where the study year is only an additive effect, all these models are fitted. Table \ref{anova.lme} displays model fit diagnostics.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 16:15:51 2019
+% Mon Aug  5 16:03:14 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -2210,7 +2240,7 @@ small.study.fit &   1 & 5.00 & 18230.52 & 18270.39 & -9110.26 &  &  &  \\
 Because neither AIC, BIC ot the F-test do show any improvement of model fit, it does not seem as if publication bias has substantially decreased or increased over the years. The review publication year is however not directly tied to the publication year of the studies that are affected by publication bias. Thus, using another measure of time, the results may be different. Thus, the models are re-fitted with the study publication years.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 16:15:54 2019
+% Mon Aug  5 16:03:17 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -2422,7 +2452,7 @@ Data processing steps were however different, and only binary outcomes as used i
 % The results seem to be similar enough to claim that neither the methods nor the data and it's results are differing substantially. Because the thesis relies on more data, it is likely to be more accurate and can possibly add to the findings of \citet{Ioannidis2007}.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Sun Aug  4 16:16:35 2019
+% Mon Aug  5 16:03:57 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrr}
@@ -2498,1258 +2528,8 @@ The findings further imply that when using meta-analyses, it is key to investiga
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \appendix
-
-% LaTeX file for Chapter 01
-
-
-
-\chapter{Appendix}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{sessionInfo}\hlstd{()}
-\end{alltt}
-\begin{verbatim}
-## R version 3.5.1 (2018-07-02)
-## Platform: x86_64-apple-darwin15.6.0 (64-bit)
-## Running under: macOS  10.14.4
-## 
-## Matrix products: default
-## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
-## 
-## locale:
-## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
-## 
-## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  methods   base     
-## 
-## other attached packages:
-##  [1] nlme_3.1-137    corrgram_1.13   bindrcpp_0.2.2  rvest_0.3.2    
-##  [5] xml2_1.2.0      xtable_1.8-3    metafor_2.1-0   Matrix_1.2-15  
-##  [9] gridExtra_2.3   metasens_0.3-2  meta_4.9-4      forcats_0.3.0  
-## [13] stringr_1.3.1   dplyr_0.7.8     purrr_0.2.5     readr_1.2.1    
-## [17] tidyr_0.8.2     tibble_1.4.2    ggplot2_3.1.0   tidyverse_1.2.1
-## [21] testit_0.9      knitr_1.20     
-## 
-## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.0         lubridate_1.7.4    lattice_0.20-38   
-##  [4] gtools_3.8.1       assertthat_0.2.0   digest_0.6.18     
-##  [7] foreach_1.4.4      R6_2.3.0           cellranger_1.1.0  
-## [10] plyr_1.8.4         backports_1.1.2    evaluate_0.12     
-## [13] httr_1.3.1         highr_0.7          pillar_1.3.0      
-## [16] gplots_3.0.1.1     rlang_0.3.0.1      lazyeval_0.2.1    
-## [19] readxl_1.1.0       gdata_2.18.0       rstudioapi_0.8    
-## [22] labeling_0.3       munsell_0.5.0      broom_0.5.0       
-## [25] compiler_3.5.1     modelr_0.1.2       pkgconfig_2.0.2   
-## [28] tidyselect_0.2.5   seriation_1.2-7    codetools_0.2-15  
-## [31] dendextend_1.12.0  viridisLite_0.3.0  crayon_1.3.4      
-## [34] withr_2.1.2        bitops_1.0-6       MASS_7.3-51.1     
-## [37] grid_3.5.1         jsonlite_1.5       gtable_0.2.0      
-## [40] registry_0.5-1     magrittr_1.5       scales_1.0.0      
-## [43] KernSmooth_2.23-15 cli_1.0.1          stringi_1.2.4     
-## [46] viridis_0.5.1      iterators_1.0.10   tools_3.5.1       
-## [49] glue_1.3.0         gclus_1.3.2        hms_0.4.2         
-## [52] colorspace_1.3-2   cluster_2.0.7-1    caTools_1.17.1.1  
-## [55] TSP_1.1-7          bindr_0.1.1        haven_2.0.0
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-
-
-\section{Data Pre-processing}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcom{#Dataset processing function to get transformed effect sizes, p-values, event }
-\hlcom{# counts with increments, etc. :}
-\hlstd{pb.process3} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{data}\hlstd{)\{}
-  \hlstd{data} \hlkwb{<-} \hlstd{data} \hlopt{%>%} \hlkwd{mutate}\hlstd{(}\hlkwc{meta.id} \hlstd{=}
-            \hlkwd{group_indices}\hlstd{(., id, comparison.id, outcome.id, subgroup.id))} \hlopt{%>%}
-    \hlkwd{group_by}\hlstd{(meta.id)} \hlopt{%>%} \hlkwd{mutate}\hlstd{(}\hlkwc{study.id2} \hlstd{=} \hlkwd{row_number}\hlstd{())} \hlopt{%>%} \hlkwd{ungroup}\hlstd{()}
-
-  \hlcom{#Mark duplicate effects between meta-analyses:}
-  \hlstd{data} \hlkwb{<-} \hlstd{data} \hlopt{%>%} \hlkwd{group_by}\hlstd{(meta.id)} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}\hlkwc{n} \hlstd{=} \hlkwd{n}\hlstd{())}  \hlopt{%>%} \hlkwd{ungroup}\hlstd{()} \hlopt{%>%} \hlkwd{group_by}\hlstd{(id)} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}\hlkwc{dupl.id} \hlstd{=}
-         \hlkwd{dupl.finder}\hlstd{(}\hlkwc{effects} \hlstd{= effect,} \hlkwc{names} \hlstd{= study.name,} \hlkwc{metas} \hlstd{= meta.id),}
-           \hlkwc{dupl.remove} \hlstd{=}
-  \hlkwd{dupl.max.finder}\hlstd{(}\hlkwc{duplicate.index} \hlstd{= dupl.id,} \hlkwc{study.number} \hlstd{= n,} \hlkwc{metas} \hlstd{= meta.id))} \hlopt{%>%}
-    \hlkwd{ungroup}\hlstd{()}
-
-  \hlstd{data} \hlkwb{<-} \hlstd{data} \hlopt{%>%} \hlkwd{mutate}\hlstd{(}\hlkwc{lrr} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{var.lrr} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{hedgesg} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{var.hedgesg} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{cohensd} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{var.cohensd} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{smd.ordl} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{var.smd.ordl} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{pval.single} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{cor.pearson} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{var.cor.pearson} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{z} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{var.z} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{events1c} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{events2c} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{sig.single} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{smd.pool} \hlstd{=} \hlnum{NA}\hlstd{,}
-    \hlkwc{se.smd.pool} \hlstd{=} \hlnum{NA}\hlstd{)}
-
-
-  \hlstd{cont.ind} \hlkwb{<-} \hlkwd{which}\hlstd{(data}\hlopt{$}\hlstd{outcome.flag} \hlopt{==} \hlstr{"CONT"}\hlstd{)}
-  \hlstd{bin.ind} \hlkwb{<-} \hlkwd{which}\hlstd{(data}\hlopt{$}\hlstd{outcome.flag} \hlopt{==} \hlstr{"DICH"}\hlstd{)}
-  \hlstd{IV.ind} \hlkwb{<-} \hlkwd{which}\hlstd{(data}\hlopt{$}\hlstd{outcome.flag} \hlopt{==} \hlstr{"IV"}\hlstd{)}
-  \hlcom{#----------------------------------------------------------------------------------------------#}
-
-  \hlcom{#Outcome.flag == "DICH"}
-  \hlstd{data[bin.ind,]} \hlkwb{<-} \hlkwd{escalc}\hlstd{(}\hlkwc{data} \hlstd{= data[bin.ind,],} \hlkwc{ai} \hlstd{= events1,} \hlkwc{n2i} \hlstd{= total2,}
-                           \hlkwc{ci} \hlstd{= events2,} \hlkwc{n1i} \hlstd{= total1,}
-                           \hlkwc{to} \hlstd{=} \hlstr{"only0"}\hlstd{,}
-                           \hlkwc{add} \hlstd{=} \hlnum{1}\hlopt{/}\hlnum{2}\hlstd{,}
-                           \hlkwc{measure} \hlstd{=} \hlstr{"RR"}\hlstd{,} \hlkwc{append} \hlstd{= T,}
-                      \hlkwc{var.names} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"lrr"}\hlstd{,} \hlstr{"var.lrr"}\hlstd{))} \hlcom{#Calculate Risk Ratios}
-
-  \hlstd{data[bin.ind,]} \hlkwb{<-} \hlkwd{escalc}\hlstd{(}\hlkwc{data} \hlstd{= data[bin.ind,],} \hlkwc{ai} \hlstd{= events1,} \hlkwc{n2i} \hlstd{= total2,}
-                           \hlkwc{ci} \hlstd{= events2,} \hlkwc{n1i} \hlstd{= total1,}
-                           \hlkwc{to} \hlstd{=} \hlstr{"only0"}\hlstd{,}
-                           \hlkwc{add} \hlstd{=} \hlnum{1}\hlopt{/}\hlnum{2}\hlstd{,}
-                           \hlkwc{measure} \hlstd{=} \hlstr{"OR2DL"}\hlstd{,} \hlkwc{append} \hlstd{= T,}
-  \hlkwc{var.names} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"smd.ordl"}\hlstd{,} \hlstr{"var.smd.ordl"}\hlstd{))} \hlcom{#Calculate SMD (w. logistic transf.)}
-
-  \hlcom{#What to do if there are 0/total cells:}
-  \hlstd{data[bin.ind,]} \hlkwb{<-} \hlstd{data[bin.ind,]} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}\hlkwc{events1c}  \hlstd{=} \hlkwd{case_when}\hlstd{(events1} \hlopt{==} \hlnum{0} \hlopt{~} \hlstd{events1} \hlopt{+} \hlnum{0.5}\hlstd{,}
-                                 \hlstd{events2} \hlopt{==} \hlnum{0} \hlopt{~} \hlstd{events1} \hlopt{+} \hlnum{0.5}\hlstd{,}
-                                 \hlstd{events1} \hlopt{-} \hlstd{total1} \hlopt{==} \hlnum{0} \hlopt{~} \hlstd{events1} \hlopt{-} \hlnum{0.5}\hlstd{,}
-                                 \hlstd{events2} \hlopt{-} \hlstd{total2} \hlopt{==} \hlnum{0} \hlopt{~} \hlstd{events1} \hlopt{-} \hlnum{0.5}\hlstd{,}
-                                 \hlnum{TRUE} \hlopt{~} \hlstd{events1),}
-           \hlkwc{events2c} \hlstd{=} \hlkwd{case_when}\hlstd{(events2} \hlopt{==} \hlnum{0} \hlopt{~} \hlstd{events2} \hlopt{+} \hlnum{0.5}\hlstd{,}
-                                \hlstd{events1} \hlopt{==} \hlnum{0} \hlopt{~} \hlstd{events2} \hlopt{+} \hlnum{0.5}\hlstd{,}
-                                \hlstd{events2} \hlopt{-} \hlstd{total2} \hlopt{==} \hlnum{0} \hlopt{~} \hlstd{events2} \hlopt{-} \hlnum{0.5}\hlstd{,}
-                                \hlstd{events1} \hlopt{-} \hlstd{total1} \hlopt{==} \hlnum{0} \hlopt{~} \hlstd{events2} \hlopt{-} \hlnum{0.5}\hlstd{,}
-                                \hlnum{TRUE} \hlopt{~} \hlstd{events2))}
-
-  \hlcom{#What to do if there is one zero and one total:}
-  \hlstd{data[bin.ind,]} \hlkwb{<-} \hlstd{data[bin.ind,]} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}\hlkwc{events1c}  \hlstd{=} \hlkwd{case_when}\hlstd{(events2} \hlopt{==} \hlnum{0} \hlopt{&} \hlstd{events1} \hlopt{-} \hlstd{total1} \hlopt{==} \hlnum{0} \hlopt{~} \hlstd{events1,}
-                                 \hlstd{events1} \hlopt{==} \hlnum{0} \hlopt{&} \hlstd{events2} \hlopt{-} \hlstd{total2} \hlopt{==} \hlnum{0} \hlopt{~} \hlstd{events1,}
-                                 \hlnum{TRUE} \hlopt{~} \hlstd{events1c),}
-           \hlkwc{events2c} \hlstd{=} \hlkwd{case_when}\hlstd{(events2} \hlopt{==} \hlnum{0} \hlopt{&} \hlstd{events1} \hlopt{-} \hlstd{total1} \hlopt{==} \hlnum{0} \hlopt{~} \hlstd{events2,}
-                                \hlstd{events1} \hlopt{==} \hlnum{0} \hlopt{&} \hlstd{events2} \hlopt{-} \hlstd{total2} \hlopt{==} \hlnum{0} \hlopt{~} \hlstd{events2,}
-                                \hlnum{TRUE} \hlopt{~} \hlstd{events2c))}
-  \hlstd{data[bin.ind,} \hlstr{"pval.single"}\hlstd{]} \hlkwb{<-} \hlstd{data[bin.ind, ]} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}\hlkwc{pval.single} \hlstd{=} \hlnum{2}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlkwd{pnorm}\hlstd{(}\hlkwd{abs}\hlstd{(lrr}\hlopt{/}\hlkwd{sqrt}\hlstd{(var.lrr)))))} \hlopt{%>%} \hlkwd{select}\hlstd{(pval.single)}
-  \hlcom{#----------------------------------------------------------------------------------------------#}
-
-  \hlcom{#Outcome.flag == "CONT"}
-  \hlstd{data[cont.ind,]} \hlkwb{<-} \hlkwd{escalc}\hlstd{(}\hlkwc{data} \hlstd{= data[cont.ind,],} \hlkwc{m1i} \hlstd{= mean1,} \hlkwc{m2i} \hlstd{= mean2,}
-                            \hlkwc{sd1i} \hlstd{= sd1,} \hlkwc{sd2i} \hlstd{= sd2,} \hlkwc{n1i} \hlstd{= total1,} \hlkwc{n2i} \hlstd{= total2,}
-                            \hlkwc{measure} \hlstd{=} \hlstr{"SMD"} \hlstd{,} \hlkwc{append} \hlstd{= T,}
-                \hlkwc{var.names} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"hedgesg"}\hlstd{,} \hlstr{"var.hedgesg"}\hlstd{))} \hlcom{#Calculate Hedge's g}
-
-  \hlstd{data[cont.ind, ]} \hlkwb{<-} \hlstd{data[cont.ind, ]} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}\hlkwc{cohensd} \hlstd{= (mean1} \hlopt{-} \hlstd{mean2)}\hlopt{/}\hlkwd{sqrt}\hlstd{((((total1} \hlopt{-} \hlnum{1}\hlstd{)}\hlopt{*}\hlstd{sd1}\hlopt{^}\hlnum{2}\hlstd{)} \hlopt{+}
-                    \hlstd{(total2} \hlopt{-} \hlnum{1}\hlstd{)}\hlopt{*}\hlstd{sd2}\hlopt{^}\hlnum{2}\hlstd{)}\hlopt{/}\hlstd{(total1} \hlopt{+} \hlstd{total2} \hlopt{-} \hlnum{2}\hlstd{)),}
-           \hlkwc{var.cohensd} \hlstd{= ((total1} \hlopt{+} \hlstd{total2)}\hlopt{/}\hlstd{(total1} \hlopt{*} \hlstd{total2))} \hlopt{+}
-             \hlstd{(cohensd}\hlopt{^}\hlnum{2}\hlstd{)}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{(total1} \hlopt{+} \hlstd{total2)))}
-
-  \hlstd{data[cont.ind, ]} \hlkwb{<-} \hlstd{data[cont.ind, ]} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}\hlkwc{cohensd} \hlstd{=} \hlkwd{case_when}\hlstd{(sd1} \hlopt{==} \hlnum{0} \hlopt{~} \hlnum{NA_real_}\hlstd{,}
-                               \hlstd{sd2} \hlopt{==} \hlnum{0} \hlopt{~} \hlnum{NA_real_}\hlstd{,}
-                               \hlstd{total2} \hlopt{==} \hlnum{0} \hlopt{~} \hlnum{NA_real_}\hlstd{,}
-                               \hlstd{total1} \hlopt{==} \hlnum{0} \hlopt{~} \hlnum{NA_real_}\hlstd{,}
-                               \hlnum{TRUE} \hlopt{~} \hlstd{cohensd))}
-
-  \hlcom{#p-value for continuous outcomes (Student):}
-  \hlstd{data[cont.ind,} \hlstr{"pval.single"}\hlstd{]} \hlkwb{<-} \hlstd{data[cont.ind, ]} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}\hlkwc{t} \hlstd{= (mean1} \hlopt{-} \hlstd{mean2)}\hlopt{/}\hlstd{(}\hlkwd{sqrt}\hlstd{((((total1}\hlopt{-}\hlnum{1}\hlstd{)}\hlopt{*}\hlstd{sd1}\hlopt{^}\hlnum{2}\hlstd{)} \hlopt{+} \hlstd{(total2}\hlopt{-}\hlnum{1}\hlstd{)}\hlopt{*}\hlstd{sd2}\hlopt{^}\hlnum{2}\hlstd{)}\hlopt{/}
-                          \hlstd{(total1} \hlopt{+} \hlstd{total2} \hlopt{-}\hlnum{2}\hlstd{))}\hlopt{*}\hlkwd{sqrt}\hlstd{((}\hlnum{1}\hlopt{/}\hlstd{total1)}\hlopt{+}\hlstd{(}\hlnum{1}\hlopt{/}\hlstd{total2))),}
-           \hlkwc{pval.single} \hlstd{=} \hlnum{2}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlkwd{pt}\hlstd{(}\hlkwd{abs}\hlstd{(t),} \hlkwc{df} \hlstd{= total1} \hlopt{+} \hlstd{total2} \hlopt{-} \hlnum{2}\hlstd{)))} \hlopt{%>%}
-    \hlkwd{select}\hlstd{(pval.single)}
-
-  \hlstd{sd1.0} \hlkwb{<-} \hlkwd{which}\hlstd{(data}\hlopt{$}\hlstd{outcome.flag} \hlopt{==} \hlstr{"CONT"} \hlopt{&} \hlstd{data}\hlopt{$}\hlstd{sd1} \hlopt{==} \hlnum{0}\hlstd{)}
-  \hlstd{sd2.0} \hlkwb{<-} \hlkwd{which}\hlstd{(data}\hlopt{$}\hlstd{outcome.flag} \hlopt{==} \hlstr{"CONT"} \hlopt{&} \hlstd{data}\hlopt{$}\hlstd{sd2} \hlopt{==} \hlnum{0}\hlstd{)}
-  \hlstd{sd.0} \hlkwb{<-} \hlkwd{union}\hlstd{(sd1.0, sd2.0)}
-  \hlstd{data[sd.0,} \hlstr{"pval.single"}\hlstd{]} \hlkwb{<-} \hlnum{NA} \hlcom{#Such that p-value here is not equal to zero}
-  \hlcom{#----------------------------------------------------------------------------------------------#}
-
-  \hlcom{#Outcome.flag == "IV"}
-  \hlstd{data[IV.ind,} \hlstr{"pval.single"}\hlstd{]} \hlkwb{<-} \hlstd{data[IV.ind, ]} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}\hlkwc{pval.single} \hlstd{=} \hlnum{2}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlkwd{pnorm}\hlstd{(}\hlkwd{abs}\hlstd{((effect)}\hlopt{/}\hlstd{se))))} \hlopt{%>%}
-    \hlkwd{select}\hlstd{(pval.single)}
-  \hlcom{#----------------------------------------------------------------------------------------------#}
-
-  \hlcom{#Declare smd.ordl, cohensd and SMD of IV flag all as "smd.pool":}
-  \hlstd{data} \hlkwb{<-} \hlstd{data} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}\hlkwc{smd.pool} \hlstd{=} \hlkwd{case_when}\hlstd{(outcome.flag} \hlopt{==} \hlstr{"DICH"} \hlopt{~} \hlstd{smd.ordl,}
-                                \hlstd{outcome.flag} \hlopt{==} \hlstr{"CONT"} \hlopt{~} \hlstd{cohensd,}
-                                \hlstd{outcome.flag} \hlopt{==} \hlstr{"IV"} \hlopt{&}
-                                  \hlstd{outcome.measure.merged} \hlopt{==} \hlstr{"SMD"} \hlopt{~} \hlstd{effect,}
-                                \hlnum{TRUE} \hlopt{~} \hlnum{NA_real_}\hlstd{),}
-           \hlkwc{se.smd.pool} \hlstd{=} \hlkwd{case_when}\hlstd{(outcome.flag} \hlopt{==} \hlstr{"DICH"} \hlopt{~} \hlkwd{sqrt}\hlstd{(var.smd.ordl),}
-                                   \hlstd{outcome.flag} \hlopt{==} \hlstr{"CONT"} \hlopt{~} \hlkwd{sqrt}\hlstd{(var.cohensd),}
-                                   \hlstd{outcome.flag} \hlopt{==} \hlstr{"IV"} \hlopt{&}
-                                     \hlstd{outcome.measure.merged} \hlopt{==} \hlstr{"SMD"} \hlopt{~} \hlstd{se,}
-                                   \hlnum{TRUE} \hlopt{~} \hlnum{NA_real_}\hlstd{))}
-  \hlcom{#----------------------------------------------------------------------------------------------#}
-
-  \hlcom{#Transform effect sizes:}
-  \hlstd{smd.pool.ind} \hlkwb{<-} \hlkwd{which}\hlstd{(}\hlopt{!}\hlkwd{is.na}\hlstd{(data}\hlopt{$}\hlstd{smd.pool))}
-
-  \hlcom{#Pearson correlation:}
-  \hlstd{data[smd.pool.ind,} \hlstr{"cor.pearson"}\hlstd{]}\hlkwb{<-} \hlstd{data[smd.pool.ind, ]} \hlopt{%>%} \hlkwd{mutate}\hlstd{(}
-    \hlkwc{a} \hlstd{= ((total1} \hlopt{+} \hlstd{total2)}\hlopt{^}\hlnum{2}\hlstd{)}\hlopt{/}\hlstd{(total1}\hlopt{*}\hlstd{total2),}
-    \hlkwc{cor.pearson}  \hlstd{= smd.pool}\hlopt{/}\hlkwd{sqrt}\hlstd{((smd.pool}\hlopt{^}\hlnum{2}\hlstd{)} \hlopt{+} \hlstd{a),}
-    \hlkwc{var.cor.pearson} \hlstd{= ((a}\hlopt{^}\hlnum{2}\hlstd{)}\hlopt{*}\hlstd{se.smd.pool}\hlopt{^}\hlnum{2}\hlstd{)}\hlopt{/}\hlstd{(((smd.pool}\hlopt{^}\hlnum{2}\hlstd{)}\hlopt{+}\hlstd{a)}\hlopt{^}\hlnum{3}\hlstd{))} \hlopt{%>%}
-    \hlkwd{select}\hlstd{(cor.pearson)}
-
-  \hlstd{data[smd.pool.ind,} \hlstr{"var.cor.pearson"}\hlstd{]}\hlkwb{<-} \hlstd{data[smd.pool.ind, ]} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}
-    \hlkwc{a} \hlstd{= ((total1} \hlopt{+} \hlstd{total2)}\hlopt{^}\hlnum{2}\hlstd{)}\hlopt{/}\hlstd{(total1}\hlopt{*}\hlstd{total2),}
-    \hlkwc{cor.pearson}  \hlstd{= smd.pool}\hlopt{/}\hlkwd{sqrt}\hlstd{((smd.pool}\hlopt{^}\hlnum{2}\hlstd{)} \hlopt{+} \hlstd{a),}
-    \hlkwc{var.cor.pearson} \hlstd{= ((a}\hlopt{^}\hlnum{2}\hlstd{)}\hlopt{*}\hlstd{se.smd.pool}\hlopt{^}\hlnum{2}\hlstd{)}\hlopt{/}\hlstd{(((smd.pool}\hlopt{^}\hlnum{2}\hlstd{)}\hlopt{+}\hlstd{a)}\hlopt{^}\hlnum{3}\hlstd{))} \hlopt{%>%}
-    \hlkwd{select}\hlstd{(var.cor.pearson)}
-
-  \hlcom{#Fisher's z-score:}
-  \hlstd{data[smd.pool.ind,} \hlstr{"z"}\hlstd{]} \hlkwb{<-} \hlstd{data[smd.pool.ind, ]} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}\hlkwc{z} \hlstd{=} \hlkwd{atan}\hlstd{(}\hlkwc{x} \hlstd{= cor.pearson),}
-           \hlkwc{var.z}\hlstd{=} \hlnum{1}\hlopt{/}\hlstd{(total1} \hlopt{+} \hlstd{total2} \hlopt{-} \hlnum{3}\hlstd{))} \hlopt{%>%} \hlkwd{select}\hlstd{(z)}
-  \hlstd{data[smd.pool.ind,} \hlstr{"var.z"}\hlstd{]} \hlkwb{<-} \hlstd{data[smd.pool.ind, ]} \hlopt{%>%}
-    \hlkwd{mutate}\hlstd{(}\hlkwc{z} \hlstd{=} \hlkwd{atan}\hlstd{(}\hlkwc{x} \hlstd{= cor.pearson),}
-           \hlkwc{var.z}\hlstd{=} \hlnum{1}\hlopt{/}\hlstd{(total1} \hlopt{+} \hlstd{total2} \hlopt{-} \hlnum{3}\hlstd{))} \hlopt{%>%} \hlkwd{select}\hlstd{(var.z)}
-
-  \hlcom{#----------------------------------------------------------------------------------------------#}
-  \hlstd{data}\hlopt{$}\hlstd{sig.single} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(data}\hlopt{$}\hlstd{pval.single} \hlopt{<} \hlnum{0.05}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}
-
-  \hlkwd{return}\hlstd{(data)}
-\hlstd{\}}
-
-
-\hlcom{########################################################################################################}
-
-\hlcom{#Function to find sensitivity analyses.  The function gives all meta-analyses }
-\hlcom{#that are subdivided}
-\hlcom{#into sensitivity analyses a common number. }
-\hlcom{#*to use with "data %>% mutate(.. = dupl.finder(..))"*}
-\hlstd{dupl.finder} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{effects}\hlstd{,} \hlkwc{names}\hlstd{,} \hlkwc{metas}\hlstd{)\{}
-
-  \hlstd{results} \hlkwb{<-} \hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{times} \hlstd{=} \hlkwd{length}\hlstd{(effects))}
-  \hlstd{meta.double.marker} \hlkwb{<-} \hlnum{1}
-
-
-  \hlkwa{for}\hlstd{(u} \hlkwa{in} \hlkwd{seq_along}\hlstd{(effects))\{}
-
-    \hlkwa{if}\hlstd{(}\hlkwd{is.na}\hlstd{(results[u]))\{}
-
-      \hlstd{double.indices} \hlkwb{<-} \hlkwd{which}\hlstd{(effects[u]} \hlopt{==} \hlstd{effects} \hlopt{&} \hlstd{names[u]} \hlopt{==} \hlstd{names)}
-
-      \hlkwa{if}\hlstd{(}\hlkwd{length}\hlstd{(double.indices)} \hlopt{>} \hlnum{1}\hlstd{)\{}
-    \hlcom{#If any meta-analysis has already duplicates, give all the same double marker}
-        \hlkwa{if}\hlstd{(}\hlkwd{any}\hlstd{(}\hlopt{!}\hlkwd{is.na}\hlstd{(results[double.indices])))\{}
-
-          \hlstd{already.marked} \hlkwb{<-} \hlkwd{which}\hlstd{(}\hlopt{!}\hlkwd{is.na}\hlstd{(results[double.indices]))}
-          \hlstd{meta.double.marker.2} \hlkwb{<-} \hlkwd{unique}\hlstd{(results[double.indices[already.marked]])}
-          \hlcom{#Collect meta.ids with same double markers}
-          \hlstd{meta.ids.2} \hlkwb{<-} \hlkwd{unique}\hlstd{(metas[}\hlkwd{which}\hlstd{(results} \hlopt{%in%} \hlstd{meta.double.marker.2)])}
-          \hlstd{meta.ids} \hlkwb{<-} \hlstd{metas[double.indices]} \hlcom{#Collect metas with the same results}
-
-          \hlstd{meta.ids.pooled} \hlkwb{<-} \hlkwd{union}\hlstd{(meta.ids, meta.ids.2)}
-          \hlstd{meta.indices} \hlkwb{<-} \hlkwd{which}\hlstd{(metas} \hlopt{%in%} \hlstd{meta.ids.pooled)}
-          \hlstd{results[meta.indices]} \hlkwb{<-} \hlstd{meta.double.marker}
-
-        \hlstd{\}} \hlkwa{else}\hlstd{\{}
-
-          \hlstd{meta.ids} \hlkwb{<-} \hlstd{metas[double.indices]}
-          \hlstd{meta.indices} \hlkwb{<-} \hlkwd{which}\hlstd{(metas} \hlopt{%in%} \hlstd{meta.ids)}
-          \hlstd{results[meta.indices]} \hlkwb{<-} \hlstd{meta.double.marker}
-
-        \hlstd{\}}
-      \hlstd{\}} \hlkwa{else} \hlstd{results[u]} \hlkwb{<-} \hlnum{0}
-
-      \hlstd{meta.double.marker} \hlkwb{<-} \hlstd{meta.double.marker} \hlopt{+} \hlnum{1}
-    \hlstd{\}\}}
-  \hlkwd{return}\hlstd{(results)}
-\hlstd{\}}
-
-\hlcom{#Function picks the largest meta-analysis within a set of sensitivity analyses,}
-\hlcom{#and assigns it a "0" *to use with "data %>% mutate(.. = dupl.finder(..))":*}
-\hlstd{dupl.max.finder} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{duplicate.index}\hlstd{,} \hlkwc{study.number}\hlstd{,} \hlkwc{metas}\hlstd{)\{}
-  \hlstd{results} \hlkwb{<-} \hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{length}\hlstd{(duplicate.index))}
-
-  \hlkwa{for}\hlstd{(u} \hlkwa{in} \hlkwd{seq_along}\hlstd{((duplicate.index)))\{}
-
-    \hlstd{duplicate.indices} \hlkwb{<-} \hlkwd{which}\hlstd{(duplicate.index} \hlopt{%in%} \hlstd{duplicate.index[u])}
-
-    \hlkwa{if}\hlstd{(duplicate.index[u]} \hlopt{!=} \hlnum{0}\hlstd{)\{}
-
-      \hlstd{meta.ids} \hlkwb{<-} \hlstd{metas[duplicate.indices]}
-
-      \hlstd{max.meta.id} \hlkwb{<-} \hlstd{meta.ids[}\hlkwd{which.max}\hlstd{(study.number[duplicate.indices])]}
-      \hlstd{max.meta.indices} \hlkwb{<-} \hlkwd{which}\hlstd{(metas} \hlopt{%in%} \hlstd{max.meta.id)}
-      \hlkwa{if}\hlstd{(}\hlkwd{length}\hlstd{(}\hlkwd{unique}\hlstd{(max.meta.id))} \hlopt{<} \hlnum{2}\hlstd{)\{}
-        \hlstd{results[max.meta.indices]} \hlkwb{<-} \hlnum{0}
-      \hlstd{\}} \hlkwa{else} \hlkwd{print}\hlstd{(}\hlstr{"error"}\hlstd{)}
-
-    \hlstd{\}} \hlkwa{else} \hlstd{results[duplicate.indices]} \hlkwb{<-} \hlnum{0}
-
-  \hlstd{\}}
-
-  \hlstd{results[}\hlkwd{is.na}\hlstd{(results)]} \hlkwb{<-} \hlnum{1}
-
-  \hlkwd{return}\hlstd{(results)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\section{Analysis}
-
-Data is subdivided into meta-analyses, and after all meta-analyses are excluded that are not suited for analysis, meta-analyses are done and saved.
-"data.ext2" is the dataset processed with the previously introduced "pb.process3" function. Functions defined in the global environment are marked with
-a "*USER.DEF*". They can be find in the next section.
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcom{#Load data:}
-\hlcom{# rm(list = ls())}
-\hlcom{# PATH_HOME = path.expand("~") # user home}
-\hlcom{# PATH = file.path(PATH_HOME, 'Data/PubBias')}
-\hlcom{# PATH2 = file.path(PATH_HOME, 'PubBias')}
-\hlcom{# FILE = 'cochrane_2019-07-04.csv'}
-\hlcom{# PATH_DATA = file.path(PATH, 'data')}
-\hlcom{# PATH_CODE = file.path(PATH2, 'code')}
-\hlcom{# PATH_RESULTS = file.path(PATH2, 'results_new')}
-\hlcom{# PATH_FIGURES = file.path(PATH_RESULTS, 'figures')}
-
-\hlkwd{source}(\hlkwd{file.path}(PATH_CODE, \hlstr{'PubBias_functions.R'})) \hlcom{#Load user defined functions}
-\hlkwd{load}(\hlkwd{file.path}(PATH_DATA, \hlstr{"PubBias_2019-07-19.RData"})) #Load data as contributed 
-\hlcom{#by Simon Schwab.}
-\hlcom{# load(file.path(PATH_RESULTS, "data_used_for_analysis.RData")) }
-data.ext2 <- \hlkwd{pb.process3}(data) \hlcom{#*USER.DEF*}
-
-
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-\hlcom{# PRE-ANALYSIS PART - EXCLUDE UNSUITABLE META-ANALYSES:}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{#To skip pre-analysis:}
-\hlcom{# load(file.path(PATH_RESULTS, "meta_id_vector.RData"))}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{# # ---------- Uncomment to run pre-analysis --------------}
-\hlcom{# # Get exclusion critetia (I-squared, n. sig. findings, s.e. ratio, dupl.index):}
-meta.info.bin <- data.ext2 %>% \hlkwd{filter}(outcome.flag == \hlstr{"DICH"}) %>%
-  \hlkwd{group_by}(meta.id) %>%
-  \hlkwd{mutate}(n.pre = \hlkwd{n}()) %>% \hlkwd{filter}(n.pre >= 10) %>%
-  \hlkwd{filter}(!\hlkwd{all}(events1 == 0) & !\hlkwd{all}(events2 == 0)) %>% \hlcom{#No events}
-  \hlkwd{mutate}(se.lrr = \hlkwd{sqrt}(var.lrr)) %>%
-  \hlkwd{summarize}(dupl.remove = \hlkwd{unique}(dupl.remove),
-            id = \hlkwd{unique}(id),
-            outcome.desired = \hlkwd{unique}(outcome.desired),
-            n.sig.single = \hlkwd{sum}(sig.single, na.rm = T),
-            se.min = \hlkwd{min}(se.lrr, na.rm = T),
-            se.max = \hlkwd{max}(se.lrr, na.rm = T))
-
-meta.info.cont <- data.ext2 %>% \hlkwd{filter}(outcome.flag == \hlstr{"CONT"}) %>%
-  \hlkwd{group_by}(meta.id) %>%
-  \hlkwd{mutate}(n.pre = \hlkwd{n}()) %>% \hlkwd{filter}(n.pre >= 10) %>%
-  \hlkwd{filter}(!\hlkwd{all}(mean1 == 0) & !\hlkwd{all}(mean2 == 0)) %>% \hlcom{#No means}
-  \hlkwd{filter}(!\hlkwd{all}(sd1 == 0) | !\hlkwd{all}(sd2 == 0)) %>% \hlcom{#No sd's}
-  \hlkwd{summarize}(dupl.remove = \hlkwd{unique}(dupl.remove),
-            id = \hlkwd{unique}(id),
-            outcome.desired = \hlkwd{unique}(outcome.desired),
-            n.sig.single = \hlkwd{sum}(sig.single, na.rm = T),
-            se.min = \hlkwd{min}(se, na.rm = T),
-            se.max = \hlkwd{max}(se, na.rm = T))
-
-meta.info.iv <- data.ext2 %>%
-  \hlkwd{group_by}(meta.id) %>%
-  \hlkwd{mutate}(n.pre = \hlkwd{n}()) %>% \hlkwd{filter}(n.pre >= 10) %>%
-  \hlkwd{filter}(outcome.flag == \hlstr{"IV"}) %>%
-  \hlkwd{filter}(outcome.measure.merged == \hlstr{"Rate Ratio"} | 
-           outcome.measure.merged == \hlstr{"SMD"} |
-           outcome.measure.merged == \hlstr{"MD"} | 
-           outcome.measure.merged == \hlstr{"Hazard Ratio"} |
-           outcome.measure.merged == \hlstr{"OR"} | 
-           outcome.measure.merged == \hlstr{"RR"}) %>% #Remove outcomes w. unclear def.
-  \hlkwd{summarize}(dupl.remove = \hlkwd{unique}(dupl.remove),
-            id = \hlkwd{unique}(id),
-            outcome.desired = \hlkwd{unique}(outcome.desired),
-            n.sig.single = \hlkwd{sum}(sig.single, na.rm = T),
-            se.min = \hlkwd{min}(se, na.rm = T),
-            se.max = \hlkwd{max}(se, na.rm = T))
-
-meta.info.pre <- \hlkwd{rbind}(meta.info.bin, meta.info.cont, meta.info.iv) 
-\hlcom{#To save to control how many are excluded}
-
-meta.info.pre <- meta.info.pre %>%
-  \hlkwd{filter}(id %in% data.review$id[\hlkwd{which}(data.review$withdrawn == FALSE)]) 
-\hlcom{#No withdrawn meta-analyses}
-
-
-meta.info <- meta.info.pre %>% 
-  \hlkwd{filter}(n.sig.single > 0) %>% \hlcom{#At least one significant result}
-  \hlkwd{filter}((se.max^2)/(se.min^2) > 4) %>% \hlcom{#variance ratio > 4}
-  \hlkwd{filter}(dupl.remove == 0) %>% \hlcom{#no duplicates}
-  \hlkwd{filter}(outcome.desired == \hlstr{"efficacy"}) #Only efficacy outcomes
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{#Meta-analysis to get I2 (random effects meta-analysis):}
-meta.id.vector.org.ranef <- meta.info$meta.id \hlcom{#Do meta-analysis for each of those}
-
-meta.org.ranef.list <- \hlkwd{list}()
-counter <- 0
-\hlkwd{for}(u in meta.id.vector.org.ranef)\{
-  counter <- counter + 1
-  temp <- data.ext2 %>% \hlkwd{filter}(meta.id == u)
-  \hlkwd{print}(\hlkwd{c}(u, counter))
-  meta.org.ranef.list[[counter]] <- \hlkwd{meta.fct.ranef.mom}(temp)
-\}
-
-exclusion.estimates <- \hlkwd{cbind}(
-  meta.id = meta.id.vector.org.ranef,
-  n = \hlkwd{unlist}(\hlkwd{lapply}(meta.org.ranef.list, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$k\})),
-  Q = \hlkwd{unlist}(\hlkwd{lapply}(meta.org.ranef.list, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$QE\})))
-
-
-meta.info.pre2 <- \hlkwd{merge}(meta.info, exclusion.estimates, by = \hlstr{"meta.id"})
-meta.info.I2 <- meta.info.pre2 %>% 
-  \hlkwd{rowwise}() %>% \hlkwd{mutate}(I2  = \hlkwd{max}(0, (Q - n + 1)/Q)) \hlcom{#calculate I2}
-meta.info <- meta.info.I2 %>% \hlkwd{filter}(n > 9) %>% 
-  \hlkwd{filter}(I2 < 0.5) \hlcom{#exclude I2 >= 0.5}
-meta.id.vector <- meta.info$meta.id \hlcom{#Vector of meta-ids that match the criteria.}
-
-\hlkwd{save}(meta.id.vector, file =  \hlkwd{file.path}(PATH_RESULTS, \hlstr{"meta_id_vector.RData"}))
-\hlkwd{save}(meta.info.I2, file =  \hlkwd{file.path}(PATH_RESULTS, \hlstr{"meta_id_I2.RData"}))
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{#Get more extensive information from the original dataset about the meta-analyses:}
-meta.info.extended <- data.ext2 %>% 
-  \hlkwd{filter}(meta.id %in% meta.id.vector) %>% 
-  \hlkwd{group_by}(meta.id) %>%
-  \hlkwd{summarize}(id = \hlkwd{unique}(id),
-            outcome.flag = \hlkwd{unique}(outcome.flag),
-            comparison.nr = \hlkwd{unique}(comparison.nr),
-            comparison.name = \hlkwd{unique}(comparison.name),
-            outcome.name = \hlkwd{unique}(outcome.name),
-            outcome.nr = \hlkwd{unique}(outcome.nr),
-            subgroup.name = \hlkwd{unique}(subgroup.name),
-            subgroup.nr = \hlkwd{unique}(subgroup.nr),
-            outcome.measure.merged = \hlkwd{unique}(outcome.measure.merged),
-            outcome.measure = \hlkwd{unique}(outcome.measure),
-            outcome.desired = \hlkwd{unique}(outcome.desired),
-            mean.samplesize = \hlkwd{mean}(total1 + total2, na.rm = T),
-            total.samplesize = \hlkwd{sum}(total1 + total2),
-            var.samplesize = \hlkwd{var}(total1 + total2, na.rm = T),
-            min.samplesize = \hlkwd{min}(\hlkwd{min}(total1, na.rm = T), \hlkwd{min}(total2, na.rm = T)),
-            total.events = \hlkwd{sum}(events1 + events2),
-            mean.events = \hlkwd{mean}(events1 + events2),
-            mean.publication.year = \hlkwd{mean}(study.year, na.rm = TRUE),
-            first.publication.year = \hlkwd{min}(study.year, na.rm = T),
-\hlcom{            #*USER.DEF* function to detect the expected side of bias}
-            side = \hlkwd{bias.side.fct2}(outcome = outcome.flag, outcome.measure.merged, 
-                                  lrr = lrr, var.lrr = var.lrr, smd = cohensd, 
-                                  var.smd = var.cohensd, effect = effect, se = se), 
-
-            n.sig.single = \hlkwd{sum}(sig.single, na.rm = T),
-            NA.sig.single = \hlkwd{sum}(\hlkwd{is.na}(sig.single)),
-            se.min = \hlkwd{min}(se, na.rm = T),
-            se.max = \hlkwd{max}(se, na.rm = T))
-
-\hlcom{######################################################################################}
-\hlcom{######################################################################################}
-\hlcom{######################################################################################}
-\hlcom{# ANALYSIS PART: META-ANALYSES, TESTS AND ADJUSTMENTS: ###############################}
-\hlcom{######################################################################################}
-\hlcom{######################################################################################}
-\hlcom{######################################################################################}
-
-\hlcom{#Do all analyses with Fixed effects meta-analysis method and paule mandel tau^2 }
-\hlcom{#estimator}
-\hlkwd{settings.meta}(method.tau = \hlstr{"PM"}, method = \hlstr{"Inverse"}) 
-
-\hlcom{#Load previously constructed lists (to skip analysis):}
-\hlcom{# load(file.path(PATH_RESULTS, "meta_complete_list_bin.RData"))}
-\hlcom{# load(file.path(PATH_RESULTS, "meta_complete_list_cont.RData"))}
-\hlcom{# load(file.path(PATH_RESULTS, "meta_complete_list_iv.RData"))}
-\hlcom{# load(file.path(PATH_RESULTS, "meta_complete_list_zscore.RData"))}
-\hlcom{# load(file.path(PATH_RESULTS, "meta_complete_list_cohensd.RData"))}
-
-
-
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-\hlcom{# BINARY DATA META-ANALYSES: ----------------------------------------------------------------------------------------#}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{# # -------- Uncomment to run analysis ----------}
-meta.id.vector.bin <- 
-  meta.info.extended$meta.id[\hlkwd{which}(meta.info.extended$outcome.flag == \hlstr{"DICH"})]
-meta.analyses <- \hlkwd{list}()
-meta.analyses.asd <- \hlkwd{list}()
-meta.analyses.reg <- \hlkwd{list}()
-meta.analyses.copas <- \hlkwd{list}()
-meta.tests.harbord <- \hlkwd{list}()
-meta.tests.peter <- \hlkwd{list}()
-meta.tests.rucker.mm <- \hlkwd{list}()
-meta.tests.rucker.linreg <- \hlkwd{list}()
-meta.tests.schwarzer <- \hlkwd{list}()
-meta.tests.excess <- \hlkwd{list}()
-counter <- 0
-\hlkwd{for}(u in meta.id.vector.bin)\{
-	counter <- counter + 1
-	\hlkwd{print}(\hlkwd{c}(u, counter))
-	meta.analyses[[counter]] <- 
-	  \hlkwd{metabin}(event.e = events1c, n.e = total1, event.c = events2c, n.c = total2,
-	          studlab = study.name, sm = \hlstr{"RR"},
-	          method = \hlstr{"Inverse"}, data = data.ext2[data.ext2$meta.id == u,])
-	
-\hlcom{	#Arcsine transformed proportions to use in combination with Rücker's test:}
-	meta.analyses.asd[[counter]] <- 
-	  \hlkwd{metabin}(event.e = events1c, n.e = total1, event.c = events2c, n.c = total2,
-	          studlab = study.name, sm = \hlstr{"ASD"}, 
-	          method = \hlstr{"Inverse"}, data = data.ext2[data.ext2$meta.id == u,])
-  
-\hlcom{	#Adjustment for publication bias}
-	meta.analyses.reg[[counter]] <- \hlkwd{limitmeta}(meta.analyses[[counter]])
-	meta.analyses.copas[[counter]] <- \hlkwd{auto.copas}(meta.analyses[[counter]], 
-	                         sig.level = 0.1) \hlcom{#*USER.DEF* Copas selection model.}
-
-\hlcom{	#Publication bias tests.}
-	meta.tests.excess[[counter]] <- \hlkwd{tes.fct2}(data = data.ext2[data.ext2$meta.id == u,])
-	meta.tests.harbord[[counter]] <- 
-	  \hlkwd{metabias}(meta.analyses[[counter]], method.bias = \hlstr{"score"}, k.min = 2)
-	meta.tests.peter[[counter]] <- 
-	  \hlkwd{metabias}(meta.analyses[[counter]], method.bias = \hlstr{"peters"}, k.min = 2)
-	meta.tests.schwarzer[[counter]] <- 
-	  \hlkwd{metabias}(meta.analyses[[counter]], method.bias = \hlstr{"count"}, k.min = 2)
-	meta.tests.rucker.mm[[counter]] <- 
-	  \hlkwd{metabias}(meta.analyses.asd[[counter]], method.bias = \hlstr{"mm"}, k.min = 2)
-	meta.tests.rucker.linreg[[counter]] <- 
-	  \hlkwd{metabias}(meta.analyses.asd[[counter]], method.bias = \hlstr{"linreg"}, k.min = 2)
-\}
-
-
-\hlcom{# counter.unknown.bin.copas.error <- 0}
-\hlcom{# for(u in meta.id.vector.bin)\{}
-\hlcom{# 	if(length(meta.analyses.copas[[counter]]) < 3)\{}
-\hlcom{# 		meta.analyses.copas[[counter]] <- c(NA, NA, NA)}
-\hlcom{# 		counter.unknown.bin.copas.error <- counter.unknown.bin.copas.error + 1}
-\hlcom{# 	\}}
-\hlcom{# \}}
-\hlcom{# print(c("unknown.bin.copas.errors = ", counter.unknown.bin.copas.error))}
-\hlcom{#}
-\hlcom{# bin.meta.list <- list(data.ext2, meta.id.vector.bin, meta.analyses,}
-\hlcom{# 											meta.analyses.asd,}
-\hlcom{# 											meta.analyses.reg,}
-\hlcom{# 											meta.analyses.copas,}
-\hlcom{# 											meta.tests.excess,}
-\hlcom{# 											meta.tests.harbord,}
-\hlcom{# 											meta.tests.peter,}
-\hlcom{# 											meta.tests.rucker.mm,}
-\hlcom{# 											meta.tests.schwarzer,}
-\hlcom{# 											meta.tests.excess,}
-\hlcom{# 											meta.tests.rucker.linreg)}
-\hlcom{# save(bin.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_bin.RData"))}
-\hlcom{# #--------------------------------------------------------------------------------------------------------------------#}
-\hlcom{# }
-\hlcom{# #Load analysis data:}
-\hlcom{# meta.id.vector.bin <- bin.meta.list[[2]]}
-\hlcom{# meta.analyses <- bin.meta.list[[3]]}
-\hlcom{# meta.analyses.reg <- bin.meta.list[[5]]}
-\hlcom{# meta.analyses.copas <- bin.meta.list[[6]]}
-\hlcom{# meta.analyses.trimfill <- bin.meta.list[[7]]}
-\hlcom{# meta.tests.harbord <- bin.meta.list[[8]]}
-\hlcom{# meta.tests.peter <- bin.meta.list[[9]]}
-\hlcom{# meta.tests.rucker.mm <- bin.meta.list[[10]]}
-\hlcom{# meta.tests.schwarzer <- bin.meta.list[[11]]}
-\hlcom{# meta.tests.excess <- bin.meta.list[[12]]}
-\hlcom{# meta.tests.rucker.linreg <- bin.meta.list[[13]]}
-
-
-\hlcom{#Extract from lists:}
-bin.results <- \hlkwd{data.frame}(
-  meta.id = meta.id.vector.bin,
-  meta.es.measure = \hlkwd{rep}(times = \hlkwd{length}(meta.id.vector.bin), \hlstr{"log risk ratio"}),
-  
-  n.sig.single2 = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{\hlkwd{length}(\hlkwd{which}(meta.analysis$pval < 0.05))\})),
-  
-\hlcom{  #Meta-analysis:}
-  est.fixef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$TE.fixed\})),
-  est.ranef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                  FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$TE.random\})),
-  zval.fixef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                  FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$zval.fixed\})),
-  zval.ranef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                  FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$zval.random\})),
-  
-  pval.fixef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                   FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$pval.fixed\})),
-  pval.ranef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                  FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$pval.random\})),
-  
-  se.est.fixef =  \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                  FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$seTE.fixed\})),
-  se.est.ranef =  \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                  FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$seTE.random\})),
-  
-  Q = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$Q\})),
-  pval.Q = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                         FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$pval.Q\})),
-\hlcom{  #I2 = unlist(lapply(meta.analyses, FUN = function(meta.analysis)\{meta.analysis$I2.w\})),}
-  tau = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                      FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$tau\})),
-\hlcom{  #se.tau = unlist(lapply(meta.analyses, FUN = function(meta.analysis)\{meta.analysis$se.tau\})),}
-  sparse = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                         FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$sparse\})),
-  k = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$k\})),
-  
-\hlcom{  #Adjustment:}
-  method.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$method.adjust\})),
-  est.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$TE.adjust\})),
-  se.est.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$seTE.adjust\})),
-  zval.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$zval.adjust\})),
-  pval.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$pval.adjust\})),
-  alpha.r = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$pval.adjust\})),
-  beta.r = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$pval.adjust\})),
-  Q.small = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$Q.small\})),
-  Q.resid = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$Q.resid\})),
-  G.squared = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$G.squared\})),
-  
-  est.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[1]\})),
-  se.est.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[2]\})),
-  missing.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[3]\})),
-  
-\hlcom{  #Tests;}
-  pval.d.tes.org = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                                 FUN = \hlkwd{function}(object)\{object[3]\})),
-  pval.d.tes = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                             FUN = \hlkwd{function}(object)\{object[4]\})),
-  stat.d.tes = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                             FUN = \hlkwd{function}(object)\{object[2]\})),
-  excess.d = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                           FUN = \hlkwd{function}(object)\{object[5]\})) - 
-    \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                  FUN = \hlkwd{function}(object)\{object[6]\})),
-  pval.harbord = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.harbord, 
-                               FUN = \hlkwd{function}(meta.test)\{meta.test$p.value\})),
-  stat.harbord = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.harbord, 
-                               FUN = \hlkwd{function}(meta.test)\{meta.test$statistic\})),
-  pval.peter = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.peter, 
-                             FUN = \hlkwd{function}(meta.test)\{meta.test$p.value\})),
-  stat.peter = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.peter, 
-                             FUN = \hlkwd{function}(meta.test)\{meta.test$statistic\})),
-  pval.rucker = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.rucker.mm, 
-                              FUN = \hlkwd{function}(meta.test)\{meta.test$p.value\})),
-  stat.rucker = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.rucker.mm, 
-                              FUN = \hlkwd{function}(meta.test)\{meta.test$statistic\})),
-  pval.rucker.linreg = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.rucker.linreg, 
-                              FUN = \hlkwd{function}(meta.test)\{meta.test$p.value\})),
-  stat.rucker.linreg = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.rucker.linreg, 
-                              FUN = \hlkwd{function}(meta.test)\{meta.test$statistic\})),
-  pval.schwarzer = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.schwarzer, 
-                              FUN = \hlkwd{function}(meta.test)\{meta.test$p.value\})),
-  stat.schwarzer = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.schwarzer, 
-                              FUN = \hlkwd{function}(meta.test)\{meta.test$statistic\}))
-)
-
-
-
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-\hlcom{# CONTINUOUS DATA META-ANALYSES: ------------------------------------------------------------------------------------#}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-
-\hlcom{# # -------- Uncomment to run analysis ----------}
-meta.id.vector.cont <- 
-  meta.info.extended$meta.id[\hlkwd{which}(meta.info.extended$outcome.flag == \hlstr{"CONT"})]
-meta.analyses <- \hlkwd{list}()
-meta.analyses.reg <- \hlkwd{list}()
-meta.analyses.copas <- \hlkwd{list}()
-meta.analyses.trimfill <- \hlkwd{list}()
-meta.tests.excess <- \hlkwd{list}()
-meta.tests.linreg <- \hlkwd{list}()
-meta.tests.begg <- \hlkwd{list}()
-meta.tests.mm <- \hlkwd{list}()
-counter <- 0
-\hlkwd{for}(u in meta.id.vector.cont)\{
-	counter <- counter + 1
-	\hlkwd{print}(\hlkwd{c}(u, counter))
-	outcome.measure.merged <- 
-	  \hlkwd{as.character}(\hlkwd{unique}(data.ext2[data.ext2$meta.id == u,
-	                 \hlstr{"outcome.measure.merged"}])$outcome.measure.merged)
-	meta.analyses[[counter]] <- 
-	  \hlkwd{metacont}(n.e = total1, mean.e = mean1, sd.e = sd1, n.c = total2,
-						mean.c = mean2, sd.c = sd2, sm = outcome.measure.merged, 
-						studlab = study.name, data = data.ext2[data.ext2$meta.id == u,])
-	meta.analyses.reg[[counter]] <- \hlkwd{limitmeta}(meta.analyses[[counter]])
-	meta.analyses.trimfill[[counter]] <- \hlkwd{trimfill}(meta.analyses[[counter]])
-	meta.analyses.copas[[counter]] <- \hlkwd{auto.copas}(meta.analyses[[counter]], 
-	                                             sig.level = 0.1)
-
-	meta.tests.excess[[counter]] <- 
-	  \hlkwd{tes.fct2}(data = data.ext2[data.ext2$meta.id == u,])
-	meta.tests.linreg[[counter]] <- \hlkwd{metabias}(meta.analyses[[counter]], 
-	                                         method.bias = \hlstr{"linreg"}, k.min = 2)
-	meta.tests.begg[[counter]] <- \hlkwd{metabias}(meta.analyses[[counter]], 
-	                                       method.bias = \hlstr{"rank"}, k.min = 2)
-	meta.tests.mm[[counter]] <- \hlkwd{metabias}(meta.analyses[[counter]], 
-	                                     method.bias = \hlstr{"mm"}, k.min = 2)
-\hlcom{# \}}
-\hlcom{# cont.meta.list <- list(data.ext2, meta.id.vector.cont, meta.analyses,}
-\hlcom{# 											 meta.analyses.reg,}
-\hlcom{# 											 meta.analyses.copas,}
-\hlcom{# 											 meta.analyses.trimfill,}
-\hlcom{# 											 meta.tests.linreg,}
-\hlcom{# 											 meta.tests.begg,}
-\hlcom{# 											 meta.tests.mm,}
-\hlcom{# 											 meta.tests.excess)}
-\hlcom{# save(cont.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_cont.RData"))}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{#Load analysis data:}
-\hlcom{# meta.id.vector.cont <- cont.meta.list[[2]]}
-\hlcom{# meta.analyses <- cont.meta.list[[3]]}
-\hlcom{# meta.analyses.reg <- cont.meta.list[[4]]}
-\hlcom{# meta.analyses.copas <- cont.meta.list[[5]]}
-\hlcom{# meta.analyses.trimfill <- cont.meta.list[[6]]}
-\hlcom{# meta.tests.linreg <- cont.meta.list[[7]]}
-\hlcom{# meta.tests.begg <- cont.meta.list[[8]]}
-\hlcom{# meta.tests.mm <- cont.meta.list[[9]]}
-\hlcom{# meta.tests.excess <- cont.meta.list[[10]]}
-
-\hlcom{#Extract from lists:}
-cont.results <- \hlkwd{data.frame}(
-  meta.id = meta.id.vector.cont,
-  meta.es.measure = \hlkwd{rep}(\hlstr{"std. mean difference"}, times = \hlkwd{length}(meta.id.vector.cont)),
-  
-  n.sig.single2 = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, FUN = \hlkwd{function}(meta.analysis)\{\hlkwd{length}(\hlkwd{which}(meta.analysis$pval < 0.05))\})),
-  
-\hlcom{  #Meta-Analysis}
-  est.fixef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$TE.fixed\})),
-  est.ranef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$TE.random\})),
-  
-  zval.fixef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$zval.fixed\})),
-  zval.ranef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$zval.random\})),
-  
-  pval.fixef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$pval.fixed\})),
-  pval.ranef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$pval.random\})),
-  
-  se.est.fixef =  \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$seTE.fixed\})),
-  se.est.ranef =  \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$seTE.random\})),
-  
-  Q = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$Q\})),
-  pval.Q = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$pval.Q\})),
-  tau = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$tau\})),
-  k = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$k\})),
-  
-\hlcom{  #Adjustment:}
-  method.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$method.adjust\})),
-  est.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$TE.adjust\})),
-  se.est.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$seTE.adjust\})),
-  zval.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$zval.adjust\})),
-  pval.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$pval.adjust\})),
-  alpha.r = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$pval.adjust\})),
-  beta.r = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$pval.adjust\})),
-  Q.small = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$Q.small\})),
-  Q.resid = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$Q.resid\})),
-  G.squared = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$G.squared\})),
-  
-  est.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[1]\})),
-  se.est.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[2]\})),
-  missing.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                      FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[3]\})),
-  
-\hlcom{  #Tests:}
-  pval.d.tes.org = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                              FUN = \hlkwd{function}(object)\{object[3]\})),
-  pval.d.tes = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                              FUN = \hlkwd{function}(object)\{object[4]\})),
-  stat.d.tes = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                              FUN = \hlkwd{function}(object)\{object[2]\})),
-  excess.d = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                              FUN = \hlkwd{function}(object)\{object[5]\})) - 
-    \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                              FUN = \hlkwd{function}(object)\{object[6]\})),
-  pval.egger = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.linreg, 
-                             FUN = \hlkwd{function}(meta.test)\{meta.test$p.value\})),
-  stat.egger = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.linreg, 
-                             FUN = \hlkwd{function}(meta.test)\{meta.test$statistic\})),
-  pval.begg = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.begg, 
-                            FUN = \hlkwd{function}(meta.test)\{meta.test$p.value\})),
-  stat.begg = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.begg, 
-                            FUN = \hlkwd{function}(meta.test)\{meta.test$statistic\})),
-  pval.thompson = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.mm, 
-                            FUN = \hlkwd{function}(meta.test)\{meta.test$p.value\})),
-  stat.thompson = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.mm, 
-                            FUN = \hlkwd{function}(meta.test)\{meta.test$statistic\}))
-)
-
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-\hlcom{# IV OUTCOME META-ANALYSIS: -----------------------------------------------------------------------------------#}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-
-\hlcom{# # -------- Uncomment to run analysis ----------}
-meta.id.vector.iv <- 
-  meta.info.extended$meta.id[\hlkwd{which}(meta.info.extended$outcome.flag == \hlstr{"IV"})]
-meta.analyses <- \hlkwd{list}()
-meta.analyses.reg <- \hlkwd{list}()
-meta.analyses.copas <- \hlkwd{list}()
-meta.analyses.trimfill <- \hlkwd{list}()
-meta.tests.linreg <- \hlkwd{list}()
-meta.tests.begg <- \hlkwd{list}()
-meta.tests.mm <- \hlkwd{list}()
-meta.tests.excess <- \hlkwd{list}()
-counter <- 0
-\hlkwd{for}(u in meta.id.vector.iv)\{
-	counter <- counter + 1
-	meta.analyses[[counter]] <- \hlkwd{metagen.iv}(data = data.ext2[data.ext2$meta.id == u,])
-	\hlkwd{print}(\hlkwd{c}(u, counter))
-	
-	meta.analyses.reg[[counter]] <- \hlkwd{limitmeta}(meta.analyses[[counter]])
-	meta.analyses.trimfill[[counter]] <- \hlkwd{trimfill}(meta.analyses[[counter]])
-	meta.analyses.copas[[counter]] <- \hlkwd{auto.copas}(meta.analyses[[counter]], 
-	                                             sig.level = 0.1)
-
-	meta.tests.excess[[counter]] <- 
-	  \hlkwd{tes.fct2}(data = data.ext2[data.ext2$meta.id == u,])
-	meta.tests.linreg[[counter]] <- \hlkwd{metabias}(meta.analyses[[counter]], 
-	                               method.bias = \hlstr{"linreg"}, k.min = 2)
-	meta.tests.begg[[counter]] <- \hlkwd{metabias}(meta.analyses[[counter]], 
-	                               method.bias = \hlstr{"rank"}, k.min = 2)
-	meta.tests.mm[[counter]] <- \hlkwd{metabias}(meta.analyses[[counter]], 
-	                               method.bias = \hlstr{"mm"}, k.min = 2)
-\}
-\hlcom{# iv.meta.list <- list(data.ext2, meta.id.vector.iv, meta.analyses,}
-\hlcom{# 											 meta.analyses.reg,}
-\hlcom{# 											 meta.analyses.copas,}
-\hlcom{# 											 meta.analyses.trimfill,}
-\hlcom{# 											 meta.tests.linreg,}
-\hlcom{# 											 meta.tests.begg,}
-\hlcom{# 											 meta.tests.mm,}
-\hlcom{# 											 meta.tests.excess)}
-\hlcom{# save(iv.meta.list, file =  file.path(PATH_RESULTS, "meta_complete_list_iv.RData"))}
-\hlcom{# #--------------------------------------------------------------------------------------------------------------------#}
-\hlcom{# }
-\hlcom{# #Load analysis data:}
-\hlcom{# meta.id.vector.iv <- iv.meta.list[[2]]}
-\hlcom{# meta.analyses <- iv.meta.list[[3]]}
-\hlcom{# meta.analyses.reg <- iv.meta.list[[4]]}
-\hlcom{# meta.analyses.copas <- iv.meta.list[[5]]}
-\hlcom{# meta.analyses.trimfill <- iv.meta.list[[6]]}
-\hlcom{# meta.tests.linreg <- iv.meta.list[[7]]}
-\hlcom{# meta.tests.begg <- iv.meta.list[[8]]}
-\hlcom{# meta.tests.mm <- iv.meta.list[[9]]}
-\hlcom{# meta.tests.excess <- iv.meta.list[[10]]}
-
-\hlcom{#Extract from lists:}
-iv.results <- \hlkwd{data.frame}(
-  meta.id = meta.id.vector.iv,
-  meta.es.measure = \hlkwd{rep}(times = \hlkwd{length}(meta.id.vector.iv), \hlstr{"\hlkwd{unknown.effect}(IV)"}),
-  
-  n.sig.single2 = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{\hlkwd{length}(\hlkwd{which}(meta.analysis$pval < 0.05))\})),
-\hlcom{  #Meta-Analysis}
-  est.fixef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$TE.fixed\})),
-  est.ranef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$TE.random\})),
-  
-  zval.fixef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$zval.fixed\})),
-  zval.ranef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$zval.random\})),
-  
-  pval.fixef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$pval.fixed\})),
-  pval.ranef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$pval.random\})),
-  
-  se.est.fixef =  \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$seTE.fixed\})),
-  se.est.ranef =  \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$seTE.random\})),
-  
-  Q = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$Q\})),
-  pval.Q = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$pval.Q\})),
-  tau = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$tau\})),
-  k = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$k\})),
-  
-\hlcom{  #Adjustment:}
-  method.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$method.adjust\})),
-  est.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$TE.adjust\})),
-  se.est.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$seTE.adjust\})),
-  zval.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$zval.adjust\})),
-  pval.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$pval.adjust\})),
-  alpha.r = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$pval.adjust\})),
-  beta.r = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$pval.adjust\})),
-  Q.small = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$Q.small\})),
-  Q.resid = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$Q.resid\})),
-  G.squared = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$G.squared\})),
-  
-  est.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                           FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[1]\})),
-  se.est.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                           FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[2]\})),
-  missing.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                           FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[3]\})),
-  
-\hlcom{  #Tests:}
-  pval.d.tes.org = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                             FUN = \hlkwd{function}(object)\{object[3]\})),
-  pval.d.tes = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                             FUN = \hlkwd{function}(object)\{object[4]\})),
-  stat.d.tes = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                             FUN = \hlkwd{function}(object)\{object[2]\})),
-  excess.d = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                             FUN = \hlkwd{function}(object)\{object[5]\})) - 
-    \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.excess, 
-                  FUN = \hlkwd{function}(object)\{object[6]\})),
-  pval.egger = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.linreg, 
-                             FUN = \hlkwd{function}(meta.test)\{meta.test$p.value\})),
-  stat.egger = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.linreg, 
-                             FUN = \hlkwd{function}(meta.test)\{meta.test$statistic\})),
-  pval.begg = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.begg, 
-                             FUN = \hlkwd{function}(meta.test)\{meta.test$p.value\})),
-  stat.begg = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.begg, 
-                             FUN = \hlkwd{function}(meta.test)\{meta.test$statistic\})),
-  pval.thompson = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.mm, 
-                             FUN = \hlkwd{function}(meta.test)\{meta.test$p.value\})),
-  stat.thompson = \hlkwd{unlist}(\hlkwd{lapply}(meta.tests.mm, 
-                             FUN = \hlkwd{function}(meta.test)\{meta.test$statistic\}))
-)
-
-
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-\hlcom{# Z-SCORE BASED META-ANALYSES: --------------------------------------------------------------------------------------#}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{# # -------- Uncomment to run analysis ----------}
-meta.id.vector.noiv <- 
-  meta.info.extended$meta.id[-\hlkwd{which}(meta.info.extended$outcome.flag == \hlstr{"IV"})]
-meta.id.vector.smd <- 
-  meta.info.extended$meta.id[\hlkwd{which}(meta.info.extended$outcome.measure.merged == \hlstr{"SMD"})]
-meta.id.vector.z <- \hlkwd{union}(meta.id.vector.smd, meta.id.vector.noiv)
-meta.id.vector.z.c <- meta.id.vector.z[-\hlkwd{c}(\hlkwd{which}(meta.id.vector.z == 104613),
-                                          \hlkwd{which}(meta.id.vector.z == 104616),
-                                          \hlkwd{which}(meta.id.vector.z == 153452),
-                                          \hlkwd{which}(meta.id.vector.z == 163246),
-                      \hlkwd{which}(meta.id.vector.z == 182958))] \hlcom{#Have zero total1..}
-tmp.z <- data.ext2 %>% \hlkwd{group_by}(meta.id) %>% \hlkwd{mutate}(n = \hlkwd{n}()) %>% \hlkwd{filter}(n > 9) %>%
-  \hlkwd{filter}(total1 + total2 > 3) %>% \hlkwd{filter}(total1 != 0 & total2 != 0)
-meta.analyses <- \hlkwd{list}()
-meta.analyses.reg <- \hlkwd{list}()
-meta.analyses.copas <- \hlkwd{list}()
-counter <- 0
-\hlkwd{for}(u in meta.id.vector.z.c)\{
-	counter <- counter + 1
-	\hlkwd{print}(\hlkwd{c}(u,counter))
-	meta.analyses[[counter]] <- \hlkwd{metacor}(cor = z, n = total1 + total2, 
-	                   studlab = study.name, tmp.z[tmp.z$meta.id == u,])
-	meta.analyses.reg[[counter]] <- \hlkwd{limitmeta}(meta.analyses[[counter]])
-	meta.analyses.copas[[counter]] <- \hlkwd{auto.copas}(meta.analyses[[counter]], 
-	                                             sig.level = 0.1)
-\}
-\hlcom{# zscore.meta.list <- list(tmp.z, meta.id.vector.z.c, meta.analyses, }
-\hlcom{#meta.analyses.reg, meta.analyses.copas)}
-\hlcom{# save(zscore.meta.list, file =  file.path(PATH_RESULTS, }
-\hlcom{#"meta_complete_list_zscore.RData"))}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{#Load analysis data:}
-meta.id.vector.z.c <- zscore.meta.list[[2]]
-meta.analyses <- zscore.meta.list[[3]]
-meta.analyses.reg <- zscore.meta.list[[4]]
-meta.analyses.copas <- zscore.meta.list[[5]]
-
-\hlcom{#List extraction:}
-zscore.meta.analysis.estimates <- \hlkwd{cbind}(
-  meta.id = meta.id.vector.z.c,
-  est.z.fixef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$TE.fixed\})),
-  est.z.ranef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$TE.random\})),
-  se.est.z.fixef =  \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$seTE.fixed\})),
-  se.est.z.ranef =  \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                    FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$seTE.random\})),
-  
-  est.z.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$TE.adjust\})),
-  se.est.z.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$seTE.adjust\})),
-  
-  est.z.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[1]\})),
-  se.est.z.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                    FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[2]\})))
-
-
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-\hlcom{# HEDGES G BASED META-ANALYSES: -------------------------------------------------------------------------------------#}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{# # -------- Uncomment to run analysis ----------}
-meta.id.vector.d <- meta.id.vector.z[-\hlkwd{c}(\hlkwd{which}(meta.id.vector.z == 25407))]
-meta.analyses <- \hlkwd{list}()
-meta.analyses.reg <- \hlkwd{list}()
-meta.analyses.copas <- \hlkwd{list}()
-counter <- 0
-\hlkwd{for}(u in meta.id.vector.d)\{
-  counter <- counter + 1
-  \hlkwd{print}(\hlkwd{c}(u,counter))
-  meta.analyses[[counter]] <- \hlkwd{metagen.bincont2}(data.ext2[data.ext2$meta.id == u,])
-  meta.analyses.reg[[counter]] <- \hlkwd{limitmeta}(meta.analyses[[counter]])
-  meta.analyses.copas[[counter]] <- \hlkwd{auto.copas}(meta.analyses[[counter]], 
-                                               sig.level = 0.1)
-\}
-\hlcom{# cohensd.meta.list <- list(data.ext2, meta.id.vector.d, meta.analyses, }
-\hlcom{#meta.analyses.reg, meta.analyses.copas)}
-\hlcom{# save(cohensd.meta.list, file =  file.path(PATH_RESULTS, }
-\hlcom{#"meta_complete_list_cohensd.RData"))}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{#Load analysis data:}
-meta.id.vector.d <- cohensd.meta.list[[2]]
-meta.analyses <- cohensd.meta.list[[3]]
-meta.analyses.reg <- cohensd.meta.list[[4]]
-meta.analyses.copas <- cohensd.meta.list[[5]]
-
-\hlcom{#List extraction:}
-cohensd.meta.analysis.estimates <- \hlkwd{cbind}(
-  meta.id = meta.id.vector.d,
-  est.d.fixef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                  FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$TE.fixed\})),
-  est.d.ranef = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                  FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$TE.random\})),
-  se.est.d.fixef =  \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                  FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$seTE.fixed\})),
-  se.est.d.ranef =  \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses, 
-                  FUN = \hlkwd{function}(meta.analysis)\{meta.analysis$seTE.random\})),
-  
-  est.d.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$TE.adjust\})),
-  se.est.d.reg = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.reg, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust$seTE.adjust\})),
-  
-  est.d.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[1]\})),
-  se.est.d.copas = \hlkwd{unlist}(\hlkwd{lapply}(meta.analyses.copas, 
-                  FUN = \hlkwd{function}(meta.adjust)\{meta.adjust[2]\})))
-
-
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-\hlcom{# BUILD FINAL DATASET OF RESULTS}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-meta.tp5 <- \hlkwd{bind_rows}(bin.results, cont.results, iv.results)
-meta.tp1 <- \hlkwd{merge}(meta.info.extended, meta.tp5, 
-                  by = \hlkwd{c}(\hlstr{"meta.id"})) #Temporary versions
-meta.tp4 <- \hlkwd{merge}(by = \hlstr{"meta.id"}, x = meta.tp1, 
-                  y = zscore.meta.analysis.estimates, all.x = T)
-meta.f <- \hlkwd{merge}(by = \hlstr{"meta.id"}, x = meta.tp4, 
-                y = cohensd.meta.analysis.estimates, all.x = T)
-
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-\hlcom{# ROUND-UP: DETECT AND REPLACE MISSING VALUES}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{#se.est.copas.na = 1 -> is missing}
-meta.f$se.est.copas.na <- \hlkwd{ifelse}(\hlkwd{is.na}(meta.f$se.est.copas), 1, 0) 
-meta.f$se.est.z.copas.na <- \hlkwd{ifelse}(\hlkwd{is.na}(meta.f$se.est.z.copas), 1, 0)
-meta.f$se.est.d.copas.na <- \hlkwd{ifelse}(\hlkwd{is.na}(meta.f$se.est.d.copas), 1, 0)
-
-meta.f$se.est.reg.na <- \hlkwd{ifelse}(\hlkwd{is.na}(meta.f$se.est.reg), 1, 0)
-meta.f$se.est.z.reg.na <- \hlkwd{ifelse}(\hlkwd{is.na}(meta.f$se.est.z.reg), 1, 0)
-meta.f$se.est.d.reg.na <- \hlkwd{ifelse}(\hlkwd{is.na}(meta.f$se.est.d.reg), 1, 0)
-
-meta.f$est.copas.na <- \hlkwd{ifelse}(\hlkwd{is.na}(meta.f$est.copas), 1, 0)
-meta.f$est.z.copas.na <- \hlkwd{ifelse}(\hlkwd{is.na}(meta.f$est.z.copas), 1, 0)
-meta.f$est.d.copas.na <- \hlkwd{ifelse}(\hlkwd{is.na}(meta.f$est.d.copas), 1, 0)
-
-meta.f$est.reg.na <- \hlkwd{ifelse}(\hlkwd{is.na}(meta.f$est.reg), 1, 0)
-meta.f$est.z.reg.na <- \hlkwd{ifelse}(\hlkwd{is.na}(meta.f$est.z.reg), 1, 0)
-meta.f$est.d.reg.na <- \hlkwd{ifelse}(\hlkwd{is.na}(meta.f$est.d.reg), 1, 0)
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{#Inpute random effect estimate for missing copas:}
-copas.names <- \hlkwd{c}(\hlstr{"est.copas"}, \hlstr{"se.est.copas"}, \hlstr{"est.z.copas"}, \hlstr{"se.est.z.copas"}, 
-                 \hlstr{"est.d.copas"}, \hlstr{"se.est.d.copas"})
-ranef.names <- \hlkwd{c}(\hlstr{"est.ranef"}, \hlstr{"se.est.ranef"}, \hlstr{"est.z.ranef"}, \hlstr{"se.est.z.ranef"}, 
-                 \hlstr{"est.d.ranef"}, \hlstr{"se.est.d.ranef"})
-missing.names <- \hlkwd{paste}(copas.names, \hlstr{".missing"}, sep = \hlstr{""})
-missing <- \hlkwd{c}()
-
-\hlkwd{for}(u in 1:\hlkwd{length}(copas.names))\{
-  missing.count <- 0
-  \hlkwd{for}(k in 1:\hlkwd{dim}(meta.f)[1])\{
-    \hlkwd{if}(\hlkwd{is.na}(meta.f[k, copas.names[u]]))\{
-      missing.count <- missing.count + 1
-      meta.f[k, copas.names[u]] <- meta.f[k, ranef.names[u]]
-    \}
-  \}
-  missing[u] <- missing.count
-  meta.f[, missing.names[u]] <- missing.count
-\}
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{#Some useful variables:}
-meta.f <- meta.f %>% \hlkwd{rowwise}() %>% 
-  \hlkwd{mutate}(pval1.egger = \hlkwd{onesided.p}(stat = stat.egger, side = side, n = k, 
-                                  test.type = \hlstr{"reg"}),
-         pval1.thompson = \hlkwd{onesided.p}(stat = stat.thompson, side = side, n = k, 
-                                     test.type = \hlstr{"reg"}),
-         pval1.begg = \hlkwd{onesided.p}(stat = stat.begg, side = side, n = k, 
-                                 test.type = \hlstr{"rank"}),
-         
-         pval1.harbord = \hlkwd{onesided.p}(stat = stat.harbord, side = side, n = k, 
-                                    test.type = \hlstr{"reg"}),
-         pval1.rucker = \hlkwd{onesided.p}(stat = stat.rucker, side = side, n = k, 
-                                   test.type = \hlstr{"reg"}),
-         pval1.rucker.linreg = \hlkwd{onesided.p}(stat = stat.rucker.linreg, side = side, n = k, 
-                                          test.type = \hlstr{"reg"}),
-         pval1.peter = \hlkwd{onesided.p}(stat = stat.peter, side = side, n = k, 
-                                  test.type = \hlstr{"reg"}),
-         pval1.schwarzer = \hlkwd{onesided.p}(stat = stat.schwarzer, side = side, n = k, 
-                                      test.type = \hlstr{"rank"}),
-         pval1.d.tes = pval.d.tes)
-
-\hlcom{#Summarise different tests for binary and continuous variables to one:}
-meta.f <- meta.f %>% \hlkwd{rowwise}() %>% 
-  \hlkwd{mutate}(I2  = \hlkwd{max}(0, (Q - k + 1)/Q),
-         var.ratio = (se.max^2)/(se.min^2),
-         pval.se = \hlkwd{case_when}(outcome.flag == \hlstr{"DICH"} ~ pval1.rucker.linreg, 
-                             TRUE ~ pval1.egger),
-         pval.se.het = \hlkwd{case_when}(outcome.flag == \hlstr{"DICH"} ~ pval1.rucker, 
-                                 TRUE ~ pval1.thompson))
-\hlcom{#significance of pb tests:}
-sig.level <- 0.1
-meta.f <- meta.f %>% \hlkwd{rowwise}() %>% 
-  \hlkwd{mutate}(egger.test = \hlkwd{ifelse}(pval1.egger < sig.level, 1, 0),
-         thompson.test = \hlkwd{ifelse}(pval1.thompson < sig.level, 1, 0),
-         begg.test = \hlkwd{ifelse}(pval1.begg < sig.level, 1, 0),
-         
-         tes.d.test = \hlkwd{ifelse}(pval1.d.tes < sig.level, 1, 0),
-         
-         schwarzer.test = \hlkwd{ifelse}(pval1.schwarzer < sig.level, 1, 0),
-         rucker.test = \hlkwd{ifelse}(pval1.rucker < sig.level, 1, 0),
-         rucker.test.linreg = \hlkwd{ifelse}(pval1.rucker.linreg < sig.level, 1, 0),
-         harbord.test = \hlkwd{ifelse}(pval1.harbord < sig.level, 1, 0),
-         peter.test = \hlkwd{ifelse}(pval1.peter < sig.level, 1, 0))
-
-\hlcom{#calculate test statistics:}
-meta.f <- meta.f %>% \hlkwd{mutate}(
-  z.fixef = (est.fixef/se.est.fixef)
-  z.ranef = (est.ranef/se.est.ranef),
-  z.reg =   (est.reg/se.est.reg),
-  z.copas = ((est.copas)/se.est.copas))
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{#Separate outcome.types:}
-meta.bin <- meta.f %>% \hlkwd{filter}(outcome.flag == \hlstr{"DICH"})
-meta.cont <- meta.f %>% \hlkwd{filter}(outcome.flag == \hlstr{"CONT"})
-meta.iv <- meta.f %>% \hlkwd{filter}(outcome.flag == \hlstr{"IV"})
-\hlcom{#--------------------------------------------------------------------------------------------------------------------#}
-
-\hlcom{#Save the result datasets:}
-\hlkwd{save}(meta.f, file =  \hlkwd{file.path}(PATH_RESULTS, \hlstr{"meta_analyses_summary_complete.RData"}))
-\hlkwd{save}(meta.bin, file =  \hlkwd{file.path}(PATH_RESULTS, \hlstr{"meta.bin.RData"}))
-\hlkwd{save}(meta.cont, file =  \hlkwd{file.path}(PATH_RESULTS, \hlstr{"meta.cont.RData"}))
-\hlkwd{save}(meta.iv, file =  \hlkwd{file.path}(PATH_RESULTS, \hlstr{"meta.iv.RData"}))
-\hlkwd{save}(meta.id.vector, file =  \hlkwd{file.path}(PATH_RESULTS, \hlstr{"meta_id_vector.RData"}))
-\hlkwd{save}(data.ext2, file =  \hlkwd{file.path}(PATH_RESULTS, \hlstr{"data_used_for_analysis.RData"})) #Save data used for analysis
-
-
-
-
-\hlcom{# x <- foreach(i = 1:length(meta.id.vector.bin)) %dopar% }
-\hlcom{#   # u <- meta.id.vector.bin[i]}
-\hlcom{#   # counter <- counter + 1}
-\hlcom{#   metabin(event.e = events1c, n.e = total1, event.c = events2c, n.c = total2,}
-\hlcom{#           studlab = study.name, sm = "RR",}
-\hlcom{#           method = "Inverse", data = data.ext2[data.ext2$meta.id == meta.id.vector.bin[i],])}
-\hlcom{# }
-\hlcom{# cl<-makeCluster(7)}
-\hlcom{# registerDoParallel(cl)}
-\hlcom{# }
-\hlcom{# foreach(i = 1:length(meta.id.vector.bin)) %dopar%}
-\hlcom{#   sqrt(i)}
-
-
-
-
-\hlcom{########################################################################################################}
-\hlcom{########################################################################################################}
-\hlcom{########################################################################################################}
-\hlcom{########################################################################################################}
-\hlcom{########################################################################################################}
-\hlcom{########################################################################################################}
-\hlcom{########################################################################################################}
-\hlcom{########################################################################################################}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
+%<<'child-chapterA1', child='chapterA1.Rnw'>>=
+%@
 
 
 
