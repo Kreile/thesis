@@ -1,3 +1,4 @@
+ \newcommand{\noop}[1]{}
 \begin{thebibliography}{}
 
 \bibitem[Begg, 1988]{begg.ties}
@@ -89,6 +90,11 @@ Egger, M., Juni, P., Bartlett, C., Holenstein, F., and Sterne, J. (2003).
 \newblock How important are comprehensive literature searches and the
   assessment of trial quality in systematic reviews? empirical study.
 \newblock {\em Health Technol Assess}, {\bf7},  1--76.
+
+\bibitem[Egger and Smith, 1995]{funnel.plot}
+Egger, M. and Smith, G.~D. (1995).
+\newblock Misleading meta-analysis.
+\newblock {\em BMJ}, {\bf310},  752--754.
 
 \bibitem[Egger {\it et~al.}, 1997]{Egger}
 Egger, M., Smith, G.~D., Schneider, M., and Minder, C. (1997).
@@ -188,11 +194,6 @@ Kicinski, M., Springate, D., and Kontopantelis, E. (2015).
   systematic reviews.
 \newblock {\em Statistics in medicine}, {\bf34},  2781--2793.
 
-\bibitem[Law, 2007]{fda}
-Law, U.~P. (2007).
-\newblock {\em United States Code 110--85}.
-\newblock Food and Drug Administration Amendments Act.
-
 \bibitem[Lee {\it et~al.}, 2008]{Lee.2008}
 Lee, K., Bacchetti, P., and Sim, I. (2008).
 \newblock Publication of clinical trials supporting successful new drug
@@ -210,11 +211,6 @@ McAuley, L., Pham, B., Tugwell, P., and Moher, D. (2000).
   intervention effectiveness reported in meta-analyses?
 \newblock {\em The Lancet}, {\bf356},  1228 -- 1231.
 
-\bibitem[McCullagh and Nelder, 1989]{Glm}
-McCullagh, P. and Nelder, J. (1989).
-\newblock {\em Generalized Linear Models}.
-\newblock Chapman \& Hall.
-
 \bibitem[McShane {\it et~al.}, 2016]{selection.assessment}
 McShane, B.~B., B{\"o}ckenholt, U., and Hansen, K.~T. (2016).
 \newblock Adjusting for publication bias in meta-analysis: An evaluation of
@@ -227,6 +223,11 @@ Mueller, K.~F., Meerpohl, J.~J., Briel, M., Antes, G., von Elm, E., Lang, B.,
 \newblock Methods for detecting, quantifying, and adjusting for dissemination
   bias in meta-analysis are described.
 \newblock {\em Journal of Clinical Epidemiology}, {\bf80},  25 -- 33.
+
+\bibitem[\noop{US Public Law}US Public~Law, 2007]{fda}
+\noop{US Public Law}US Public~Law (2007).
+\newblock {\em United States Code 110--85}.
+\newblock Food and Drug Administration Amendments Act.
 
 \bibitem[N{\"u}esch {\it et~al.}, 2010]{Nusch}
 N{\"u}esch, E., Trelle, S., Reichenbach, S., Rutjes, A. W.~S., Tschannen, B.,
@@ -261,6 +262,13 @@ Rosenthal, R. and Rubin, D.~B. (1982).
 R{\"u}cker, G., Carpenter, J.~R., and Schwarzer, G. (2011).
 \newblock Detecting and adjusting for small-study effects in meta-analysis.
 \newblock {\em Biometrical Journal}, {\bf53},  351--368.
+
+\bibitem[R{\"u}cker {\it et~al.}, 2010]{limitmeta.2}
+R{\"u}cker, G., Schwarzer, G., Carpenter, J.~R., Binder, H., and Schumacher, M.
+  (2010).
+\newblock {Treatment-effect estimates adjusted for small-study effects via a
+  limit meta-analysis}.
+\newblock {\em Biostatistics}, {\bf12},  122--142.
 
 \bibitem[Schwarzer, 2007]{meta.package}
 Schwarzer, G. (2007).

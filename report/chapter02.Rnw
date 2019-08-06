@@ -227,7 +227,7 @@ The introduction of group-specific random effects allows to analyze grouped or r
 \mathbf{y}_{j}|U_i,\epsilon_{j} =  x_j\beta + U_i + \epsilon_{j} \label{eq:one.random.intercept}
 \end{align}
 
-gives the marginal distribution of $\mathbf{y}{_{j}}$ depending on $U{_i}$ and $\epsilon{_{j}}$. The random effects $U{_i} \sim N(0, \mathbf{G})$ and the residual error term $\epsilon{_{j}} \sim N(0, \tau^{2})$ are independent from eahc other. The expectation $\mathbb{E}(\mathbf{y}_{j})$ is still $x_j \beta$, but now, the covariance between the observations within a group $i$, $\mathbf{y}_i$, is modeled as
+gives the marginal distribution of $\mathbf{y}{_{j}}$ depending on $U{_i}$ and $\epsilon{_{j}}$. The random effects $U{_i} \sim N(0, \mathbf{G})$ and the residual error term $\epsilon{_{j}} \sim N(0, \tau^{2})$ are independent from each other. The expectation $\mathbb{E}(\mathbf{y}_{j})$ is still $x_j \beta$, but now, the covariance between the observations within a group $i$, $\mathbf{y}_i$, is modeled as
 
 \begin{align}
 \Cov(\mathbf{y}_i) &= \mathbf{D}_i \mathbf{G} \mathbf{D}_i^\top + \tau^2 \mathbf{I}_{n_i} \label{eq:random.intercepts.covariance}
@@ -246,7 +246,7 @@ $\mathbf{D}_i$ is a $p + 1 \times n_i$ matrix where the $j^\textrm{th}$ column i
 \hat{\beta} &= \Big( \sum_{i = 1}^m \mathbf{x}_i^\top \hat{\mathbf{V}}_i^{-1} \mathbf{x}_i \Big)^{-1} \sum_{i = 1}^m \mathbf{x}_i^\top \hat{\mathbf{V}}_i^{-1} \mathbf{y}_i
 \end{align}
 
-whith $m$ being the number of groups and $\hat{\mathbf{V}}_i$ being the estimated covariance, obtained by maximizing the log likelihood of the normal distribution, as $\mathbf{y}_i$ is distributed as
+with $m$ being the number of groups and $\hat{\mathbf{V}}_i$ being the estimated covariance, obtained by maximizing the log likelihood of the normal distribution, as $\mathbf{y}_i$ is distributed as
 
 \begin{align}
 \mathbf{y}_i \sim N(\mathbf{x}_i \beta, \mathbf{V}_i)
@@ -258,7 +258,7 @@ $\Big( \sum_{i = 1}^m \mathbf{x}_i^\top \hat{\mathbf{V}}_i^{-1} \mathbf{x}_i \Bi
 \hat{\Cov(\hat{\beta})} &= \Big( \sum_{i = 1}^m \mathbf{x}_i^\top \hat{\mathbf{V}}_i^{-1} \mathbf{x}_i \Big)^{-1}
 \end{align}
 
-Weights can be introduced by replacing $\mathbf{I}_{n_i}$ in \eqref{eq:random.intercepts.covariance} with the previously introduced weight matrix $\mathbf{W}_i$ .Hypothesis tests for $\beta = \beta_\textrm{H0}$ can be made using the wald method. 
+Weights can be introduced by replacing $\mathbf{I}_{n_i}$ in \eqref{eq:random.intercepts.covariance} with the previously introduced weight matrix $\mathbf{W}_i$ .Hypothesis tests for $\beta = \beta_\textrm{H0}$ can be made using the Wald method. 
 
 
 
@@ -368,7 +368,7 @@ The correlation between variance and effect size of dichotomous outcome measures
 
 \begin{align}
 \theta_i &= \arcsin{e_t/n_t} - \arcsin{e_c/n_c} \nonumber &
-\se_i^2 &= 1/4n_t + /4n_c \nonumber
+\se_i^2 &= 1/4n_t + 1/4n_c \nonumber
 \end{align}
 
 Then one can optionally apply Begg and Mazumdar's rank correlation test or Thompson and Sharp's test using the newly obtained estimates.
@@ -419,14 +419,11 @@ with $p = E/n$ and $X$ being a binomial random variable with probability $p$.
 
 
 
-\section{Small Study Effect and Publication Bias Adjustment}
+\section{Publication Bias Adjustment}
 There are different approaches to correct for small study effects and publication bias. They can mainly be distinguished by their underlying methods: regression based approaches aim to regress the effect to a study with infinite precision (\ie very small standard error) or to a summary effect, corrected for publication bias. Selection models aim to simulate different, hypothetical selection processes and attain a approximate treatment effect by sensitivity analysis:
 
 \subsection{Adjustment by Regression} \label{sec:regression.adjustment}
-\citet{limitmeta} use a random effects model %together with shrinkage procedure 
-to obtain an unbiased estimate. Similarly to 
-%what has been seen in Copas selection model, we let $y_i$ depend on the intercept $\beta_{0}$ and on its standard error $\sqrt{v_i}$ as in \eqref{limitmeta.regression}.
-regression based tests for small study effects, we have
+In \citet{limitmeta.2} and \citet{limitmeta}, a random effects model is proposed to obtain unbiased treatment effect estimates. Similarly to regression based tests for small study effects, we have
 
 \begin{align}
 \theta_i & = \beta_0 + \beta_1\sqrt{\se_i^2 + \tau^2} + \epsilon_i\sqrt{v_i + \tau^2}, \epsilon_i \stackrel{\textrm{iid}}{\sim} N(0,1)  \label{eq:limitmeta.regression}
@@ -445,7 +442,7 @@ After estimating $\tau^2$, one can estimate $\beta_{0}$ and $\beta_{1}$ as seen 
 \item $\beta_0 + \beta_1 \tau$ the treatment effect of a hypothetical study with infinite precision, corresponding standard error $\se = s_{\beta_0} + s_{\beta_1}$
 \end{itemize}
 
-Simulations in \citet{limitmeta} suggested that the latter estimate is slightly superior with respect to coverage (and mean squared error).
+Simulations in \citet{limitmeta} suggested that the latter estimate is slightly superior to the former, because it showed a smaller mean-squared error in simulation studies \citet{limitmeta.2}. Also, this simulation study emphasizes that adjustment is more reliable when effects of publication bias are strong within a meta-analysis. When no publication bias affects the meta-analysis, and event rates are low, the method will provide biased estimates and the mean squared error is large. Coverage of the confidence is always larger or equal to meta-analysis. It outperforms or is equal to classical meta-analysis estimates if there is publication bias, especially if event rates in the control group are small. 
 
 
 
@@ -532,7 +529,7 @@ with
 
 $\chi^2$ can be used with a $\chi^2$ distribution with one degree of freedom to obtain a $p$-value. Note that the test is almost equivalent to Egger's small study effect test with $\tau^2 = 0$. Thus, although the copas selection model models publication bias, it is dependent on the small study effects to find the most suitable pair $(a,b)$. \\
 If one applies the model to a single meta-analysis, a sensitivity analysis is suggested. One can observe how $\theta$ and it's confidence intervals change dependent on the underlying selection process. Selection models are in general not recommended for inference (\eg \citet{selection.assessment}). 
-\citet{limitmeta} have shown how the method can be implemented in a simulation for inference purposes. \\
+\citet{limitmeta} have shown how the method can be implemented in a simulation for inference purposes. However, in the simulations, the method was outperformed by the regression adjustment method when publication bias was present. Especially when event rates in the control group were small and publication bias was strong, bias, mean squared error and coverage was substantially worse.\\
 A range of values of $(a,b)$ are applied, and the test for residual small study effect as described in equation \eqref{eq:copas.small.study} is applied. If all obtained $p$-values from the test are above a threshold 0.1, this is interpreted as no evidence, and no need for modelling, and the standard, classical random effects meta-analysis is retained. If none of the $p$-values is above the threshold, a wider range of values for $(a,b)$ is used. When some $p$-values are above, and some below the threshold, the pair $(a,b)$ with the smallest number of missing studies is retained (that is, the least intense underlying selection model is chosen).\\
 Currently, there is no test to detect miss-specifications in the model itself, the authors themselves have argued that a non-parametric test of the residuals would lack power.
 
