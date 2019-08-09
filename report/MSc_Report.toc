@@ -6,27 +6,25 @@
 \contentsline {section}{\numberline {1.1}Aim of the Study}{3}{section.1.1}
 \contentsline {chapter}{\numberline {2}Methods}{5}{chapter.2}
 \contentsline {section}{\numberline {2.1}Introduction and Notation}{5}{section.2.1}
-\contentsline {section}{\numberline {2.2}Effect Measures and $p$-values}{5}{section.2.2}
+\contentsline {section}{\numberline {2.2}Effect Measures and $p$\hspace {0.4mm}-values}{5}{section.2.2}
 \contentsline {subsection}{\numberline {2.2.1}Continuous Outcomes}{5}{subsection.2.2.1}
 \contentsline {subsection}{\numberline {2.2.2}Binary Outcomes}{6}{subsection.2.2.2}
-\contentsline {subsection}{\numberline {2.2.3}Survival Outcomes}{6}{subsection.2.2.3}
+\contentsline {subsection}{\numberline {2.2.3}Time-to-Event Outcomes}{6}{subsection.2.2.3}
 \contentsline {section}{\numberline {2.3}Fixed and Random Effects Meta-Analysis}{7}{section.2.3}
 \contentsline {section}{\numberline {2.4}Linear, Weighted and Linear Mixed Regression Models}{8}{section.2.4}
-\contentsline {section}{\numberline {2.5}Small Study Effects Tests}{11}{section.2.5}
-\contentsline {subsection}{\numberline {2.5.1}Continuous Outcome Tests}{11}{subsection.2.5.1}
-\contentsline {subsubsection}{Begg and Mazumdar: Rank Correlation Test}{11}{section*.4}
-\contentsline {subsubsection}{Egger's Test: Weighted Linear Regression Test}{11}{section*.5}
-\contentsline {subsubsection}{Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{12}{section*.6}
-\contentsline {subsection}{\numberline {2.5.2}Dichotomous Outcomes Tests}{12}{subsection.2.5.2}
-\contentsline {subsubsection}{Peters Test: Weighted Linear Regression Test}{12}{section*.7}
-\contentsline {subsubsection}{Harbord's Test: Score based Test}{12}{section*.8}
-\contentsline {subsubsection}{Schwarzer's Test: Rank Correlation Test}{13}{section*.9}
-\contentsline {subsubsection}{R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{13}{section*.10}
-\contentsline {subsection}{\numberline {2.5.3}Excess Significance Test}{13}{subsection.2.5.3}
-\contentsline {section}{\numberline {2.6}Publication Bias Adjustment}{14}{section.2.6}
+\contentsline {section}{\numberline {2.5}Publication Bias Tests}{11}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}Begg and Mazumdar: Rank Correlation Test}{11}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}Egger's Test: Weighted Linear Regression Test}{11}{subsection.2.5.2}
+\contentsline {subsection}{\numberline {2.5.3}Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{12}{subsection.2.5.3}
+\contentsline {subsection}{\numberline {2.5.4}Peters Test: Weighted Linear Regression Test}{12}{subsection.2.5.4}
+\contentsline {subsection}{\numberline {2.5.5}Harbord's Test: Score based Test}{12}{subsection.2.5.5}
+\contentsline {subsection}{\numberline {2.5.6}Schwarzer's Test: Rank Correlation Test}{12}{subsection.2.5.6}
+\contentsline {subsection}{\numberline {2.5.7}R\"ucker's Test: Using the Variance Stabilizing Transformation for Binomial Random Variables}{13}{subsection.2.5.7}
+\contentsline {subsection}{\numberline {2.5.8}Excess Significance Test}{13}{subsection.2.5.8}
+\contentsline {section}{\numberline {2.6}Publication Bias Adjustment}{13}{section.2.6}
 \contentsline {subsection}{\numberline {2.6.1}Adjustment by Regression}{14}{subsection.2.6.1}
-\contentsline {subsection}{\numberline {2.6.2}Copas Selection Model}{15}{subsection.2.6.2}
-\contentsline {section}{\numberline {2.7}Transformation between Effect Measures}{17}{section.2.7}
+\contentsline {subsection}{\numberline {2.6.2}Copas Selection Model}{14}{subsection.2.6.2}
+\contentsline {section}{\numberline {2.7}Transformation between Effect Measures}{16}{section.2.7}
 \contentsline {chapter}{\numberline {3}The Cochrane Dataset}{19}{chapter.3}
 \contentsline {section}{\numberline {3.1}Cochrane Systematic Reviews}{19}{section.3.1}
 \contentsline {subsection}{\numberline {3.1.1}Methods for Cochrane Reviews}{20}{subsection.3.1.1}
@@ -34,14 +32,14 @@
 \contentsline {section}{\numberline {3.2}Data Tidying and Processing}{24}{section.3.2}
 \contentsline {subsection}{\numberline {3.2.1}Newly Introduced Variables}{24}{subsection.3.2.1}
 \contentsline {subsection}{\numberline {3.2.2}Eligibility criteria for Publication Bias Test and Adjustment}{25}{subsection.3.2.2}
-\contentsline {subsubsection}{Exclusions for other Reasons}{26}{section*.19}
-\contentsline {subsubsection}{The Analysis Dataset}{26}{section*.20}
+\contentsline {subsubsection}{Exclusions for other Reasons}{26}{section*.12}
+\contentsline {subsubsection}{The Analysis Dataset}{26}{section*.13}
 \contentsline {subsection}{\numberline {3.2.3}Analysis Procedure}{26}{subsection.3.2.3}
 \contentsline {chapter}{\numberline {4}Results}{29}{chapter.4}
-\contentsline {section}{\numberline {4.1}Publication Bias Test Results}{30}{section.4.1}
+\contentsline {section}{\numberline {4.1}Publication Bias Test Results}{29}{section.4.1}
 \contentsline {subsection}{\numberline {4.1.1}Publication Bias Test Consistency}{31}{subsection.4.1.1}
-\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{35}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{35}{subsection.4.2.1}
+\contentsline {section}{\numberline {4.2}Small Study Effects Adjustment}{34}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Change in Effect Size after Adjustment}{34}{subsection.4.2.1}
 \contentsline {subsection}{\numberline {4.2.2}Comparison of adjustment methods}{38}{subsection.4.2.2}
 \contentsline {subsection}{\numberline {4.2.3}Change in Evidence for Treatment Effects}{38}{subsection.4.2.3}
 \contentsline {section}{\numberline {4.3}Publication Bias over Time}{40}{section.4.3}
@@ -59,4 +57,4 @@
 \contentsline {section}{\numberline {5.4}Outlook}{49}{section.5.4}
 \contentsline {section}{\numberline {5.5}Implications}{49}{section.5.5}
 \vspace *{10mm}
-\contentsline {chapter}{\bfseries Bibliography}{51}{section*.45}
+\contentsline {chapter}{\bfseries Bibliography}{51}{section*.38}

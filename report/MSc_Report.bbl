@@ -128,6 +128,12 @@ Galbraith, R.~F. (1988).
   several clinical trials.
 \newblock {\em Statistics in Medicine}, {\bf7},  889--894.
 
+\bibitem[Good, 1958]{harmonic.p}
+Good, I.~J. (1958).
+\newblock Significance tests in parallel and in series.
+\newblock {\em Journal of the American Statistical Association}, {\bf53},
+  799--813.
+
 \bibitem[Harbord {\it et~al.}, 2006]{Harbord}
 Harbord, R.~M., Egger, M., and Sterne, J. A.~C. (2006).
 \newblock A modified test for small-study effects in meta-analyses of
@@ -178,11 +184,6 @@ Jones, C.~W., Handler, L., Crowell, K.~E., Keil, L.~G., Weaver, M.~A., and
   analysis.
 \newblock {\em BMJ (Clinical research ed.)}, {\bf347},  f6104--f6104.
 
-\bibitem[Kasuya, 2001]{t.test}
-Kasuya, E. (2001).
-\newblock Mann-whitney u test when variances are unequal.
-\newblock {\em Animal Behaviour}, {\bf6},  1247--1249.
-
 \bibitem[Kicinski, 2013]{bayesian.selection.model}
 Kicinski, M. (2013).
 \newblock Correction: Publication bias in recent meta-analyses.
@@ -216,6 +217,13 @@ McShane, B.~B., B{\"o}ckenholt, U., and Hansen, K.~T. (2016).
 \newblock Adjusting for publication bias in meta-analysis: An evaluation of
   selection methods and some cautionary notes.
 \newblock {\em Perspectives on Psychological Science}, {\bf11},  730--749.
+
+\bibitem[Moreno {\it et~al.}, 2009]{Moreno.2009}
+Moreno, S.~G., Sutton, A.~J., Ades, A., Stanley, T.~D., Abrams, K.~R., Peters,
+  J.~L., and Cooper, N.~J. (2009).
+\newblock Assessment of regression-based methods to adjust for publication bias
+  through a comprehensive simulation study.
+\newblock {\em BMC Medical Research Methodology}, {\bf9},  2.
 
 \bibitem[Mueller {\it et~al.}, 2016]{mueller.2016}
 Mueller, K.~F., Meerpohl, J.~J., Briel, M., Antes, G., von Elm, E., Lang, B.,

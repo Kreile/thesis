@@ -15,7 +15,7 @@ opts_chunk$set(fig.path='figure/ch03_fig',
 options(width=74)
 @
 
-<<'Data03', echo=FALSE, warning=FALSE>>= 
+<<'Data03', echo=FALSE, warning=FALSE, cache = TRUE>>= 
 #Load data:
 rm(list = ls())
 PATH_HOME = path.expand("~") # user home
@@ -54,44 +54,50 @@ load(file.path(PATH_RESULTS, "meta.iv.RData"))
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<echo=FALSE, warning=FALSE, message = FALSE>>=
-p.samplesize.z  <- data.ext2 %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>% ungroup() %>%
+p.samplesize.z  <- data.ext2 %>% 
+  filter(total1 + total2 > 15 & total1 + total2 < 300) %>% ungroup() %>%
   mutate(std.z = abs(z), sample.size = total1 + total2) %>%
-  group_by(sample.size) %>%
+  group_by(sample.size, outcome.desired) %>%
   summarize(median.effect = median(std.z, na.rm = T)) %>%
-  ggplot(aes(x = sample.size, y = median.effect)) + geom_point(size = 0.8) +
+  ggplot(aes(x = sample.size, y = median.effect)) + 
+  geom_point(size = 0.8) + facet_wrap(~outcome.desired) +
   theme_bw() + xlab("sample size") + ylab("median absolute z-score") +
   xlim(c(15, 300)) + ylim(c(0, 0.25)) +
   scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
 
 
-labels <- c(RR = "Risk Ratio", OR = "Odds Ratio", MD = "Mean Difference", SMD = "Std. Mean Difference")
+labels <- c(RR = "log Risk Ratio", OR = "log Odds Ratio", MD = "Mean Difference", SMD = "Std. Mean Difference")
 
-p.samplesize.effect.sep <- data %>% filter(total1 + total2 > 15 & total1 + total2 < 300) %>%
+p.samplesize.effect.sep <- data %>% 
+  filter(total1 + total2 > 15 & total1 + total2 < 300) %>%
+  filter(outcome.desired == "efficacy") %>% 
   filter(id != "CD001293") %>%  #filter out this crazy review..
   filter(outcome.measure.merged == "RR" |
            outcome.measure.merged == "OR" |
            outcome.measure.merged == "MD" |
            outcome.measure.merged == "SMD") %>%
   group_by(outcome.measure.merged) %>%
-  mutate(sample.size = total1 + total2, scaled.effect = abs(scale(effect, center = T, scale = T))) %>%
+  mutate(sample.size = total1 + total2, 
+         scaled.effect = case_when(outcome.measure.merged == "RR" ~ abs(log(effect)),
+                                   outcome.measure.merged == "OR" ~ abs(log(effect)),
+                                   TRUE ~ abs(effect))) %>% 
   group_by(sample.size, outcome.measure.merged) %>%
   summarize(median.effect = median(scaled.effect, na.rm = T)) %>%
   ggplot(aes(x = sample.size, y = median.effect, group = outcome.measure.merged)) + geom_point(size = .5) + facet_wrap(~outcome.measure.merged, scales = "free", labeller = labeller(outcome.measure.merged = labels)) +
-  theme_bw() + xlab("sample size") + ylab("median absolute normalized effect size") +
+  theme_bw() + xlab("sample size") + ylab("median absolute effect size") +
   xlim(c(15, 300)) +
   scale_x_continuous(limits = c(15, 300), breaks = c(15, 100, 200, 300))
 @
 
-
-Using Fisher's $z$ transformation, we can transform all effect sizes of the dataset on the same scale such that they are comparable to each other. Thus, as a first step, an exploratory plot of the median effect size and it's dependence on the study sample size can be shown. \\
-The absolute value of the median $z$-score for a given sample size of a trial is shown in Figure \ref{z.samplesize}. It is clearly visible that the absolute value decreases with increasing sample size, i.e. that the effect size is becoming smaller. The trend flattens off after $\sim$ sample size = 400 (not shown). \\
-The pattern is similar in Figure \ref{effect.samplesize.separated}, where the original effect size measures ``Odds Ratio'', ``Risk Ratio'', ``Mean Difference'' and ``Std. Mean Difference'' are used (the most common measures in the dataset). Here, the effect sizes are scaled (mean subtraction and division through standard error) with respect to all other effects of the same measure. 
+Meta analyis are based on results of primary studies. Therefore, in a first step, an exploratory plot of the median effect size and it's dependence on the study sample size can be shown. \\
+The absolute value of the median $z$-score for a given sample size of a trial is shown in Figure \ref{z.samplesize}. The medians are calculated separately for efficacy and safety outcomes. It is clearly visible that the absolute value of the medians for efficacy decreases with increasing sample size. The sample size is much smaller for safety outcomes, such that it is not clear if the median effect sizes of safety outcomes do not decrease with increasing sample size, or the variation between medians is just too large to detect a decrease.\\
+The pattern for efficacy outcomes is the same for all common outcome measures as shown in Figure \ref{effect.samplesize.separated}, where the original effect size measures ``log Odds Ratio'', ``log Risk Ratio'', ``Mean Difference'' and ``Std. Mean Difference'' are used (the most common measures in the dataset, ~ 98\%). 
 
 \begin{figure}
 <<echo=FALSE, warning=FALSE>>=
 plot(p.samplesize.z)
 @
-\caption{Median of the absolute $z$-score plotted against the total sample size.}
+\caption{Median of the absolute $z$-score across sample size plotted against the total sample size.}
 \label{z.samplesize}
 \end{figure}
 
@@ -99,7 +105,7 @@ plot(p.samplesize.z)
 <<echo=FALSE>>=
 plot(p.samplesize.effect.sep)
 @
-\caption{Median of the absolute value of the normalized, original effect size plotted against the total sample size.}
+\caption{Median of the absolute value of the original effect size across sample size plotted against the total sample size.}
 \label{effect.samplesize.separated}
 \end{figure}
 
@@ -252,7 +258,7 @@ dat_text <- data.frame(
   test.type   = c("pval1.harbord", "pval1.peter", "pval1.rucker", "pval1.rucker.linreg", "pval1.schwarzer", "pval1.d.tes"),
   i2f = factor(rep(0, times = 6)))
 
-labels <- c(pval1.harbord = "Harbord", pval1.peter = "Peter", pval1.rucker = "Rucker (thompson)", pval1.rucker.linreg = "Rucker (egger)", pval1.schwarzer = "Schwarzer", pval1.d.tes = "Excess Significance")
+labels <- c(pval1.harbord = "Harbord", pval1.peter = "Peter", pval1.rucker = "Rucker (Thompson)", pval1.rucker.linreg = "Rucker (Egger)", pval1.schwarzer = "Schwarzer", pval1.d.tes = "Excess significance")
 
 p.dist.bin <- meta.bin %>% ungroup() %>% 
   select(i2f, pval1.harbord, pval1.peter, pval1.rucker, pval1.rucker.linreg, pval1.d.tes, pval1.schwarzer) %>% 
@@ -505,23 +511,23 @@ harmonic.means <- round(harmonic.means*100, 1)
 
 
 
-The meta-analyses fulfilling the criteria from chapter \ref{ch:dataset}, section \ref{sec:Processing}, are analysed with one-sided small publication bias tests and excess significance tests. The direction in which bias is expected is the one on which more significant results are ($p$-value < 0.05, two-sided). The tests are applied on the original effect size measures, since the journal editors and the researchers also base their decisions on them. Different tests are applied depending on the outcome being binary or continuous or if the data is only partially available.\\
+The meta-analyses fulfilling the criteria from Chapter \ref{ch:dataset}, section \ref{sec:Processing}, are analysed with one-sided small publication bias tests and excess significance tests. The direction in which bias is expected is the one on which more significant results of primary studies are (two-sided $p$-value < 0.05). The tests are applied on the original effect size measures, since the journal editors and the researchers also base their decisions on them. Different tests are applied depending on the outcome being binary or continuous or if the data is only partially available (\texttt{outcome.flag} = \texttt{IV}).\\
 Multiple tests are applied in order to compare their results. A histogram of $p$-values for each test will summarize the overall evidence against the null-hypothesis of no publication bias, as displayed in Figure \ref{fig:test}.\\
-The abbreviations in Figure \ref{fig:test}  are shortly explained with references to chapter \ref{ch:methods}: \\
+The abbreviations in Figure \ref{fig:test}  are shortly explained with references to Chapter \ref{ch:methods}: \\
 ``Excess significance'' denotes the excess of significant $p$-values testing method from \citet{excess.significance}, see \ref{sec:excess.significance}. For continuous and \texttt{IV} outcomes, the names refer to: 
 
 \begin{itemize}
-\item Egger's test, weighted linear regression test described in section \ref{sec:Egger}
-\item Thompson and Sharp's test, weighted linear regression test adjusted for between-study heterogeneity, section \ref{sec:Thompson}
-\item Begg and Mazumdar's test, rank test described in section \ref{sec:Begg}
+\item Egger's test, weighted linear regression test described in Section \ref{sec:Egger}
+\item Thompson and Sharp's test, weighted linear regression test adjusted for between-study heterogeneity, Section \ref{sec:Thompson}
+\item Begg and Mazumdar's test, rank test described in Section \ref{sec:Begg}
 \end{itemize}
 
 For binary outcomes, the names refer to:
 \begin{itemize}
-\item Harbord's test, likelihood score based test (section \ref{sec:Harbord})
-\item Peter's test, weighted linear regression with inverse sample size as explanatory variable described in section \ref{sec:Peter}
-\item R\"ucker's test, test based on the arcsine transformation of proportions, in combination with Thompson and Sharp's regression test (section \ref{sec:Rucker})
-\item Schwarzer's test, rank based test using the expected event counts computed with the hypergeometric distribution (section \ref{sec:Schwarzer})
+\item Harbord's test, likelihood score based test (Section \ref{sec:Harbord})
+\item Peter's test, weighted linear regression with inverse sample size as explanatory variable described in Section \ref{sec:Peter}
+\item R\"ucker's test, test based on the arcsine transformation of proportions, in combination with Thompson and Sharp's regression test (Section \ref{sec:Rucker})
+\item Schwarzer's test, rank based test using the expected event counts computed with the hypergeometric distribution (Section \ref{sec:Schwarzer})
 \end{itemize}
 
 \begin{figure}
@@ -535,9 +541,9 @@ grid.arrange(p.dist.bin,
 \end{figure}
 
 %Agreement table -> Chunck 1
-The histograms in Figure \ref{fig:test} show that the tests do not coherently find evidence for publication bias in the dataset. The $p$-values of excess significance and Schwarzer's test are rather uniformly distributed. Notably, excess significance test, Schwarzer's test and rank tests have been shown to lack power. The tests that are more suitable (regression based tests in general) all have proportions of significant $p$-values ($p$ > 0.1) clearly above 10 \% which would be the expected false positive rate.\\
-In Figure \ref{fig:test}, the meta-analyses with an estimated $I^2$ of zero are depicted, because some methods are known to only be suitable when no heterogeneity is present (excess significance test and also Egger's test). Other tests are specially constructed to adjust for between study heterogeneity (Thompson and Sharp's test and R\"ucker's test). It can be seen that these tests find a smaller proportion of significant results in Figure \ref{fig:test}. However, this is also due to application to meta-analyses with no between-study heterogeneity, where the methods lack statistical power. Similarly, the evidence decreases somewhat when R\"ucker's test is extended by Thompson and Sharp's method to account for heterogeneity. The moderate decrease indicates however that the previous restriction to meta-analyses with $I^2 < 0.5$ is sufficient to remove meta-analyses with large heterogeneity and that the test results are not heavily influenced by unaccounted between-study heterogeneity.\\
-The $p$-values of tests can be summarized by computing their harmonic mean. In the case of binary tests, the $p$-values of R\"ucker's, Peters, Harbord's, Schwarzer's and excess significance tests are used, in the case of continuous and \texttt{outcome.flag} = \texttt{IV} outcomes, Egger's, Thompson and Sharp's, Begg and Mazumdar's and excess significance tests are used. This lead's to an overall of \Sexpr{harmonic.means[1]}\% significant results ($p_\textrm{harmonic}$ < 0.1, \Sexpr{harmonic.means[2]}\% \texttt{outcome.flag} = \texttt{DICH}, \Sexpr{harmonic.means[3]}\% \texttt{outcome.flag} = \texttt{CONT}, \Sexpr{harmonic.means[4]}\% \texttt{outcome.flag} = \texttt{IV}).
+The histograms in Figure \ref{fig:test} show that the tests mostly find evidence for publication bias in the dataset. The $p$-values of excess significance and Schwarzer's test are rather uniformly distributed, but notably, excess significance test, Schwarzer's test and rank tests have been shown to lack statistical power. The tests that are more suitable (regression based tests in general) all have proportions of significant $p$-values ($p$ > 0.1) clearly above 10 \% which would be the expected false positive rate.\\
+In Figure \ref{fig:test}, the meta-analyses with an estimated $I^2$ of zero are depicted, because some methods are known to only be suitable when no heterogeneity is present (excess significance test and also Egger's test). Other tests are specially constructed to adjust for between study heterogeneity (Thompson and Sharp's test and R\"ucker's test). These tests find a smaller proportion of significant results in Figure \ref{fig:test}. However, this is also due to application to meta-analyses with no between-study heterogeneity, where the methods lack statistical power. Similarly, the evidence decreases somewhat when R\"ucker's test is extended by Thompson and Sharp's method to account for heterogeneity. The moderate decrease indicates however that the previous restriction to meta-analyses with $I^2 < 0.5$ is sufficient to remove meta-analyses with large heterogeneity and that the test results are not heavily influenced by unaccounted between-study heterogeneity.\\
+The $p$-values of tests can be summarized by computing their harmonic mean \citep{harmonic.p}. In the case of binary tests, the $p$-values of R\"ucker's, Peters, Harbord's, Schwarzer's and excess significance tests are used, in the case of continuous and \texttt{outcome.flag} = \texttt{IV} outcomes, Egger's, Thompson and Sharp's, Begg and Mazumdar's and excess significance tests are used. This lead's to an overall of \Sexpr{harmonic.means[1]}\% significant results ($p_\textrm{harmonic}$ < 0.1, \Sexpr{harmonic.means[2]}\% \texttt{outcome.flag} = \texttt{DICH}, \Sexpr{harmonic.means[3]}\% \texttt{outcome.flag} = \texttt{CONT}, \Sexpr{harmonic.means[4]}\% \texttt{outcome.flag} = \texttt{IV}).
 
 
 
@@ -551,7 +557,7 @@ It cannot be seen in Figure \ref{fig:test} if the tests used are finding small s
 <<echo=FALSE, fig.height = 7, fig.width = 8.5, warning=FALSE>>=
 corrgram(cor.data, 
          upper.panel=panel.pts.new, lower.panel=panel.cor, 
-         cex.labels = 1, cex = .25, cex.cor = 2, pch = 1,
+         cex.labels = 2, cex = .25, cex.cor = 2, pch = 1,
          text.panel=panel.txt, cor.method = "spearman")
 @
 \caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots inside are statistically not significant by 0.1 $p$-value threshold).}
@@ -575,7 +581,7 @@ This can be justified since all tests are supposed to measure the evidence for p
 \end{itemize}
 
 There are likely systematic errors and bias between the tests, although the extent seems to vary. Most error seems to be between small study effect tests and excess significance tests, because the slope of the linear regression fit is likely positive. This means that the excess significance test finds less evidence in cases when both $p$-values are small and more evidence when both $p$-values are large, on average.\\
-The confidence intervals from Figure \ref{fig:mean.diff.test} can be used as limits of agreement, which gives, after back-transformation, around 0.9 for Egger's and Thompson's test, and around 0.99 for Harbord's and R\"ucker's tests. This suggests that additionally to the bias correspondence between the tests is not very good in general. 
+However, the confidence intervals from Figure \ref{fig:mean.diff.test} are very large. This suggests that additionally to the bias correspondence between the tests is not very good in general. 
 
 \begin{figure}
 <<echo=FALSE, fig.height = 8.5, warning=FALSE>>=
@@ -589,7 +595,9 @@ In green, a linear regression fit is shown with 95\% CI bands.}
 \label{fig:mean.diff.test}
 \end{figure}
 
-The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. Some proportion of the meta-analyses will only be significant using a single test, while being non-significant otherwise. This can be seen in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results. For both outcome types, there is only marginal agreement, very few cases are significant in any test. Around 67\% of the dataset is not significant, no matter which test is used. When only using small study effect tests, \Sexpr{mean.min.bin}\% of binary outcome tests and \Sexpr{mean.min.else}\% of \texttt{IV} and continuous outcome tests had at least one significant result. After applying the Bonferroni correction for multiple testing, this shrinks to \Sexpr{mean.min.bin.b}\% for binary and \Sexpr{mean.min.else.b}\% for continuous and \texttt{IV} outcomes. To compare significant findings for small study effect tests and excess significance tests, Harbord's or Egger's test results are compared with excess significance tests. \Sexpr{mean.min.bin2}\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, \Sexpr{mean.min.else2}\% for continuous and \texttt{IV} outcomes. The numbers change to \Sexpr{mean.min.bin2.b}\% for binary outcomes and \Sexpr{mean.min.else2.b}\% for continuous and \texttt{IV} outcomes after applying the Bonferroni correction. \Sexpr{both.bin}\% have significant Harbord's test result and significant excess significance test result  (\Sexpr{both.bin.b}\% with Bonferroni). Of the continuous outcomes, we have \Sexpr{both.else}\% with Egger's test and \Sexpr{both.else.b}\% with Bonferroni correction. \\
+The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. Some proportion of the meta-analyses will only be significant using a single test, while being non-significant otherwise. This can be seen in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results. Very few meta-analyses are give a significant result, independently of the test applied. Around 67\% of the dataset is not significant, no matter which test is used. When leaving away the excess significance test, \Sexpr{mean.min.bin}\% of binary outcome tests and \Sexpr{mean.min.else}\% of \texttt{IV} and continuous outcome tests had at least one significant result. 
+%After applying the Bonferroni correction for multiple testing, this shrinks to \Sexpr{mean.min.bin.b}\% for binary and \Sexpr{mean.min.else.b}\% for continuous and \texttt{IV} outcomes. 
+To compare significant findings for small study effect tests and excess significance tests, Harbord's or Egger's test results are compared with excess significance tests. \Sexpr{mean.min.bin2}\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, \Sexpr{mean.min.else2}\% for continuous and \texttt{IV} outcomes. The numbers change to \Sexpr{mean.min.bin2.b}\% for binary outcomes and \Sexpr{mean.min.else2.b}\% for continuous and \texttt{IV} outcomes after applying the Bonferroni correction. \Sexpr{both.bin}\% have significant Harbord's test result and significant excess significance test result  (\Sexpr{both.bin.b}\% with Bonferroni). Of the continuous outcomes, we have \Sexpr{both.else}\% with Egger's test and \Sexpr{both.else.b}\% with Bonferroni correction. \\
 
 <<echo = FALSE, results='asis'>>=
 print(xtable(number.sig.tests, caption = "Counts Number of significant test results per meta-analysis, separated
@@ -597,7 +605,8 @@ print(xtable(number.sig.tests, caption = "Counts Number of significant test resu
        applied", label = "number.sig.tests", align = "lccc"), include.rownames = F, size = "footnotesize")
 @
 
-The precise proportions of agreement are provided in table \ref{test.agreement}. We see that only in few cases when excess significance test indicates statistical significance, small study effect tests do so. Correspondence between excess significance tests and small study effects thus is considered rather random. Linear regression based tests agree more often with other linear regression based tests, and agreement between small study effect tests is in general well above 60 \% (at best, 95 \% test agreement in significance for \texttt{IV} \texttt{outcome.flag}).
+The precise proportions of agreement are provided in table \ref{test.agreement}. %Correspondence between excess significance tests and small study effects thus is considered rather random. 
+Linear regression based tests agree more often with other linear regression based tests, and agreement between small study effect tests is in general well above 60 \% (at best, 95\% test agreement in significance for \texttt{IV} \texttt{outcome.flag}). The agreement on statistical significance between small study effect tests and excess significance tests ranges from 64\% to 4\% (for \texttt{IV} and rank tests). 
 
 <<echo = FALSE, results = 'asis'>>=
 print(xtable(test.agreement, align = "lcc", caption = "Overall proportion of agreement if significant or unsignificant, and for significance only. Horizontal lines separate binary, continuous and IV outcomes (order as in table). The reference significance test is the one with more significant results.",
@@ -1177,8 +1186,10 @@ colnames(missing.copas.table) <- c("= 0", colnames(missing.copas.table)[2:6], "m
 
 There are methods that can take into account the presence of publication bias in meta-analyses when estimating the overall treatment effect. The methods work in a semi-automatic manner; they will not only adjust for publication bias if smaller studies show larger effects, but also in the opposite case. The latter results in the adjusted overall treatment effect being \textit{larger} than the unadjusted, overall treatment effect. \\
 To compare the effects of adjustment between meta-analyses of different outcomes, the outcome measures are transformed to standardized mean differences and Fisher's $z$-scores (see section \ref{sec:transformation.effectsizes} for details). When comparing to unadjusted effects, fixed or random effects meta-analysis estimates are used as references\\
-Figure \ref{fig:adjustment.reg} displays the difference $\delta$ between the estimated meta-analysis treatment effect and the regression adjusted treatment effect \ref{sec:regression.adjustment}, $\hat{\theta}_M - \hat{\theta}_\textrm{Adj.}$. The absolute value $|\hat{\theta}_M|$ is taken and $\hat{\theta}_\textrm{Adj.}$ is negative if the signs change in the original $\theta$. Thus, a positive difference indicates a reduction of the original effect size, and the magnitude of the difference indicates the extent of the adjustment. \\
-Additionally, the test statistic of heterogeneity adjusted publication bias tests (R\"ucker's and Thompson's test) are displayed with green color. Test statitics smaller $< 1$ (light green colored) are equivalent to no evidence for publication test, test statistics between one and two to weak evidence, and above two they indicate evidence for publication bias (dark green). An adjusted effect with evidence for publication bias can be regarded as a more realistic estimate of treatment efficacy. Some very large and very small differences have been omitted in the $z$-score and std. mean difference histograms; they are shown in Table \ref{missing.differences}. \\
+Figure \ref{fig:adjustment.reg} displays the difference between the estimated meta-analysis treatment effect and the regression adjusted treatment effect \ref{sec:regression.adjustment}, $\hat{\theta}_M - \hat{\theta}_\textrm{Adj.}$. The absolute value $|\hat{\theta}_M|$ is taken and $\hat{\theta}_\textrm{Adj.}$ is negative if it's sign is different from the sign of the original $\theta$. Thus, a positive difference indicates a reduction of the original effect size, and the magnitude of the difference indicates the extent of the adjustment. \\
+Additionally, the test statistics of heterogeneity adjusted publication bias tests (R\"ucker's and Thompson's test) are displayed with green color. Test statitics smaller $< 1$ (light green colored) are equivalent to no evidence for publication bias, test statistics between one and two to weak evidence, and above two they indicate evidence for publication bias (dark green). An adjusted effect with evidence for publication bias can be regarded as a more realistic estimate of the treatment effect. Some very large and very small differences have been omitted in the $z$-score and std. mean difference histograms; they are shown in Table \ref{missing.differences}. \\
+Most often, adjustment leads to a reduction of overall treatment effect estimates, which can be seen by the size of the bins on the positive side of the histograms. Adjustment is stronger when random effects meta-analysis is used as reference, because it gives larger weights to small studies.\\
+Contrary to naive expectation, we see cases with large negative adjustment, but no evidence for small study effects. This is because the linear regression parameter estimates are large, but estimated with high uncertainty, such that there will be few evidence for small study effects (publication bias), but nonetheless, the adjustment will be large. It is recommended to use the methods only in cases where there is clear evidence for publication bias. The color legend in Figure \ref{fig:adjustment.reg} thus gives a sense of the confidence that is put into the adjusted effects. \\
 
 \begin{figure}
 <<echo=FALSE, fig.height = 5.2, warning=FALSE>>=
@@ -1189,9 +1200,7 @@ grid.arrange(diff.z.fixef.reg, diff.z.ranef.reg, diff.d.fixef.reg, diff.d.ranef.
 \label{fig:adjustment.reg}
 \end{figure}
 
-Most often, adjustment leads to a reduction of overall treatment effect estimates, because the bins on the positive side of the histograms are larger. Adjustment is stronger when random effects meta-analysis is used as reference, because it gives larger weights to small studies.\\
-Contrary to naive expectation, we see cases with large adjustment, but no evidence for small study effects. This is because the linear regression parameter estimates are large, but estimated with high uncertainty, such that there will be few evidence for small study effects (publication bias), but nonetheless, the adjustment will be large. The authors that developed the methods also recommend to use the methods in cases where there is clear evidence for publication bias. The color legend in Figure \ref{fig:adjustment.reg} thus gives a sense of confidence that there is in the credibility of the adjustment. \\
-Additionally, some meta-analyses with positively adjusted, larger overall treatment effects after adjustment (left side of the histogram) have also evidence for publication bias (remember that publication bias was defined as the tendency of small studies to show \textit{larger} results). This is not a wrong result, because the effects and their variances have been transformed, and it is possible that the shape of the funnel plot changes upon transformation; Figure \ref{fig:funnel.plot.change} shows this for illustrative purposes. From the left to the right, the funnel plot is shown for mean differences (the original measure), standardized mean differences and Fisher's $z$ scores. This is quite the most extreme case, with three different effects of adjustment, depending on outcome measure; there is no change with mean differences, reduction of effect sizes with std. mean differences and increase with Fisher's $z$ transformed correlation. Note that while the rank of the effect sizes is usually preserved after transformation, the relative size and especially the variance may vary. One effect of the Fisher's $z$-transformation is that the effect sizes are bounded on $[-1,1]$, and thus, very large effect sizes will influence the fit of the linear regression less than for example in std. mean differences which are not bounded. In contrast, the variance of the correlation is directly tied to the sample size, which makes it a suitable proxy for study size (variance of the mean difference is in contrast strongly influenced by the standard deviations).
+Additionally, some meta-analyses with positively adjusted, larger overall treatment effects after adjustment (left side of the histogram) have also evidence for publication bias (remember that publication bias was defined as the tendency of small studies to show \textit{larger} results). However, this is not wrong, because the effects and their variances have been transformed, and it is possible that the shape of the funnel plot changes upon transformation; Figure \ref{fig:funnel.plot.change} shows this for illustrative purposes. From the left to the right, the funnel plot is shown for mean differences (the original measure), standardized mean differences and Fisher's $z$ scores; there is no change upon adjustment using mean differences (blue line), reduction of the effect with std. mean differences and increase with Fisher's $z$ transformed correlation. Note that while the rank of the effect sizes is usually preserved after transformation, the relative size and especially the variance may vary. One effect of the Fisher's $z$-transformation is that the effect sizes are bounded on $[-1,1]$, and thus, very large effect sizes will influence the fit of the linear regression less than for example in std. mean differences, which are not bounded. In contrast, the variance of the correlation is directly tied to the sample size, which makes it a suitable proxy for study size (variance of the mean difference is in contrast strongly influenced by the standard deviations).
 
 \begin{figure}
 <<echo = FALSE, warning=FALSE>>=
@@ -1207,7 +1216,8 @@ par(mfrow = c(1,1))
 \end{figure}
 
 
-Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Copas; Copas selection model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Therefore, the effect of adjustment by Copas can be seen when comparing adjusted with random effects meta analysis estimates. Again, we clearly see that more effect sizes are adjusted downwards. Additionally, there is more coincidence between the publication bias test statistics and adjustment, which is as expected. \\
+Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Copas; Copas selection model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Therefore, the effect of adjustment by Copas can better be seen when comparing adjusted with random effects meta analysis estimates. Again, we clearly see that more effect sizes are adjusted downwards. Additionally, there is more coincidence between the publication bias test statistics and adjustment, which is as expected. \\
+Table \ref{adjustment.difference} shows quantiles and means for the various differences and the overall proportion of downward adjusted effect sizes. When std. mean difference is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small. To recall some other findings out of Table \ref{adjustment.difference}: 5\% or \Sexpr{floor(length(!is.na(meta.f$est.z.reg))*0.05)} meta-analyses have their $z$-score reduced by more than 0.13 by regression adjustment (and 5\% or \Sexpr{floor(length(!is.na(meta.f$est.z.reg))*0.05)} increased by -0.11 or more, fixed effects reference). Also, std. mean difference is reduced by 0.39 compared to fixed effects estimates in 5\% or \Sexpr{floor(length(!is.na(meta.f$est.d.reg))*0.05)} meta-analyses (or increased by 0.24). 
 
 \begin{figure}
 <<echo=FALSE, fig.height = 4, warning=FALSE>>=
@@ -1216,8 +1226,6 @@ grid.arrange(diff.z.ranef.copas, diff.d.ranef.copas, ncol = 2)
 \caption{Histogram of the treatment effect differences between meta-analysis and Copas adjusted meta-analysis. Negative differences indicate greater adjusted effect sizes than meta-analysis effect sizes. The bins are centered at zero and binwidth is equal to 0.1. Deeper green color indicates more evidence for small study effects.}
 \label{fig:adjustment.copas}
 \end{figure}
-
-Table \ref{adjustment.difference} shows quantiles and means for the various differences and the overall proportion of downward adjusted effect sizes. When std. mean difference is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small. To recall some other findings out of Table \ref{adjustment.difference}: 5\% or \Sexpr{floor(length(!is.na(meta.f$est.z.reg))*0.05)} meta-analyses have their $z$-score reduced by more than 0.13 by regression adjustment (and 5\% or \Sexpr{floor(length(!is.na(meta.f$est.z.reg))*0.05)} increased by -0.11 or more, fixed effects reference). Also, std. mean difference is reduced by 0.39 compared to fixed effects estimates in 5\% or \Sexpr{floor(length(!is.na(meta.f$est.d.reg))*0.05)} meta-analyses (or increased by 0.24). 
 
 <<echo=FALSE, results='asis'>>=
 print(xtable(adjustment.diff.table, label = "adjustment.difference", caption = "Quantiles and Means of the differences between meta-analysis pooled treatment effects and small study adjusted treatment effects. The column with the names ``> 0'' give the percentages of estimates larger than zero or larger or equal zero. The column ``No adj. est.'' gives the percentage of missing estimates due to non-significant publication bias test (for Copas) and computational errors. The row names indicate which outcome measure, meta-analysis method and adjustment method is used. Abbreviations are used for z-score (= z) and std. mean difference (= d).", align = "lcccccccccr"), include.rownames = T, size = "scriptsize",# sanitize.text.function=function(x){x},

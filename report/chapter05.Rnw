@@ -9,7 +9,7 @@ opts_chunk$set(
 @
 
 
-<<echo=FALSE, warning=FALSE>>= 
+<<echo=FALSE, warning=FALSE, cache = TRUE>>= 
 #Load data:
 rm(list = ls())
 PATH_HOME = path.expand("~") # user home
