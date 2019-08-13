@@ -1,6 +1,11 @@
  \newcommand{\noop}[1]{}
 \begin{thebibliography}{}
 
+\bibitem[Abbasi, 2004]{Abbasi.2004}
+Abbasi, K. (2004).
+\newblock Compulsory registration of clinical trials.
+\newblock {\em BMJ}, {\bf329},  637--638.
+
 \bibitem[Begg, 1988]{begg.ties}
 Begg, C.~B. (1988).
 \newblock Statistical methods in medical research p. armitage and g. berry,
@@ -172,11 +177,6 @@ Ioannidis, J. P.~A. (2005).
 \newblock Why most published research findings are false.
 \newblock {\em PLOS Medicine}, {\bf2}, .
 
-\bibitem[Ioannidis and Thombs, 2019]{ioannidis.2019}
-Ioannidis, J. P.~A. and Thombs, B.~D. (2019).
-\newblock A user's guide to inflated and manipulated impact factors.
-\newblock {\em European Journal of Clinical Investigation}, {\bf0},  e13151.
-
 \bibitem[Jones {\it et~al.}, 2013]{pb.clinicalscience.2013}
 Jones, C.~W., Handler, L., Crowell, K.~E., Keil, L.~G., Weaver, M.~A., and
   Platts-Mills, T.~F. (2013).
@@ -304,12 +304,6 @@ Souza, J.~P., Pileggi, C., and Cecatti, J. (2007).
 \newblock Assessment of funnel plot asymmetry and publication bias in
   reproductive health meta-analyses: an analytic survey.
 \newblock {\em Reproductive Health}, {\bf4},  3.
-
-\bibitem[Stanley {\it et~al.}, 2010]{largest.study.only}
-Stanley, T.~D., Jarrell, S.~B., and Doucouliagos, H. (2010).
-\newblock Could it be better to discard 90\% of the data? a statistical
-  paradox.
-\newblock {\em The American Statistician}, {\bf64},  70--77.
 
 \bibitem[Sterne {\it et~al.}, 2001a]{sterne2001}
 Sterne, J. A.~C., Egger, M., and Smith, G.~D. (2001a).

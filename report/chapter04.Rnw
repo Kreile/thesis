@@ -5,7 +5,7 @@
 library(knitr)
 opts_chunk$set(fig.path='figure/ch03_fig',
                echo=TRUE, message=FALSE,
-               fig.width=8, fig.height=3,
+               fig.width=8.1, fig.height=3,
                self.contained = FALSE,
                out.width='\\textwidth-3cm',
                message=FALSE, fig.align='center',
@@ -551,26 +551,28 @@ The $p$-values of tests can be summarized by computing their harmonic mean \cite
 
 
 \subsection{Publication Bias Test Consistency}
-It cannot be seen in Figure \ref{fig:test} if the tests used are finding small study effects for the same meta-analyses. A simple method to check the consistency of test results is to compare scatterplots and empirical Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between \texttt{IV} and continuous outcomes. The upper left rectangle is displaying binary outcome results and the lower right continuous and \texttt{IV} outcomes results. Also, the $I^2$ statistic is included. Since no approximately normally distributed test statistic is used for excess significance tests, it is not shown here
+In a next step, the consistency between the tests is examined, \eg if the tests identify significant publication bias in the same meta-analyses. There is, so far, no agreement in the literature about which of the methods are to prefer, even non regression based tests have generally low power. The following analysis will reveal if there are \eg testing methods that are coming to identical results and are thus compatible/interchangeable. \\
+A simple method to check the consistency of test results is to compare scatterplots and Spearman correlations between the test statistics. This is done in Figure \ref{fig:test.agreement}. Here, there is no separation between \texttt{IV} and continuous outcomes because the same publication bias tests have been used. The upper left rectangle is displaying binary outcome results and the lower right continuous and \texttt{IV} outcomes results. Also, the $I^2$ statistic is included. Since no normally distributed test statistic under the null hypothesis is used for excess significance tests, it is not shown here.
 
 \begin{figure}
 <<echo=FALSE, fig.height = 7, fig.width = 8.5, warning=FALSE>>=
 corrgram(cor.data, 
          upper.panel=panel.pts.new, lower.panel=panel.cor, 
-         cex.labels = 2, cex = .25, cex.cor = 2, pch = 1,
+         col.regions = colorRampPalette(c("red", "red", "chartreuse", "royalblue", "navy")),
+         cex.labels = 1.65, cex = .25, cex.cor = 2, pch = 1,
          text.panel=panel.txt, cor.method = "spearman")
 @
-\caption{Pairs-plot for test statistics of small study effect and excess significance. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots inside are statistically not significant by 0.1 $p$-value threshold).}
+\caption{Pairs-plot for test statistics of small study effects. The lower panel gives the Spearman correlations for the different test statistics, and the upper panel displays a scatterplot. The colors indicate magnitude and direction of the correlation coefficients. The rectangle with white borders displays the area within which both tests have absolute value < 1.64 (dots inside are statistically not significant by 0.1 $p$-value threshold).}
 \label{fig:test.agreement}
 \end{figure}
 
-The observed patterns on the scatterplots differ, and some small study effect test statistics do align better than others. Regression based tests as Egger and Thompsons test which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. Continuous and\texttt{IV} outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics.\\
+The observed patterns on the scatterplots differ, and some methods do align better than others. Regression based tests as Egger and Thompsons test which are methodically almost identical are closely aligned, which is reflected in large correlation coefficients. Continuous and \texttt{IV} outcome type tests align more closely than binary outcome tests. While correlation coefficients between binary outcome tests vary between each other, Harbord's test statistic has similar correlation coefficients with the other small study effect test statistics.\\
 Because scatterplots and correlation coefficients can be misleading, also a Tukey mean-difference or Bland-Altman of transformed $p$-values plot is shown for four scenarios in Figure \ref{fig:mean.diff.test}:
 \begin{itemize}
-\item For Egger's and Thompson's tests, which is supposedly the most similar test and should show the least deviations and systematic errors
-\item For Egger's and excess significance tests
-\item For Harbord's and R\"ucker's tests
-\item For Harbord's and excess significance tests
+\item For Egger's and Thompson's tests, which is supposedly the most similar test and should show the least deviations and systematic errors.
+\item For Egger's and excess significance tests.
+\item For Harbord's and R\"ucker's tests.
+\item For Harbord's and excess significance tests.
 \end{itemize}
 
 This can be justified since all tests are supposed to measure the evidence for publication bias. For the plots, the $p$-values of the tests are transformed on the entire continuous scale by a logit transformation $f(x)  = \log(\frac{p}{1-p}$). The mean $p$-value (($f$($p$-value no. 1) + $f$($p$-value no. 2))/2) is then displayed against the difference between the $f$($p$-value). If no systematic errors and biases exist between the measurement methods, then 
@@ -595,9 +597,7 @@ In green, a linear regression fit is shown with 95\% CI bands.}
 \label{fig:mean.diff.test}
 \end{figure}
 
-The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. Some proportion of the meta-analyses will only be significant using a single test, while being non-significant otherwise. This can be seen in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results. Very few meta-analyses are give a significant result, independently of the test applied. Around 67\% of the dataset is not significant, no matter which test is used. When leaving away the excess significance test, \Sexpr{mean.min.bin}\% of binary outcome tests and \Sexpr{mean.min.else}\% of \texttt{IV} and continuous outcome tests had at least one significant result. 
-%After applying the Bonferroni correction for multiple testing, this shrinks to \Sexpr{mean.min.bin.b}\% for binary and \Sexpr{mean.min.else.b}\% for continuous and \texttt{IV} outcomes. 
-To compare significant findings for small study effect tests and excess significance tests, Harbord's or Egger's test results are compared with excess significance tests. \Sexpr{mean.min.bin2}\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, \Sexpr{mean.min.else2}\% for continuous and \texttt{IV} outcomes. The numbers change to \Sexpr{mean.min.bin2.b}\% for binary outcomes and \Sexpr{mean.min.else2.b}\% for continuous and \texttt{IV} outcomes after applying the Bonferroni correction. \Sexpr{both.bin}\% have significant Harbord's test result and significant excess significance test result  (\Sexpr{both.bin.b}\% with Bonferroni). Of the continuous outcomes, we have \Sexpr{both.else}\% with Egger's test and \Sexpr{both.else.b}\% with Bonferroni correction. \\
+The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. Some proportion of the meta-analyses will only be significant using a single test, while being non-significant otherwise. This can be seen in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results. Very few meta-analyses are give a significant result, independently of the test applied. Around 67\% of the dataset is not significant, no matter which test is used. \\
 
 <<echo = FALSE, results='asis'>>=
 print(xtable(number.sig.tests, caption = "Counts Number of significant test results per meta-analysis, separated
@@ -605,11 +605,14 @@ print(xtable(number.sig.tests, caption = "Counts Number of significant test resu
        applied", label = "number.sig.tests", align = "lccc"), include.rownames = F, size = "footnotesize")
 @
 
-The precise proportions of agreement are provided in table \ref{test.agreement}. %Correspondence between excess significance tests and small study effects thus is considered rather random. 
-Linear regression based tests agree more often with other linear regression based tests, and agreement between small study effect tests is in general well above 60 \% (at best, 95\% test agreement in significance for \texttt{IV} \texttt{outcome.flag}). The agreement on statistical significance between small study effect tests and excess significance tests ranges from 64\% to 4\% (for \texttt{IV} and rank tests). 
+When leaving away the excess significance test, \Sexpr{mean.min.bin}\% of binary outcome tests and \Sexpr{mean.min.else}\% of \texttt{IV} and continuous outcome tests had at least one significant result. 
+%After applying the Bonferroni correction for multiple testing, this shrinks to \Sexpr{mean.min.bin.b}\% for binary and \Sexpr{mean.min.else.b}\% for continuous and \texttt{IV} outcomes. 
+To compare significant findings for small study effect tests and excess significance tests, Harbord's or Egger's test results are compared with excess significance tests. \Sexpr{mean.min.bin2}\% of binary outcome analyses had at least one of the two test $p$-values being significant, and equivalently, \Sexpr{mean.min.else2}\% for continuous and \texttt{IV} outcomes. The numbers change to \Sexpr{mean.min.bin2.b}\% for binary outcomes and \Sexpr{mean.min.else2.b}\% for continuous and \texttt{IV} outcomes after applying the Bonferroni correction. \Sexpr{both.bin}\% have significant Harbord's test result and significant excess significance test result  (\Sexpr{both.bin.b}\% with Bonferroni). Of the continuous outcomes, we have \Sexpr{both.else}\% with Egger's test and \Sexpr{both.else.b}\% with Bonferroni correction. \\
+The precise proportions of agreement in significance/non-significance are provided in Table \ref{test.agreement}. A separate column provides the proportion of significant results of the test with fewer significant results that are also significant using the test with more significant results. 
+Linear regression based tests agree more often with other linear regression based tests, and agreement between small study effect tests is in general well above 60 \% (at best, 95\% test agreement in significance for \texttt{IV} \texttt{outcome.flag}). The agreement on statistical significance between small study effect tests and excess significance tests ranges from 64\% to 4\% (for \texttt{IV} and rank tests). Note that these numbers are difficult to interpret because there are substantially less significant results of the excess significance tests, and thus, a agreement of 100\% still does not indicate perfect compatibility/replaceability of the tests.
 
 <<echo = FALSE, results = 'asis'>>=
-print(xtable(test.agreement, align = "lcc", caption = "Overall proportion of agreement if significant or unsignificant, and for significance only. Horizontal lines separate binary, continuous and IV outcomes (order as in table). The reference significance test is the one with more significant results.",
+print(xtable(test.agreement, align = "lcc", caption = "Overall proportion of agreement if publication bias is significant or non-significant, and if significant only. When comparing agreement if significant only, the proportion of the test with fewer significant results that is significant with another test as well is shown.",
              label = "test.agreement"),, size = "scriptsize")
 @
 
@@ -984,7 +987,7 @@ adjustment.diff.table <- cbind(adjustment.diff.table, (adjustment.diff.table.iv)
 adjustment.diff.table <- round(t(adjustment.diff.table), 4)
 
 rownames(adjustment.diff.table) <- c(paste("z:", c("Fixed - Copas", "Random - Copas", "Fixed - Regression", "Random - Regression")),
-                                     paste("g:", c("Fixed - Copas", "Random - Copas", "Fixed - Regression", "Random - Regression")),
+                                     paste("d:", c("Fixed - Copas", "Random - Copas", "Fixed - Regression", "Random - Regression")),
                                      paste("IV:", c("Fixed - Copas", "Random - Copas", "Fixed - Regression", "Random - Regression")))
 
 colnames(adjustment.diff.table) <- c(colnames(adjustment.diff.table)[1:6], "= 0 (%)", ">= 0 (%)", "> 0 (%)", "No adj. est. (%)")
@@ -1088,9 +1091,14 @@ colnames(missing.differences) <- c("id", "comparison.nr", "subgroup.nr",
 
 #--------------------------------------------------------------------------------------------------------------------#
 #Change in evidence of treatment effect scatterplots:
-
 mid <- median(meta.f$pval.se)
 method.names <- c(z.reg = "Regression", z.copas = "Copas Selection Model")
+
+decrease_text <- data.frame(label = c("decrease", "decrease"),
+  method   = c("z.reg", "z.copas"))
+increase_text <- data.frame(label = c("increase", "increase"),
+                            method   = c("z.reg", "z.copas"))
+
 adjusted.evidence.fixed <- meta.f %>% filter(z.reg > -40) %>% 
   select(pval.se, z.fixef, z.ranef, z.reg, z.copas) %>% 
   gather(key = "method", value = "test.stat", z.reg:z.copas) %>%
@@ -1100,7 +1108,16 @@ adjusted.evidence.fixed <- meta.f %>% filter(z.reg > -40) %>%
                         high="chartreuse2", space ="Lab") +
   geom_point(size = .7) + theme_bw() + theme(legend.position = "none") + 
   geom_abline(slope = 1, intercept = 0, linetype = 2, size = .3) +
-  xlab("Adjusted z test statistic") + ylab("Fixed effects test statistic")
+  geom_abline(slope = 0, intercept = 0, linetype = 2, size = .3) +
+  geom_text(data = decrease_text, mapping = aes(x = -9, y = 6, label = label), 
+            color = "tan3") + 
+  geom_text(data = decrease_text, mapping = aes(x = 9, y = -6, label = label), 
+            color = "tan3") + 
+  geom_text(data = increase_text, mapping = aes(x = 15, y = 4, label = label), 
+            color = "chartreuse3") + 
+  geom_text(data = increase_text, mapping = aes(x = -15, y = -4, label = label), 
+            color = "chartreuse3") + 
+  xlab("Adjusted z test statistic") + ylab("Fixed effects z test statistic")
 
 adjusted.evidence.ranef <- meta.f %>% filter(z.reg > -40) %>% 
   select(pval.se, z.fixef, z.ranef, z.reg, z.copas) %>% 
@@ -1108,10 +1125,19 @@ adjusted.evidence.ranef <- meta.f %>% filter(z.reg > -40) %>%
   ggplot(aes(x = test.stat, y = z.ranef, colour = pval.se)) + 
   facet_wrap(~ method, labeller = as_labeller(method.names)) + 
   scale_color_gradient2(midpoint=mid, low="firebrick4", mid = "gold",
-                          high="chartreuse2", space ="Lab", name = expression(paste(italic(p),"-value"))) +
+                        high="chartreuse2", space ="Lab", name = expression(paste(italic(p),"-value"))) +
   geom_point(size = .7) + theme_bw() + guides(fill=guide_legend(title="p-value")) +
   geom_abline(slope = 1, intercept = 0, linetype = 2, size = .3) +
-  xlab("Adjusted z test statistic") + ylab("Random effects test statistic")
+  geom_abline(slope = 0, intercept = 0, linetype = 2, size = .3) +
+  geom_text(data = decrease_text, mapping = aes(x = -11, y = 6, label = label), 
+            color = "tan3") + 
+  geom_text(data = decrease_text, mapping = aes(x = 11, y = -6, label = label), 
+            color = "tan3") + 
+  geom_text(data = increase_text, mapping = aes(x = 15, y = 4, label = label), 
+            color = "chartreuse3") + 
+  geom_text(data = increase_text, mapping = aes(x = -15, y = -4, label = label), 
+            color = "chartreuse3") + 
+  xlab("Adjusted z test statistic") + ylab("Random effects z test statistic")
 #--------------------------------------------------------------------------------------------------------------------#
 #Tukey mean difference plots for adjustment methods:
 
@@ -1186,8 +1212,8 @@ colnames(missing.copas.table) <- c("= 0", colnames(missing.copas.table)[2:6], "m
 
 There are methods that can take into account the presence of publication bias in meta-analyses when estimating the overall treatment effect. The methods work in a semi-automatic manner; they will not only adjust for publication bias if smaller studies show larger effects, but also in the opposite case. The latter results in the adjusted overall treatment effect being \textit{larger} than the unadjusted, overall treatment effect. \\
 To compare the effects of adjustment between meta-analyses of different outcomes, the outcome measures are transformed to standardized mean differences and Fisher's $z$-scores (see section \ref{sec:transformation.effectsizes} for details). When comparing to unadjusted effects, fixed or random effects meta-analysis estimates are used as references\\
-Figure \ref{fig:adjustment.reg} displays the difference between the estimated meta-analysis treatment effect and the regression adjusted treatment effect \ref{sec:regression.adjustment}, $\hat{\theta}_M - \hat{\theta}_\textrm{Adj.}$. The absolute value $|\hat{\theta}_M|$ is taken and $\hat{\theta}_\textrm{Adj.}$ is negative if it's sign is different from the sign of the original $\theta$. Thus, a positive difference indicates a reduction of the original effect size, and the magnitude of the difference indicates the extent of the adjustment. \\
-Additionally, the test statistics of heterogeneity adjusted publication bias tests (R\"ucker's and Thompson's test) are displayed with green color. Test statitics smaller $< 1$ (light green colored) are equivalent to no evidence for publication bias, test statistics between one and two to weak evidence, and above two they indicate evidence for publication bias (dark green). An adjusted effect with evidence for publication bias can be regarded as a more realistic estimate of the treatment effect. Some very large and very small differences have been omitted in the $z$-score and std. mean difference histograms; they are shown in Table \ref{missing.differences}. \\
+Figure \ref{fig:adjustment.reg} displays the difference between the estimated meta-analysis treatment effect and the regression adjusted treatment effect \ref{sec:regression.adjustment}, $\hat{\theta}_M - \hat{\theta}_\textrm{Adj.}$. The absolute value $|\hat{\theta}_M|$ is taken and $\hat{\theta}_\textrm{Adj.}$ is negative if it's sign is different from the sign of the original $\hat{\theta}_M$. Thus, a positive difference indicates a reduction of the original effect size, and the magnitude of the difference indicates the extent of the adjustment. \\
+Additionally, the test statistics of heterogeneity adjusted publication bias tests (R\"ucker's and Thompson's test) are displayed with green color. Test statitics smaller $t < 1$ (light green colored) are equivalent to no evidence for publication bias, test statistics $t$ between one and two to weak evidence, and above two they indicate evidence for publication bias (dark green). An adjusted effect with evidence for publication bias can be regarded as a more realistic estimate of the treatment effect. Some very large and very small differences have been omitted in the $z$-score and std. mean difference histograms; they are shown in Table \ref{missing.differences}. \\
 Most often, adjustment leads to a reduction of overall treatment effect estimates, which can be seen by the size of the bins on the positive side of the histograms. Adjustment is stronger when random effects meta-analysis is used as reference, because it gives larger weights to small studies.\\
 Contrary to naive expectation, we see cases with large negative adjustment, but no evidence for small study effects. This is because the linear regression parameter estimates are large, but estimated with high uncertainty, such that there will be few evidence for small study effects (publication bias), but nonetheless, the adjustment will be large. It is recommended to use the methods only in cases where there is clear evidence for publication bias. The color legend in Figure \ref{fig:adjustment.reg} thus gives a sense of the confidence that is put into the adjusted effects. \\
 
@@ -1200,7 +1226,7 @@ grid.arrange(diff.z.fixef.reg, diff.z.ranef.reg, diff.d.fixef.reg, diff.d.ranef.
 \label{fig:adjustment.reg}
 \end{figure}
 
-Additionally, some meta-analyses with positively adjusted, larger overall treatment effects after adjustment (left side of the histogram) have also evidence for publication bias (remember that publication bias was defined as the tendency of small studies to show \textit{larger} results). However, this is not wrong, because the effects and their variances have been transformed, and it is possible that the shape of the funnel plot changes upon transformation; Figure \ref{fig:funnel.plot.change} shows this for illustrative purposes. From the left to the right, the funnel plot is shown for mean differences (the original measure), standardized mean differences and Fisher's $z$ scores; there is no change upon adjustment using mean differences (blue line), reduction of the effect with std. mean differences and increase with Fisher's $z$ transformed correlation. Note that while the rank of the effect sizes is usually preserved after transformation, the relative size and especially the variance may vary. One effect of the Fisher's $z$-transformation is that the effect sizes are bounded on $[-1,1]$, and thus, very large effect sizes will influence the fit of the linear regression less than for example in std. mean differences, which are not bounded. In contrast, the variance of the correlation is directly tied to the sample size, which makes it a suitable proxy for study size (variance of the mean difference is in contrast strongly influenced by the standard deviations).
+Additionally, some meta-analyses with positively adjusted, larger overall treatment effects after adjustment (left side of the histogram) have also evidence for publication bias (defined as the tendency of small studies to show \textit{larger} results because only significant results are published). However, this is not wrong, because the effects and their variances have been transformed, and it is possible that the shape of the funnel plot changes upon transformation; Figure \ref{fig:funnel.plot.change} shows this for illustrative purposes. From the left to the right, the funnel plot is shown for mean differences (the original measure), standardized mean differences and Fisher's $z$ scores; there is no change upon adjustment using mean differences (blue line), reduction of the effect with std. mean differences and increase with Fisher's $z$ transformed correlation. Note that while the rank of the effect sizes is usually preserved after transformation, the relative size and especially the variance may vary. One effect of the Fisher's $z$-transformation is that the effect sizes are bounded on $[-1,1]$, and thus, very large effect sizes will influence the fit of the linear regression less than for example in std. mean differences, which are not bounded. In contrast, the variance of the correlation is directly tied to the sample size, which makes it a suitable proxy for study size (variance of the mean difference is in contrast strongly influenced by the standard deviations).
 
 \begin{figure}
 <<echo = FALSE, warning=FALSE>>=
@@ -1216,7 +1242,7 @@ par(mfrow = c(1,1))
 \end{figure}
 
 
-Figure \ref{fig:adjustment.copas} shows the same for effect sizes adjusted by Copas; Copas selection model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Therefore, the effect of adjustment by Copas can better be seen when comparing adjusted with random effects meta analysis estimates. Again, we clearly see that more effect sizes are adjusted downwards. Additionally, there is more coincidence between the publication bias test statistics and adjustment, which is as expected. \\
+Figure \ref{fig:adjustment.copas} shows the differences between Meta-analysis and adjusted effect sizes adjusted by Copas selection model; the model substitutes its estimates with random effect estimates when it finds no evidence for small study effects. Therefore, the effect of adjustment by Copas can better be seen when comparing adjusted with random effects meta analysis estimates. Again, we clearly see that more effect sizes are adjusted downwards. Additionally, there is more coincidence between publication bias test statistics and adjustment, \ie positive differences are accompained by large positive test statistics, which is as expected. \\
 Table \ref{adjustment.difference} shows quantiles and means for the various differences and the overall proportion of downward adjusted effect sizes. When std. mean difference is used as an effect measure, there are (substantially) more reduced effect sizes. The means in Table \ref{adjustment.difference} suggest that the average reduction is small. To recall some other findings out of Table \ref{adjustment.difference}: 5\% or \Sexpr{floor(length(!is.na(meta.f$est.z.reg))*0.05)} meta-analyses have their $z$-score reduced by more than 0.13 by regression adjustment (and 5\% or \Sexpr{floor(length(!is.na(meta.f$est.z.reg))*0.05)} increased by -0.11 or more, fixed effects reference). Also, std. mean difference is reduced by 0.39 compared to fixed effects estimates in 5\% or \Sexpr{floor(length(!is.na(meta.f$est.d.reg))*0.05)} meta-analyses (or increased by 0.24). 
 
 \begin{figure}
@@ -1228,7 +1254,7 @@ grid.arrange(diff.z.ranef.copas, diff.d.ranef.copas, ncol = 2)
 \end{figure}
 
 <<echo=FALSE, results='asis'>>=
-print(xtable(adjustment.diff.table, label = "adjustment.difference", caption = "Quantiles and Means of the differences between meta-analysis pooled treatment effects and small study adjusted treatment effects. The column with the names ``> 0'' give the percentages of estimates larger than zero or larger or equal zero. The column ``No adj. est.'' gives the percentage of missing estimates due to non-significant publication bias test (for Copas) and computational errors. The row names indicate which outcome measure, meta-analysis method and adjustment method is used. Abbreviations are used for z-score (= z) and std. mean difference (= d).", align = "lcccccccccr"), include.rownames = T, size = "scriptsize",# sanitize.text.function=function(x){x},
+print(xtable(adjustment.diff.table, label = "adjustment.difference", caption = "Quantiles and means of the differences between meta-analysis combined treatment effects and small study adjusted treatment effects. The column with the names ``> 0'' give the percentages of estimates larger than zero or larger or equal zero. The column ``No adj. est.'' gives the percentage of missing estimates due to non-significant publication bias test (for Copas) and computational errors. The row names indicate which outcome measure, meta-analysis method and adjustment method is used. Abbreviations are used for z-score (z) and std. mean difference (d). Separate rows give the results for IV outcomes, where the original effect sizes (log rate ratios, hazard ratios, etc.) are used.", align = "lcccccccccr"), include.rownames = T, size = "scriptsize",# sanitize.text.function=function(x){x},
       # table.placement = "p"
       )
 @
@@ -1236,13 +1262,13 @@ print(xtable(adjustment.diff.table, label = "adjustment.difference", caption = "
 
 <<echo=FALSE, results='asis'>>=
 print(xtable(missing.differences, 
-             caption = "Missing meta-analysis pooled treatment effect and adjusted treatment effects. Abbreviations are used for z-score (= z) and std. mean difference (= d).", label = "missing.differences", align = "lcccrrrrrrrr"), 
+             caption = "Missing meta-analysis combined treatment effect and adjusted treatment effects. Abbreviations are used for z-score (= z) and std. mean difference (= d).", label = "missing.differences", align = "lcccrrrrrrrr"), 
       include.rownames = F, size = "tiny")
 @
 
 
 \subsection{Comparison of adjustment methods}
-Regression adjusted estimates are compared to the estimates of Copas selection model if these are not equal to random effects meta-analysis in Figure \ref{fig:adjustment.mean.diff}. A Tukey mean difference plot can serve to reveal systematic differences and biases between the two measurement methods. Note that only 26 out of \Sexpr{dim(meta.iv)[1]} \texttt{IV} outcome data is included when using $z$-score and std. mean differences, since not all effects could be transformed.
+Regression adjusted estimates are compared to the estimates of Copas selection model if these are not equal to random effects meta-analysis in Figure \ref{fig:adjustment.mean.diff}. A Tukey mean difference plot can reveal systematic differences and biases between the two measurement methods. Note that only 26 out of \Sexpr{dim(meta.iv)[1]} \texttt{IV} outcome data is included when using $z$-score and std. mean differences, since not all effects could be transformed.
 
 \begin{figure}
 <<echo = FALSE, fig.height = 5>>=
@@ -1264,33 +1290,32 @@ Adjustment for small study effects in meta-analysis will provide new effect size
 grid.arrange(adjusted.evidence.fixed,
              adjusted.evidence.ranef)
 @
-\caption{Test statistics of meta-analyses and adjustment methods. The color indicates the evidence for publication bias (\textit{p} value of R\\"ucker's or Egger's test), and the dotted line depicts the diagonal through the origin.}
+\caption{Test statistics of meta-analyses before and after adjustment. The color indicates the evidence for publication bias (\textit{p}-value of R\"ucker's or Egger's test), and the dotted line depicts the diagonal through the origin. Together with the horizontal dotted lines, the area which it borders indicates the consequences of adjustment for the evidence for a treatment effect. ``decrease'' means that the test statistic is smaller upon adjustment, ''increase'' that it is larger.}
 \label{fig:evidence.adjustment}
 \end{figure}
 
 % Points lying on the diagonal through the origin indicate that there is no change in evidence after adjustment. In a hypothetical study with all treatment effects being artifacts of publication bias and perfect adjustment methods, all points should be distibuted on a vertical line at $x = 0$. A mitigation of evidence against the null hypothesis after adjustment thus is indicated by the adjusted test statistics being closer to zero. \\
 
-
-It can be seen that the alignment on the diagonal changes depending on the adjustment method. The effect of adjustment by copas can be seen when comparing it to random effects meta-analysis. There, less of an effect of adjustment on the evidence can be seen. The adjustment is more likely to be more reliable than the unadjusted estimate when publication bias is strong. The dots with darker color are thus more likely to provide less biased estimates.\\
+The areas that are bordered by the diagonal and horizontal lines indicate which are the consequences of adjustment for a dot within. ``decrease'' indicates fewer evidence for treatment effect is given after adjustment, ''increase'' that adjustment led to larger evidence for treatment effects. \\
+It can be seen that the alignment on the diagonal changes depending on the adjustment method. The effect of adjustment by copas can be seen when comparing it to random effects meta-analysis. There, less of an effect of adjustment on the evidence can be seen. The adjustment is more likely to be more reliable than the unadjusted estimate when publication bias is strong (see \ref{ch:Methods}). The dots with darker color are thus more likely to provide less biased estimates.\\
 The decrease in evidence is larger when using adjustment with regression, which can be expected as the uncertainty of the additional parameter from the linear regression fit to estimate publication bias is included in the uncertainty of the estimate. In contrast, as the Copas selection model algorithm does a sensitivity analysis, the uncertainty of additional model parameters does not affect the estimate as they are not estimated but treated as fixed (see section \ref{sec:procedure} and section \ref{sec:copas}).\\
-Large adjustment in effect sizes and test statistics is not necessarily accompanied by evidence for publication bias (color of the dots) in regression adjustment, as already discussed. But the dark dots can be found more often far away from the diagonal. Some cases which have more evidence for treatment efficacy after adjustment have evidence for publication bias, which is not expected, since the publication bias tests applied are one-sided and only test for bias towards large effects. \\
-In some cases, the automatic detection of the side on which publication bias was expected (section \ref{sec:procedure}) might failed, because few significant effects are given (used to define side of bias) and the weighted mean effect is close to zero, in which case it is difficult to detect the side of publication bias beforehand. There are some adjustments with large increase in evidence and clear dark orange color, as in the plots on the right hand side in Figure \ref{fig:evidence.adjustment}. Two of them are investigated in detail. 
+Large adjustment in effect sizes and test statistics is not necessarily accompanied by evidence for publication bias (color of the dots) in regression adjustment, as already discussed. But the dark dots can be found more often far away from the diagonal. Some cases which have more evidence for treatment efficacy after adjustment have evidence for publication bias, although the publication bias tests applied are one-sided and only test for bias towards large effects. This is because the algorithm to detect the side on which publication bias was expected (section \ref{sec:procedure}) has failed, \eg because few significant effects are given (used to define side of bias) and the weighted mean effect is close to zero, in which case it is difficult to decide upon the side of publication bias. There are some adjustments with large increase in evidence and clear dark orange color, as in the plots on the right hand side in Figure \ref{fig:evidence.adjustment}. Two of them are investigated in detail. 
 \begin{itemize}
 \item z-value of regression adjustment 10.5 vs fixed effects z-value 5.7: When the funnel plot of these meta-analyses are investigated, it becomes clear that there is no reason to assume publication bias since the smaller studies are near to risk ratios equal to one, and larger studies show larger ratios. Publication bias tests disagree in their findings (R\"ucker's and Harbord's tests: 0.058 and 0.05, and Peters and Schwarzer's test: 0.467 and 0.79).
 \item z-value of regression adjustment 9.24 vs fixed effects z-value 2.51: Asymmetry of the funnel plot could be confirmed when analyzing it with mean differences. The change to a larger treatment effect is rather due to large between study heterogeneity and the specific routine of the regression adjustment. Because it takes into account between-study heterogeneity (bias parameter times $\tau^2$), while fixed effects meta-analysis does not, it returns a larger treatment effect. The adjusted effect (MD = - 10.3) lies between the fixed effect estimate (-2.56) and the random effects estimate (-18.7).
 \end{itemize}
-In the case of Copas selection model and when both test statistics are large (> 10), the explanation lies in a specialty of the model. The adjusted treatment effect estimates are not larger than the unadjusted, but their standard errors are different and sometimes smaller, because they are obtained from the Fisher information matrix of the log-likelihood (see section \ref{sec:copas}). \\
-The Copas selection model also allows to compute the number of missing studies, given that the model's assumptions are correct. It finds that \Sexpr{format(round(sum(meta.f$missing.Copas, na.rm = T)), big.mark = ",")} are missing, which corresponds to \Sexpr{round((sum(meta.f$missing.Copas, na.rm = T)/sum(meta.f$k))*100,1)}\% from all \Sexpr{format(round(sum(meta.f$k)), big.mark = ",")} analysed studies. Figure \ref{fig:copas.missing} shows a histogram of the overall fraction of missing studies. Note that random effects meta-analysis substitutes have been excluded (\Sexpr{sum(is.na(meta.f$missing.Copas))} out of \Sexpr{format(dim(meta.f)[1], big.mark = ",")}.
+In the case of Copas selection model and when both test statistics are large (> 10), the explanation lies in a specialty of the model; the adjusted treatment effect estimates are not larger than the unadjusted, but their standard errors are different and sometimes smaller, because they are obtained from the Fisher information matrix of the log-likelihood (see subsection \ref{sec:copas}). \\
+The Copas selection model also allows to compute the number of missing (\ie unpublished) studies in a given meta-analysis, given that the model's assumptions are correct. It finds that \Sexpr{format(round(sum(meta.f$missing.copas, na.rm = T)), big.mark = ",")} are missing, which corresponds to \Sexpr{round((sum(meta.f$missing.copas, na.rm = T)/sum(meta.f$k))*100,1)}\% from all \Sexpr{format(round(sum(meta.f$k)), big.mark = ",")} analysed studies. Figure \ref{fig:copas.missing} shows a histogram of the overall fraction of missing studies. Note that random effects meta-analysis substitutes have been excluded (\Sexpr{sum(is.na(meta.f$missing.copas))} out of \Sexpr{format(dim(meta.f)[1], big.mark = ",")} to limit the size of the bin at no. missing studies = 0.
 
 \begin{figure}
 <<echo = FALSE, warning = FALSE>>=
 missing.copas.histogram
 @
-\caption{Histogram of the fraction of missing studies from the total number of studies in a meta-analyses (only data shown where Copas estimate was obtained, thus \\$n =$ \Sexpr{sum(!is.na(meta.f$missing.Copas))})}
+\caption{Histogram of the fraction of missing studies from the total number of studies in a meta-analyses (only data shown where Copas estimate was obtained, thus \\$n =$ \Sexpr{sum(!is.na(meta.f$missing.copas))})}
 \label{fig:copas.missing}
 \end{figure}
 
-We can see that in some occasions, the method finds more than half of all studies are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}. The discrepancy between mean and median may indicate that the estimate of \Sexpr{round((sum(meta.f$missing.Copas, na.rm = T)/sum(meta.f$k))*100,1)}\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie \Sexpr{round(sum(!is.na(meta.f$missing.Copas))*0.05)} meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for \Sexpr{format(round(sum(meta.f$missing.Copas[which(meta.f$missing.Copas >= 17.60)], na.rm = T)), big.mark = ",")}, more than 30\% of missing studies.
+We can see that in some occasions, the method finds more than half of all studies in a meta-analysis are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}, where both the absolute number of missing studies and the fraction of missing studies in a meta-analysis are given. The discrepancy between mean and median may indicate that the estimate of \Sexpr{round((sum(meta.f$missing.copas, na.rm = T)/sum(meta.f$k))*100,1)}\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie \Sexpr{round(sum(!is.na(meta.f$missing.copas))*0.05)} meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for \Sexpr{format(round(sum(meta.f$missing.copas[which(meta.f$missing.copas >= 17.60)], na.rm = T)), big.mark = ",")}, more than 30\% of all missing studies.
 
 <<echo= FALSE, results='asis'>>=
 print(xtable(missing.copas.table, caption = "Fraction of missing studies and estimates of missing studies with their zero counts (``= 0''), quantiles and means.",
@@ -1300,9 +1325,10 @@ print(xtable(missing.copas.table, caption = "Fraction of missing studies and est
 
 
 
-\section{Publication Bias over Time}
-To test if publication bias in meta-analyses has decreased over time and newer meta-analyses have less bias, a generalized linear model has been set up. \\
-The dependent variable is the standardized mean differences (therefore, from \texttt{outcome.flag} = \texttt{IV}, only the std. mean differences are used). As before, the std. mean difference is mirrored to one side by multiplying with the sign of the expected side of bias, \ie -1 or 1. The explanatory variable is the standard error, and the weights are the inverse of the variance of the std. mean difference. Additionally, random effects for the meta-analysis and for the review are added, the former being nested in the latter. Figure \ref{fig:smds} shows the complete dataset with the fit of the previously described model (dotted red line). The details and evidence for the small study effects in the generalized linear model are given in table \ref{anova.small.study}, the coefficients in table \ref{coefficients.small.study}
+\section{Mixed Effect Models and Publication Bias over Time}
+To test if publication bias in meta-analyses has decreased over time and newer meta-analyses have less bias, a generalized linear model has been set up to analyze all meta-analyses jointly and estimate a single parameter denoting publication bias.\\
+The dependent variable is the standardized mean differences(therefore, from \texttt{outcome.flag} = \texttt{IV}, only the std. mean differences are used). As before in section \ref{sec:change.size}, the std. mean difference is mirrored to one side by multiplying with the sign of the expected side of bias, \ie -1 or 1. \\
+In a first step, the explanatory variable is the standard error, and the weights are the inverse of the variance of the std. mean difference. Additionally, random effects for the meta-analysis and for the review are added, the former being nested in the latter. Figure \ref{fig:smds} shows the complete dataset with the fit of the previously described model (dotted red line). The details and evidence for the small study effects in the generalized linear model are given in Table \ref{anova.small.study}, the coefficients in Table \ref{coefficients.small.study}
 
 \begin{figure}
 <<echo = FALSE, message = FALSE, warning = FALSE, fig.height=4>>=
@@ -1333,11 +1359,11 @@ reg.dat <- reg.dat %>% filter(se.smd.pool < 3)
 reg.dat <- reg.dat %>% ungroup() %>% 
   mutate(rev.year.center = scale(scale = F, center = T, x = year)[,1]) 
 study.number.review.model <- dim(reg.dat)[1]
-small.study.fit <- lme(fixed = smd.pool ~ se.smd.pool, random = list(~ 1 | id, ~ 1 | meta.id),
+publication.bias.fit <- lme(fixed = smd.pool ~ se.smd.pool, random = list(~ 1 | id, ~ 1 | meta.id),
                        weights = ~ se.smd.pool^2, method = "ML", data = reg.dat)
 plot(y = reg.dat$smd.pool, x = reg.dat$se.smd.pool, cex = .1, xlab = "standard error", ylab = "std. mean difference")
-small.study.fit.coef <- summary(small.study.fit)$coefficients$fixed
-abline(a = small.study.fit.coef, col = "red", lty = 2)
+publication.bias.fit.coef <- summary(publication.bias.fit)$coefficients$fixed
+abline(a = publication.bias.fit.coef, col = "red", lty = 2)
 
 lmer.table <- function(model){
   sum <- summary(model)
@@ -1355,31 +1381,32 @@ lmer.table <- function(model){
 <<echo =FALSE, results='asis', warning=FALSE>>=
 null.fit <- lme(fixed = smd.pool ~ 1, random = list(~ 1 | id, ~ 1 | meta.id),
                        weights = ~ se.smd.pool^2, method = "ML", data = reg.dat)
-small.study.fit.anova <- anova(null.fit, small.study.fit)
-small.study.fit.anova[2,9] <- "<0.00001"
-print(xtable(small.study.fit.anova[,-1], caption = "Anova table for a generalized linear model for small study effects compared to the null model. 'small.study.fit' denotes the model with random intercepts for meta-analyses and reviews.", 
+publication.bias.fit.anova <- anova(null.fit, publication.bias.fit)
+publication.bias.fit.anova[2,9] <- "<0.00001"
+print(xtable(publication.bias.fit.anova[,-1], caption = "Anova table for a generalized linear model for small study effects compared to the null model ('null.fit'). 'publication.bias.fit' denotes the model with random intercepts for meta-analyses and reviews.", 
              label = "anova.small.study", digits = c(1,1,1,1,1,1,1,1,5)), 
       size = "scriptsize")
 @
 
 <<echo =FALSE, results='asis', warning=FALSE>>=
-print(xtable(lmer.table(small.study.fit), align = "lccc", 
+print(xtable(lmer.table(publication.bias.fit), align = "lccc", 
              caption = "Coefficients and 95\\% confidence limits of the generalized linear model. 'se.smd.pool' denotes the standard error of the std. mean difference.", label = "coefficients.small.study"),  size = "scriptsize")
 @
 
-It is possible to include meta-analysis specific random slopes. Before continuing, it is tested if incorporation of random slopes improves model fit. Table \ref{anova.random.slopes} shows the anova table for a model with and without random slopes.
+It is possible to include meta-analysis specific random slopes. Before continuing, it is tested if incorporation of random slopes improves model fit. Table \ref{anova.random.slopes} shows the anova table for a model with and without random slopes. Model diagnostics indicate that there is no benefit in including random slopes for the single meta-analysis. \\
+To test if publication bias varies over time, we include the year of the publication of the review as an additional explanatory variable. Ultimately, it is of interest if there is an interaction between the small study effect (publication bias) and time of publication, i.e. if the slope varies depending on the year. Because such a model is nested in a more simpler model where the study year is only an additive effect, all these models are fitted. Table \ref{anova.lme} displays model fit diagnostics.
 
 <<echo =FALSE, results='asis', warning=FALSE>>=
-small.study.rs.fit <- lme(fixed = smd.pool ~ se.smd.pool, 
+publication.bias.rs.fit <- lme(fixed = smd.pool ~ se.smd.pool, 
                           random = list(~ 1 | id, ~ meta.id | meta.id),
                        weights = ~ se.smd.pool^2, method = "ML", data = reg.dat)
-print(xtable(anova(small.study.fit, small.study.rs.fit)[,-1], caption = "Anova table for two generalized linear model fits. 'small.study.fit' denotes the model with random intercepts for meta-analyses and reviews, 'small.study.rs.fit' the model with additional random slopes per review.", 
+print(xtable(anova(publication.bias.fit, publication.bias.rs.fit)[,-1], caption = "Anova table for two generalized linear model fits. 'publication.bias.fit' denotes the model with random intercepts for meta-analyses and reviews, 'publication.bias.rs.fit' the model with additional random slopes per review.", 
              label = "anova.random.slopes", digits = c(1,1,1,1,1,1,1,1,1)), 
       size = "scriptsize")
 @
 
-Model diagnostics indicate that there is no benefit in including random slopes for the single meta-analysis. \\
-To test if publication bias varies over time, we include the year of the publication of the review as an additional explanatory variable. Ultimately, it is of interest if there is an interaction between the small study effect (publication bias) and time, i.e. if the slope varies depending on the year. Because such a model is nested in a more simpler model where the study year is only an additive effect, all these models are fitted. Table \ref{anova.lme} displays model fit diagnostics.
+
+
 
 <<results = 'asis', echo = FALSE>>=
 review.year.fit <- lme(fixed = smd.pool ~ se.smd.pool + rev.year.center, 
@@ -1388,29 +1415,30 @@ review.year.fit <- lme(fixed = smd.pool ~ se.smd.pool + rev.year.center,
 review.year.int.fit <- lme(fixed = smd.pool ~ se.smd.pool * rev.year.center, 
                     random = list(~ 1 | id, ~ 1 | meta.id),
                 weights = ~ se.smd.pool^2, method = "ML", data = reg.dat)
-print(xtable(anova(small.study.fit, review.year.fit, review.year.int.fit)[,-1], caption = "Anova table for three generalized linear model fits. 'small.study.fit' denotes the model with the standard error as explanatory variable, 'review.year.fit' the model with standard error and the centered (- 2013) review year as explanatory variable, and 'review.year.int.fit' the model with interaction between the two.", 
+print(xtable(anova(publication.bias.fit, review.year.fit, review.year.int.fit)[,-1], caption = "Anova table for three generalized linear model fits. 'publication.bias.fit' denotes the model with the standard error as explanatory variable, 'review.year.fit' the model with standard error and the centered (- 2013) review year as explanatory variable, and 'review.year.int.fit' the model with interaction between the two.", 
              label = "anova.lme", digits = c(1,1,1,1,1,1,1,1,2)), size = "scriptsize")
 @
 
-Because neither AIC, BIC or the F-test do show any improvement of model fit, it does not seem as if publication bias has substantially decreased or increased over the years. The review publication year is however not directly tied to the publication year of the studies that are affected by publication bias. Thus, using another measure of time, the results may be different. Thus, the models are re-fitted with the study publication years. 
+Because neither AIC, BIC nor the F-test do show any improvement of model fit, we can not reject the null hypothesis that publication bias has not decreased or increased over the years. The review publication year is however only one measure of time, and possibly imprecise. Thus, the models are re-fitted with the mean centered study publication year of a meta-analysis. The mean of the study years is 2000.3.
 
 <<results = 'asis', echo = FALSE>>=
 reg.dat <- reg.dat %>% filter(!is.na(study.year)) %>% ungroup() %>%  
-  mutate(study.year.center = study.year - mean(study.year))
+  mutate(study.year.center = study.year - mean(study.year)) %>% 
+  group_by(meta.id) %>% mutate(mean.study.year = mean(study.year.center))
 study.number.study.model <- dim(reg.dat)[1]
-small.study.fit <- lme(fixed = smd.pool ~ se.smd.pool, random = list(~ 1 | id, ~ 1 | meta.id),
+publication.bias.fit <- lme(fixed = smd.pool ~ se.smd.pool, random = list(~ 1 | id, ~ 1 | meta.id),
                        weights = ~ se.smd.pool^2, method = "ML", data = reg.dat)
-study.year.fit <- lme(fixed = smd.pool ~ se.smd.pool + study.year.center, 
+study.year.fit <- lme(fixed = smd.pool ~ se.smd.pool + mean.study.year, 
                 random = list(~ 1 | id, ~ 1 | meta.id),
                 weights = ~ se.smd.pool^2, method = "ML", data = reg.dat)
-study.year.int.fit <- lme(fixed = smd.pool ~ se.smd.pool * study.year.center, 
+study.year.int.fit <- lme(fixed = smd.pool ~ se.smd.pool * mean.study.year, 
                     random = list(~ 1 | id, ~ 1 | meta.id),
                 weights = ~ se.smd.pool^2, method = "ML", data = reg.dat)
-print(xtable(anova(small.study.fit, study.year.fit, study.year.int.fit)[,-1], caption = "Anova table for three generalized linear model fits. 'Small study fit' denotes the model with the standard error as explanatory variable, 'study.year.fit' the model with standard error and the centered (- 2000) study year as explanatory variable, and 'study.year.int.fit' the model with interaction between the two.", 
+print(xtable(anova(publication.bias.fit, study.year.fit, study.year.int.fit)[,-1], caption = "Anova table for three generalized linear model fits. 'Small study fit' denotes the model with the standard error as explanatory variable, 'study.year.fit' the model with standard error and the centered (- 2000) mean study year of the meta-analysis as explanatory variable, and 'study.year.int.fit' the model with interaction between the two.", 
              label = "anova.lme", digits = c(1,1,1,1,1,1,1,1,6)), size = "scriptsize")
 @
 
-The analysis of model fit indicates that there is an improvement when using the study year as a covariate, but only as an additive effect. The coefficients of the model are given in Table \ref{coefficients.study.year.fit}. AIC and BIC are smaller and the $p$-value of the F-test is very small. However, not the size of the effect, but the slope of the linear regression fit would have to be decreased to ultimately conclude a decrease of publication bias over the years. 
+The analysis of model fit indicates that there is an improvement when using the study year as a covariate, but only as an additive effect. It finds that effect sizes are in general little bit smaller in latter mean publication years (after the year 2000). The coefficients of the model are given in Table \ref{coefficients.study.year.fit}. AIC and BIC are smaller and the $p$-value of the F-test is very small. However, not the size of the effect, but the slope of the linear regression fit would have to be decreased in latter years to ultimately conclude a decrease of publication bias over the years. 
 
 
 <<echo =FALSE, results='asis', warning=FALSE>>=
@@ -1580,7 +1608,7 @@ print(xtable(lmer.table(study.year.fit), align = "lccc",
 %              adjustment.p.d,
 %              adjustment.p.log.hazard.ratio, ncol = 1)
 % @
-% \caption{Histogram of the Wald test-statistic $p$-value of meta-analysis and adjusted pooled treatment effect, based on different treatment effect measures. The method is indicated in the header, bin width is set to 0.05. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
+% \caption{Histogram of the Wald test-statistic $p$-value of meta-analysis and adjusted combined treatment effect, based on different treatment effect measures. The method is indicated in the header, bin width is set to 0.05. The significant proportion based on the threshold of 0.05 is displayed inside the figures.}
 % \label{fig:adjustment.stat}
 % \end{figure}
 

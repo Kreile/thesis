@@ -7,16 +7,16 @@
 \backcite {grey.literature.4}{{1}{1}{chapter.1}}
 \backcite {grey.literature.3}{{1}{1}{chapter.1}}
 \backcite {grey.literature.2}{{1}{1}{chapter.1}}
+\backcite {Egger}{{1}{1}{chapter.1}}
 \backcite {fda}{{1}{1}{chapter.1}}
+\backcite {Abbasi.2004}{{1}{1}{chapter.1}}
 \backcite {Dwan2013}{{1}{1}{chapter.1}}
 \backcite {publication.fate}{{1}{1}{chapter.1}}
 \backcite {Lee.2008}{{1}{1}{chapter.1}}
 \backcite {social.sciences.publication.bias}{{1}{1}{chapter.1}}
 \backcite {pb.clinicalscience.2013}{{1}{1}{chapter.1}}
 \backcite {Egger}{{1}{1}{chapter.1}}
-\backcite {excess.significance}{{1}{1}{chapter.1}}
-\backcite {ioannidis.2019}{{1}{1}{chapter.1}}
-\backcite {funnel.plot}{{2}{1}{chapter.1}}
+\backcite {funnel.plot}{{1}{1}{chapter.1}}
 \backcite {cochrane.handbook}{{2}{1}{figure.caption.3}}
 \backcite {Egger}{{2}{1}{figure.caption.3}}
 \backcite {Ioannidis2007}{{2}{1}{figure.caption.3}}
@@ -98,4 +98,3 @@
 \backcite {limitmeta}{{49}{5.4}{section.5.4}}
 \backcite {metafor.package}{{49}{5.4}{section.5.4}}
 \backcite {meta.package}{{49}{5.4}{section.5.4}}
-\backcite {largest.study.only}{{49}{5.5}{section.5.5}}

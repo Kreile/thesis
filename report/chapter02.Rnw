@@ -333,7 +333,8 @@ The weights are set as $w_i = 1/\sqrt{\se_i^2 + \tau^2})$. After adjusting for t
 
 \subsection{Peters Test: Weighted Linear Regression Test} \label{sec:Peter}
 When the outcome is dichotomous, effect sizes and variances of effect size are correlated, which can readily be seen in \eqref{eq:risk.ratio} and \eqref{eq:risk.ratio.variance} (see also \cite[120]{meta.w.R}). A small number of event counts in one or group will inflate the variance and the effect size. Consequently, the tests above will tend to reject the null-hypothesis too often, \ie report false positives.\\ 
-Instead of taking the standard error $\se$ as explanatory variable $x$ as in Egger's Test, the inverse of the total sample size is used. Additionally, the variances $\se_i^2$ are used as weights. Thus, the subsequent test procedure is identical to Egger's test. Peters test is a a small modification of Macaskill's test where the explanatory variable is the sample size instead of its inverse. \\
+Instead of taking the standard error $\se$ as explanatory variable $x$ as in Egger's test, the inverse of the total sample size is used. Additionally, the variances $\se_i^2$ are used as weights. Thus, the subsequent test procedure is identical to Egger's test. Peters test is a a small modification of Macaskill's test where the explanatory variable is the sample size instead of its inverse. \\
+The method will give less false positives than Egger's test, but will be more imprecise, because total sample size is not a very good approximation for statistical power (the overall rate of events in both groups plays an important role as well).
 
 
 
@@ -370,6 +371,7 @@ Then one can optionally apply Begg and Mazumdar's rank correlation test or Thomp
 
 
 \subsection{Excess Significance Test} \label{sec:excess.significance}
+Publication bias does not need to be accompained by small study effects. In the absence of any treatment effect, significant effects could be included in a meta-analysis on both directions of treatment effects (\ie large \textit{and} small effects) are published. Also, the afore-mentioned methods do not use statistical significance directly to investigate publication bias. Thus, a different test is introduced. \\
 \citet{excess.significance} developed an exploratory test to detect if the proportion of significant findings is larger than expected. 
 %Note that significance is here defined as one-sided significance, with the direction of the test being the same for each study. \\
 We assume that the effects are equally distributed around a true mean effect $\theta_M$, which can be estimated by fixed effects Meta-Analysis \eqref{eq:fixed.effects}. Let $O$ be the number of significant study results out of $n$ studies and $\alpha$ the significance threshold. Corresponding to the study effect $\theta_i$, we can specify the power $1 - \beta_i$, the probability to be accepting a true result. Let $z_{\alpha,i}$ be the $1-\alpha$ quantile of a normal distribution with standard error $\hat{\se}_i$. The power of study $i$ can be estimated as:
