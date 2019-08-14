@@ -1,0 +1,398 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.3.6)  13 AUG 2019 16:01
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**title.tex
+(./title.tex
+LaTeX2e <2017-04-15>
+Babel <3.10> and hyphenation patterns for 84 language(s) loaded.
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.8 \begin{center}
+                  
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (20.0pt too wide) in paragraph at lines 8--8
+[] 
+ []
+
+! Undefined control sequence.
+l.12 \bf
+        \Large%
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.12 \bf\Large
+              %
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (41.44449pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 Statistical 
+ []
+
+
+Overfull \hbox (13.83334pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 As- 
+ []
+
+
+Overfull \hbox (19.27776pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 sess- 
+ []
+
+
+Overfull \hbox (21.16669pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 ment 
+ []
+
+
+Overfull \hbox (15.13892pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 and 
+ []
+
+
+Overfull \hbox (15.16669pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 Ad- 
+ []
+
+
+Overfull \hbox (18.61111pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 just- 
+ []
+
+
+Overfull \hbox (21.16669pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 ment 
+ []
+
+
+Overfull \hbox (8.05559pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 of 
+ []
+
+
+Overfull \hbox (20.05557pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 Pub- 
+ []
+
+
+Overfull \hbox (8.1111pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 li- 
+ []
+
+
+Overfull \hbox (12.58334pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 ca- 
+ []
+
+
+Overfull \hbox (16.16669pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 tion 
+ []
+
+
+Overfull \hbox (17.69447pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 Bias 
+ []
+
+
+Overfull \hbox (7.55556pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 in 
+ []
+
+
+Overfull \hbox (13.22223pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 the 
+ []
+
+
+Overfull \hbox (39.11119pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 Cochrane 
+ []
+
+
+Overfull \hbox (38.69453pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 Database 
+ []
+
+
+Overfull \hbox (8.05559pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 of 
+ []
+
+
+Overfull \hbox (17.33336pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 Sys- 
+ []
+
+
+Overfull \hbox (19.33334pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 tem- 
+ []
+
+
+Overfull \hbox (15.25002pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 atic 
+ []
+
+
+Overfull \hbox (14.23613pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 Re- 
+ []
+
+
+Overfull \hbox (22.11115pt too wide) in paragraph at lines 14--17
+ \OT1/cmss/m/n/10 views 
+ []
+
+! Undefined control sequence.
+l.22 \large
+           
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (28.86119pt too wide) in paragraph at lines 23--26
+ []\OT1/cmss/m/n/10 Master 
+ []
+
+
+Overfull \hbox (19.75002pt too wide) in paragraph at lines 23--26
+ \OT1/cmss/m/n/10 The- 
+ []
+
+
+Overfull \hbox (10.05554pt too wide) in paragraph at lines 23--26
+ \OT1/cmss/m/n/10 sis 
+ []
+
+
+Overfull \hbox (7.55556pt too wide) in paragraph at lines 23--26
+ \OT1/cmss/m/n/10 in 
+ []
+
+
+Overfull \hbox (17.38892pt too wide) in paragraph at lines 23--26
+ \OT1/cmss/m/n/10 Bio- 
+ []
+
+
+Overfull \hbox (25.41667pt too wide) in paragraph at lines 23--26
+ \OT1/cmss/m/n/10 statis- 
+ []
+
+
+Overfull \hbox (14.27777pt too wide) in paragraph at lines 23--26
+ \OT1/cmss/m/n/10 tics 
+ []
+
+
+Overfull \hbox (40.97234pt too wide) in paragraph at lines 23--26
+ \OT1/cmss/m/n/10 (STA495) 
+ []
+
+
+Overfull \hbox (9.50002pt too wide) in paragraph at lines 27--28
+ []\OT1/cmss/m/n/10 by 
+ []
+
+
+Overfull \hbox (36.19449pt too wide) in paragraph at lines 31--31
+ []\OT1/cmss/m/n/10 Giuachin 
+ []
+
+
+Overfull \hbox (34.8334pt too wide) in paragraph at lines 31--31
+ \OT1/cmss/m/n/10 Kreiliger 
+ []
+
+! Undefined control sequence.
+<recently read> \small 
+                       
+l.32 \small
+            12-123-832\\
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (13.33336pt too wide) in paragraph at lines 32--32
+ []\OT1/cmss/m/n/10 12- 
+ []
+
+
+Overfull \hbox (18.33337pt too wide) in paragraph at lines 32--32
+ \OT1/cmss/m/n/10 123- 
+ []
+
+
+Overfull \hbox (15.00005pt too wide) in paragraph at lines 32--32
+ \OT1/cmss/m/n/10 832 
+ []
+
+
+Overfull \hbox (42.75005pt too wide) in paragraph at lines 37--38
+ []\OT1/cmss/m/n/10 supervised 
+ []
+
+
+Overfull \hbox (9.50002pt too wide) in paragraph at lines 37--38
+ \OT1/cmss/m/n/10 by 
+ []
+
+
+Overfull \hbox (13.41673pt too wide) in paragraph at lines 41--41
+ []\OT1/cmss/m/n/10 Dr. 
+ []
+
+
+Overfull \hbox (11.27779pt too wide) in paragraph at lines 41--41
+ \OT1/cmss/m/n/10 Si- 
+ []
+
+
+Overfull \hbox (18.11115pt too wide) in paragraph at lines 41--41
+ \OT1/cmss/m/n/10 mon 
+ []
+
+
+Overfull \hbox (31.6945pt too wide) in paragraph at lines 41--41
+ \OT1/cmss/m/n/10 Schwab 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+! LaTeX Error: The font size command \normalsize is not defined:
+               there is probably something wrong with the class file.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.41 Dr. Simon Schwab\\
+                       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+[1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Overfull \hbox (20.63896pt too wide) in paragraph at lines 42--43
+ []\OT1/cmss/m/n/10 Prof. 
+ []
+
+
+Overfull \hbox (13.41673pt too wide) in paragraph at lines 42--43
+ \OT1/cmss/m/n/10 Dr. 
+ []
+
+
+Overfull \hbox (23.36115pt too wide) in paragraph at lines 42--43
+ \OT1/cmss/m/n/10 Leon- 
+ []
+
+
+Overfull \hbox (18.27782pt too wide) in paragraph at lines 42--43
+ \OT1/cmss/m/n/10 hard 
+ []
+
+
+Overfull \hbox (19.08337pt too wide) in paragraph at lines 42--43
+ \OT1/cmss/m/n/10 Held 
+ []
+
+! Undefined control sequence.
+l.46 Zurich, \today
+                   
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (29.47226pt too wide) in paragraph at lines 46--47
+ []\OT1/cmss/m/n/10 Zurich, 
+ []
+
+! Undefined control sequence.
+l.49 \renewcommand{\baselinestretch}{1.0}\rm
+                                            
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: The font size command \normalsize is not defined:
+               there is probably something wrong with the class file.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.51 \newpage
+             
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+[0]
+Overfull \hbox (22.22221pt too wide) in paragraph at lines 52--53
+[]  
+ []
+
+
+! LaTeX Error: The font size command \normalsize is not defined:
+               there is probably something wrong with the class file.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.53 \newpage
+             
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+[1])
+! Emergency stop.
+<*> title.tex
+             
+*** (job aborted, no legal \end found)
+
+ 
+Here is how much of TeX's memory you used:
+ 10 strings out of 492995
+ 163 string characters out of 6132705
+ 56074 words of memory out of 5000000
+ 3661 multiletter control sequences out of 15000+600000
+ 3945 words of font info for 15 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 19i,4n,14p,116b,147s stack positions out of 5000i,500n,10000p,200000b,80000s
+!  ==> Fatal error occurred, no output PDF file produced!

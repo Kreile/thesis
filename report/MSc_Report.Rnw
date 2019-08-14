@@ -29,34 +29,46 @@ opts_chunk$set(
 
 
 \thispagestyle{empty}
-\begin{center}
-  \vspace*{6cm}{\bfseries\Huge
-  Statistical Assessment and Adjustment of Publication Bias in the Cochrane Database of Systematic Reviews
-  }
-  \vfill
-  \rm
+\newpage
 
-  \LARGE
-  Giuachin Kreiliger\\[12mm]
-  
-  \normalsize
-  Version \today
-\end{center}
-\newpage
-\thispagestyle{empty}~
-\newpage
 \pagenumbering{roman}
 
-\thispagestyle{plain}\markboth{Contents}{Contents}
-\tableofcontents
-\setkeys{Gin}{width=.8\textwidth}
+\chapter*{Abstract}
+% \addtocontents{toc}{\protect \vspace*{13.mm}}
+% \addcontentsline{toc}{chapter}{\bfseries{Preface}}
+\thispagestyle{plain}\markboth{Abstract}{Abstract}
+It is well known that the part of scientific findings that are published in journals are a 
+biased sample of the overall amount of research that is done. Often, editors aim to publish
+new and influential results that will be distributed further by other researchers and
+heighten their journal impact factor. The downside of it is that some of these results
+might only be positive by chance, or because of poor study design. When decision
+makers use this information to take decisions, they are likely to be mislead. \\
+In this study, the prevalence and impact of publication bias is assessed in 
+a large scale analysis. The data stems from the Cochrane Library of Systematic Reviews, the biggest collection
+of clinical trial and public health intervention data. Meta-Analyses of Cochrane
+are scrutinized for small-study effects and excess significance, both signs
+of publication bias. We also adjust the treatment effects from the meta-analysis for publication bias 
+and compare the newly obtained effects with unadjusted treatment effects. In a exploratory analysis, we find
+that around 20\% of meta-analyses are subject to publication bias, and that the
+evidence for treatment efficacy decreases after adjustment. Publication bias
+thus remains a threat to the validity of findings in Cochrane and in clinical research.
+% Because of the
+% amount of data that underlies this analysis, we suggest that previous measures 
+% to curb publication bias need to be enforced and possibly, that new measures have 
+% to be taken to prevent patient harm and strengthen the reliability of clinical research.
 
-\chapter*{Preface}
-\addtocontents{toc}{\protect \vspace*{13.mm}}
-\addcontentsline{toc}{chapter}{\bfseries{Preface}}
-\thispagestyle{plain}\markboth{Preface}{Preface}
 
-% Howdy!
+
+\chapter*{Acknowledgments}
+\thispagestyle{plain}\markboth{Acknowledgments}{Acknowledgments}
+I would like to thank all members of the Department of Biostatistics for promoting me along my studies and making this thesis possible.
+Special thanks goes to Dr. Simon Schwab, for thorough support, and to Prof. Dr. Leonhard Held for advice. \\
+Among my friends, I would to thank all students of biostatistics in the years 2018 and 2019 for making this time so pleasant. Samuel
+Pawel was a very good friend with lots of advice and understanding throughout this time, and it was for Eleftheria Michalopoulou 
+that writing this thesis was also fun.\\
+Most important, my family always supported me and gave me confidence in myself. Denise Sternlicht and
+Annatina Kreiliger are two of the main reasons why this thesis has been done, and I would like to dedicate this
+thesis to them.
 
 \bigskip
 
@@ -65,18 +77,32 @@ opts_chunk$set(
   June 2019
 \end{flushright}
 
-\addtocontents{toc}{\protect \vspace*{10mm}}
+%\addtocontents{toc}{\protect \vspace*{10mm}}
+% \addtocontents{toc}{\protect \vspace*{13.mm}}
+% \addcontentsline{toc}{chapter}{\bfseries{Preface}}
 
-\cleardoublepage
+
+\thispagestyle{plain}\markboth{Contents}{Contents}
+\tableofcontents
+\setkeys{Gin}{width=.8\textwidth}
+
+
+
+
+% Howdy!
+
+
+
+
+%\cleardoublepage
 \pagenumbering{arabic}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<'child-chapter01', child='chapter01.Rnw'>>=
 @
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<'child-chapter02', child='chapter02.Rnw'>>=
 @
@@ -99,8 +125,8 @@ opts_chunk$set(
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \appendix
-%<<'child-chapterA1', child='chapterA1.Rnw'>>=
-%@
+<<'child-chapterA1', child='chapterA1.Rnw'>>=
+@
 
 
 
