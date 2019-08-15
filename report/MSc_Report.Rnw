@@ -42,7 +42,7 @@ biased sample of the overall amount of research that is done. Often, editors aim
 new and influential results that will be distributed further by other researchers and
 heighten their journal impact factor. The downside of it is that some of these results
 might only be positive by chance, or because of poor study design. When decision
-makers use this information to take decisions, they are likely to be mislead. \\
+makers use this information to take actions, they are likely to be mislead. \\
 In this study, the prevalence and impact of publication bias is assessed in 
 a large scale analysis. The data stems from the Cochrane Library of Systematic Reviews, the biggest collection
 of clinical trial and public health intervention data. Meta-Analyses of Cochrane
@@ -62,7 +62,7 @@ thus remains a threat to the validity of findings in Cochrane and in clinical re
 \chapter*{Acknowledgments}
 \thispagestyle{plain}\markboth{Acknowledgments}{Acknowledgments}
 I would like to thank all members of the Department of Biostatistics for promoting me along my studies and making this thesis possible.
-Special thanks goes to Dr. Simon Schwab, for thorough support, and to Prof. Dr. Leonhard Held for advice. \\
+Special thanks goes to Dr. Simon Schwab, for thorough support, and to Prof. Dr. Leonhard Held for advice.\\
 Among my friends, I would to thank all students of biostatistics in the years 2018 and 2019 for making this time so pleasant. Samuel
 Pawel was a very good friend with lots of advice and understanding throughout this time, and it was for Eleftheria Michalopoulou 
 that writing this thesis was also fun.\\

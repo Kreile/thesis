@@ -9,7 +9,7 @@
 \contentsline {subsection}{\numberline {2.2.3}Time-to-Event Outcomes}{8}{subsection.2.2.3}
 \contentsline {section}{\numberline {2.3}Fixed and Random Effects Meta-Analysis}{9}{section.2.3}
 \contentsline {section}{\numberline {2.4}Linear, Weighted and Linear Mixed Regression Models}{10}{section.2.4}
-\contentsline {section}{\numberline {2.5}Publication Bias Assessment}{13}{section.2.5}
+\contentsline {section}{\numberline {2.5}Publication Bias Assessment}{12}{section.2.5}
 \contentsline {subsection}{\numberline {2.5.1}Begg and Mazumdar: Rank Correlation Test}{13}{subsection.2.5.1}
 \contentsline {subsection}{\numberline {2.5.2}Egger's Test: Weighted Linear Regression Test}{13}{subsection.2.5.2}
 \contentsline {subsection}{\numberline {2.5.3}Thompson and Sharp's Test: Weighted Linear Regression Random Effects Test}{14}{subsection.2.5.3}
@@ -26,8 +26,8 @@
 \contentsline {section}{\numberline {3.1}Cochrane Systematic Reviews}{21}{section.3.1}
 \contentsline {subsection}{\numberline {3.1.1}Methods for Cochrane Reviews}{22}{subsection.3.1.1}
 \contentsline {section}{\numberline {3.2}Structure and Variables}{23}{section.3.2}
-\contentsline {section}{\numberline {3.3}Data Tidying and Processing}{26}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}Newly Introduced Variables}{26}{subsection.3.3.1}
+\contentsline {section}{\numberline {3.3}Data Tidying and Processing}{25}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Newly Introduced Variables}{25}{subsection.3.3.1}
 \contentsline {subsection}{\numberline {3.3.2}Eligibility criteria for Publication Bias Test and Adjustment}{27}{subsection.3.3.2}
 \contentsline {subsubsection}{Exclusions for other Reasons}{28}{section*.13}
 \contentsline {subsubsection}{The Analysis Dataset}{28}{section*.14}

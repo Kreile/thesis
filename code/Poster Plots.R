@@ -8,9 +8,9 @@ meta.f <- meta.f %>% mutate(pval.se1 = case_when(outcome.flag == "DICH" ~ pval.h
 method.names <- c(z.reg = "regression", z.copas = "selection model")
 
 p <- meta.f %>% filter(outcome.flag != "IV") %>% 
-  select(pval.se1, z.fixef, z.ranef, z.reg, z.copas) %>% 
+  select(pval.se, z.fixef, z.ranef, z.reg, z.copas) %>% 
   gather(key = "method", value = "test.stat", z.reg:z.copas) %>%
-  ggplot(aes(x = test.stat, y = z.fixef, colour = pval.se1)) + 
+  ggplot(aes(x = test.stat, y = z.fixef, colour = pval.se)) + 
   facet_wrap(~ method, labeller = as_labeller(method.names)) + 
   scale_color_gradient2(midpoint=mid, low="firebrick4", mid = "gold",
                         high="chartreuse2", space ="Lab") +
@@ -18,8 +18,8 @@ p <- meta.f %>% filter(outcome.flag != "IV") %>%
   geom_abline(slope = 1, intercept = 0, linetype = 2, size = .3) +
   xlab("adjusted test statistic") + ylab("fixed effects test statistic")
 
-p <- meta.f %>% filter(outcome.flag != "IV") %>% 
-  select(pval.se1, z.fixef, z.ranef, z.reg, z.copas) %>% 
+meta.f %>% filter(outcome.flag != "IV") %>% 
+  select(pval.se, z.fixef, z.ranef, z.reg, z.copas) %>% 
   gather(key = "method", value = "test.stat", z.reg:z.copas) %>%
   ggplot(aes(x = test.stat, y = z.ranef#, colour = pval.se1
              )) + 
@@ -71,6 +71,7 @@ p.s <- meta.f %>% filter(outcome.flag != "IV") %>%
              )) + geom_histogram(binwidth = 0.1, center = 0) +
   theme_bw() + #guides(fill=guide_legend(title="test stat.")) + 
   ggtitle("Selection model") +
+  xlim(c(-0.7, 1)) +
   theme(legend.position = "none",
         axis.title=element_text(size=20), 
         axis.title.y = element_text(size=40, margin = margin(r = 20)), 
@@ -90,7 +91,7 @@ p.s <- meta.f %>% filter(outcome.flag != "IV") %>%
         axis.line = element_line(size = 1, linetype = "solid"),
         panel.border = element_blank()) +
   scale_fill_manual(values  = c("seagreen1", "seagreen3", "green4")) + ylab("count") +
-  xlab(expression(paste("meta analyis d - adjusted d"))) + 
+  xlab(expression(paste("meta analyis ",  italic(d)," - adjusted ", italic(d)))) + 
   geom_vline(xintercept = 0, linetype = "dashed" ) +
   geom_text(aes(x = 0.4, y = 600, label = "75% >= 0"), size = 12)
 
@@ -111,6 +112,7 @@ p.r <- meta.f %>% filter(outcome.flag != "IV") %>%
              )) + geom_histogram(binwidth = 0.1, center = 0) +
   theme_bw() + #guides(fill=guide_legend(title="test stat.")) 
   ggtitle("Regression") +
+  xlim(c(-0.7, 1)) +
   theme(legend.position = "none",
         axis.title=element_text(size=20), 
         axis.text= element_text(size=30),
@@ -130,7 +132,7 @@ p.r <- meta.f %>% filter(outcome.flag != "IV") %>%
         panel.border = element_blank(),
         axis.ticks = element_line(size = 1)) +
   scale_fill_manual(values  = c("seagreen1", "seagreen3", "green4")) +  ylab("") +
-  xlab(expression(paste("meta analysis d - adjusted d"))) + 
+  xlab(expression(paste("meta analyis ",  italic(d)," - adjusted ", italic(d)))) + 
    geom_vline(xintercept = 0, linetype = "dashed" ) +
    geom_text(aes(x = 0.5, y = 200, label = "67% > 0"), size = 12)
 
