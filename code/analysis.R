@@ -19,7 +19,9 @@ source(file.path(PATH_CODE, 'PubBias_functions.R'))
 
 load(file.path(PATH_DATA, "PubBias_2019-07-19.RData"))
 load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
-# data.ext2 <- pb.process3(data)
+#data.ext2 <- pb.process3(data)
+
+set.seed(489579)
 
 
 #--------------------------------------------------------------------------------------------------------------------#
@@ -542,7 +544,7 @@ iv.results <- data.frame(
 # for(u in meta.id.vector.z.c){
 # 	counter <- counter + 1
 # 	print(c(u,counter))
-# 	meta.analyses[[counter]] <- metacor(cor = z, n = total1 + total2, studlab = study.name, tmp.z[tmp.z$meta.id == u,])
+# 	meta.analyses[[counter]] <- metagen(TE = z, seTE = sqrt(var.z), studlab = study.name, tmp.z[tmp.z$meta.id == u,])
 # 	meta.analyses.reg[[counter]] <- limitmeta(meta.analyses[[counter]])
 # 	meta.analyses.copas[[counter]] <- auto.copas(meta.analyses[[counter]], sig.level = 0.1)
 # }
@@ -717,19 +719,3 @@ save(meta.cont, file =  file.path(PATH_RESULTS, "meta.cont.RData"))
 save(meta.iv, file =  file.path(PATH_RESULTS, "meta.iv.RData"))
 save(meta.id.vector, file =  file.path(PATH_RESULTS, "meta_id_vector.RData"))
 save(data.ext2, file =  file.path(PATH_RESULTS, "data_used_for_analysis.RData")) #Save data used for analysis
-
-
-
-
-# x <- foreach(i = 1:length(meta.id.vector.bin)) %dopar% 
-#   # u <- meta.id.vector.bin[i]
-#   # counter <- counter + 1
-#   metabin(event.e = events1c, n.e = total1, event.c = events2c, n.c = total2,
-#           studlab = study.name, sm = "RR",
-#           method = "Inverse", data = data.ext2[data.ext2$meta.id == meta.id.vector.bin[i],])
-# 
-# cl<-makeCluster(7)
-# registerDoParallel(cl)
-# 
-# foreach(i = 1:length(meta.id.vector.bin)) %dopar%
-#   sqrt(i)

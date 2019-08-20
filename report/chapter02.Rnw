@@ -275,7 +275,7 @@ It is necessary to check the model assumptions after fitting a linear regression
 The tests that will be presented on the following pages are a common way to detect publication bias. A frequently used method to test and adjust for publication bias, which goes under the name of trim-and-fill \citep{trimfill} is not discussed because of its disadvantageous properties (see \eg \citealp{Moreno.2009}).\\
 
 \subsection{Begg and Mazumdar: Rank Correlation Test} \label{sec:Begg}
-\citealp{begg.ties} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
+\citealp{Begg} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
 A standardized effect size $\theta_i^\star$ can be computed as in \eqref{eq:begg.stand.eff}. $\se_i^{2\star}$ is the variance of $\theta_i - \theta_M$ as defined in \eqref{eq:begg.stand.var} and $\theta_M$ is the fixed effects pooled treatment effect (\eqref{eq:fixed.effects}. 
 
 \begin{align}
@@ -555,9 +555,11 @@ where $a$ is a correction factor if $n_t \neq n_c$. The variance of $r$, $\se_r^
 \se_r^2 &= \frac{a^2 \se_d^2}{(d^2 + a)^3} \nonumber
 \end{align}
 
-Finally, we can get to a fisher's z-transformed correlation $z$ and it's variance $\se_z^2$ by using
+Because $r$ and $\se_r$ are not independent, we can apply a variance stabilizing transformation. Finally, we can get to a Fisher's $z$-score and it's variance $\se_z^2$ by using:
 \begin{align}
-% z &= 0.5 \ln\big(\frac{1 + r}{1 - r}\big) & \nonumber
-z &= \arctan(r) & \nonumber
+z &= 0.5 \ln\big(\frac{1 + r}{1 - r}\big) & \nonumber
+%z &= \arctan(r) & \nonumber
 \se_z^2 &= \frac{1}{n-3}
 \end{align}
+
+$z$ is approximately normally distributed with around the mean $z$ and with standard error $\se_z$.

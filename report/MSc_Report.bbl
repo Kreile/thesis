@@ -6,12 +6,16 @@ Abbasi, K. (2004).
 \newblock Compulsory registration of clinical trials.
 \newblock {\em BMJ}, {\bf329},  637--638.
 
-\bibitem[Begg, 1988]{begg.ties}
-Begg, C.~B. (1988).
-\newblock Statistical methods in medical research p. armitage and g. berry,
-  blackwell scientific publications, oxford, u.k., 1987. no. of pages: 559.
-  price £22.50.
-\newblock {\em Statistics in Medicine}, {\bf7},  817--818.
+\bibitem[Armitage {\it et~al.}, 2008]{begg.ties}
+Armitage, P., Berry, G., and Matthews, J. N.~S. (2008).
+\newblock {\em Statistical methods in medical research}.
+\newblock John Wiley \& Sons.
+
+\bibitem[Begg and Mazumdar, 1994]{Begg}
+Begg, C.~B. and Mazumdar, M. (1994).
+\newblock Operating characteristics of a rank correlation test for publication
+  bias.
+\newblock {\em Biometrics}, {\bf50},  1088--1101.
 
 \bibitem[Bishop, 2019]{Bishop.2019}
 Bishop, D. (2019).
@@ -20,9 +24,9 @@ Bishop, D. (2019).
 
 \bibitem[Borenstein {\it et~al.}, 2011]{Intro.meta}
 Borenstein, M., Hedges, L.~V., Higgins, J. P.~T., Rothstein, H.~R., and
-  Higgins, D. J. P.~T. (2011).
+  Higgins, J. P.~T. (2011).
 \newblock {\em Introduction to Meta-Analysis}.
-\newblock John Wiley \& Sons, Incorporated, Hoboken, UNKNOWN.
+\newblock John Wiley \& Sons.
 
 \bibitem[Cochran, 1954]{Cochran}
 Cochran, W.~G. (1954).
@@ -60,7 +64,7 @@ Cox, D.~R. (1972).
 Dechartres, A., Trinquart, L., Boutron, I., and Ravaud, P. (2013).
 \newblock Influence of trial sample size on treatment effect estimates:
   meta-epidemiological study.
-\newblock {\em BMJ (Clinical research ed.)}, {\bf346},  f2304--f2304.
+\newblock {\em BMJ (Clinical research ed.)}, {\bf346},  2304--2304.
 
 \bibitem[Decullier {\it et~al.}, 2005]{publication.fate}
 Decullier, E., Lh{\'e}ritier, V., and Chapuis, F. (2005).
@@ -141,14 +145,14 @@ Harbord, R.~M., Egger, M., and Sterne, J. A.~C. (2006).
 
 \bibitem[Hedges and Olkin, 1985]{olkin1985dtor}
 Hedges, L.~V. and Olkin, I. (1985).
-\newblock Chapter 11 - combining estimates of correlation coefficients.
-\newblock In Hedges, L.~V. and Olkin, I., editors, {\em Statistical Methods for
-  Meta-Analysis},   223 -- 246. Academic Press, San Diego.
+\newblock {\em CHAPTER 11 - Combining Estimates of Correlation Coefficients},
+  223 -- 246.
+\newblock Academic Press, San Diego.
 
 \bibitem[Held and Saban{\'e}s~Bov{\'e}, 2014]{held2014}
 Held, L. and Saban{\'e}s~Bov{\'e}, D. (2014).
-\newblock Applied statistical inference.
-\newblock {\em Springer, Berlin Heidelberg, doi}, {\bf10},  978--3.
+\newblock {\em Applied statistical inference}, volume~10.
+\newblock Springer.
 
 \bibitem[Higgins~JPT, 2011]{cochrane.handbook}
 Higgins~JPT, G.~S. (2011).
@@ -169,7 +173,7 @@ Ioannidis, J.~P. and Trikalinos, T.~A. (2007b).
 \bibitem[Ioannidis, 2005]{ioannidis.2005}
 Ioannidis, J. P.~A. (2005).
 \newblock Why most published research findings are false.
-\newblock {\em PLOS Medicine}, {\bf2}, .
+\newblock {\em PLOS Medicine}, {\bf2},  124.
 
 \bibitem[Jones {\it et~al.}, 2013]{pb.clinicalscience.2013}
 Jones, C.~W., Handler, L., Crowell, K.~E., Keil, L.~G., Weaver, M.~A., and
@@ -193,12 +197,7 @@ Kicinski, M., Springate, D., and Kontopantelis, E. (2015).
 Lee, K., Bacchetti, P., and Sim, I. (2008).
 \newblock Publication of clinical trials supporting successful new drug
   applications: a literature analysis.
-\newblock {\em PLoS Med}, {\bf5},  e191.
-
-\bibitem[(Leicester) {\it et~al.}, 2000]{sutton.2000}
-(Leicester), A. J.~S., Song, F., Gilbody, S.~M., and Abrams, K.~R. (2000).
-\newblock Modelling publication bias in meta-analysis: a review.
-\newblock {\em Statistical Methods in Medical Research}, {\bf9},  421--445.
+\newblock {\em PLoS Med}, {\bf5},  191.
 
 \bibitem[McAuley {\it et~al.}, 2000]{grey.literature.2}
 McAuley, L., Pham, B., Tugwell, P., and Moher, D. (2000).
@@ -236,7 +235,7 @@ N{\"u}esch, E., Trelle, S., Reichenbach, S., Rutjes, A. W.~S., Tschannen, B.,
   Altman, D.~G., Egger, M., and J{\"u}ni, P. (2010).
 \newblock Small study effects in meta-analyses of osteoarthritis trials:
   meta-epidemiological study.
-\newblock {\em BMJ}, {\bf341}, .
+\newblock {\em BMJ}, {\bf341},  3515--3515.
 
 \bibitem[Onishi and Furukawa, 2014]{Onishi.2014}
 Onishi, A. and Furukawa, T.~A. (2014).
@@ -287,6 +286,12 @@ Schwarzer, G., Carpenter, J.~R., and R{\"u}cker, G. (2015).
 \newblock {\em Meta-analysis with R}, volume 4724.
 \newblock Springer.
 
+\bibitem[Schwarzer {\it et~al.}, 2017]{metasens.package}
+Schwarzer, G., Carpenter, J.~R., and R{\"u}cker, G. (2017).
+\newblock {\em metasens: Advanced Statistical Methods to Model and Adjust for
+  Bias in Meta-Analysis}.
+\newblock R package version 0.3-2.
+
 \bibitem[Silliman, 1997]{bayesian.selection.model.2}
 Silliman, N.~P. (1997).
 \newblock Hierarchical selection models with applications in meta-analysis.
@@ -299,17 +304,16 @@ Souza, J.~P., Pileggi, C., and Cecatti, J. (2007).
   reproductive health meta-analyses: an analytic survey.
 \newblock {\em Reproductive Health}, {\bf4},  3.
 
-\bibitem[Sterne {\it et~al.}, 2001a]{sterne2001}
-Sterne, J. A.~C., Egger, M., and Smith, G.~D. (2001a).
+\bibitem[Sterne {\it et~al.}, 2001]{Sterne}
+Sterne, J. A.~C., Egger, M., and Smith, G.~D. (2001).
 \newblock Investigating and dealing with publication and other biases in
   meta-analysis.
 \newblock {\em BMJ}, {\bf323},  101--105.
 
-\bibitem[Sterne {\it et~al.}, 2001b]{Sterne}
-Sterne, J. A.~C., Egger, M., and Smith, G.~D. (2001b).
-\newblock Investigating and dealing with publication and other biases in
-  meta-analysis.
-\newblock {\em BMJ}, {\bf323},  101--105.
+\bibitem[Sutton {\it et~al.}, 2000]{sutton.2000}
+Sutton, A.~J., Song, F., Gilbody, S.~M., and Abrams, K.~R. (2000).
+\newblock Modelling publication bias in meta-analysis: a review.
+\newblock {\em Statistical Methods in Medical Research}, {\bf9},  421--445.
 
 \bibitem[Thompson and Sharp, 1999]{thompson.sharp}
 Thompson, S.~G. and Sharp, S.~J. (1999).

@@ -10,7 +10,7 @@ opts_chunk$set(
 @
 
 
-\chapter{Appendix}
+\chapter{Appendix}\label{ch:Appendix}
 
 \section{Comparison of Results with previous Studies}
 
