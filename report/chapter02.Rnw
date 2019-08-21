@@ -339,15 +339,15 @@ The method will give less false positives than Egger's test, but will be more im
 
 
 \subsection{Harbord's Test: Score based Test} \label{sec:Harbord}
-A rank based alternative to Peters test for binary outcomes is Harbord's test \citep{Harbord}.
-It uses a different treatment effect and variance estimate: the score $\varphi$ of the log-likelihood, evaluated as log odds ratio $\theta_\textrm{H0} = 0$ and its inverse Fisher information $s^2$. Formally,
+An alternative to Peters test for binary outcomes is Harbord's test \citep{Harbord}.
+It uses a different treatment effect and variance estimate: the score $\varphi$ of the log-likelihood, evaluated as log odds ratio $\theta_\textrm{H0} = 0$ and its inverse Fisher information $\se^2$. Formally,
 
 \begin{align}
-\varphi &= e_t - (e_t - e_c)(e_t + (n_t - e_t))/(n_t + n_c) \label{harbord.score} \\
- s^2 &= \frac{(e_t + e_c)(e_t + (n_t - e_t))(e_c + (n_c - e_c))((n_t - e_t) + (n_c - e_c))}{(n_t + n_c)^2(n_t + n_c - 1)} \label{harbord.variance}
+\varphi &= e_t - (e_t - e_c)(e_t + (n_t - e_t))/(n_t + n_c) \nonumber \\
+ \se^2 &= \frac{(e_t + e_c)(e_t + (n_t - e_t))(e_c + (n_c - e_c))((n_t - e_t) + (n_c - e_c))}{(n_t + n_c)^2(n_t + n_c - 1)} \nonumber
 \end{align}
 
-It can be shown that they are both good approximations of the log odds ratio and its variance if the real $\theta$ is not too far from zero. The standardized estimator $\varphi_i/\se_i^2$ is also known as Peto odds ratio. The obtained scores and variances can be used in Egger's test as treatment effects and variances.
+It can be shown that they are both good approximations of the log odds ratio and its variance if the real $\theta$ is not too far from zero. The standardized estimate $\varphi/\se^2$ is also known as Peto odds ratio. The obtained scores and variances can be used in Egger's test as treatment effects and variances.
 
 
 \subsection{Schwarzer's Test: Rank Correlation Test} \label{sec:Schwarzer}
@@ -396,7 +396,7 @@ $E$ can then be compared to $O$ by constructing a test statistic $\chi$:
 and consecutively, calculating a $p$\hspace{0.4mm}~-~value for the evidence against the null-hypothesis of $O = E$ with a $\chi^2$ distribution with one degree of freedom. Alternatively, one can also use a binomial test, which is encouraged when $n$ and $O$ is small. We will get a one sided $p$\hspace{0.4mm}~-value for excess significance, $\P(X \geq O)$, by computing
 
 \begin{align}
-p &= \sum_{i = O}^n\Big({n \choose i} p^i (1-p)^{n - i}\Big)
+p &= \sum_{i = O}^n\Big({n \choose i} p^i (1-p)^{n - i}\Big) \nonumber
 \end{align}
 
 with $p = E/n$ and $X$ being a binomial random variable with probability $p$. 

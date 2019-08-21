@@ -1,0 +1,1166 @@
+\documentclass[english]{beamer}
+%% The most common packages are already included in:
+\usetheme{biostat}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\usepackage{amsmath,amsfonts,tikz, amssymb}
+\usetikzlibrary{trees}
+
+%% Header data: (adjust to your needs:
+\def\uzhunit{Biostatistics}             %% if (not) needed comment/uncomment
+%\def\uzhunitext{STA480}
+
+\title{Publication Bias in Cochrane Meta-Analyses}%[Publication Bias]
+%% Optional Argument in [Brackets]: Short Title for Footline
+
+%% The following are all optional, simply comment them
+%\subtitle{Publication Bias in the Cochrane Libary}
+%\institute{Biostatistics Journal Club}  %% optional
+\author{Giuachin Kreiliger}
+\date{\today}
+
+\input{newCommands.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+<<include = FALSE, cache = TRUE>>= 
+#Load data:
+rm(list = ls())
+library(knitr)
+PATH_HOME = path.expand("~") # user home
+PATH = file.path(PATH_HOME, 'Data/PubBias')
+PATH2 = file.path(PATH_HOME, 'PubBias')
+FILE = 'cochrane_2019-07-04.csv'
+PATH_DATA = file.path(PATH, 'data')
+PATH_CODE = file.path(PATH2, 'code')
+PATH_RESULTS = file.path(PATH2, 'results_new')
+# PATH_FIGURES = file.path(PATH_RESULTS, 'figures')
+
+source(file.path(PATH_CODE, 'PubBias_functions.R'))
+require(corrgram)
+require(nlme)
+
+load(file.path(PATH_DATA, "PubBias_2019-07-19.RData"))
+load(file.path(PATH_RESULTS, "data_used_for_analysis.RData"))
+load(file.path(PATH_RESULTS, "meta_analyses_summary_complete.RData"))
+load(file.path(PATH_RESULTS, "meta_id_vector.RData"))
+load(file.path(PATH_RESULTS, "meta_id_I2.RData"))
+load(file.path(PATH_RESULTS, "meta.bin.RData"))
+load(file.path(PATH_RESULTS, "meta.cont.RData"))
+load(file.path(PATH_RESULTS, "meta.iv.RData"))
+
+
+#Inital dataset properties:
+initial.id.count <- length(unique(data$id))
+initial.study.count <- length(unique(data$study.name))
+initial.result.count <- dim(data)[1]
+
+#No withdrawn reviews:
+tp7 <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) 
+nowith.id.count <- length(unique(tp7$id))
+nowith.study.count <- length(unique(tp7$study.name))
+nowith.result.count <- dim(tp7)[1]
+
+#Only efficacy outcomes:
+tp8 <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.desired == "efficacy")
+efficacy.id.count <- length(unique(tp8$id))
+efficacy.study.count <- length(unique(tp8$study.name))
+efficacy.result.count <- dim(tp8)[1]
+
+#outcome.flag reduction:
+tp.2 <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.flag == "IV") %>% 
+  filter(!all(effect == 0)) %>% 
+  filter(outcome.measure.merged == "Rate Ratio" | outcome.measure.merged == "SMD" |
+           outcome.measure.merged == "MD" | outcome.measure.merged == "Hazard Ratio" |
+           outcome.measure.merged == "OR" | outcome.measure.merged == "RR")
+tp.1 <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.flag == "DICH" | outcome.flag == "CONT")
+tp <- bind_rows(tp.1, tp.2)
+flag.id.count <- length(unique(tp$id))
+flag.study.count <- length(unique(tp$study.name))
+flag.result.count <- dim(tp)[1]
+#----------------------------------------------------------------------------------------------#
+
+#Counts of meta-analyses with n larger ten:
+m.a.largerten.bin <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.desired == "efficacy") %>% 
+  filter(outcome.flag == "DICH") %>% 
+  filter(total1 != 0 & total2 != 0) %>% 
+  group_by(meta.id) %>% filter(n() > 9) %>%  filter(any(events1 != 0) | any(events2 != 0)) %>% 
+  distinct(meta.id) %>% ungroup() %>% mutate(n = n())
+
+m.a.largerten.cont <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.desired == "efficacy") %>% 
+  filter(outcome.flag == "CONT") %>% 
+  filter(sd1 != 0 & sd2 != 0) %>% 
+  filter(total1 > 0 & total2 > 0) %>% group_by(meta.id) %>% 
+  filter(n() > 9) %>% distinct(meta.id) %>% ungroup() %>% mutate(n = n())
+  
+
+m.a.largerten.iv <- data.ext2 %>% filter(id %in% data.review$id[which(data.review$withdrawn == FALSE)]) %>% 
+  filter(outcome.desired == "efficacy") %>% 
+  filter(outcome.flag == "IV") %>% 
+  filter(!all(effect == 0)) %>% 
+  filter(outcome.measure.merged == "Rate Ratio" | outcome.measure.merged == "SMD" |
+           outcome.measure.merged == "MD" | outcome.measure.merged == "Hazard Ratio" |
+           outcome.measure.merged == "OR" | outcome.measure.merged == "RR") %>% 
+  filter(se != 0) %>% group_by(meta.id) %>% filter(n() > 9) %>% 
+  distinct(meta.id) %>% ungroup() %>% mutate(n = n())
+
+m.a.largerten.id <- rbind(m.a.largerten.bin, m.a.largerten.cont, m.a.largerten.iv)
+tp2 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) 
+
+ten.id.count <- length(unique(tp2$id))
+ten.study.count <- length(unique(tp2$study.name))
+ten.result.count <- dim(tp2)[1]
+m.a.largerten.count <- unique(m.a.largerten.bin$n) + unique(m.a.largerten.cont$n) + unique(m.a.largerten.iv$n)
+
+
+#----------------------------------------------------------------------------------------------#
+
+
+#variance ratio > 4:
+m.a.variance4.count <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  summarise(ratio = (max(se.new)^2)/(min(se.new)^2)) %>% 
+  filter(ratio >= 4) %>% count
+tp3 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  mutate(ratio = (max(se.new)^2)/(min(se.new)^2)) %>% 
+  filter(ratio >= 4)
+var.id.count <- length(unique(tp3$id))
+var.study.count <- length(unique(tp3$study.name))
+var.result.count <- dim(tp3)[1]
+
+#At least on sig. estimate:
+m.a.one.sig.count <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  summarise(ratio = (max(se.new)^2)/(min(se.new)^2),
+                                  n.sig = sum(sig.single)) %>% 
+  filter(ratio >= 4 & n.sig > 0) %>% count
+tp4 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  mutate(ratio = (max(se.new)^2)/(min(se.new)^2),
+                                  n.sig = sum(sig.single)) %>% 
+  filter(ratio >= 4 & n.sig > 0)
+sig.id.count <- length(unique(tp4$id))
+sig.study.count <- length(unique(tp4$study.name))
+sig.result.count <- dim(tp4)[1]
+
+#Without duplicates:
+m.a.no.dupl.number <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  summarise(ratio = (max(se.new)^2)/(min(se.new)^2),
+                                  n.sig = sum(sig.single),
+                                  dupl = unique(dupl.remove)) %>% 
+  filter(ratio >= 4 & n.sig > 0 & dupl == 0) %>% count
+tp5 <- data.ext2 %>% filter(meta.id %in% m.a.largerten.id$meta.id) %>% 
+  group_by(meta.id) %>% mutate(se.new = case_when(outcome.flag == "DICH" ~ sqrt(var.lrr),
+                                                  TRUE ~ se)) %>% 
+  mutate(ratio = (max(se.new)^2)/(min(se.new)^2),
+                                  n.sig = sum(sig.single),
+                                  dupl = unique(dupl.remove)) %>% 
+  filter(ratio >= 4 & n.sig > 0 & dupl == 0)
+dupl.id.count <- length(unique(tp5$id))
+dupl.study.count <- length(unique(tp5$study.name))
+dupl.result.count <- dim(tp5)[1]
+
+#smaller I2 than 0.5:
+m.a.smaller.5.count <- meta.info.I2 %>% filter(I2 < 50) %>% ungroup %>% count()
+
+meta.id.vector <- meta.info.I2 %>% filter(I2 < 50) %>% select(meta.id)
+meta.data <- data.ext2 %>% filter(meta.id %in% meta.id.vector$meta.id)
+
+I2.id.count <- length(unique(meta.data$id))
+I2.study.count <- length(unique(meta.data$study.name))
+I2.result.count <- dim(meta.data)[1]
+#----------------------------------------------------------------------------------------------#
+
+#Adjustment dataset:
+meta.adj.2 <- meta.f %>% filter(outcome.flag == "IV") %>%
+  filter(outcome.measure.merged == "SMD")
+meta.adj.1 <- meta.f %>% filter(outcome.flag == "DICH" | outcome.flag == "CONT") 
+meta.adj <- bind_rows(meta.adj.2, meta.adj.1)
+tp6 <- data.ext2 %>% filter(meta.id %in% meta.adj$meta.id)
+
+adj.id.count <- length(unique(tp6$id))
+adj.study.count <- length(unique(tp6$study.name))
+adj.result.count <- dim(tp6)[1]
+@
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{document}
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+
+\begin{frame}{Publication Bias}
+\begin{itemize}
+\item Preference of journal editors to publish significant study results
+\end{itemize}
+\hspace{2mm} $\rightarrow$ \hspace{2mm} non-significant results remain in file-drawer
+\end{frame}
+
+
+\begin{frame}{Systematic Reviews}
+\begin{itemize}
+\item Summarise all evidence with regard to treatment with meta-analysis
+\item Biased if non-significant results are not available and included
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Funnel Plot}
+Look for funnel plot asymmetry:
+
+\vspace{-5mm}
+\begin{figure}
+<<echo = FALSE, fig.height = 4, warning=FALSE, cache = TRUE>>=
+ex.se <- meta.f$meta.id[which(meta.f$id == "CD003246" & meta.f$subgroup.nr == 0
+                              & meta.f$outcome.nr == 3 & meta.f$comparison.nr == 9)]
+ex.nose <- meta.f$meta.id[which(meta.f$id == "CD000213" & meta.f$subgroup.nr == 1
+                              & meta.f$outcome.nr == 15 & meta.f$comparison.nr == 1)]
+par(mfrow = c(1,2))
+funnel(x = meta.id(ex.se), ylim = c(1.60, 0), comb.fixed = F, comb.random = F)
+funnel(x = meta.id(ex.nose), ylim = c(1.60, 0), comb.fixed = F, comb.random = F, ylab = NULL)
+@
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Funnel Plot}
+Effects with large standard errors have larger effect sizes (because they are only published
+if significant)
+
+\vspace{-10mm}
+\begin{figure}
+<<echo = FALSE, fig.height = 4, warning=FALSE, cache = TRUE>>=
+par(mfrow = c(1,2))
+funnel(x = meta.id(ex.se), ylim = c(1.60, 0), comb.fixed = F, comb.random = F, contour.levels = 0.975)
+funnel(x = meta.id(ex.nose), ylim = c(1.60, 0), comb.fixed = F, comb.random = F, ylab = NULL)
+@
+\end{figure}
+\end{frame}
+
+\begin{frame}{Detect Publication Bias}
+\begin{itemize}
+\item Small study effect tests (funnel plot asymmetry)
+\item Excess significance tests
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Excess Significance Test}
+Calculate power of each study, given that true effect size is
+fixed effects meta-analysis estimate.
+
+Calculate:
+\begin{align}
+p &= \sum_{i = O}^n\Big({n \choose i} p^i (1-p)^{n - i}\Big) \nonumber
+\end{align}
+
+\vspace{-1mm}
+$O = $ observed no. of significant results, $E$ expected based on power of studies.
+\end{frame}
+
+\begin{frame}{Analysis}
+\begin{itemize}
+\item Use meta-analyses from Cochrane.
+\item ``The single most reliable source of evidence in clinical science
+\end{itemize}
+
+Analyse meta-analyses with publication bias tests.
+\end{frame}
+
+%------------------------------------------------------------------------------------------------%
+\begin{frame}{The Cochrane Dataset}
+\small
+\begin{figure}
+\begin{center}
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=2.3em]
+\tikzstyle{btw} = [rectangle, node distance=0cm, minimum height =1.8em, fill= white]
+\tikzstyle{ublock} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=4em, text width = 10em]
+\tikzstyle{line} = [draw, ->, thick]
+\tikzstyle{final} = [rectangle, draw, fill=red!20, text centered, rounded corners, minimum height=2.8em]
+
+\begin{tikzpicture}[node distance = 2cm, auto]
+
+        \node [final] (1) {Inital dataset:
+    \Sexpr{format(initial.id.count, big.mark = ",")} reviews,
+    \Sexpr{format(initial.study.count, big.mark = ",")} studies,
+    \Sexpr{format(initial.result.count, big.mark = ",")} results};
+    
+    \node [final, below of=1, node distance=2cm] (7) {Analysis dataset: 
+    \Sexpr{format(I2.id.count, big.mark = ",")} reviews,
+    \Sexpr{format(I2.study.count, big.mark = ",")} studies,
+    \Sexpr{format(I2.result.count, big.mark = ",")} results};
+
+    \path [line] (1) -- node [btw, xshift = -2.8cm] {exclusion of unsuitable meta-analyses} (7);
+\end{tikzpicture}
+\label{Inclusion.criteria}
+\end{center}
+\end{figure}
+\end{frame}
+
+\begin{frame}{The Analysis dataset}
+\footnotesize
+\begin{figure}
+\begin{center}
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=2.3em]
+\tikzstyle{btw} = [rectangle, node distance=0cm, minimum height =1.8em, fill= white]
+\tikzstyle{ublock} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=4em, text width = 10em]
+\tikzstyle{line} = [draw, ->, thick]
+\tikzstyle{final} = [rectangle, draw, fill=red!20, text centered, rounded corners, minimum height=2.8em]
+
+\begin{tikzpicture}[node distance = 2cm, auto]
+
+
+    \node [final, node distance=1cm] (7) {Analysis dataset:
+    \Sexpr{format(m.a.smaller.5.count$nn, big.mark = ",")} meta-analyses};
+
+
+    \node [ublock, below of=7, node distance=3.5cm] (8) {Binary data: \\
+    \Sexpr{format(dim(meta.bin)[1], big.mark = ",")} meta-analyses};
+
+    \node [ublock, right of=8, node distance=3.5cm] (9) {Continuous data: \\
+    \Sexpr{format(dim(meta.cont)[1], big.mark = ",")} meta-analyses};
+
+    \node [ublock, left of=8, node distance=3.5cm] (10) {Other data (IV): \\
+    \Sexpr{format(dim(meta.iv[1])[1], big.mark = ",")} meta-analyses};
+
+
+    \path [line] (7) -- (8);
+    \path [line] (7) --  (9);
+    \path [line] (7) --  (10);
+    
+\end{tikzpicture}
+
+\end{center}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Small Study Effect Tests}
+\vspace{-4mm}
+Weighted linear regression with std. error $x_i$ and effect size $y_i$:
+\begin{align}
+y_i &= \beta_0 + \beta_1 x_i + \epsilon, & \epsilon \sim N(0, x_i \sigma^2) \nonumber
+\end{align}
+Test for $H0: \beta_1 = 0$, no funnel plot asymmetry
+\end{frame}
+
+\begin{frame}{Adjustments for Binary Data}
+As recommended by \citet{Sterne}
+\begin{itemize}
+\item Log odds ratio and risk ratio $\theta$ and standard error $\se_\theta$ are not independent
+\item Use score of binomial likelihood at log odds ratio $\theta_{\textrm{H0}} = 0$ instead of 
+log odds ratio and the inverse Fisher information instead of $\se_\theta$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Small Study Effect Tests}
+\begin{figure}
+<<echo = FALSE, warnings = FALSE, cache = TRUE, fig.height = 4>>=
+dat_text <- data.frame(
+  label = paste(sum(meta.bin$harbord.test), "< 0.1,",
+                round(mean(meta.bin$harbord.test),2)*100, "%"))
+p.dist.bin <- meta.bin%>% 
+  ggplot(aes(x = pval1.harbord)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
+  geom_text(data = dat_text, mapping = aes(x = 0.5, y = 125, label = label), 
+  					color = "red", size = 4.5) + 
+  ggtitle("Binary data (Harbord)") + 
+	xlab(expression(paste(italic(p), "-value"))) + theme(
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 12, margin = margin(b = 20)),
+        axis.title.y = element_text(size=16, margin = margin(r = 10)), 
+        axis.title.x = element_text(size=16, margin = margin(t = 10)), 
+        axis.text= element_text(size=12),
+        strip.text.x = element_text(size = 30)) 
+
+dat_text <- data.frame(
+  label = paste(sum(meta.cont$egger.test), "< 0.1,", round(mean(meta.cont$egger.test),2)*100, "%"))
+
+p.dist.cont <- meta.cont %>% 
+  ggplot(aes(x = pval1.egger)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
+  geom_text(data = dat_text, mapping = aes(x = 0.5, y = 63, label = label),  
+  					color = "red", size = 4.5) + 
+  ggtitle("Cont. Data (Egger)") + ylab("") + 
+	xlab(expression(paste(italic(p), "-value"))) + theme(
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 12, margin = margin(b = 20)),
+        #axis.title.y = element_text(size=16, margin = margin(r = 10)), 
+        axis.title.x = element_text(size=16, margin = margin(t = 10)), 
+        axis.text= element_text(size=12),
+        strip.text.x = element_text(size = 30)) 
+
+dat_text <- data.frame(
+  label = paste(sum(meta.iv$egger.test), "< 0.1,", round(mean(meta.iv$egger.test),2)*100, "%"))
+
+p.dist.iv <- meta.iv %>%  ggplot(aes(x = pval1.egger)) + 
+	geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
+  geom_text(data = dat_text, mapping = aes(x = 0.5, y = 24.5, label = label),  
+  					color = "red", size = 4.5) + 
+  ggtitle("Other Data (Egger)") + ylab("") +
+	xlab(expression(paste(italic(p), "-value")))  + theme(
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 12, margin = margin(b = 20)),
+        #axis.title.y = element_text(size=16, margin = margin(r = 10)), 
+        axis.title.x = element_text(size=16, margin = margin(t = 10)), 
+        axis.text= element_text(size=12),
+        strip.text.x = element_text(size = 30)) 
+
+grid.arrange(p.dist.bin, p.dist.cont, p.dist.iv, ncol = 3)
+@
+\end{figure}
+\end{frame}
+
+
+\begin{frame}[fragile]{Excess Significance Test}
+\begin{figure}
+<<echo = FALSE, cache = TRUE, fig.height = 4>>=
+dat_text <- data.frame(
+  label = paste(sum(meta.f$tes.d.test), "< 0.1,", round(mean(meta.iv$tes.d.test),2)*100, "%"))
+
+meta.f %>% ggplot(aes(x = pval1.d.tes)) +  
+	geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
+  ggtitle("All Data") +
+  geom_text(data = dat_text, mapping = aes(x = 0.5, y = 100, label = label),  
+  					color = "red", size = 5.5) + 
+	xlab(expression(paste(italic(p), "-value")))  + theme(
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16, margin = margin(b = 20)),
+        axis.title.y = element_text(size=16, margin = margin(r = 10)), 
+        axis.title.x = element_text(size=16, margin = margin(t = 10)), 
+        axis.text= element_text(size=12),
+        strip.text.x = element_text(size = 30)) 
+	
+	
+@
+\end{figure}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+% 
+% \begin{frame}{Fixed Effects Meta-Analysis}
+% Study $i$ of $n$ studies, effects $\theta_i$ and variances $v_i$, s.e. $s_i$
+% 
+% Fixed effects estimate: weighted mean with $w_i = 1/\hat{v_i}$: 
+% 
+% \begin{align}
+% \theta_f &= \frac{\sum_{i = 1}^n w_{i}\theta_i}{\sum_{i = 1}^n w_i} \nonumber \\ 
+% \textrm{se}(\theta_f) &= \frac{1}{\sqrt{\sum_{i = 1}^n w_i}} \nonumber
+% \end{align}
+% \end{frame}
+% 
+% \begin{frame}{Random Effects Meta-Analysis}
+% Let $\hat{\theta_i}|\theta_i \sim N(\theta_i, v_i) 
+% \theta_i \sim N(\theta, \tau^2)$
+% 
+% Random effects estimate: weigthed mean of $\hat{\theta_i}$ with weights $w_i = 1/(\hat{v_i} + \tau^2)$
+% \end{frame}
+% 
+% \begin{frame}{Evidence Based Medicine}
+% Likely to base decisions on over-optimistic findings
+% 
+% Direct consequences: patient harm and unnecessary research
+% \end{frame}
+% 
+% 
+% \begin{frame}{Cochrane Organisation}
+% Aim: summarise findings in primary clinical research and health care
+% 
+% Provide peer-reviewed, systematic reviews
+% 
+% Public access (for some countries)
+% \end{frame}
+% 
+% \begin{frame}{Research Question}
+% Quantify the abundance and impact of publication bias in the Cochrane Library
+% \end{frame}
+% 
+% 
+% \begin{frame}{Cochrane Library Dataset}
+% \Sexpr{format(length(unique(data$file.nr)), big.mark=",")} systematic reviews with studies published until 2018.
+% 
+% \Sexpr{format(length(unique(data$study.name)), big.mark=",")} studies.
+% 
+% \Sexpr{format(dim(data)[1], big.mark=",")} study results.
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Review Example: Binary Outcome}
+% Barbiturate efficacy for head injury treatment
+% \vspace{-5mm}
+% <<echo = FALSE, results = 'asis'>>=
+% print(xtable(barbi2, label = "barbiturates", digits = 0), include.rownames = F, size = "tiny")
+% @
+% \end{frame}
+% 
+% 
+% 
+% \begin{frame}{Dataset Structure}
+% 
+% \begin{figure}
+% \tikzstyle{every node}=[draw=black,thick,anchor=west,scale=.65]
+% \tikzstyle{selected}=[draw=red,fill=red!30]
+% \tikzstyle{optional}=[dashed,fill=gray!50]
+% \begin{tikzpicture}
+% [grow = right, anchor = west,
+%   growth parent anchor=east, % added code
+%   parent anchor=east, level distance=.5cm,
+%   sibling distance=2em, level 1/.style={sibling distance=2em}, level 2/.style={sibling distance=2em},
+%   level 3/.style={sibling distance=2em}, level 4/.style={sibling distance=1.2em}]
+%   \node {Review} [edge from parent fork right]
+%     child { node {Comparison 2}
+%       child { node {Outcome 2}}
+%       child { node {Outcome 1}
+%         child { node {Subgroup 2}}
+%         child { node {Subgroup 1}
+%           child  { node {Result 3}}
+%           child  { node {Result 2}}
+%           child  { node {Result 1}}
+%           }}
+%     }
+%     child [missing] {}
+%     child { node {Comparison 1}};
+% \end{tikzpicture}
+% %\caption{Structure of a hypothetical review with two different comparisons\label{review.structure}}
+% \label{review.structure}
+% \end{figure}
+% \end{frame}
+% 
+% 
+% 
+% 
+% 
+% \begin{frame}[fragile]{Dataset Properties}
+% Review or study level:
+% <<echo=FALSE, results = 'asis'>>=
+% print(xtable(dataset.properties, digits = 0, align = "lrrrr"), include.rownames = T, size = "footnotesize", hline = c(0,1,1,3))
+% @
+% \end{frame}
+% 
+% 
+% 
+% \begin{frame}{Small Study Effects}
+% ``The tendency for the smaller studies to show larger treatment effects'' \citep{Sterne}
+% \end{frame}
+% 
+% 
+% \begin{frame}{Small Study Effects}
+% Causes:
+% \begin{itemize}
+% \item Selective publication of studies with significant results - publication bias
+% \item Systematic differences in study settings
+% \end{itemize}
+% \end{frame}
+% 
+% 
+% \begin{frame}{Small Study Effect Tests}
+% Different approaches:
+% \begin{itemize}
+% \item Simple linear regression
+% \item Rank correlation
+% \end{itemize}
+% 
+% Special methods for binary outcomes	
+% \end{frame}
+% 
+% 
+% % \begin{frame}[fragile]{Small Study Effect Tests}
+% % Funnel plots (continuous outcome examples):
+% % 
+% % \vspace{-1.2cm}
+% % 
+% % <<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+% % par(las = 1, mfrow = c(1, 2))
+% % funnel(meta.example)
+% % funnel(meta.nexample)
+% % @
+% % 
+% % \end{frame}
+% % 
+% % 
+% % \begin{frame}[fragile]{Regression based Tests}
+% % Radial plots (continuous outcome examples):
+% % 
+% % \vspace{-1.1cm}
+% % 
+% % <<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+% % par(las = 1, mfrow = c(1,2))
+% % biased.rev$inv <- 1/biased.rev$se
+% % plot(y = (biased.rev$effect/biased.rev$se), x = (biased.rev$se^-1), xlim = c(0, 6), xlab = "inverse standard error", 
+% % 		 ylab = "mean diff. / std. error")
+% % 
+% % unbiased.rev$inv <- 1/unbiased.rev$se
+% % plot(y = (unbiased.rev$effect/unbiased.rev$se), x = (unbiased.rev$inv), xlim = c(0, 1.2), 
+% % 		 ylim = c(-18, 0), xlab = "inverse standard error", ylab = "mean diff. / std. error")
+% % @
+% % 
+% % \end{frame}
+% 
+% 
+% \begin{frame}{Regression based Tests}
+% study $i$ of $n$ studies, effects $\theta_i$ and variances $v_i$, s.e. $s_i$
+% 
+% $\theta_M$ is the pooled effect and $\tau^2$ the between-study variance.
+% 
+% Let $y_{i} = \theta_{i}/_{i}$ and $x_i = 1/s_i$
+% \begin{itemize}
+% \item \citet{Egger} : Simple linear regression \\ $y_i = \beta_0 + \beta_1 x_i, \epsilon_i \sim N(0, \sigma)$
+% \item \citet{thompson.sharp} : extension of Egger with study weights $v_{i} + \tau^2$ 
+% \end{itemize}
+% 
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Egger's Test examples}
+% Test for non-zero intercept $\beta_{0}$
+% 
+% \vspace{-1.1cm}
+% <<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+% par(las = 1, mfrow = c(1,2))
+% biased.rev$inv <- 1/biased.rev$se
+% m.ex <- lm(formula = (biased.rev$effect/biased.rev$se) ~ (biased.rev$inv))
+% plot(y = (biased.rev$effect/biased.rev$se), x = (biased.rev$se^-1), xlim = c(0, 6), xlab = "inverse standard error", 
+% 		 ylab = "mean diff. / std. error")
+% abline(coef = coef(m.ex), lty = 2, col = 2)
+% 
+% 
+% unbiased.rev$inv <- 1/unbiased.rev$se
+% m.nex <- lm(formula = (unbiased.rev$effect/unbiased.rev$se) ~ (unbiased.rev$inv))
+% plot(y = (unbiased.rev$effect/unbiased.rev$se), x = (unbiased.rev$inv), xlim = c(0, 1.2), 
+% 		 ylim = c(-18, 0), xlab = "inverse standard error", ylab = "mean diff. / std. error")
+% abline(coef = coef(m.nex), lty = 2, col = 2)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}{Regression Tests for Binary Outcomes}
+% 
+% \begin{itemize}
+% \item \citet{Peters} :$x_i = 1/n_i$ instead $1/s_i$, inverse variances as weight.
+% \item \citet{Harbord} :$x_i$ = score of the log-likelihood of a proportion and inverse variances as weights.
+% \item \citet{Rucker} :Use arcsine variance stabilizing transformation for variances and effects, do e.g. Egger's test.
+% \end{itemize}
+% \end{frame}
+% 
+% 
+% \begin{frame}{Rank based tests}
+% \citet{begg.ties}: \\
+% Let $y_{i}$ be $\frac{\theta_i - \theta_M}{v_i}$ and $x_i$ its variance ($\neq v_i$)
+% 
+% $u$ the number of pairs $(y_{i}, x_{i})$ ranked in the same order, $l$
+% the number of pairs in the opposite order
+% 
+% $Z = \frac{(u - l)}{\sqrt{n(n-1)(2n + 5)/18}}$  is a test statistic
+% \end{frame}
+% 
+% \begin{frame}{Rank based tests}
+% \citet{Schwarzer}: \\
+% $e_t$ number of events in the treatment group
+% 
+% $E_t$ follows hypergeometric distribution: calculate $\mathbb{E}(E_{t})$ and variances
+% 
+% proceed as in \citet{begg.ties}
+% \end{frame}
+% 
+% 
+% \begin{frame}{Test Results}
+% Inclusion criteria (from \citet{Ioannidis2007}):
+% \begin{itemize}
+% \item $n \geq 10$
+% \item at least one statistically significant effect in a study
+% \item $\frac{\hat{v_{\textrm{max}}}^2}{\hat{v_{\textrm{min}}}^2} > 4$
+% \item $I^2 < 0.5$
+% \end{itemize}
+% 
+% From \Sexpr{dim(meta)[1]} with $n \geq 10$, \Sexpr{dim(meta.f)[1]} remain.
+% \end{frame}
+% 
+% 
+% 
+% \begin{frame}[fragile]{Continuous Outcome Test Results}
+% $p$-values distribution, $n$ = \Sexpr{dim(meta.cont)[1]}:
+% 
+% \vspace{-2mm}
+% <<echo = FALSE, fig.height = 4, message = FALSE>>=
+% plot(p.dist.cont)
+% @
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Binary Outcome Test Results}
+% $p$-values distribution, $n$ = \Sexpr{dim(meta.bin)[1]}:
+% 
+% \vspace{-2mm}
+% <<echo = FALSE, fig.height = 3.6, message = FALSE>>=
+% plot(p.dist.bin)
+% @
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Agreement in significance}
+% Number of significant test results per meta-analysis:
+% 
+% \vspace{-2mm}
+% <<echo = FALSE, fig.height = 3.2, message = FALSE>>=
+% grid.arrange(agree.cont, agree.bin, ncol = 2)
+% @
+% \end{frame}
+% 
+% \begin{frame}{Small Study Effect Adjustment}
+% Three methods:
+% \begin{itemize}
+% \item Regression
+% \item Copas selection model
+% \item Trim-and-fill
+% \end{itemize}
+% \end{frame}
+% 
+% \begin{frame}{Adjustment by regression}
+% $y_i = \theta_i/s_i, x_i = 1/s_i$
+% 
+% $y_i = \beta_0 + \beta_1 x_i, \epsilon_i \sim N(0, \sigma)$
+% 
+% $\beta_1$ is the weighted mean treatment effect if $\beta_0 = 0$
+% \end{frame}
+% 
+% 
+% \begin{frame}{Adjustment by regression}
+% Radial plots (continuous outcome examples):
+% 
+% \vspace{-1.1cm}
+% 
+% <<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+% par(las = 1, mfrow = c(1,2))
+% biased.rev$inv <- 1/biased.rev$se
+% m.ex.0 <- lm(formula = (biased.rev$effect/biased.rev$se) ~ 0 + (biased.rev$inv))
+% m.ex <- lm(formula = (biased.rev$effect/biased.rev$se) ~ (biased.rev$inv))
+% plot(y = (biased.rev$effect/biased.rev$se), x = (biased.rev$se^-1), xlim = c(0, 6), xlab = "inverse standard error", 
+% 		 ylab = "mean diff. / std. error")
+% abline(coef = c(0,coef(m.ex.0)), lty = 2)
+% abline(coef = coef(m.ex), lty = 2, col = 2)
+% 
+% 
+% unbiased.rev$inv <- 1/unbiased.rev$se
+% m.nex.0 <- lm(formula = (unbiased.rev$effect/unbiased.rev$se) ~ 0 + (unbiased.rev$inv))
+% m.nex <- lm(formula = (unbiased.rev$effect/unbiased.rev$se) ~ (unbiased.rev$inv))
+% plot(y = (unbiased.rev$effect/unbiased.rev$se), x = (unbiased.rev$inv), xlim = c(0, 1), 
+% 		 ylim = c(-18, 0), xlab = "inverse standard error", ylab = "mean diff. / std. error")
+% abline(coef = c(0,coef(m.nex.0)), lty = 2)
+% abline(coef = coef(m.nex), lty = 2, col = 2)
+% @
+% \end{frame}
+% 
+% 
+% 
+% \begin{frame}[fragile]{Limit Meta-Analysis}
+% Extended random effects model:
+% 
+% \vspace{-4mm}
+% \begin{align}
+% \theta_i = \beta_0 + \beta_1(\sqrt{v_i + \tau^2}) + \epsilon_i(\sqrt{v_i + \tau^2}), \nonumber \\
+% \epsilon_{i} \stackrel{\textrm{iid}}{\sim} N(0,1) \nonumber
+% \end{align}
+% 
+% Use $\mathbb{E}(\theta_{i}) \rightarrow \beta_{0} + \beta_{1}\tau$ for $\sqrt{v_{i}} \rightarrow 0$
+% as corrected treatment efffect.
+% \end{frame}
+% 
+% 
+% 
+% \begin{frame}[fragile]{Limit Meta-Analysis}
+% Funnel plot with effect with infinite precision:
+% 
+% \vspace{-1.1cm}
+% <<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+% par(las = 1, mfrow = c(1,2))
+% funnel(limitmeta(meta.example))
+% funnel(limitmeta(meta.nexample))
+% @
+% \end{frame}
+% 
+% 
+% 
+% \begin{frame}{Selection model}
+% \citet{Copas1}: model based on a bivariate normal distribution:
+% 
+% \vspace{-8mm}
+% \begin{align}
+% \hat{\theta_i} = \theta_{i} + \sigma_i\epsilon_i \label{population.model2} \\
+% \theta_i \sim N(\theta, \tau^2) \label{population.model} \\
+% z_i = a + b/\hat{s_i} + \delta_i \label{selection.model}
+% \end{align}
+% 
+% \ref{population.model2},\ref{population.model} is called population model, \ref{selection.model} the selection model
+% 
+% $(\epsilon_i, \delta_i)$ are standard normal residuals with correlation $\rho = cor(y_i, z_i)$.
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Sensitivity Analysis}
+% Model the selection process with different $a,b$
+% 
+% Test if small study effect is significant, by including \\ $\theta_i = \theta_i + \beta s_i + v_{i}\epsilon_i$
+% 
+% Estimation: Select $a, b$ such that $H0$ can not be rejected and estimated
+% number of unpublished studies is minimal.
+% \end{frame}
+% 
+% 
+% \begin{frame}{Trim-and-Fill}
+% Mirror studies that cause asymmetry:
+% \vspace{-1.2cm}
+% 
+% <<message = FALSE, echo=FALSE, warning = FALSE, fig.height=4>>=
+% par(las = 1, mfrow = c(1, 2))
+% funnel(meta.example)
+% funnel(meta.nexample)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Results:}
+% Difference between random and fixed effects meta-analysis estimate: $|\theta_f - \theta_{r}|$
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 3.6, message = FALSE, warning=FALSE>>=
+% plot(hist.ranef)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
+% Absolute difference between adjusted and fixed effects meta-analysis estimate: $|{\theta_f} - {\theta_{\textrm{adjusted}}}|$
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 3.6, message = FALSE, warning=FALSE>>=
+% plot(hist.trimfill1)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Adjustment Results: Copas}
+% Absolute difference between adjusted and fixed effects meta-analysis estimate: $|{\theta_f} - {\theta_{\textrm{adjusted}}}|$
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 3.6, message = FALSE, warning=FALSE>>=
+% plot(hist.copas1)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Adjustment Results: Regression}
+% Absolute difference between adjusted and fixed effects meta-analysis estimate: $|{\theta_f} - {\theta_{\textrm{adjusted}}}|$
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 3.6, message = FALSE, warning=FALSE>>=
+% plot(hist.reg1)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Results:}
+% Random and fixed effects meta-analyses test statistics:
+% 
+% \vspace{-3mm} 
+% <<echo = FALSE, fig.height = 3.8, message = FALSE, warning=FALSE>>=
+% plot(ranef.fixef.sc.zval)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
+% Adjusted and meta-analysis test statistics:
+% 
+% \vspace{-3mm} 
+% <<echo = FALSE, fig.height = 3.8, message = FALSE, warning=FALSE>>=
+% grid.arrange(trimfill.fixef.sc.zval, trimfill.ranef.sc.zval, ncol = 2)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Adjustment Results: Copas}
+% Adjusted and meta-analysis test statistics:
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 3.8, message = FALSE, warning=FALSE>>=
+% grid.arrange(copas.fixef.sc.zval, copas.ranef.sc.zval, ncol = 2)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Adjustment Results: Regression}
+% Adjusted and meta-analysis test statistics:
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 3.8, message = FALSE, warning=FALSE>>=
+% grid.arrange(reg.fixef.sc.zval, reg.ranef.sc.zval, ncol = 2)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Adjustment Results}
+% Missing study proportions:
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 3.8, message = FALSE, warning=FALSE>>=
+% grid.arrange(p.missing.copas, p.missing.trim, ncol = 2) 
+% @
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Extreme Results}
+% RR reduction by trimfill (-3.9), side effects
+% 
+% <<echo = FALSE, fig.height = 3.5>>=
+% trimfill.id(165815)
+% @
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Extreme Results}
+% RR Reduction by copas selection model (-4), pain relief
+% 
+% <<echo = FALSE, fig.height = 3.5>>=
+% funnel.id(73169)
+% @
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Extreme Results}
+% RR Amplification by regression (+14), side effects
+% 
+% <<echo = FALSE, fig.height = 3.5, warning=FALSE>>=
+% limitmeta.id(119537)
+% @
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Discussion}
+% \begin{itemize}
+% \item Proportion of positive tests is well above 10\%
+% \item Effect sizes and evidence for treatment effect is diminishued
+% \item Limitations: not only primary outcomes, adjustment methods known to
+% perform poorly under the 0
+% \end{itemize}
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Outlook}
+% \begin{itemize}
+% \item Connect results with different medical fields, look for differences
+% \item Connect results with single studies and journals (?)
+% \end{itemize}
+% \end{frame}
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %Backup Slides%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% \begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
+% Treatment effect difference:
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+% plot(hist.trimfill)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Adjustment Results: Copas}
+% Treatment effect difference:
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+% plot(hist.copas)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Adjustment Results: Regression}
+% Treatment effect difference:
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+% plot(hist.reg)
+% @
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Results}
+% log treatment effect estimates:
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+% plot(ranef.fixef.sc.effect)
+% @
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Adjustment Results: Trim-and-fill}
+% log treatment effect estimates:
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+% grid.arrange(trimfill.fixef.sc.effect, trimfill.ranef.sc.effect, ncol = 2)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Adjustment Results: Copas}
+% log treatment effect estimates:
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+% grid.arrange(copas.fixef.sc.effect, copas.ranef.sc.effect, ncol = 2)
+% @
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Adjustment Results: Regression}
+% log treatment effect estimates:
+% 
+% \vspace{-3mm}
+% <<echo = FALSE, fig.height = 4, message = FALSE, warning=FALSE>>=
+% grid.arrange(reg.fixef.sc.effect, reg.ranef.sc.effect, ncol = 2)
+% @
+% \end{frame}
+% 
+% 
+% 
+% 
+
+\begin{frame}{References}
+  \small
+  \bibliographystyle{apalike}
+\bibliography{illustration}
+\end{frame}
+
+
+
+%\appendix
+%% Possible backup slides...
+
+%% chapter division is accomplished with:
+%% \part{Appendix}
+
+% \begin{frame}[fragile]{Test Results: Significance}
+% 
+% <<echo = FALSE, fig.height = 4>>=
+% grid.arrange(p.bin, p.cont, ncol = 2)
+% @
+% \end{frame}
+
+% \begin{frame}[fragile]{Pooling Studies - Meta-Analysis}
+% Multiple results in a meta-analysis group can be pooled:
+% <<echo=FALSE, results = 'asis'>>=
+% print(xtable(cum.repr.trials.subg, label = "repr.groups", align = "lrrr", digits = 0), include.rownames = F, size = "footnotesize")
+% @
+% \end{frame}
+
+% \begin{frame}{Dataset Structure}
+% \begin{itemize}
+% \item Comparison: What is compared, e.g. treatment vs. control
+% \item Outcome: How it is compared
+% \item Subgroup: Subgroup affiliation
+% \item Meta-Analysis Group: Results from same comparison, outcome and subgroup
+% \end{itemize}
+% \end{frame}
+
+% \begin{frame}[fragile]{Dataset Properties}
+% Missing data:
+% <<echo=FALSE, results = 'asis'>>=
+% print(xtable(missing.table, align = "lr"), include.rownames = T, include.colnames = F)
+% @
+% \end{frame}
+
+
+
+
+% \begin{frame}{Adjustment by regression}
+% Similar to the tests, but with unnormalized effect $y_{i}$:
+% 
+% \begin{align}
+% y_{i} = \beta_{0} + \beta_{1}x_{i}
+% \end{align}
+% 
+% $\beta_{0}$	 corresponds to $y_{i}$ with $x_{i} = 0$
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Adjustment by regression}
+% Linear regression method:
+% 
+% <<echo = FALSE, fig.height = 3>>=
+% grid.arrange(reg.1, reg.2, ncol = 2)
+% @
+% \end{frame}
+
+
+% \begin{frame}[fragile]{Thompson and Sharp's Tests}
+% Generalised radial plot with new standard error $x_i = s_i + \tau$
+% 
+% \vspace{-1.1cm}
+% <<message = FALSE, echo=FALSE, warning = FALSE, fig.height= 4>>=
+% par(las = 1, mfrow = c(1,2))
+% tau.ex <- meta.example$tau
+% biased.rev$inv <- 1/sqrt((biased.rev$se^2 + tau.ex^2))
+% m.ex <- lm(formula = (biased.rev$effect*biased.rev$inv) ~ (biased.rev$inv), weights = biased.rev$se)
+% biased.rev$inv <- 1/biased.rev$se
+% plot(y = (biased.rev$effect/biased.rev$se), x = (biased.rev$inv), xlim = c(0, 4), xlab = "inverse standard error", 
+% 		 ylab = "mean diff. / std. error")
+% abline(coef = coef(m.ex), lty = 2, col = 2)
+% 
+% tau.nex <- meta.nexample$tau
+% unbiased.rev$inv <- 1/sqrt((unbiased.rev$se^2 + tau.nex^2))
+% m.nex <- lm(formula = (unbiased.rev$effect*unbiased.rev$inv) ~ (unbiased.rev$inv), weights = unbiased.rev$se)
+% plot(y = (unbiased.rev$effect/unbiased.rev$se), x = (unbiased.rev$inv), xlim = c(0, .6), 
+% 		 ylim = c(-18, 0), xlab = "inverse standard error", ylab = "mean diff. / std. error")
+% abline(coef = coef(m.nex), lty = 2, col = 2)
+% @
+% 
+% \end{frame}
+% 
+% 
+% \begin{frame}[fragile]{Limit Meta-Analysis}
+% \begin{align}
+% y_{M,i} &= \beta_{0} + \beta_{1}(\sqrt{v_{i}/M + \tau^2}) + \epsilon_{i}(\sqrt{s_{i}/M + \tau^2}) \nonumber
+% \end{align}
+% 
+% Letting $M \rightarrow \infty$ and substituting for all parameters and the observed residual
+% 
+% \vspace{-8mm}
+% \begin{align}
+% y_{\infty,i} &= \beta_{0} + \sqrt{\frac{\tau^2}{v_{i} + \tau^2}}(y_i - \beta_0)
+% \end{align}
+% \end{frame}
+% 
+% \begin{frame}[fragile]{Limit Meta-Analysis}
+% By plugging in $s_i$ for $v_i$, $\hat{tau}$ for $\tau$ and $\hat{\beta_0}$, get new study effects:
+% 
+% Three different treatment effect estimates:
+% \begin{itemize}
+% \item Expectated adjusted treatment effect with infinite precision: $\hat{\beta_{0}^\star} + \hat{\beta_{1}}\hat{\tau}$
+% \item Fixed effect estimate based on $(y_{\infty,1},.. , y_{\infty,n}$
+% \item Slope $\beta_{\textrm{lim}}$ of best-fitting regression line in radial plot with $(y_{\infty,i}, s_{i})$
+% \end{itemize}
+% \end{frame}
+
+\end{document}
