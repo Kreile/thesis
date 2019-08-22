@@ -806,7 +806,7 @@ The \texttt{comparison.name} variable specifies \textit{what kind} of treatments
 The result is of a binary type, and the counts of events in the treatment group are in \texttt{events1} and of the control group in \texttt{events2} and the total number of participants are given in columns \texttt{total1} and \texttt{total2}. As can be seen, events denote here "death at the end of follow-up".
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Aug 22 13:59:23 2019
+% Thu Aug 22 14:26:58 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -893,7 +893,7 @@ The review comprises five studies in total. Three of them compared barbiturate t
 We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. %It is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Aug 22 13:59:23 2019
+% Thu Aug 22 14:26:58 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -930,7 +930,7 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
 Information about missing values in the dataset is given in Table \ref{missing}. The relative amount of missing values is low, except for study years. For continuous outcomes, the cases are counted were neither a mean difference nor means are available. Similarly, the counts of cases where neither standard errors nor standard deviations are available are provided. Study years before 1920 and after 2019 are declared as missing, as well as sample sizes equal to zero.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Aug 22 13:59:23 2019
+% Thu Aug 22 14:26:58 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -952,7 +952,7 @@ The primary studies that are included in the reviews and have been published are
 The most frequent outcome measures are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 31\% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (more than 65\%).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Thu Aug 22 13:59:23 2019
+% Thu Aug 22 14:26:58 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1163,8 +1163,8 @@ Details to Copas selection model algorithm and its application can be found in \
 All computations were performed in the \texttt{R} computing environment \citep{R.base}. The \texttt{R} packages \texttt{meta} \citep{meta.package}, \texttt{metasens} \citep{metasens.package} and \texttt{metafor} \citep{metafor.package} were used for meta-analysis, small study effect tests and adjustments. The excess significance test was adapted from \citet{vanAert.2019}. For data manipulation procedures, the \texttt{tidyverse} packages were used \citep{tidyverse.package}, and for plotting the \texttt{ggplot2} package \citep{ggplot2}.\\
 
 
-% \section{Data and Code Availability}
-% The data of the Cochrane Library of Systematic Reviews is freely available in some countries, in others, the rights are reserved by the Wiley publishing company. The code for data processing and analysis can be found at \url{https://osf.io/dbp2r/}.
+\section{Data and Code Availability}
+The data of the Cochrane Library of Systematic Reviews is freely available in some countries, in others, the rights are reserved by the Wiley publishing company. The code for data processing and analysis can be found at \url{https://osf.io/dbp2r/}.
 
 
 
@@ -2049,7 +2049,7 @@ Data processing steps were however different, and only binary outcomes as used i
 % The results seem to be similar enough to claim that neither the methods nor the data and it's results are differing substantially. Because the study relies on more data, it is likely to be more accurate and can possibly add to the findings of \citealp{Ioannidis2007}.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Wed Aug 21 08:51:20 2019
+% Thu Aug 22 14:27:36 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrr}
@@ -2061,7 +2061,7 @@ Wider dataset (n) & 6873 & 20219 \\
   variance ratio $>$ 4 & 72\% & 75\% \\ 
   study sig. number $>$ 1 & 55\% & 52\% \\ 
   all exclusion criteria & 5\% & 5\% \\ 
-  harbord test p-value $<$ 0.1 & 12\% & 16\% \\ 
+  Harbord test p-value $<$ 0.1 & 12\% & 16\% \\ 
    \hline
 \end{tabular}
 \caption{Comparison of results from Ioannidis et.al. (2007) to the results of this study. The percentage of meta-analysis which match all exclusion criteria denotes the ones that apply to all criteria in the table plus the small heterogeneity criterium. Harbord test is two-sided.} 
@@ -2131,18 +2131,18 @@ The author's come to the conclusion in their study that in contrast to other stu
 ## [13] httr_1.3.1         highr_0.7          pillar_1.3.0      
 ## [16] gplots_3.0.1.1     rlang_0.3.0.1      lazyeval_0.2.1    
 ## [19] readxl_1.1.0       gdata_2.18.0       rstudioapi_0.8    
-## [22] labeling_0.3       munsell_0.5.0      broom_0.5.0       
-## [25] compiler_3.5.1     modelr_0.1.2       pkgconfig_2.0.2   
-## [28] tidyselect_0.2.5   seriation_1.2-7    codetools_0.2-15  
-## [31] dendextend_1.12.0  viridisLite_0.3.0  crayon_1.3.4      
-## [34] withr_2.1.2        bitops_1.0-6       MASS_7.3-51.1     
-## [37] grid_3.5.1         jsonlite_1.5       gtable_0.2.0      
-## [40] registry_0.5-1     magrittr_1.5       scales_1.0.0      
-## [43] KernSmooth_2.23-15 cli_1.0.1          stringi_1.2.4     
-## [46] viridis_0.5.1      iterators_1.0.10   tools_3.5.1       
-## [49] glue_1.3.0         gclus_1.3.2        hms_0.4.2         
-## [52] colorspace_1.3-2   cluster_2.0.7-1    caTools_1.17.1.1  
-## [55] TSP_1.1-7          bindr_0.1.1        haven_2.0.0
+## [22] munsell_0.5.0      broom_0.5.0        compiler_3.5.1    
+## [25] modelr_0.1.2       pkgconfig_2.0.2    tidyselect_0.2.5  
+## [28] seriation_1.2-7    codetools_0.2-15   dendextend_1.12.0 
+## [31] viridisLite_0.3.0  crayon_1.3.4       withr_2.1.2       
+## [34] bitops_1.0-6       MASS_7.3-51.1      grid_3.5.1        
+## [37] jsonlite_1.5       gtable_0.2.0       registry_0.5-1    
+## [40] magrittr_1.5       scales_1.0.0       KernSmooth_2.23-15
+## [43] cli_1.0.1          stringi_1.2.4      viridis_0.5.1     
+## [46] iterators_1.0.10   tools_3.5.1        glue_1.3.0        
+## [49] gclus_1.3.2        hms_0.4.2          colorspace_1.3-2  
+## [52] cluster_2.0.7-1    caTools_1.17.1.1   TSP_1.1-7         
+## [55] bindr_0.1.1        haven_2.0.0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}

@@ -33,6 +33,7 @@
 \contentsline {subsubsection}{The Analysis Dataset}{28}{section*.13}
 \contentsline {subsection}{\numberline {3.3.3}Analysis Procedure}{28}{subsection.3.3.3}
 \contentsline {section}{\numberline {3.4}Software}{29}{section.3.4}
+\contentsline {section}{\numberline {3.5}Data and Code Availability}{29}{section.3.5}
 \contentsline {chapter}{\numberline {4}Results}{31}{chapter.4}
 \contentsline {section}{\numberline {4.1}Publication Bias Test Results}{31}{section.4.1}
 \contentsline {subsection}{\numberline {4.1.1}Publication Bias Test Consistency}{33}{subsection.4.1.1}

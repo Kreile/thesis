@@ -652,8 +652,8 @@ Details to Copas selection model algorithm and its application can be found in \
 All computations were performed in the \texttt{R} computing environment \citep{R.base}. The \texttt{R} packages \texttt{meta} \citep{meta.package}, \texttt{metasens} \citep{metasens.package} and \texttt{metafor} \citep{metafor.package} were used for meta-analysis, small study effect tests and adjustments. The excess significance test was adapted from \citet{vanAert.2019}. For data manipulation procedures, the \texttt{tidyverse} packages were used \citep{tidyverse.package}, and for plotting the \texttt{ggplot2} package \citep{ggplot2}.\\
 
 
-% \section{Data and Code Availability}
-% The data of the Cochrane Library of Systematic Reviews is freely available in some countries, in others, the rights are reserved by the Wiley publishing company. The code for data processing and analysis can be found at \url{https://osf.io/dbp2r/}.
+\section{Data and Code Availability}
+The data of the Cochrane Library of Systematic Reviews is freely available in some countries, in others, the rights are reserved by the Wiley publishing company. The code for data processing and analysis can be found at \url{https://osf.io/dbp2r/}.
 
 
 

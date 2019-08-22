@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.3.6)  22 AUG 2019 14:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.3.6)  22 AUG 2019 14:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -974,7 +974,7 @@ LaTeX Font Info:    Try loading font information for T1+cmss on input line 7.
  (/usr/local/texlive/2017/texmf-dist/tex/latex/base/t1cmss.fd
 File: t1cmss.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-<uzh_logo_e_pos.pdf, id=115, 154.5775pt x 49.18375pt>
+<uzh_logo_e_pos.pdf, id=119, 154.5775pt x 49.18375pt>
 File: uzh_logo_e_pos.pdf Graphic file (type pdf)
  <use uzh_logo_e_pos.pdf>
 Package pdftex.def Info: uzh_logo_e_pos.pdf used on input line 48.
@@ -1011,7 +1011,7 @@ Chapter 1.
 Underfull \vbox (badness 2050) has occurred while \output is active []
 
  [3]
-<figure/unnamed-chunk-1-1.pdf, id=259, 505.89pt x 216.81pt>
+<figure/unnamed-chunk-1-1.pdf, id=264, 505.89pt x 216.81pt>
 File: figure/unnamed-chunk-1-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-1-1.pdf>
@@ -1094,7 +1094,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 1163--1164
 
 [29] [30]
 Chapter 4.
-<figure/ch03_figunnamed-chunk-10-1.pdf, id=644, 585.18625pt x 216.81pt>
+<figure/ch03_figunnamed-chunk-10-1.pdf, id=650, 585.18625pt x 216.81pt>
 File: figure/ch03_figunnamed-chunk-10-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-10-1.pdf>
@@ -1102,7 +1102,7 @@ Package pdftex.def Info: figure/ch03_figunnamed-chunk-10-1.pdf used on input li
 ne 1234.
 (pdftex.def)             Requested size: 369.94295pt x 137.0674pt.
 
-<figure/ch03_figunnamed-chunk-11-1.pdf, id=645, 585.18625pt x 216.81pt>
+<figure/ch03_figunnamed-chunk-11-1.pdf, id=651, 585.18625pt x 216.81pt>
 File: figure/ch03_figunnamed-chunk-11-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-11-1.pdf>
@@ -1112,7 +1112,7 @@ ne 1249.
  [31
 
  <./figure/ch03_figunnamed-chunk-10-1.pdf>]
-<figure/ch03_figunnamed-chunk-13-1.pdf, id=674, 585.18625pt x 650.43pt>
+<figure/ch03_figunnamed-chunk-13-1.pdf, id=680, 585.18625pt x 650.43pt>
 File: figure/ch03_figunnamed-chunk-13-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-13-1.pdf>
@@ -1121,7 +1121,7 @@ ne 1290.
 (pdftex.def)             Requested size: 369.94295pt x 411.20222pt.
  [32 <./figure/ch03_figunnamed-chunk-11-1.pdf>] [33 <./figure/ch03_figunnamed-c
 hunk-13-1.pdf>]
-<figure/ch03_figunnamed-chunk-14-1.pdf, id=704, 614.295pt x 505.89pt>
+<figure/ch03_figunnamed-chunk-14-1.pdf, id=710, 614.295pt x 505.89pt>
 File: figure/ch03_figunnamed-chunk-14-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-14-1.pdf>
@@ -1129,7 +1129,7 @@ Package pdftex.def Info: figure/ch03_figunnamed-chunk-14-1.pdf used on input li
 ne 1319.
 (pdftex.def)             Requested size: 369.94295pt x 304.66335pt.
  [34 <./figure/ch03_figunnamed-chunk-14-1.pdf>]
-<figure/ch03_figunnamed-chunk-15-1.pdf, id=718, 585.18625pt x 614.295pt>
+<figure/ch03_figunnamed-chunk-15-1.pdf, id=724, 585.18625pt x 614.295pt>
 File: figure/ch03_figunnamed-chunk-15-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-15-1.pdf>
@@ -1145,7 +1145,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 1365--1366
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [37]
-<figure/ch03_figunnamed-chunk-19-1.pdf, id=755, 585.18625pt x 375.4025pt>
+<figure/ch03_figunnamed-chunk-19-1.pdf, id=761, 585.18625pt x 375.4025pt>
 File: figure/ch03_figunnamed-chunk-19-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-19-1.pdf>
@@ -1153,7 +1153,7 @@ Package pdftex.def Info: figure/ch03_figunnamed-chunk-19-1.pdf used on input li
 ne 1462.
 (pdftex.def)             Requested size: 369.94295pt x 237.32968pt.
 
-<figure/ch03_figunnamed-chunk-20-1.pdf, id=756, 585.18625pt x 361.35pt>
+<figure/ch03_figunnamed-chunk-20-1.pdf, id=762, 585.18625pt x 361.35pt>
 File: figure/ch03_figunnamed-chunk-20-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-20-1.pdf>
@@ -1161,7 +1161,7 @@ Package pdftex.def Info: figure/ch03_figunnamed-chunk-20-1.pdf used on input li
 ne 1479.
 (pdftex.def)             Requested size: 369.94295pt x 228.44568pt.
 
-<figure/ch03_figunnamed-chunk-21-1.pdf, id=761, 585.18625pt x 289.08pt>
+<figure/ch03_figunnamed-chunk-21-1.pdf, id=767, 585.18625pt x 289.08pt>
 File: figure/ch03_figunnamed-chunk-21-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-21-1.pdf>
@@ -1173,7 +1173,7 @@ Overfull \hbox (24.99464pt too wide) in paragraph at lines 1514--1533
  [][] 
  []
 
-<figure/ch03_figunnamed-chunk-24-1.pdf, id=763, 585.18625pt x 361.35pt>
+<figure/ch03_figunnamed-chunk-24-1.pdf, id=769, 585.18625pt x 361.35pt>
 File: figure/ch03_figunnamed-chunk-24-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-24-1.pdf>
@@ -1190,7 +1190,7 @@ Underfull \vbox (badness 1221) has occurred while \output is active []
 
  [39 <./figure/ch03_figunnamed-chunk-20-1.pdf> <./figure/ch03_figunnamed-chunk-
 21-1.pdf>]
-<figure/ch03_figunnamed-chunk-25-1.pdf, id=797, 585.18625pt x 469.755pt>
+<figure/ch03_figunnamed-chunk-25-1.pdf, id=803, 585.18625pt x 469.755pt>
 File: figure/ch03_figunnamed-chunk-25-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-25-1.pdf>
@@ -1198,7 +1198,7 @@ Package pdftex.def Info: figure/ch03_figunnamed-chunk-25-1.pdf used on input li
 ne 1590.
 (pdftex.def)             Requested size: 369.94295pt x 296.97939pt.
  [40] [41 <./figure/ch03_figunnamed-chunk-24-1.pdf>]
-<figure/ch03_figunnamed-chunk-26-1.pdf, id=823, 585.18625pt x 216.81pt>
+<figure/ch03_figunnamed-chunk-26-1.pdf, id=829, 585.18625pt x 216.81pt>
 File: figure/ch03_figunnamed-chunk-26-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-26-1.pdf>
@@ -1206,7 +1206,7 @@ Package pdftex.def Info: figure/ch03_figunnamed-chunk-26-1.pdf used on input li
 ne 1618.
 (pdftex.def)             Requested size: 369.94295pt x 137.0674pt.
  [42 <./figure/ch03_figunnamed-chunk-25-1.pdf>]
-<figure/ch03_figunnamed-chunk-28-1.pdf, id=845, 585.18625pt x 289.08pt>
+<figure/ch03_figunnamed-chunk-28-1.pdf, id=851, 585.18625pt x 289.08pt>
 File: figure/ch03_figunnamed-chunk-28-1.pdf Graphic file (type pdf)
 
 <use figure/ch03_figunnamed-chunk-28-1.pdf>
@@ -1263,7 +1263,7 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 4064.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 4064.
 
 Package rerunfilecheck Info: File `MSc_Report.out' has not changed.
-(rerunfilecheck)             Checksum: 0F8C0A9B86E22A6C7839AECEBFE31155;1804.
+(rerunfilecheck)             Checksum: ED6652F214C6617DEA6186D902C35556;1877.
 Package rerunfilecheck Info: File `MSc_Report.brf' has not changed.
 (rerunfilecheck)             Checksum: 5F82B1A681E3FC224F8A3D08F0D416F4;5068.
 
@@ -1273,10 +1273,10 @@ LaTeX Warning: There were multiply-defined labels.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 4064.
  ) 
 Here is how much of TeX's memory you used:
- 23416 strings out of 492995
- 445348 string characters out of 6132705
+ 23418 strings out of 492995
+ 445372 string characters out of 6132705
  553171 words of memory out of 5000000
- 26231 multiletter control sequences out of 15000+600000
+ 26232 multiletter control sequences out of 15000+600000
  32871 words of font info for 85 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,16n,67p,1448b,1572s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1313,10 +1313,10 @@ e1/public/cm-super/sfss1200.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1
 /public/cm-super/sfti1095.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/p
 ublic/cm-super/sfti1200.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/pub
 lic/cm-super/sftt1095.pfb>
-Output written on MSc_Report.pdf (64 pages, 3166128 bytes).
+Output written on MSc_Report.pdf (64 pages, 3166537 bytes).
 PDF statistics:
- 1265 PDF objects out of 1440 (max. 8388607)
- 1126 compressed objects within 12 object streams
- 255 named destinations out of 1000 (max. 500000)
- 299 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1271 PDF objects out of 1440 (max. 8388607)
+ 1132 compressed objects within 12 object streams
+ 256 named destinations out of 1000 (max. 500000)
+ 307 words of extra memory for PDF output out of 10000 (max. 10000000)
 
