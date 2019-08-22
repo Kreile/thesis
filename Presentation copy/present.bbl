@@ -1,5 +1,15 @@
 \begin{thebibliography}{}
 
+\bibitem[Copas and Shi, 2000]{Copas2}
+Copas, J. and Shi, J.~Q. (2000).
+\newblock {Meta-analysis, funnel plots and sensitivity analysis }.
+\newblock {\em Biostatistics}, 1(3):247--262.
+
+\bibitem[R{\"u}cker et~al., 2011]{Limitmeta}
+R{\"u}cker, G., Carpenter, J.~R., and Schwarzer, G. (2011).
+\newblock Detecting and adjusting for small-study effects in meta-analysis.
+\newblock {\em Biometrical Journal}, 53(2):351--368.
+
 \bibitem[Sterne et~al., 2001]{Sterne}
 Sterne, J. A.~C., Egger, M., and Smith, G.~D. (2001).
 \newblock Investigating and dealing with publication and other biases in

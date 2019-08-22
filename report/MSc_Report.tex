@@ -140,7 +140,7 @@ thesis to them.
 %\cleardoublepage
 \pagenumbering{arabic}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % LaTeX file for Chapter 01
@@ -205,25 +205,25 @@ In the case of binary outcomes, let $e_t$ be the count of events in the treatmen
 
 \section{Effect Measures and $p$\hspace{0.4mm}-values}
 \subsection{Continuous Outcomes}
-For given $(m_t, m_c), (\textrm{sd}_t, \textrm{sd}_c)$ and $(n_t, n_c)$, one can compute mean difference as well as a standardized mean difference (also known as Cohen's $d$) and the standard error thereof.
+For given $(m_t, m_c), (\textrm{sd}_t, \textrm{sd}_c)$ and $(n_t, n_c)$, one can compute mean difference $\theta$ as well as a standardized mean difference (also known as Cohen's $d$) and the standard error thereof.
 
 \begin{align}
-\theta &= m_t - m_c & \se &= \sqrt{\textrm{sd}_t^2/n_t + \textrm{sd}_c^2/n_c}
+\theta &= m_t - m_c & \se_\theta &= \sqrt{\textrm{sd}_t^2/n_t + \textrm{sd}_c^2/n_c}
 \end{align}
 
-Cohen's $d$ and its standard error $\se$ can similarly be obtained by
+Cohen's $d$ and its standard error $\se_d$ can similarly be obtained by
 
 \begin{align}
-d &= \frac{m_t - m_c}{\se} \label{eq:hedges.g} & \se &= \sqrt{\frac{(n_t - 1)\textrm{sd}_t^2 + (n_c - 1)\textrm{sd}_c^2}{n_t + n_c - 2}}
+d &= \frac{m_t - m_c}{\se} \label{eq:hedges.g} & \se_d &= \sqrt{\frac{(n_t - 1)\textrm{sd}_t^2 + (n_c - 1)\textrm{sd}_c^2}{n_t + n_c - 2}}
 \end{align}
 
 Both estimators take into account that the two groups might have unequal variances. \\ 
-A  $p$\hspace{0.4mm}~-~value to test the null hypothesis that the mean between group is equal is commonly obtained with the Students $t$-test. The $t$ statistic is obtained, using $\se$ and $d$ from \eqref{eq:hedges.g}, by
+A  $p$\hspace{0.4mm}-value to test the null hypothesis that the mean between group is equal is commonly obtained with the Students $t$-test. The $t$ statistic is obtained, using $\se_d$ and $d$ from \eqref{eq:hedges.g}, by
 
 \begin{align}
-t &= d/(\se\sqrt{(1/n_t)+(1/n_c)}) \nonumber
+t &= d/(\se_d\sqrt{(1/n_t)+(1/n_c)}) \nonumber
 \end{align}
-and the  $p$\hspace{0.4mm}~-~value can be obtained with the cumulative Student's $t$-distribution $F$ with $n_t + n_c - 2$ degrees of freedom:
+and the  $p$\hspace{0.4mm}-value can be obtained with the cumulative Student's $t$-distribution $F$ with $n_t + n_c - 2$ degrees of freedom:
 
 \begin{align}
 p &= 2(1-F(\abs{t})) \nonumber
@@ -237,23 +237,23 @@ The methods presented here can also be found, for example, in \cite[34]{Intro.me
 Let $\theta$ be the natural logarithm of the odds ratio. $\hat{\theta}$ and its variance $\hat{\se}^2$ can be obtained by computing
 
 \begin{align}
-\hat{\theta} &= \log(\frac{e_t\cdot(n_c - e_c)}{e_c\cdot(n_t - e_t)}) \nonumber \\
+\hat{\theta} &= \log\bigg[\frac{e_t\cdot(n_c - e_c)}{e_c\cdot(n_t - e_t)}\bigg] \nonumber \\
 \hat{\se}^2 &= 1/e_t + 1/(n_t - e_t) + 1/e_c + 1/(n_c - e_c) \nonumber
 \end{align}
 
 Plugging in the observed counts will give the corresponding estimates. The logarithm of the risk ratio $\theta$ and its variance $\se^2$ is similarly defined as
 
 \begin{align}
-\hat{\theta} &= \log(\frac{e_t/n_t}{e_c/n_c}) \label{eq:risk.ratio} \\
+\hat{\theta} &= \log\bigg(\frac{e_t/n_t}{e_c/n_c}\bigg) \label{eq:risk.ratio} \\
 \se^2&= 1/e_t - 1/n_t + 1/e_c - 1/n_c \label{eq:risk.ratio.variance}
 \end{align}
 
-Assuming binomial distribution of the events and using likelihood theory, one could show that the estimators are maximum likelihood estimators and that one can use the asymptotic normal distribution of the maximum likelihood estimator to calculate a  $p$\hspace{0.4mm}~-~value, \eg \cite[98]{held2014}. The approximation is only good if there are enough events and sample size is large enough.\\
+Assuming binomial distribution of the events and using likelihood theory, one could show that the estimators are maximum likelihood estimators and that one can use the asymptotic normal distribution of the maximum likelihood estimator to calculate a  $p$\hspace{0.4mm}-value, \eg \cite[98]{held2014}. The approximation is only good if there are enough events and sample size is large enough.\\
 Thus, with $\Phi$ as the cumulative standard normal distribution, we get
 \begin{align}
-p &= 2\cdot(1-\Phi(|\hat{\theta}/\hat{\se}|), \nonumber
+p &= 2\cdot(1-\Phi(|\hat{\theta}/\hat{\se}|)), \nonumber
 \end{align}
-a  $p$\hspace{0.4mm}~-~value for the corresponding estimate, which summarizes the evidence against $\hat{\theta}$ being zero (\ie the true risk/odds ratio being 1). \\
+a  $p$\hspace{0.4mm}-value for the corresponding estimate, which summarizes the evidence against $\hat{\theta}$ being zero (\ie the true risk/odds ratio being 1). \\
 Odds ratios can be transformed to std. mean differences, which will be described in Section \ref{sec:transformation.effectsizes}.
 
 \subsection{Time-to-Event Outcomes}
@@ -263,19 +263,18 @@ The so-called hazard ratio estimated by Cox regression is the ratio of the insta
 \begin{align}
 p &= 2\cdot(1-\Phi(|\hat{\theta}/\hat{\se}(\hat{\theta})|) \nonumber
 \end{align}
-will give a  $p$\hspace{0.4mm}~-~value for the evidence against the null hypothesis.
+will give a  $p$\hspace{0.4mm}-value for the evidence against the null hypothesis.
 
 
 
 \section{Fixed and Random Effects Meta-Analysis} \label{sec:meta.analysis}
-The fixed effects meta-analysis estimator of the pooled treatment effect is a mean of the single treatment effect estimators, weighted by their standard errors \citep{fixed.effects.rosenthal}. Let $w_i = 1/\se_i^2$ be the weights, and $\theta_M$ be the pooled estimator and $\se_M^2$ its variance. Then 
+The fixed effects meta-analysis estimator of the pooled treatment effect is a mean of the single treatment effect estimators, weighted by their standard errors \citep{fixed.effects.rosenthal}. Let $w_i = 1/\se_i^2$ be the weights, and $\theta_M$ be the pooled estimator and $\se_M^2$ its variance. Then the estimates are given by
 
 \begin{align}
 \theta_M &= \frac{\sum_{i = 1}^n w_i \theta_i}{\sum_{i = 1}^n w_i} &
-\se_M^2 &= \frac{1}{\sum_{i = 1}^n w_i} \label{eq:fixed.effects}
+\se_M^2 &= \frac{1}{\sum_{i = 1}^n w_i}. \label{eq:fixed.effects}
 \end{align}
-
-This estimator minimizes the variance between the effects. An estimate $\hat{\theta}_M$ can be obtained by plugging in the observed treatment effects and variances $\hat{\theta}_i$ and $\hat{\se}_i^2$. The underlying idea is that we assume $\theta_i \sim N(\theta_M, \se_i^2)$, $\theta_M$ being the true effect, all $\theta_i$ being distributed around an equal mean. \\
+This estimator minimizes the variance between the effects. An estimate $\hat{\theta}_M$ can be obtained by plugging in the observed treatment effects and variances $\hat{\theta}_i$ and $\hat{\se}_i^2$. The underlying idea is that we assume $\theta_i \sim N(\theta_M, \se_i^2)$, $\theta_M$ being the true effect, all $\theta_i$ being distributed around an equal mean.\\
 The random effects model \citep{whitehead} assumes instead that 
 \begin{align}
 \theta_i \sim N(\mu_i, \se_i^2) &&
@@ -294,7 +293,7 @@ The estimation of $\tau^2$ has been subject to some debate in the statistical li
 
 \begin{align}
 Q &= \sum_{i = 1}^n w_i(y_i - \theta_M)^2 & C &= \sum_{i = 1}^n w_i - \frac{\sum_{i = 1}^n w_i^2}{\sum_{i = 1}^n w_i} \label{eq:Q.heterogeneity} \\
-\tau^2 &= \max\big(0, \frac{Q - (n-1)}{C}\big) \label{eq:Tau.definition}
+\tau^2 &= \max\bigg[0, \frac{Q - (n-1)}{C}\bigg] \label{eq:Tau.definition}
 \end{align}
 
 The estimators have to be replaced by their estimates in order to get an estimate $\hat{\tau}^2$.\\
@@ -317,7 +316,7 @@ F(\tau^2) &= \sum_{i = 1}^n w_i(\theta_i - \theta_M)^2 - (n-1) \nonumber
 \end{align}
 
 In view of equation \eqref{eq:paulemandel}, $\tau^2$ must be such that $F(\tau^2) = 0$. Then, we start with a arbitrary $\tau^2$ and repeatedly add a term $\tau_0^2$ to update $\tau^2$ until $F(\tau^2 + \tau_0^2)$ is close to zero (using $\tau^2 + \tau_0^2$ for $\hat{w}_i, \hat{\theta}_M$). Using a truncated Taylor series expansion, one can obtain the partial derivative after $\tau^2$, which is a reasonable choice for $\tau_0^2$. Using $\tau^2 + \tau_0^2$ for $\hat{w}_i, \hat{\theta}$, we can update $F(\tau^2)$ and check convergence to zero. \\
-The estimation of $\tau^2$ is accompanied by uncertainty. A common procedure is to test if it is there is significant heterogeneity between the studies \cite[p. 109]{Intro.meta}. For this, $Q$ has to be computed as given in \eqref{eq:Q.heterogeneity}. It is assumed that $Q$ follows a central Chi-squared distribution with $n -1$ degrees of freedom under the null hypothesis of equally distributed effect sizes. Thus, the expected value of $Q$ is $n-1$, and the excess dispersion is $Q - n + 1$. The  $p$\hspace{0.4mm}~-~value against the null hypothesis of equally distributed effect sizes is $1 - F(Q)$, using $F$ as the cumulative distribution function of the Chi-squared distribution with d.f. = $n-1$. \\
+The estimation of $\tau^2$ is accompanied by uncertainty. A common procedure is to test if it is there is significant heterogeneity between the studies \cite[p. 109]{Intro.meta}. For this, $Q$ has to be computed as given in \eqref{eq:Q.heterogeneity}. It is assumed that $Q$ follows a central Chi-squared distribution with $n -1$ degrees of freedom under the null hypothesis of equally distributed effect sizes. Thus, the expected value of $Q$ is $n-1$, and the excess dispersion is $Q - n + 1$. The  $p$\hspace{0.4mm}-value against the null hypothesis of equally distributed effect sizes is $1 - F(Q)$, using $F$ as the cumulative distribution function of the Chi-squared distribution with d.f. = $n-1$. \\
 $\tau^2$ is  is directly linked to the variability in the data. The $I^2$ statistic of excess/total dispersion can be used alternatively to assess the extent of additional variance to the variances of the primary study estimates. It is computed as
 
 \begin{align}
@@ -341,9 +340,8 @@ Importantly, all proposed methods above assume normally distributed effect sizes
 First, the concept of simple linear regression is introduced \citep{fahrmeir2007}. In short, the model assumes a dependent variable $y$ to be a linear function of another explanatory variable $x$, with the residuals being distributed independently and identically and following a normal distribution:
 
 \begin{align}
-y &= \beta_0 + \beta_1 x + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:simple.regression}
+y &= \beta_0 + \beta_1 x + \epsilon, & \epsilon \sim N(0, \sigma^2). \label{eq:simple.regression}
 \end{align}
-
 $\epsilon$ is the residual noise term that becomes necessary when $n$ pairs $(x_i, y_i)$ are given and there is no exact solution. We look for the solution that minimizes the squared residuals, the least-squares solution. Formally,
 
 \begin{align}
@@ -394,13 +392,12 @@ If one plots the values of $y$ and $x$, the estimate $\hat{\beta}_0$ is the inte
 \end{align}
 
 $\bar{x}$ and $\bar{y}$ denoting the sample means of the corresponding values $x_1, .., x_n$ and $y_1, ..., y_n$. Thus, $\hat{\beta}_0$ is also called the global mean.
-To test whether there is evidence for the intercept $\beta_0$ to be unequal to some value $\beta_{H0}$, a $t$-test can be used. 
+To test whether there is evidence for the intercept $\beta_0$ to be unequal to some value $\beta_{H0}$, a $t$-test can be used:
 
 \begin{align}
-p &= 2(1-F(\abs{(\beta_0 - \beta_{H0})/s_{\beta_0}})) \nonumber
+p &= 2(1-F(\abs{(\beta_0 - \beta_{H0})/s_{\beta_0}})), \nonumber
 \end{align}
-
-where $F$ is the cumulative $t$ distribution with $n-2$ degrees of freedom. The  $p$\hspace{0.4mm}~-~value will give the evidence against the null hypothesis $\beta_0 = \beta_{H0}$. \\
+where $F$ is the cumulative $t$ distribution with $n-2$ degrees of freedom. The  $p$\hspace{0.4mm}-value will give the evidence against the null hypothesis $\beta_0 = \beta_{H0}$. \\
 The concept is extendable to weighted linear regression. Weighted linear regression may be used if the residuals $\mathbf{r}$ have unequal variances, which is equivalent to ascribe different precision to the observed $y$ (heteroscedasticity). The least squares equation \eqref{eq:least.squares} is extended as follows:
 
 \begin{align}
@@ -412,7 +409,7 @@ Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weig
 The introduction of group-specific random effects allows to analyze grouped or repeated measurements by linear regression. Let $j$ be the group index, $i$ the index of the single observation from the group $j$ and $x_i$ the $i^\textrm{th}$ row of $\mathbf{X}$, $(1, \mathbf{X}_{i2})$. Then the equation
 
 \begin{align}
-\mathbf{y}_i|U_j,\epsilon_{i} =  x_i\beta + U_j + \epsilon_{i} \label{eq:one.random.intercept}
+\mathbf{y}_i \given U_j,\epsilon_{i} =  x_i\beta + U_j + \epsilon_{i} \label{eq:one.random.intercept}
 \end{align}
 
 gives the marginal distribution of $\mathbf{y}_i$ depending on $U{_j}$ and $\epsilon_i$. The random effects $U_j \sim N(0, \mathbf{G})$ and the residual error term $\epsilon_i \sim N(0, \tau^{2})$ are independent from each other. Let $\mathbf{y}_j$ be a vector of all observations of group $j$. The expectation $\mathbb{E}(\mathbf{y}_i)$ is still $x_i \beta$, but the covariance between the observations within a group $j$, is modeled as
@@ -426,21 +423,20 @@ Nested groups can be modeled by extending the design matrix $\mathbf{X}$ with an
 An extension of the random intercepts model is the random slopes model, which allows for additional, group-specific slopes with respect to a explanatory variable $x$. It can be implemented by modifying \eqref{eq:one.random.intercept}. Let $\mathbf{U}_j$ be a two-dimensional random vector with a $2 \times 2$ covariance matrix $\mathbf{G}$. Again, we can specify the marginal distribution of a observation $i$ within a group $j$:
 
 \begin{align}
-\mathbf{y}_i|U_j,\epsilon_i =  x_i\beta + x_i \mathbf{U}_j + \epsilon_i \label{eq:one.random.intercept.and.slope}
+\mathbf{y}_i \given U_j,\epsilon_i =  x_i\beta + x_i \mathbf{U}_j + \epsilon_i \label{eq:one.random.intercept.and.slope}
 \end{align}
 
 $\mathbf{D}_j$ is a $n_i \times 2$ equal to all rows of observations of $j$ in $\mathbf{X}$. The covariance matrix $\mathbf{V_j}$ for group $j$ is defined as in equation \eqref{eq:random.intercepts.covariance}, using the new $\mathbf{D}_j$. Defining $\mathbf{x}_j$ as the matrix with all observations from group $j$ of $\mathbf{X}$, and equivalently the vector $\mathbf{y}_j$, $\hat{\beta}$ is obtained by computing
 
 \begin{align}
-\hat{\beta} &= \Big( \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j \Big)^{-1} \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{y}_j
+\hat{\mathbf{\beta}} &= \Big( \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j \Big)^{-1} \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{y}_j
 \end{align}
 
 with $m$ being the number of groups and $\hat{\mathbf{V}}_j$ being the estimated covariance, obtained by maximizing the log likelihood of the normal distribution, as $\mathbf{y}_j$ is distributed as
 
 \begin{align}
-\mathbf{y}_j \sim N(\mathbf{x}_j \beta, \mathbf{V}_j)
+\mathbf{y}_j \sim N(\mathbf{x}_j \mathbf{\beta}, \mathbf{V}_j).
 \end{align}
-
 The matrices $\sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j$ and $\hat{\mathbf{V}}_j$ are assumed to be positive definite  . The approximate covariance matrix of $\hat{\beta}$ is given by
 
 \begin{align}
@@ -460,10 +456,10 @@ It is necessary to check the model assumptions after fitting a linear regression
 
 
 \section{Publication Bias Assessment}
-The tests that will be presented on the following pages are a common way to detect publication bias. A frequently used method to test and adjust for publication bias, which goes under the name of trim-and-fill \citep{trimfill} is not discussed because of its disadvantageous properties (see \eg \citealp{Moreno.2009}).\\
+The tests that will be presented on the following pages are a common way to detect publication bias. A frequently used method to test and adjust for publication bias, which goes under the name of trim-and-fill \citep{trimfill}, is not discussed because of its disadvantageous properties (see \eg \citealp{Moreno.2009}).\\
 
 \subsection{Begg and Mazumdar: Rank Correlation Test} \label{sec:Begg}
-\citealp{Begg} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
+\citet{Begg} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
 A standardized effect size $\theta_i^\star$ can be computed as in \eqref{eq:begg.stand.eff}. $\se_i^{2\star}$ is the variance of $\theta_i - \theta_M$ as defined in \eqref{eq:begg.stand.var} and $\theta_M$ is the fixed effects pooled treatment effect (\eqref{eq:fixed.effects}. 
 
 \begin{align}
@@ -477,13 +473,13 @@ A rank correlation test based on Kendall's tau is then used. First, the pairs ar
 Z &= (u - l)/\sqrt{n(n-1)(2n + 5)/18} \nonumber
 \end{align}
 
-Thus, large number of concordant pairs will reflect in large $\hat{u}$ and small $\hat{l}$ and thus lead to a large $\hat{Z}$. A two-sided  $p$\hspace{0.4mm}~-~value is obtained using the standard normal distribution $\Phi$:
+Thus, large number of concordant pairs will reflect in large $\hat{u}$ and small $\hat{l}$ and thus lead to a large $\hat{Z}$. A two-sided  $p$\hspace{0.4mm}-value is obtained using the standard normal distribution $\Phi$:
 \begin{align}
 p &= 2\cdot(1-\Phi(\abs{Z})) \nonumber
 \end{align}
 
 A one-sided test for positive correlation is obtained by computing $1-\Phi(Z)$ instead.
-The changes that have to be made in the case of ties are small and can be found in \cite[p. 410]{begg.ties}.
+The changes that have to be made in the case of ties are small and can be found in \citet{begg.ties}.
 
 
 \subsection{Egger's Test: Weighted Linear Regression Test} \label{sec:Egger}
@@ -500,7 +496,7 @@ Equation \eqref{eq:radial.plot} is often provided due to the correspondence to t
 \theta &= \beta_0 + \beta_1 \se + \epsilon, & \epsilon \sim N(0, w^{-2}\sigma^2) \label{eq:egger.plot}
 \end{align}
 
-with weights $w = 1/\se^2$. Thus testing $\beta_0$ of \eqref{eq:radial.plot} or $\beta_1$ of \eqref{eq:egger.plot} is equivalent. The corresponding  $p$\hspace{0.4mm}~-~value is then used as evidence for a small study effect. Plugging in  $\theta_i/\se_i, 1/\se_i$ as $y_i, x_i$ into equations \eqref{eq:regression.parameters} and \eqref{eq:regression.variances} will give the estimates for $\hat{\beta}_0, \hat{\beta}_1,\hat{\se}_{\beta_0}$ and $\hat{\se}_{\beta_1}$.
+with weights $w = 1/\se^2$. Thus testing $\beta_0$ of \eqref{eq:radial.plot} or $\beta_1$ of \eqref{eq:egger.plot} is equivalent. The corresponding  $p$\hspace{0.4mm}-value is then used as evidence for a small study effect. Plugging in  $\theta_i/\se_i, 1/\se_i$ as $y_i, x_i$ into equations \eqref{eq:regression.parameters} and \eqref{eq:regression.variances} will give the estimates for $\hat{\beta}_0, \hat{\beta}_1,\hat{\se}_{\beta_0}$ and $\hat{\se}_{\beta_1}$.
 
 % \begin{align}
 % \hat{\beta_1} &= \frac{\sum_{i = 1}^n (\varphi_i - \bar{\varphi})(\theta^\star_i - \bar{\theta}^\star)}{\sum_{i = 1}^n (\varphi_i - \bar{\varphi})^2} &
@@ -516,7 +512,7 @@ A method proposed in \citet{thompson.sharp} allows for between study variance $\
 \end{align}
 
 $\tau^2$ is estimated as in equation \eqref{eq:Tau.definition} (method of moments). %or \eqref{eq:paule.mandel}. 
-The weights are set as $w_i = 1/\sqrt{\se_i^2 + \tau^2})$. After adjusting for the weights as described in \ref{weighted.regression}, we can proceed analogous to Egger's test. The  $p$\hspace{0.4mm}~-~value for $\beta_{0} \neq 0$ reflects the evidence for a small study effect.
+The weights are set as $w_i = 1/\sqrt{\se_i^2 + \tau^2})$. After adjusting for the weights as described in \ref{weighted.regression}, we can proceed analogous to Egger's test. The  $p$\hspace{0.4mm}-value for $\beta_{0} \neq 0$ reflects the evidence for a small study effect.
 
 
 \subsection{Peters Test: Weighted Linear Regression Test} \label{sec:Peter}
@@ -539,10 +535,10 @@ It can be shown that they are both good approximations of the log odds ratio and
 
 
 \subsection{Schwarzer's Test: Rank Correlation Test} \label{sec:Schwarzer}
-\citealp{Schwarzer} developed a test for the correlation between the event counts in the treatment group and the expected event counts $E_t - \mathbb{E}(E_t)$. When the marginals in a two-by-two table and the log odds ratio are fixed, it can be shown that $E_t$ follows a non-central hypergeometric distribution. Using the Mantel-Haenszel log odds ratio and the marginal total parameters, the variance and the expectation of $E_t$ is calculated. The inverse of the variance $\se(E_t)^2$ and the standardized event count
+\citealp{Schwarzer} developed a test for the correlation between the event counts in the treatment group and the expected event counts $E_t - \mathbb{E}(E_t)$, where $E_t$ is a random variable. When the marginals in a two-by-two table and the log odds ratio are fixed, it can be shown that $E_t$ follows a non-central hypergeometric distribution. Using the Mantel-Haenszel log odds ratio and the marginal total parameters, the variance and the expectation of $E_t$ is calculated. The inverse of the variance $\se(E_t)^2$ and the standardized event count
 
 \begin{align}
-(e_t - \mathbb{E}(E_t))/\sqrt(\se_i^2)
+(e_t - \mathbb{E}(E_t))/\se_i
 \end{align}
 
 are then used as before in Begg and Mazumdar's test.
@@ -551,8 +547,8 @@ are then used as before in Begg and Mazumdar's test.
 The correlation between variance and effect size of dichotomous outcome measures can be abolished by the variance stabilizing transformation for binomial random variables. We use that the arcsine function is the variance stabilizing transformation for a proportion. Let
 
 \begin{align}
-\theta_i &= \arcsin{e_t/n_t} - \arcsin{e_c/n_c} \nonumber &
-\se_i^2 &= 1/4n_t + 1/4n_c \nonumber
+\theta_i &= \arcsin{(e_t/n_t)} - \arcsin{(e_c/n_c)} \nonumber &
+\se_i^2 &= 1/(4n_t) + 1/(4n_c) \nonumber
 \end{align}
 
 Then one can optionally apply Begg and Mazumdar's rank correlation test or Thompson and Sharp's test using the newly obtained estimates.
@@ -581,7 +577,7 @@ $E$ can then be compared to $O$ by constructing a test statistic $\chi$:
 \chi  &= \bigg( \frac{(O - E)^2}{E} + \frac{(O - E)^2}{n - E}\bigg) \nonumber
 \end{align}
 
-and consecutively, calculating a $p$\hspace{0.4mm}~-~value for the evidence against the null-hypothesis of $O = E$ with a $\chi^2$ distribution with one degree of freedom. Alternatively, one can also use a binomial test, which is encouraged when $n$ and $O$ is small. We will get a one sided $p$\hspace{0.4mm}~-value for excess significance, $\P(X \geq O)$, by computing
+and consecutively, calculating a $p$\hspace{0.4mm}-value for the evidence against the null-hypothesis of $O = E$ with a $\chi^2$ distribution with one degree of freedom. Alternatively, one can also use a binomial test, which is encouraged when $n$ and $O$ is small. We will get a one sided $p$\hspace{0.4mm}~-value for excess significance, $\P(X \geq O)$, by computing
 
 \begin{align}
 p &= \sum_{i = O}^n\Big({n \choose i} p^i (1-p)^{n - i}\Big) \nonumber
@@ -635,14 +631,13 @@ Simulations in \citet{limitmeta} suggested that the latter estimate is slightly 
 
 \subsection{Copas Selection Model} \label{sec:copas}
 
-A method proposed in \cite{Copas1,Copas2,Copas3} assumes that study results are selected based on the specific properties of their effect sizes and variances. \\
+A method proposed in \citet{Copas1}, \citet{Copas2} and \citet{Copas3} assumes that study results are selected based on the specific properties of their effect sizes and variances. \\
 Let $\theta_i$ be the effect size estimate of study $i$. Then 
 
 \begin{align}
 \theta_i &\sim N(\mu_i, \sigma_i^2) &
 \mu_i \sim N(\theta, \tau^2) \label{eq:population.model}
 \end{align}
-
 which is identical to the random-effects meta-analysis setting. $\theta$ is the population mean effect, $\sigma_i^2$ the within study variance and $\tau^2$ the between study variance. This is termed the \textit{population model}. \\
 The \textit{selection model} is defined as follows. Suppose a selection of studies with reported %($\neq$ estimated) 
 standard errors $\se$ (possibly different from $\sigma$). Only a proportion of the selection will be published, with the parameter $a$ defining the overall proportion of published studies and $b$ (assumed to be positive) defining how fast this proportion increases with $\se$ becoming smaller. Formally, the probability of selection given a reported standard error $\se$ is defined as
@@ -674,7 +669,7 @@ Let $u_i = a + b/\se_i$, $\lambda(u_i)$ the Mill's ratio $\phi(u_i)/\Phi(u_i)$ (
 
 \begin{align}
 P(\textrm{select} \given \se_i, \theta_i) = %P(a,b,s,y) = 
-\Phi\bigg(\frac{u_i + \tilde{\rho_i}((\theta_i - \mu)/\sqrt(\tau^2 + \sigma_i^2))}{\sqrt{1 - \tilde{\rho_i^2}}}\bigg) \nonumber
+\Phi\bigg(\frac{u_i + \tilde{\rho_i}((\theta_i - \mu)/\sqrt(\tau^2 + \sigma_i^2))}{\sqrt{1 - \tilde{\rho_i}^2}}\bigg) \nonumber
 \end{align}
 
 Which shows that larger $\se_i$ and $\theta_i$ lead to a larger selection probability. It can also be shown that the expected value 
@@ -712,12 +707,12 @@ If $\beta \neq 0$, there is still bias in the fitted values. To test a pair $(a,
 
 with 
 \begin{align}
-\tilde{L}(\theta, \tau, \beta) = -\frac{1}{2}\sum_{i = 1}^n[\log(\tau^2 + \sigma_i^2) + \frac{(\theta_i - \theta - \beta \se_i)^2}{(\tau^2 + \sigma_i^2)}] \nonumber
+\tilde{L}(\theta, \tau, \beta) = -\frac{1}{2}\sum_{i = 1}^n\bigg[\log(\tau^2 + \sigma_i^2) + \frac{(\theta_i - \theta - \beta \se_i)^2}{(\tau^2 + \sigma_i^2)}\bigg] \nonumber
 \end{align}
 
-$\chi^2$ can be used with a $\chi^2$ distribution with one degree of freedom to obtain a $p$\hspace{0.4mm}~-~value. Note that the test is very similar to Egger's small study effect test when $\tau^2 = 0$.\\
+$\chi^2$ can be used with a $\chi^2$ distribution with one degree of freedom to obtain a $p$\hspace{0.4mm}-value. Note that the test is very similar to Egger's small study effect test when $\tau^2 = 0$.\\
 In practice one can observe how $\theta$ and it's confidence intervals change dependent on the underlying selection process, and how the choice of the parameters affect the evidence for remaining publication bias (selection). \citet{limitmeta} used the method in a simulation for inference purposes, and have implemented it in the \citet{meta.package}. However, in the simulations, the method was outperformed by the regression adjustment method when publication bias was present. Especially when event rates in the control group were small and publication bias was strong, bias, mean squared error and coverage was substantially worse. Other authors argue that selection models should in general not be used for inference (\eg \citealp{selection.assessment}).\\
-The procedure in \citet{limitmeta} is the following: A range of values of $(a,b)$ are applied, and the test for residual small study effect as described in equation \eqref{eq:copas.small.study} is applied. If all obtained  $p$\hspace{0.4mm}~-~values from the test are above a threshold 0.1, this is interpreted as no evidence, and no need for adjustment, and the standard, classical random effects meta-analysis is retained. If none of the  $p$\hspace{0.4mm}~-~values is above the threshold, a wider range of values for $(a,b)$ is used. When some  $p$\hspace{0.4mm}~-~values are above, and some below the threshold, the pair $(a,b)$ with the smallest number of missing studies is retained (that is, the pair of $a$ and $b$ that implies the fewest publication bias is chosen).\\
+The procedure in \citet{limitmeta} is the following: A range of values of $(a,b)$ are applied, and the test for residual small study effect as described in equation \eqref{eq:copas.small.study} is applied. If all obtained  $p$\hspace{0.4mm}-values from the test are above a threshold 0.1, this is interpreted as no evidence, and no need for adjustment, and the standard, classical random effects meta-analysis is retained. If none of the  $p$\hspace{0.4mm}-values is above the threshold, a wider range of values for $(a,b)$ is used. When some  $p$\hspace{0.4mm}-values are above, and some below the threshold, the pair $(a,b)$ with the smallest number of missing studies is retained (that is, the pair of $a$ and $b$ that implies the fewest publication bias is chosen).\\
 Currently, there is no test to detect miss-specifications in the model itself and the authors themselves have argued that a non-parametric test of the residuals would lack power.
 
 
@@ -745,14 +740,14 @@ where $a$ is a correction factor if $n_t \neq n_c$. The variance of $r$, $\se_r^
 
 Because $r$ and $\se_r$ are not independent, we can apply a variance stabilizing transformation. Finally, we can get to a Fisher's $z$-score and it's variance $\se_z^2$ by using:
 \begin{align}
-z &= 0.5 \ln\big(\frac{1 + r}{1 - r}\big) & \nonumber
+z &= 0.5 \ln\bigg(\frac{1 + r}{1 - r}\bigg) & \nonumber
 %z &= \arctan(r) & \nonumber
 \se_z^2 &= \frac{1}{n-3}
 \end{align}
 
 $z$ is approximately normally distributed with around the mean $z$ and with standard error $\se_z$.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % LaTeX file for Chapter 03
@@ -811,7 +806,7 @@ The \texttt{comparison.name} variable specifies \textit{what kind} of treatments
 The result is of a binary type, and the counts of events in the treatment group are in \texttt{events1} and of the control group in \texttt{events2} and the total number of participants are given in columns \texttt{total1} and \texttt{total2}. As can be seen, events denote here "death at the end of follow-up".
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Wed Aug 21 08:49:49 2019
+% Thu Aug 22 13:59:23 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -898,7 +893,7 @@ The review comprises five studies in total. Three of them compared barbiturate t
 We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. %It is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Wed Aug 21 08:49:49 2019
+% Thu Aug 22 13:59:23 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -935,7 +930,7 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
 Information about missing values in the dataset is given in Table \ref{missing}. The relative amount of missing values is low, except for study years. For continuous outcomes, the cases are counted were neither a mean difference nor means are available. Similarly, the counts of cases where neither standard errors nor standard deviations are available are provided. Study years before 1920 and after 2019 are declared as missing, as well as sample sizes equal to zero.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Wed Aug 21 08:49:49 2019
+% Thu Aug 22 13:59:23 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -957,7 +952,7 @@ The primary studies that are included in the reviews and have been published are
 The most frequent outcome measures are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 31\% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (more than 65\%).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Wed Aug 21 08:49:49 2019
+% Thu Aug 22 13:59:23 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -2081,7 +2076,7 @@ Reviews of the World Health Organization (WHO) Reproductive Health Library (RHL)
 The author uses a Bayesian hierarchical selection model, but does not analyse treatment effects, but the parameters of the weight function of the selection model, which is estimated with a Bayesian approach and MCMC sampling. \\
 The author provides an estimate of the probability of including significant findings versus non-significant findings in Cochrane meta-analyses over time. The data is from the Cochrane Library from 2013 (issue number not provided). The author excluded treatment - treatment comparisons and analysed safety and efficacy meta-analyses separately (how this was achieved is not documented in the paper). \\
 From 3845 reviews, the author separated 907 reviews with more than ten studies. From those, 539 compared placebo to treatment. After removing duplicates and sensitivity analyses, 358 analyses with 1297 meta-analyses remained. From these 191 were excluded because they comprised overall mortality and withdrawal, because these could not clearly be specified as safety or efficacy, respectively. \\
-1106 meta-analyses from 329 meta-analyses, containing 802 efficacy and 304 safety meta-analyses. The median publication year per meta-analysis was 1997 for efficacy meta-analyses and 1999 for safety meta-analyses. Then, a Bayesian two-step hierarchical selection model was applied (\citealp{bayesian.selection.model}, \citealp{bayesian.selection.model.2}). It assumes that the selection process is a two-step weight, which assigns different probabilities to non-significant and significant effects. Thus, a ratio of publication probability between significant and non-significant study estimates using a two-step weight function. The model was fitted with the Monte-Carlo Markov-Chain algorithm STAN and the geometric mean was used as an estimate for the publication probability ratio. Simulations performed in \citep{bayesian.selection.model} indicate that the method performs well if the true mean effect size was not small, and also robust to small study effects. It outperformed Egger's test and Begg's test in assessing publication bias, especially when small study effects were absent, and had lower false-positive rates. \\
+1106 meta-analyses from 329 meta-analyses, containing 802 efficacy and 304 safety meta-analyses. The median publication year per meta-analysis was 1997 for efficacy meta-analyses and 1999 for safety meta-analyses. Then, a Bayesian two-step hierarchical selection model was applied (\citealp{bayesian.selection.model}, \citealp{bayesian.selection.model.2}). It assumes that the selection process is a two-step weight function, which assigns different probabilities to non-significant and significant effects. Thus, a ratio of publication probability between significant and non-significant study estimates using a two-step weight function. The model was fitted with the Monte-Carlo Markov-Chain algorithm STAN and the geometric mean was used as an estimate for the publication probability ratio. Simulations performed in \citep{bayesian.selection.model} indicate that the method performs well if the true mean effect size was not small, and also robust to small study effects. It outperformed Egger's test and Begg's test in assessing publication bias, especially when small study effects were absent, and had lower false-positive rates. \\
 The results showed a clear publication bias for significant results for efficacy meta-analyses (27\% higher for significant studies, 95\%CI credible intervals: 1.18 to 1.36). The probability was more than twice as high in 27\% of the meta-analyses (95\% CI: 23\% to 31\%). But the probability decreased: from 1.65 (95\% CI: 1.31 to 2.15) in 1980 (average publication year) to 1.36 (95\% CI: 1.17 to 1.62) in 1990 to 1.18 (95\% CI: 1.04 to 1.33) in 2000. For sake of completeness, the probability of inclusion was  1.78 (95\% CI: 1.51 to 2.13) larger for non-significant safety effect estimates, but again, decreased with time (1.77, 95\% CI: 1.46 to 2.21 in 2000). The results are in line with the results from this study, but it was not possible to reaffirm the finding of weaker publication bias in reviews published more frequently.\\
 
 \subsection{\citealp{vanAert.2019}}
@@ -2091,7 +2086,7 @@ The authors found, based on the significance threshold of $p$ < 0.1, the followi
 8.5 \% significant results from Begg and Mazumdar's rank correlation test (10.5) and
 4.4 \% significant excess significance test results (9.7).
 It is known that the publication bias tests are lacking power in general as sample size is usually small. Decreasing sample size will result in lower power, especially if the maximal sample size is $n \geq 5$. Additionally, it was also not taken into consideration that it may be difficult to state that publication bias is present in a meta-analysis when no result within it is statistically significant (only 18.8 \% of the effects of the sampled meta-analyses were). This, together that it has not been tried to exclude safety outcomes, may account for the large differences between the results. \\
-The author's come to the conclusion in their study that in contrast to other studies, they find few evidence for publication
+The author's come to the conclusion in their study that in contrast to other studies, they find few evidence for publication bias.
 
 \subsection{Further Studies on Publication Bias}
 \citealp{Zhang.2013} find publication bias in critical care studies with similar methods. \citealp{Nusch} report publication bias in clinical osteoarthritis research because of funnel plot asymmetry and pledge for routine assessment of publication bias. \citealp{Dechartres.2013} analyse publication bias based on sample size in meta-analyses from top journals and Cochrane reviews in 93 Meta-analyses and find that, for example, effects in trials with less than 50 patients were 48\% larger than in larger trials. \citealp{Onishi.2014} find that in 36 Meta-Analyses without comprehensive literature research, there are 19.4\% significant publication bias tests (Egger's test).

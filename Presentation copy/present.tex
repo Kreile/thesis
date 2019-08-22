@@ -91,7 +91,7 @@
 
 \begin{frame}{Systematic Reviews}
 \begin{itemize}
-\item Summarise all evidence with regard to treatment with meta-analysis
+\item Summarize all evidence with regard to treatment with meta-analysis
 \item Biased if non-significant results are not available and included
 \end{itemize}
 \end{frame}
@@ -142,7 +142,7 @@ p &= \sum_{i = O}^n\Big({n \choose i} p^i (1-p)^{n - i}\Big) \nonumber
 \end{align}
 
 \vspace{-1mm}
-$O = $ observed no. of significant results, $E$ expected based on power of studies.
+$O = $ observed no. of significant results, $E$ expected based on power of studies, $p$ = $E/n$.
 \end{frame}
 
 \begin{frame}{Analysis}
@@ -226,7 +226,7 @@ Analyse meta-analyses with publication bias tests.
 \vspace{-4mm}
 Weighted linear regression with std. error $x_i$ and effect size $y_i$:
 \begin{align}
-y_i &= \beta_0 + \beta_1 x_i + \epsilon, & \epsilon \sim N(0, x_i \sigma^2) \nonumber
+y_i &= \beta_0 + \beta_1 x_i + \epsilon_i, & \epsilon_i \sim N(0, x_i \sigma^2) \nonumber
 \end{align}
 Test for $H0: \beta_1 = 0$, no funnel plot asymmetry
 \end{frame}
@@ -236,7 +236,7 @@ As recommended by \citet{Sterne}
 \begin{itemize}
 \item Log odds ratio and risk ratio $\theta$ and standard error $\se_\theta$ are not independent
 \item Use score of binomial likelihood at log odds ratio $\theta_{\textrm{H0}} = 0$ instead of 
-log odds ratio and the inverse Fisher information instead of $\se_\theta$
+log odds ratio, and the inverse Fisher information instead of $\se_\theta$
 \end{itemize}
 \end{frame}
 
@@ -261,6 +261,202 @@ log odds ratio and the inverse Fisher information instead of $\se_\theta$
 \end{knitrout}
 \end{figure}
 \end{frame}
+
+\begin{frame}{Adjustment}
+Calculate unbiased estimates by
+\begin{itemize}
+\item Sensitivity analysis
+\item Regression approach
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Selection Model}
+\citet{Copas2}
+\begin{align}
+\theta_i &\sim N(\mu_i, \sigma_i^2) &
+\mu_i \sim N(\theta, \tau^2) \nonumber
+\end{align}
+So we have $\theta_i = \mu_i + \sigma_i\epsilon_i \nonumber$. Introduce
+\begin{itemize}
+\item Baseline study retention rate $a$
+\item Std. error dependent retention rate $b$
+\item introduces correlation between $\epsilon_i$ and selection probability
+\end{itemize}
+%Model the selection process for increasing $a$ and $b$
+\end{frame}
+
+\begin{frame}{Sensitivity analysis}
+To test a pair $a$,$b$,	include $\beta$:
+\begin{align}
+\theta_i &= \theta + \beta \se_i + \sigma_i \epsilon_i \nonumber
+\end{align}
+\vspace{-10mm}
+\begin{itemize}
+\item $\theta_i$ is the effect size of study $i$ and right-hand side is the fitted 
+value of the model. 
+\item Repeatedly test for $\beta_{\textrm{H0}} = 0$ %and estimate $\theta_{\textrm{Adj.}}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Regression}
+Correct for small study effect \citep{Limitmeta}:
+\begin{itemize}
+\item Use global mean of regression $\beta_0$ from $y_i = \beta_0 + \beta_1 x_i + \epsilon_i, \epsilon_i \sim N(0, x_i \sigma^2) \nonumber$
+\item Add minimal bias term $\beta_1 \cdot \tau$
+\end{itemize}
+$\theta_{\textrm{Adj.}} = \beta_0 + \beta_1\tau$
+\end{frame}
+
+\begin{frame}{Adjustment Methods}
+Differences:
+\begin{itemize}
+\item Regression: uncertainty of bias parameter retained
+\item Sensitivity analysis: Bias itself is not estimated, but most parsimonious scenario is chosen
+\item Sensitivity analysis: No adjustment if no evidence for bias
+\end{itemize}
+Regression adjustment leads to higher uncertainty of $\theta_{\textrm{Adj.}}$
+\end{frame}
+
+\begin{frame}{Effect Measure Transformation}
+\vspace{-3mm}
+\begin{align}
+d &= \theta \frac{\sqrt{3}}{\pi} & \se_d^2 =  \se^2\frac{\sqrt{3}}{\pi} \nonumber
+\end{align}
+\begin{align}
+r &= \frac{d}{\sqrt{d^2 + a}} & a = (n_c + n_t)^2 / n_c n_t \nonumber
+\end{align}
+\begin{align}
+z &= 0.5 \ln\bigg(\frac{1 + r}{1 - r}\bigg) & \nonumber
+%z &= \arctan(r) & \nonumber
+\se_z^2 &= \frac{1}{n-3}
+\end{align}
+\end{frame}
+
+\begin{frame}[fragile]{Results}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-6-1} 
+
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}{Results}
+% \vspace{-3mm}
+% Compare wald test statistics (original effect size measures):
+% 
+% \vspace{-2mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} 
+
+\end{knitrout}
+
+\end{frame}
+
+\begin{frame}{Missing Study Number}
+Missing study number according to selection model parameters: 2,618, 11.4\%
+
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Wed Aug 21 13:58:04 2019
+\begin{table}[ht]
+\centering
+\begingroup\footnotesize
+\begin{tabular}{lrrrrrrr}
+  \hline
+ & = 0 & 5\% & 25\% & 50\% & 75\% & 95\% & mean \\ 
+  \hline
+Missing number & 226 & 0 & 0 & 1.5 & 5.9 & 20.1 & 4.7 \\ 
+  Overall fraction & 226 & 0 & 0 & 0.1 & 0.4 & 1.0 & 0.3 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Fraction of missing studies and estimates of missing studies with their zero counts (``= 0''), quantiles and means.} 
+\label{copas.missing}
+\end{table}
+
+\end{frame}
+
+\begin{frame}{Additional Results}
+Linear mixed model with random effects for meta-analyses and reviews:
+
+\begin{align}
+\mathbf{y}_i \given U_j,U_k,\epsilon_{i} =  \beta_0 + x_i\beta_1 + U_j + U_k + \epsilon_{i} \nonumber
+\end{align}
+
+$\rightarrow$ Increased power to estimate $\beta$
+\end{frame}
+
+\begin{frame}{Mixed Linear Model}
+AIC improvement to null fit: 1820 to 1306. \\
+Bias parameter $\beta_1$ = 0.52 (95\%CI: 0.44,0.59)
+
+\vspace{-12mm}
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-9-1} 
+
+\end{knitrout}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Limitations}
+Small study effect $\neq$ publication bias. Also:
+\begin{itemize}
+\item True heterogeneity
+\item Selective outcome reporting
+\item Delayed publication
+\item ...
+\end{itemize}
+\vspace{-3mm}
+Small study effect tests do not take into account significance directly.
+\end{frame}
+
+\begin{frame}{Limitations}
+\begin{itemize}
+\item Unknown amount of secondary outcomes
+\item Small amount of adverse outcomes
+\item Publication bias unknown for excluded data
+\item Exploratory Analysis!
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Implications}
+\begin{itemize}
+\item Results are largely in line with previous research
+\item Underline the need for examination of publication and other biases in meta-analyses
+\item Otherwise, validity of meta-analyses can be contested
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{References}
+  \small
+  \bibliographystyle{apalike}
+\bibliography{illustration}
+\end{frame}
+
+
+\begin{frame}
+Backup slides:
+\end{frame}
+
+\begin{frame}[fragile]{Transformation}
+
+\vspace{-6mm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
 
 
 
@@ -869,11 +1065,6 @@ log odds ratio and the inverse Fisher information instead of $\se_\theta$
 % 
 % 
 
-\begin{frame}{References}
-  \small
-  \bibliographystyle{apalike}
-\bibliography{illustration}
-\end{frame}
 
 
 

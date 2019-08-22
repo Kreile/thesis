@@ -46,6 +46,30 @@ load(file.path(PATH_RESULTS, "meta.bin.RData"))
 load(file.path(PATH_RESULTS, "meta.cont.RData"))
 load(file.path(PATH_RESULTS, "meta.iv.RData"))
 
+bias.side.z <- function(yi, sei){
+  alpha = 0.05
+  to.ommit <- which(is.na(yi) | is.na(sei))
+
+  if(length(to.ommit) > 0){
+    yi <-  yi[-to.ommit]
+    sei <- sei[-to.ommit]
+  }
+
+  to.ommit <- which(sei == 0)
+
+  if(length(to.ommit) > 0){
+    yi <-  yi[-to.ommit]
+    sei <- sei[-to.ommit]
+  }
+
+  if(sum(pnorm(yi/sei) < .05) == sum(pnorm(yi/sei, lower.tail=FALSE) < .05)){
+      side <- sign(est.fe <- rma(yi = yi, sei = sei, method = "FE")$b[1] )
+  } else{
+    side = ifelse(sum(pnorm(yi/sei) < .05) > sum(pnorm(yi/sei, lower.tail=FALSE) < .05),
+                  -1, 1)
+    }
+  return(side)
+}
 
 #Inital dataset properties:
 initial.id.count <- length(unique(data$id))
@@ -190,6 +214,16 @@ tp6 <- data.ext2 %>% filter(meta.id %in% meta.adj$meta.id)
 adj.id.count <- length(unique(tp6$id))
 adj.study.count <- length(unique(tp6$study.name))
 adj.result.count <- dim(tp6)[1]
+
+#----------------------------------------------------------------------------------------------#
+# missing.copas.histogram <- meta.f %>% ggplot(aes(x = missing.copas/k)) + geom_histogram(binwidth = 0.05, boundary = 0) + theme_bw() + xlab("Missing study fraction")
+missing.copas.zeros <- length(which(meta.f$missing.copas[!is.na(meta.f$missing.copas)]/meta.f$k[!is.na(meta.f$missing.copas)] == 0))
+missing.copas.range.frac <- c(missing.copas.zeros, quantile(x = meta.f$missing.copas[!is.na(meta.f$missing.copas)]/meta.f$k[!is.na(meta.f$missing.copas)], c(0.05, 0.25, 0.5, 0.75, 0.95)), mean(meta.f$missing.copas[!is.na(meta.f$missing.copas)]/meta.f$k[!is.na(meta.f$missing.copas)],na.rm = T) )
+missing.copas.range.count <- c(missing.copas.zeros, quantile(x = meta.f$missing.copas[!is.na(meta.f$missing.copas)], c(0.05, 0.25, 0.5, 0.75, 0.95)), mean(na.rm = T,meta.f$missing.copas[!is.na(meta.f$missing.copas)])) 
+missing.copas.table <- rbind(missing.copas.range.frac, missing.copas.range.count)
+rownames(missing.copas.table) <- c("Overall fraction", "Missing number")
+colnames(missing.copas.table) <- c("= 0", colnames(missing.copas.table)[2:6], "mean")
+missing.copas.table <- missing.copas.table[c(2,1),]
 @
 
 
@@ -210,7 +244,7 @@ adj.result.count <- dim(tp6)[1]
 
 \begin{frame}{Systematic Reviews}
 \begin{itemize}
-\item Summarise all evidence with regard to treatment with meta-analysis
+\item Summarize all evidence with regard to treatment with meta-analysis
 \item Biased if non-significant results are not available and included
 \end{itemize}
 \end{frame}
@@ -265,7 +299,7 @@ p &= \sum_{i = O}^n\Big({n \choose i} p^i (1-p)^{n - i}\Big) \nonumber
 \end{align}
 
 \vspace{-1mm}
-$O = $ observed no. of significant results, $E$ expected based on power of studies.
+$O = $ observed no. of significant results, $E$ expected based on power of studies, $p$ = $E/n$.
 \end{frame}
 
 \begin{frame}{Analysis}
@@ -349,7 +383,7 @@ Analyse meta-analyses with publication bias tests.
 \vspace{-4mm}
 Weighted linear regression with std. error $x_i$ and effect size $y_i$:
 \begin{align}
-y_i &= \beta_0 + \beta_1 x_i + \epsilon, & \epsilon \sim N(0, x_i \sigma^2) \nonumber
+y_i &= \beta_0 + \beta_1 x_i + \epsilon_i, & \epsilon_i \sim N(0, x_i \sigma^2) \nonumber
 \end{align}
 Test for $H0: \beta_1 = 0$, no funnel plot asymmetry
 \end{frame}
@@ -359,7 +393,7 @@ As recommended by \citet{Sterne}
 \begin{itemize}
 \item Log odds ratio and risk ratio $\theta$ and standard error $\se_\theta$ are not independent
 \item Use score of binomial likelihood at log odds ratio $\theta_{\textrm{H0}} = 0$ instead of 
-log odds ratio and the inverse Fisher information instead of $\se_\theta$
+log odds ratio, and the inverse Fisher information instead of $\se_\theta$
 \end{itemize}
 \end{frame}
 
@@ -407,7 +441,6 @@ p.dist.iv <- meta.iv %>%  ggplot(aes(x = pval1.egger)) +
   ggtitle("Other Data (Egger)") + ylab("") +
 	xlab(expression(paste(italic(p), "-value")))  + theme(
         plot.title = element_text(hjust = 0.5, face = "bold", size = 12, margin = margin(b = 20)),
-        #axis.title.y = element_text(size=16, margin = margin(r = 10)), 
         axis.title.x = element_text(size=16, margin = margin(t = 10)), 
         axis.text= element_text(size=12),
         strip.text.x = element_text(size = 30)) 
@@ -440,6 +473,291 @@ meta.f %>% ggplot(aes(x = pval1.d.tes)) +
 @
 \end{figure}
 \end{frame}
+
+\begin{frame}{Adjustment}
+Calculate unbiased estimates by
+\begin{itemize}
+\item Sensitivity analysis
+\item Regression approach
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Selection Model}
+\citet{Copas2}
+\begin{align}
+\theta_i &\sim N(\mu_i, \sigma_i^2) &
+\mu_i \sim N(\theta, \tau^2) \nonumber
+\end{align}
+So we have $\theta_i = \mu_i + \sigma_i\epsilon_i \nonumber$. Introduce
+\begin{itemize}
+\item Baseline study retention rate $a$
+\item Std. error dependent retention rate $b$
+\item introduces correlation between $\epsilon_i$ and selection probability
+\end{itemize}
+%Model the selection process for increasing $a$ and $b$
+\end{frame}
+
+\begin{frame}{Sensitivity analysis}
+To test a pair $a$,$b$,	include $\beta$:
+\begin{align}
+\theta_i &= \theta + \beta \se_i + \sigma_i \epsilon_i \nonumber
+\end{align}
+\vspace{-10mm}
+\begin{itemize}
+\item $\theta_i$ is the effect size of study $i$ and right-hand side is the fitted 
+value of the model. 
+\item Repeatedly test for $\beta_{\textrm{H0}} = 0$ %and estimate $\theta_{\textrm{Adj.}}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Regression}
+Correct for small study effect \citep{Limitmeta}:
+\begin{itemize}
+\item Use global mean of regression $\beta_0$ from $y_i = \beta_0 + \beta_1 x_i + \epsilon_i, \epsilon_i \sim N(0, x_i \sigma^2) \nonumber$
+\item Add minimal bias term $\beta_1 \cdot \tau$
+\end{itemize}
+$\theta_{\textrm{Adj.}} = \beta_0 + \beta_1\tau$
+\end{frame}
+
+\begin{frame}{Adjustment Methods}
+Differences:
+\begin{itemize}
+\item Regression: uncertainty of bias parameter retained
+\item Sensitivity analysis: Bias itself is not estimated, but most parsimonious scenario is chosen
+\item Sensitivity analysis: No adjustment if no evidence for bias
+\end{itemize}
+Regression adjustment leads to higher uncertainty of $\theta_{\textrm{Adj.}}$
+\end{frame}
+
+\begin{frame}{Effect Measure Transformation}
+\vspace{-3mm}
+\begin{align}
+d &= \theta \frac{\sqrt{3}}{\pi} & \se_d^2 =  \se^2\frac{\sqrt{3}}{\pi} \nonumber
+\end{align}
+\begin{align}
+r &= \frac{d}{\sqrt{d^2 + a}} & a = (n_c + n_t)^2 / n_c n_t \nonumber
+\end{align}
+\begin{align}
+z &= 0.5 \ln\bigg(\frac{1 + r}{1 - r}\bigg) & \nonumber
+%z &= \arctan(r) & \nonumber
+\se_z^2 &= \frac{1}{n-3}
+\end{align}
+\end{frame}
+
+\begin{frame}[fragile]{Results}
+<<echo = FALSE, cache = TRUE, fig.height = 4, message = FALSE, warning = FALSE>>=
+diff.z.ranef.reg <- meta.f %>% 
+  mutate(fixef = est.z.fixef, ranef = est.z.ranef,
+         copas = est.z.copas, regression = est.z.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(ranef) ~  abs(copas),
+                           sign(copas) != sign(ranef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(ranef) ~  abs(regression),
+                                sign(regression) != sign(ranef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  select(fixef, ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.z.score", regression) %>% 
+  mutate(difference = ranef - adjusted.z.score) %>% 
+  filter(difference > -.75 & difference < .75) %>% 
+  ggplot(aes(x = difference)) + geom_histogram(binwidth = 0.1, center = 0) +
+  theme_bw() + ggtitle("Regression") +
+  xlab(expression(paste("Random effects ", italic(hat(z)), " - adjusted ", italic(hat(z))))) + 
+	geom_vline(xintercept = 0, linetype = "dashed" ) + theme(
+		axis.title.y = element_text(size=16, margin = margin(r = 10)), 
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 15, margin = margin(b = 22)),
+        axis.title.x = element_text(size=14, margin = margin(t = 10)), 
+        axis.text= element_text(size=12),
+        strip.text.x = element_text(size = 30)) + xlim(c(-0.8, 0.7))
+#--------------------------------------------------------------------------------------------------------------------#
+
+diff.z.ranef.copas <- meta.f %>% 
+  mutate(fixef = est.z.fixef, ranef = est.z.ranef,
+         copas = est.z.copas, regression = est.z.reg) %>% 
+  mutate(copas = case_when(sign(copas) == sign(ranef) ~  abs(copas),
+                           sign(copas) != sign(ranef) ~ -abs(copas)),
+         regression = case_when(sign(regression) == sign(ranef) ~  abs(regression),
+                                sign(regression) != sign(ranef) ~ -abs(regression)),
+         fixef = abs(fixef),
+         ranef = abs(ranef)) %>% 
+  select(fixef, ranef, copas, regression) %>% 
+  gather(key = "method", value = "adjusted.z.score", copas) %>% 
+  mutate(difference = ranef - adjusted.z.score) %>% 
+  filter(difference > -.75 & difference < .75) %>% 
+  ggplot(aes(x = difference)) + geom_histogram(binwidth = 0.1, center = 0) +
+  theme_bw() + ylab("") + ggtitle("Selection Model") +
+  xlab(expression(paste("Random effects ", italic(hat(z)), " - adjusted ", italic(hat(z))))) + 
+  	geom_vline(xintercept = 0, linetype = "dashed" ) + theme(
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 15, margin = margin(b = 22)),
+        axis.title.x = element_text(size=14, margin = margin(t = 10)), 
+        axis.text= element_text(size=12),
+        strip.text.x = element_text(size = 30)) + xlim(c(-0.8, 0.7))
+
+grid.arrange(diff.z.ranef.reg, diff.z.ranef.copas, ncol = 2)
+@
+\end{frame}
+
+
+\begin{frame}{Results}
+% \vspace{-3mm}
+% Compare wald test statistics (original effect size measures):
+% 
+% \vspace{-2mm}
+<<echo = FALSE, warning = FALSE, cache = TRUE, fig.height = 4>>=
+mid <- median(meta.f$pval.se)
+method.names <- c(z.reg = "Regression", z.copas = "Selection Model")
+
+decrease_text <- data.frame(label = c("decrease", "decrease"),
+  method   = c("z.reg", "z.copas"))
+increase_text <- data.frame(label = c("increase", "increase"),
+                            method   = c("z.reg", "z.copas"))
+meta.f %>% filter(z.reg > -40) %>% 
+  select(pval.se, z.fixef, z.ranef, z.reg, z.copas) %>% 
+  gather(key = "method", value = "test.stat", z.reg:z.copas) %>%
+  ggplot(aes(x = test.stat, y = z.ranef, colour = pval.se)) + 
+  facet_wrap(~ method, labeller = as_labeller(method.names)) + 
+  scale_color_gradient2(midpoint=mid, low="firebrick4", mid = "gold",
+                        high="chartreuse2", space ="Lab", name = expression(paste(italic(p),"-value"))) +
+  geom_point(size = .6) + theme_bw() + guides(fill=guide_legend(title="p-value")) +
+  geom_abline(slope = 1, intercept = 0, linetype = 2, size = .3) +
+  geom_abline(slope = 0, intercept = 0, linetype = 2, size = .3) +
+  geom_text(data = decrease_text, mapping = aes(x = -11, y = 6, label = label), 
+            color = "tan3") + 
+  geom_text(data = decrease_text, mapping = aes(x = 11, y = -6, label = label), 
+            color = "tan3") + 
+  geom_text(data = increase_text, mapping = aes(x = 15, y = 4, label = label), 
+            color = "chartreuse3") + 
+  geom_text(data = increase_text, mapping = aes(x = -15, y = -4, label = label), 
+            color = "chartreuse3") + 
+  xlab(expression(paste("Adjusted ",  italic(z),  " test statistic"), sep = "")) + 
+  ylab(expression(paste("Random effects z ", italic(z), " test statistic"), sep = "")) +
+  theme(legend.title = element_text(size=14),
+        axis.title.y = element_text(size=14, margin = margin(r = 20)), 
+        axis.title.x = element_text(size=14, margin = margin(t = 20)), 
+        legend.text = element_text(size =10), 
+        axis.text= element_text(size=12),
+        strip.text.x = element_text(size = 15),
+        #plot.title = element_text(hjust = 0.5, face = "bold", size = 40, margin = margin(b = 20)),
+  			strip.background = element_rect(fill = "white"))
+@
+
+\end{frame}
+
+\begin{frame}{Missing Study Number}
+Missing study number according to selection model parameters: \Sexpr{format(round(sum(meta.f$missing.copas, na.rm = T)),big.mark = ",")}, \Sexpr{round(sum(meta.f$missing.copas, na.rm = T)/sum(meta.f$k),3)*100}\%
+
+
+<<echo= FALSE, results='asis', cache = TRUE>>=
+print(xtable(missing.copas.table, caption = "Fraction of missing studies and estimates of missing studies with their zero counts (``= 0''), quantiles and means.",
+             label = "copas.missing", align = "lrrrrrrr", digits = c(0,0,0,0,1,1,1,1)),
+      size = "footnotesize")
+@
+\end{frame}
+
+\begin{frame}{Additional Results}
+Linear mixed model with random effects for meta-analyses and reviews:
+
+\begin{align}
+\mathbf{y}_i \given U_j,U_k,\epsilon_{i} =  \beta_0 + x_i\beta_1 + U_j + U_k + \epsilon_{i} \nonumber
+\end{align}
+
+$\rightarrow$ Increased power to estimate $\beta$
+\end{frame}
+
+\begin{frame}{Mixed Linear Model}
+AIC improvement to null fit: 1820 to 1306. \\
+Bias parameter $\beta_1$ = 0.52 (95\%CI: 0.44,0.59)
+
+\vspace{-12mm}
+\begin{figure}
+<<echo = FALSE, warning=FALSE, cache = TRUE, fig.height = 4>>=
+reg.dat <- data.ext2 %>% filter(meta.id %in% meta.f$meta.id) #Filter meta-analysis data
+reg.dat <- reg.dat %>% group_by(meta.id) %>%
+  filter(var.z != 0) %>% filter(!is.na(z)) %>% filter(!is.na(var.z)) %>%
+  mutate(se.z.mirrored = sqrt(var.z)) %>% filter(!is.na(se.z.mirrored)) %>%
+  mutate(bias.side.z = bias.side.z(yi = z, sei = se.z.mirrored),
+  z.mirrored = z * bias.side.z) #Mirror effect sizes on one side
+reg.dat <- reg.dat %>%  filter(!is.na(z.mirrored)) %>%
+  filter(!is.na(se.z.mirrored))
+reg.dat <- reg.dat %>% filter(se.z.mirrored < 3)
+publication.bias.fit <- lme(fixed = z.mirrored ~ se.z.mirrored, 
+														random = list(~ 1 | id, ~ 1 | meta.id), 
+														weights = ~ se.z.mirrored^2, method = "ML", data = reg.dat)
+publication.bias.rs.fit <- lme(fixed = z.mirrored ~ se.z.mirrored,
+                          random = list(~ 1 | id, ~ meta.id | meta.id),
+                       weights = ~ se.z.mirrored^2, method = "ML", data = reg.dat)
+plot(y = reg.dat$z.mirrored, x = reg.dat$se.z.mirrored, cex = .1, cex.lab = 1.3,
+		 xlab = "standard error", ylab = "z mirrored")
+publication.bias.fit.coef <- summary(publication.bias.fit)$coefficients$fixed
+abline(a = publication.bias.fit.coef, col = "red", lty = 2, lwd = 1.5)
+publication.bias.rs.fit.coef <- summary(publication.bias.rs.fit)$coefficients$fixed
+abline(a = publication.bias.rs.fit.coef, col = "blue", lty = 3, lwd = 1.5)
+@
+\end{figure}
+\end{frame}
+
+\begin{frame}{Limitations}
+Small study effect $\neq$ publication bias. Also:
+\begin{itemize}
+\item True heterogeneity
+\item Selective outcome reporting
+\item Delayed publication
+\item ...
+\end{itemize}
+\vspace{-3mm}
+Small study effect tests do not take into account significance directly.
+\end{frame}
+
+\begin{frame}{Limitations}
+\begin{itemize}
+\item Unknown amount of secondary outcomes
+\item Small amount of adverse outcomes
+\item Publication bias unknown for excluded data
+\item Exploratory Analysis!
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Implications}
+\begin{itemize}
+\item Results are largely in line with previous research
+\item Underline the need for examination of publication and other biases in meta-analyses
+\item Otherwise, validity of meta-analyses can be contested
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{References}
+  \small
+  \bibliographystyle{apalike}
+\bibliography{illustration}
+\end{frame}
+
+
+\begin{frame}
+Backup slides:
+\end{frame}
+
+\begin{frame}[fragile]{Transformation}
+
+\vspace{-6mm}
+<<echo = FALSE, warning=FALSE, fig.height=4.8, cache = TRUE>>=
+par(mfrow = c(2,3), cex.lab = 1.5, cex.axis = 1.5)
+example <- data.ext2 %>% filter(meta.id == 81244)
+funnel(limitmeta(metagen(TE = effect, se = se, studlab = study.name, sm = "MD", data = example)), col.adjust = "blue", col.line = "blue")
+funnel(limitmeta(metagen(TE = smd.pool, se = se.smd.pool, studlab = study.name, sm = "SMD", data = example)), col.adjust = "blue", col.line = "blue")
+funnel(limitmeta(metagen(TE = z, seTE = sqrt(var.z), studlab = study.name, sm = "ZCOR", data = example)), col.adjust = "blue", col.line = "blue")
+
+
+example <- data.ext2 %>% filter(meta.id == 32532)
+funnel(limitmeta(metagen(TE = log(effect), se = se, studlab = study.name, sm = "RR", data = example)), col.adjust = "blue", col.line = "blue")
+funnel(limitmeta(metagen(TE = smd.pool, se = se.smd.pool, studlab = study.name, sm = "SMD", data = example)), col.adjust = "blue", col.line = "blue")
+funnel(limitmeta(metagen(TE = z, seTE = sqrt(var.z), studlab = study.name, sm = "ZCOR", data = example)), col.adjust = "blue", col.line = "blue")
+@
+\end{frame}
+
+
+
+
+
 
 
 
@@ -1048,11 +1366,6 @@ meta.f %>% ggplot(aes(x = pval1.d.tes)) +
 % 
 % 
 
-\begin{frame}{References}
-  \small
-  \bibliographystyle{apalike}
-\bibliography{illustration}
-\end{frame}
 
 
 

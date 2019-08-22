@@ -1,12 +1,5 @@
 % LaTeX file for Chapter 02
-<<'preamble04',include=FALSE>>=
-library(knitr)
-opts_chunk$set(
-    fig.path='figure/ch04_fig', 
-    self.contained=FALSE,
-    cache=FALSE
-) 
-@
+
 
 \chapter{Methods} \label{ch:methods}
 \section{Introduction and Notation}
@@ -49,21 +42,21 @@ The methods presented here can also be found, for example, in \cite[34]{Intro.me
 Let $\theta$ be the natural logarithm of the odds ratio. $\hat{\theta}$ and its variance $\hat{\se}^2$ can be obtained by computing
 
 \begin{align}
-\hat{\theta} &= \log\bigg[\frac{e_t\cdot(n_c - e_c)}{e_c\cdot(n_t - e_t)}\bigg] \nonumber \\
+\hat{\theta} &= \log(\frac{e_t\cdot(n_c - e_c)}{e_c\cdot(n_t - e_t)}) \nonumber \\
 \hat{\se}^2 &= 1/e_t + 1/(n_t - e_t) + 1/e_c + 1/(n_c - e_c) \nonumber
 \end{align}
 
 Plugging in the observed counts will give the corresponding estimates. The logarithm of the risk ratio $\theta$ and its variance $\se^2$ is similarly defined as
 
 \begin{align}
-\hat{\theta} &= \log\bigg(\frac{e_t/n_t}{e_c/n_c}\bigg) \label{eq:risk.ratio} \\
+\hat{\theta} &= \log(\frac{e_t/n_t}{e_c/n_c}) \label{eq:risk.ratio} \\
 \se^2&= 1/e_t - 1/n_t + 1/e_c - 1/n_c \label{eq:risk.ratio.variance}
 \end{align}
 
 Assuming binomial distribution of the events and using likelihood theory, one could show that the estimators are maximum likelihood estimators and that one can use the asymptotic normal distribution of the maximum likelihood estimator to calculate a  $p$\hspace{0.4mm}-value, \eg \cite[98]{held2014}. The approximation is only good if there are enough events and sample size is large enough.\\
 Thus, with $\Phi$ as the cumulative standard normal distribution, we get
 \begin{align}
-p &= 2\cdot(1-\Phi(|\hat{\theta}/\hat{\se}|)), \nonumber
+p &= 2\cdot(1-\Phi(|\hat{\theta}/\hat{\se}|), \nonumber
 \end{align}
 a  $p$\hspace{0.4mm}-value for the corresponding estimate, which summarizes the evidence against $\hat{\theta}$ being zero (\ie the true risk/odds ratio being 1). \\
 Odds ratios can be transformed to std. mean differences, which will be described in Section \ref{sec:transformation.effectsizes}.
@@ -80,13 +73,14 @@ will give a  $p$\hspace{0.4mm}-value for the evidence against the null hypothesi
 
 
 \section{Fixed and Random Effects Meta-Analysis} \label{sec:meta.analysis}
-The fixed effects meta-analysis estimator of the pooled treatment effect is a mean of the single treatment effect estimators, weighted by their standard errors \citep{fixed.effects.rosenthal}. Let $w_i = 1/\se_i^2$ be the weights, and $\theta_M$ be the pooled estimator and $\se_M^2$ its variance. Then the estimates are given by
+The fixed effects meta-analysis estimator of the pooled treatment effect is a mean of the single treatment effect estimators, weighted by their standard errors \citep{fixed.effects.rosenthal}. Let $w_i = 1/\se_i^2$ be the weights, and $\theta_M$ be the pooled estimator and $\se_M^2$ its variance. Then 
 
 \begin{align}
 \theta_M &= \frac{\sum_{i = 1}^n w_i \theta_i}{\sum_{i = 1}^n w_i} &
-\se_M^2 &= \frac{1}{\sum_{i = 1}^n w_i}. \label{eq:fixed.effects}
+\se_M^2 &= \frac{1}{\sum_{i = 1}^n w_i} \label{eq:fixed.effects}
 \end{align}
-This estimator minimizes the variance between the effects. An estimate $\hat{\theta}_M$ can be obtained by plugging in the observed treatment effects and variances $\hat{\theta}_i$ and $\hat{\se}_i^2$. The underlying idea is that we assume $\theta_i \sim N(\theta_M, \se_i^2)$, $\theta_M$ being the true effect, all $\theta_i$ being distributed around an equal mean.\\
+
+This estimator minimizes the variance between the effects. An estimate $\hat{\theta}_M$ can be obtained by plugging in the observed treatment effects and variances $\hat{\theta}_i$ and $\hat{\se}_i^2$. The underlying idea is that we assume $\theta_i \sim N(\theta_M, \se_i^2)$, $\theta_M$ being the true effect, all $\theta_i$ being distributed around an equal mean. \\
 The random effects model \citep{whitehead} assumes instead that 
 \begin{align}
 \theta_i \sim N(\mu_i, \se_i^2) &&
@@ -105,7 +99,7 @@ The estimation of $\tau^2$ has been subject to some debate in the statistical li
 
 \begin{align}
 Q &= \sum_{i = 1}^n w_i(y_i - \theta_M)^2 & C &= \sum_{i = 1}^n w_i - \frac{\sum_{i = 1}^n w_i^2}{\sum_{i = 1}^n w_i} \label{eq:Q.heterogeneity} \\
-\tau^2 &= \max\bigg[0, \frac{Q - (n-1)}{C}\bigg] \label{eq:Tau.definition}
+\tau^2 &= \max\big(0, \frac{Q - (n-1)}{C}\big) \label{eq:Tau.definition}
 \end{align}
 
 The estimators have to be replaced by their estimates in order to get an estimate $\hat{\tau}^2$.\\
@@ -152,8 +146,9 @@ Importantly, all proposed methods above assume normally distributed effect sizes
 First, the concept of simple linear regression is introduced \citep{fahrmeir2007}. In short, the model assumes a dependent variable $y$ to be a linear function of another explanatory variable $x$, with the residuals being distributed independently and identically and following a normal distribution:
 
 \begin{align}
-y &= \beta_0 + \beta_1 x + \epsilon, & \epsilon \sim N(0, \sigma^2). \label{eq:simple.regression}
+y &= \beta_0 + \beta_1 x + \epsilon, & \epsilon \sim N(0, \sigma^2) \label{eq:simple.regression}
 \end{align}
+
 $\epsilon$ is the residual noise term that becomes necessary when $n$ pairs $(x_i, y_i)$ are given and there is no exact solution. We look for the solution that minimizes the squared residuals, the least-squares solution. Formally,
 
 \begin{align}
@@ -204,11 +199,12 @@ If one plots the values of $y$ and $x$, the estimate $\hat{\beta}_0$ is the inte
 \end{align}
 
 $\bar{x}$ and $\bar{y}$ denoting the sample means of the corresponding values $x_1, .., x_n$ and $y_1, ..., y_n$. Thus, $\hat{\beta}_0$ is also called the global mean.
-To test whether there is evidence for the intercept $\beta_0$ to be unequal to some value $\beta_{H0}$, a $t$-test can be used:
+To test whether there is evidence for the intercept $\beta_0$ to be unequal to some value $\beta_{H0}$, a $t$-test can be used. 
 
 \begin{align}
-p &= 2(1-F(\abs{(\beta_0 - \beta_{H0})/s_{\beta_0}})), \nonumber
+p &= 2(1-F(\abs{(\beta_0 - \beta_{H0})/s_{\beta_0}})) \nonumber
 \end{align}
+
 where $F$ is the cumulative $t$ distribution with $n-2$ degrees of freedom. The  $p$\hspace{0.4mm}-value will give the evidence against the null hypothesis $\beta_0 = \beta_{H0}$. \\
 The concept is extendable to weighted linear regression. Weighted linear regression may be used if the residuals $\mathbf{r}$ have unequal variances, which is equivalent to ascribe different precision to the observed $y$ (heteroscedasticity). The least squares equation \eqref{eq:least.squares} is extended as follows:
 
@@ -221,7 +217,7 @@ Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weig
 The introduction of group-specific random effects allows to analyze grouped or repeated measurements by linear regression. Let $j$ be the group index, $i$ the index of the single observation from the group $j$ and $x_i$ the $i^\textrm{th}$ row of $\mathbf{X}$, $(1, \mathbf{X}_{i2})$. Then the equation
 
 \begin{align}
-\mathbf{y}_i \given U_j,\epsilon_{i} =  x_i\beta + U_j + \epsilon_{i} \label{eq:one.random.intercept}
+\mathbf{y}_i|U_j,\epsilon_{i} =  x_i\beta + U_j + \epsilon_{i} \label{eq:one.random.intercept}
 \end{align}
 
 gives the marginal distribution of $\mathbf{y}_i$ depending on $U{_j}$ and $\epsilon_i$. The random effects $U_j \sim N(0, \mathbf{G})$ and the residual error term $\epsilon_i \sim N(0, \tau^{2})$ are independent from each other. Let $\mathbf{y}_j$ be a vector of all observations of group $j$. The expectation $\mathbb{E}(\mathbf{y}_i)$ is still $x_i \beta$, but the covariance between the observations within a group $j$, is modeled as
@@ -235,20 +231,21 @@ Nested groups can be modeled by extending the design matrix $\mathbf{X}$ with an
 An extension of the random intercepts model is the random slopes model, which allows for additional, group-specific slopes with respect to a explanatory variable $x$. It can be implemented by modifying \eqref{eq:one.random.intercept}. Let $\mathbf{U}_j$ be a two-dimensional random vector with a $2 \times 2$ covariance matrix $\mathbf{G}$. Again, we can specify the marginal distribution of a observation $i$ within a group $j$:
 
 \begin{align}
-\mathbf{y}_i \given U_j,\epsilon_i =  x_i\beta + x_i \mathbf{U}_j + \epsilon_i \label{eq:one.random.intercept.and.slope}
+\mathbf{y}_i|U_j,\epsilon_i =  x_i\beta + x_i \mathbf{U}_j + \epsilon_i \label{eq:one.random.intercept.and.slope}
 \end{align}
 
 $\mathbf{D}_j$ is a $n_i \times 2$ equal to all rows of observations of $j$ in $\mathbf{X}$. The covariance matrix $\mathbf{V_j}$ for group $j$ is defined as in equation \eqref{eq:random.intercepts.covariance}, using the new $\mathbf{D}_j$. Defining $\mathbf{x}_j$ as the matrix with all observations from group $j$ of $\mathbf{X}$, and equivalently the vector $\mathbf{y}_j$, $\hat{\beta}$ is obtained by computing
 
 \begin{align}
-\hat{\mathbf{\beta}} &= \Big( \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j \Big)^{-1} \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{y}_j
+\hat{\beta} &= \Big( \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j \Big)^{-1} \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{y}_j
 \end{align}
 
 with $m$ being the number of groups and $\hat{\mathbf{V}}_j$ being the estimated covariance, obtained by maximizing the log likelihood of the normal distribution, as $\mathbf{y}_j$ is distributed as
 
 \begin{align}
-\mathbf{y}_j \sim N(\mathbf{x}_j \mathbf{\beta}, \mathbf{V}_j).
+\mathbf{y}_j \sim N(\mathbf{x}_j \beta, \mathbf{V}_j)
 \end{align}
+
 The matrices $\sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j$ and $\hat{\mathbf{V}}_j$ are assumed to be positive definite  . The approximate covariance matrix of $\hat{\beta}$ is given by
 
 \begin{align}
@@ -268,10 +265,10 @@ It is necessary to check the model assumptions after fitting a linear regression
 
 
 \section{Publication Bias Assessment}
-The tests that will be presented on the following pages are a common way to detect publication bias. A frequently used method to test and adjust for publication bias, which goes under the name of trim-and-fill \citep{trimfill}, is not discussed because of its disadvantageous properties (see \eg \citealp{Moreno.2009}).\\
+The tests that will be presented on the following pages are a common way to detect publication bias. A frequently used method to test and adjust for publication bias, which goes under the name of trim-and-fill \citep{trimfill} is not discussed because of its disadvantageous properties (see \eg \citealp{Moreno.2009}).\\
 
 \subsection{Begg and Mazumdar: Rank Correlation Test} \label{sec:Begg}
-\citet{Begg} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
+\citealp{Begg} proposed a rank based test to test the null hypothesis of no correlation between effect size and variance.
 A standardized effect size $\theta_i^\star$ can be computed as in \eqref{eq:begg.stand.eff}. $\se_i^{2\star}$ is the variance of $\theta_i - \theta_M$ as defined in \eqref{eq:begg.stand.var} and $\theta_M$ is the fixed effects pooled treatment effect (\eqref{eq:fixed.effects}. 
 
 \begin{align}
@@ -291,7 +288,7 @@ p &= 2\cdot(1-\Phi(\abs{Z})) \nonumber
 \end{align}
 
 A one-sided test for positive correlation is obtained by computing $1-\Phi(Z)$ instead.
-The changes that have to be made in the case of ties are small and can be found in \citet{begg.ties}.
+The changes that have to be made in the case of ties are small and can be found in \cite[p. 410]{begg.ties}.
 
 
 \subsection{Egger's Test: Weighted Linear Regression Test} \label{sec:Egger}
@@ -347,10 +344,10 @@ It can be shown that they are both good approximations of the log odds ratio and
 
 
 \subsection{Schwarzer's Test: Rank Correlation Test} \label{sec:Schwarzer}
-\citealp{Schwarzer} developed a test for the correlation between the event counts in the treatment group and the expected event counts $E_t - \mathbb{E}(E_t)$, where $E_t$ is a random variable. When the marginals in a two-by-two table and the log odds ratio are fixed, it can be shown that $E_t$ follows a non-central hypergeometric distribution. Using the Mantel-Haenszel log odds ratio and the marginal total parameters, the variance and the expectation of $E_t$ is calculated. The inverse of the variance $\se(E_t)^2$ and the standardized event count
+\citealp{Schwarzer} developed a test for the correlation between the event counts in the treatment group and the expected event counts $E_t - \mathbb{E}(E_t)$. When the marginals in a two-by-two table and the log odds ratio are fixed, it can be shown that $E_t$ follows a non-central hypergeometric distribution. Using the Mantel-Haenszel log odds ratio and the marginal total parameters, the variance and the expectation of $E_t$ is calculated. The inverse of the variance $\se(E_t)^2$ and the standardized event count
 
 \begin{align}
-(e_t - \mathbb{E}(E_t))/\se_i
+(e_t - \mathbb{E}(E_t))/\sqrt(\se_i^2)
 \end{align}
 
 are then used as before in Begg and Mazumdar's test.
@@ -359,8 +356,8 @@ are then used as before in Begg and Mazumdar's test.
 The correlation between variance and effect size of dichotomous outcome measures can be abolished by the variance stabilizing transformation for binomial random variables. We use that the arcsine function is the variance stabilizing transformation for a proportion. Let
 
 \begin{align}
-\theta_i &= \arcsin{(e_t/n_t)} - \arcsin{(e_c/n_c)} \nonumber &
-\se_i^2 &= 1/(4n_t) + 1/(4n_c) \nonumber
+\theta_i &= \arcsin{e_t/n_t} - \arcsin{e_c/n_c} \nonumber &
+\se_i^2 &= 1/4n_t + 1/4n_c \nonumber
 \end{align}
 
 Then one can optionally apply Begg and Mazumdar's rank correlation test or Thompson and Sharp's test using the newly obtained estimates.
@@ -443,13 +440,14 @@ Simulations in \citet{limitmeta} suggested that the latter estimate is slightly 
 
 \subsection{Copas Selection Model} \label{sec:copas}
 
-A method proposed in \citet{Copas1}, \citet{Copas2} and \citet{Copas3} assumes that study results are selected based on the specific properties of their effect sizes and variances. \\
+A method proposed in \cite{Copas1,Copas2,Copas3} assumes that study results are selected based on the specific properties of their effect sizes and variances. \\
 Let $\theta_i$ be the effect size estimate of study $i$. Then 
 
 \begin{align}
 \theta_i &\sim N(\mu_i, \sigma_i^2) &
 \mu_i \sim N(\theta, \tau^2) \label{eq:population.model}
 \end{align}
+
 which is identical to the random-effects meta-analysis setting. $\theta$ is the population mean effect, $\sigma_i^2$ the within study variance and $\tau^2$ the between study variance. This is termed the \textit{population model}. \\
 The \textit{selection model} is defined as follows. Suppose a selection of studies with reported %($\neq$ estimated) 
 standard errors $\se$ (possibly different from $\sigma$). Only a proportion of the selection will be published, with the parameter $a$ defining the overall proportion of published studies and $b$ (assumed to be positive) defining how fast this proportion increases with $\se$ becoming smaller. Formally, the probability of selection given a reported standard error $\se$ is defined as
@@ -481,7 +479,7 @@ Let $u_i = a + b/\se_i$, $\lambda(u_i)$ the Mill's ratio $\phi(u_i)/\Phi(u_i)$ (
 
 \begin{align}
 P(\textrm{select} \given \se_i, \theta_i) = %P(a,b,s,y) = 
-\Phi\bigg(\frac{u_i + \tilde{\rho_i}((\theta_i - \mu)/\sqrt(\tau^2 + \sigma_i^2))}{\sqrt{1 - \tilde{\rho_i}^2}}\bigg) \nonumber
+\Phi\bigg(\frac{u_i + \tilde{\rho_i}((\theta_i - \mu)/\sqrt(\tau^2 + \sigma_i^2))}{\sqrt{1 - \tilde{\rho_i^2}}}\bigg) \nonumber
 \end{align}
 
 Which shows that larger $\se_i$ and $\theta_i$ lead to a larger selection probability. It can also be shown that the expected value 
@@ -519,7 +517,7 @@ If $\beta \neq 0$, there is still bias in the fitted values. To test a pair $(a,
 
 with 
 \begin{align}
-\tilde{L}(\theta, \tau, \beta) = -\frac{1}{2}\sum_{i = 1}^n\bigg[\log(\tau^2 + \sigma_i^2) + \frac{(\theta_i - \theta - \beta \se_i)^2}{(\tau^2 + \sigma_i^2)}\bigg] \nonumber
+\tilde{L}(\theta, \tau, \beta) = -\frac{1}{2}\sum_{i = 1}^n[\log(\tau^2 + \sigma_i^2) + \frac{(\theta_i - \theta - \beta \se_i)^2}{(\tau^2 + \sigma_i^2)}] \nonumber
 \end{align}
 
 $\chi^2$ can be used with a $\chi^2$ distribution with one degree of freedom to obtain a $p$\hspace{0.4mm}-value. Note that the test is very similar to Egger's small study effect test when $\tau^2 = 0$.\\
