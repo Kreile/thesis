@@ -604,7 +604,7 @@ The previous results suggest that the results will also differ substantially aft
 <<echo = FALSE, results='asis'>>=
 print(xtable(number.sig.tests, caption = "Number of significant test results per meta-analysis, separated
        for outcome types. Last entry for continuous and IV outcomes is empty since one test less was 
-       applied", label = "number.sig.tests", align = "lccc"), include.rownames = F, size = "footnotesize")
+       applied.", label = "number.sig.tests", align = "lccc"), include.rownames = F, size = "footnotesize")
 @
 
 When leaving away the excess significance test, \Sexpr{mean.min.bin}\% of binary outcome tests and \Sexpr{mean.min.else}\% of \texttt{IV} and continuous outcome tests had at least one significant result. 
@@ -1235,7 +1235,7 @@ grid.arrange(diff.z.fixef.reg, diff.z.ranef.reg, diff.d.fixef.reg, diff.d.ranef.
 
 \begin{figure}
 <<echo = FALSE, warning=FALSE, fig.height=5>>=
-par(mfrow = c(2,3), cex.lab = 1.5, cex.axis = 1.5)
+par(mfrow = c(2,3), cex.lab = 1.5, cex.axis = 1.5, las = 1, mar = c(5.1,6,4.1,2.1),mgp=c(4,1,0))
 example <- data.ext2 %>% filter(meta.id == 81244)
 funnel(limitmeta(metagen(TE = effect, se = se, studlab = study.name, sm = "MD", data = example)), col.adjust = "blue", col.line = "blue")
 funnel(limitmeta(metagen(TE = smd.pool, se = se.smd.pool, studlab = study.name, sm = "SMD", data = example)), col.adjust = "blue", col.line = "blue")
@@ -1321,7 +1321,7 @@ The Copas selection model also allows to compute the number of missing (\ie unpu
 <<echo = FALSE, warning = FALSE>>=
 missing.copas.histogram
 @
-\caption{Histogram of the fraction of missing studies from the total number of studies in a meta-analyses (only data shown where Copas estimate was obtained, thus \\$n =$ \Sexpr{sum(!is.na(meta.f$missing.copas))})}
+\caption{Histogram of the fraction of missing studies from the total number of studies in a meta-analyses (only data shown where Copas estimate was obtained, thus \\$n =$ \Sexpr{sum(!is.na(meta.f$missing.copas))}).}
 \label{fig:copas.missing}
 \end{figure}
 
@@ -1406,7 +1406,7 @@ reg.dat <- reg.dat %>% ungroup() %>%
 study.number.review.model <- dim(reg.dat)[1]
 publication.bias.fit <- lme(fixed = z.mirrored ~ se.z.mirrored, random = list(~ 1 | id, ~ 1 | meta.id),
                        weights = ~ se.z.mirrored^2, method = "ML", data = reg.dat)
-plot(y = reg.dat$z.mirrored, x = reg.dat$se.z.mirrored, cex = .1, xlab = "standard error", ylab = "z mirrored")
+plot(y = reg.dat$z.mirrored, x = reg.dat$se.z.mirrored, cex = .1, xlab = "standard error", ylab = "z mirrored", las = 1)
 publication.bias.fit.coef <- summary(publication.bias.fit)$coefficients$fixed
 abline(a = publication.bias.fit.coef, col = "red", lty = 2)
 

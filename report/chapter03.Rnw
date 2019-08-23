@@ -374,7 +374,7 @@ The result is of a binary type, and the counts of events in the treatment group 
 
 <<echo=FALSE, results = 'asis', warning =FALSE, message = FALSE>>=
 print(xtable(barbi1, label = "barbiturate.row", digits = 0,
-             caption = "Example of results from two primary studies that belong to the same comparison and outcome. Events denotes the count of events in the treatment group while Events c the count of events in the group compared to. Further descriptive variables have been ommitted"),
+             caption = "Example of results from two primary studies that belong to the same comparison and outcome. Events denotes the count of events in the treatment group while Events c the count of events in the group compared to. Further descriptive variables have been ommitted."),
       include.rownames = F, size = "scriptsize")
 @
 
@@ -435,7 +435,7 @@ A listing of important variables of a result is given in Table \ref{variable}. D
       \texttt{mean1/mean2} & Mean of patient measurements if outcome is continuous.\\
       \texttt{sd1/sd2} & Standard deviation if outcome is continuous.
     \end{tabular}
-  \caption{Dataset variable names and descriptions  \label{variable}}
+  \caption{Dataset variable names and descriptions.  \label{variable}}
   \label{variable}
   \end{center}
 \end{table}
@@ -447,13 +447,13 @@ The review comprises five studies in total. Three of them compared barbiturate t
 We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. %It is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects.
 
 <<echo=FALSE, results='asis', warning =FALSE, message = FALSE>>=
-print(xtable(barbi2, label = "barbiturates", caption = "Barbiturate and head injury review. In the columns, study names, comparison and outcome measure of the results are given"), include.rownames = F, size = "footnotesize")
+print(xtable(barbi2, label = "barbiturates", caption = "Barbiturate and head injury review. In the columns, study names, comparison and outcome measure of the results are given."), include.rownames = F, size = "footnotesize")
 @
 
 Information about missing values in the dataset is given in Table \ref{missing}. The relative amount of missing values is low, except for study years. For continuous outcomes, the cases are counted were neither a mean difference nor means are available. Similarly, the counts of cases where neither standard errors nor standard deviations are available are provided. Study years before 1920 and after 2019 are declared as missing, as well as sample sizes equal to zero.
 
 <<echo=FALSE, results='asis', warning =FALSE, message = FALSE>>=
-print(xtable(missing.table, label = "missing", caption = "Number of missing variables and measurements in the dataset", align = "lr"), include.colnames = F,
+print(xtable(missing.table, label = "missing", caption = "Number of missing variables and measurements in the dataset.", align = "lr"), include.colnames = F,
       size = "footnotesize", digits = 0)
 @
 
@@ -507,7 +507,7 @@ or \texttt{se} (\texttt{IV}).
 \subsection{Eligibility criteria for Publication Bias Test and Adjustment} 
 
 The analysis includes all results with \texttt{outcome.flag} \texttt{DICH}, \texttt{CONT} and \texttt{IV}. If outcome is \texttt{IV}, the only meta-analyses with \texttt{outcome.measure.merged} = \texttt{OR} / \texttt{RR} / \texttt{SMD} / \texttt{MD} / \texttt{Hazard Ratio} / \texttt{Rate Ratio} are used. 
-\citealp{Ioannidis2007} outlined criteria for application of small study effect tests:
+\citet{Ioannidis2007} outlined criteria for application of small study effect tests:
 \begin{itemize}
 \item \textbf{Sample size}: A meta-analysis is comprised of at least ten studies ($n$ = \Sexpr{format(m.a.largerten.count, big.mark = ",")} remaining). 
 \item \textbf{Study size}: The ratio between largest variance of an estimate and smallest variance of an estimate is larger than four ($n$ = \Sexpr{format(m.a.variance4.count$n, big.mark = ",")} remaining).

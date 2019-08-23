@@ -50,8 +50,8 @@ ex.se <- meta.f$meta.id[which(meta.f$id == "CD003246" & meta.f$subgroup.nr == 0
 ex.nose <- meta.f$meta.id[which(meta.f$id == "CD000213" & meta.f$subgroup.nr == 1
                               & meta.f$outcome.nr == 15 & meta.f$comparison.nr == 1)]
 par(mfrow = c(1,2))
-funnel(x = meta.id(ex.se), ylim = c(1.60, 0), comb.fixed = F, comb.random = F)
-funnel(x = meta.id(ex.nose), ylim = c(1.60, 0), comb.fixed = F, comb.random = F, ylab = NULL)
+funnel(x = meta.id(ex.se), ylim = c(1.60, 0), comb.fixed = F, comb.random = F, pch = 20, las = 1)
+funnel(x = meta.id(ex.nose), ylim = c(1.60, 0), comb.fixed = F, comb.random = F, ylab = NULL, pch = 20, las = 1)
 @
 \caption{Funnel plots of two meta-analyses: On the left, the improvement in depression syndromes after application of tricyclic antidepressants is compared to placebo. The meta-analysis on the right measures the occurrence of intracranial haemoerrhage by CT after application of any anti-thrombolytic agent. All studies are RCT's.}
 \label{small.study.effect.examples}
