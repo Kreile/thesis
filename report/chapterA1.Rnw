@@ -12,7 +12,7 @@ opts_chunk$set(
 
 \chapter{Appendix}\label{ch:Appendix}
 
-\section{Comparison of Results with previous Studies}
+\section{Comparison of Results with Previous Studies}
 
 <<echo=FALSE, warning=FALSE, cache = TRUE>>= 
 #Load data:
@@ -149,7 +149,7 @@ The author's come to the conclusion in their study that in contrast to other stu
 
 
 
-\section{R Session information}
+\section{R Session Information}
 
 <<>>=
 sessionInfo()

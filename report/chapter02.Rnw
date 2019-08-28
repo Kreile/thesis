@@ -10,7 +10,7 @@ opts_chunk$set(
 
 \chapter{Methods} \label{ch:methods}
 \section{Introduction and Notation}
-The interventions are restricted to comparisons of two treatment groups by some measure of melioration or worsening of health. The difference in this measure between the groups is referred to as the treatment effect. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, log rate ratio, Cohen's $d$ or standardized mean difference, Fisher's z transformed score.\\
+The interventions are restricted to comparisons of two treatment groups by some measure of melioration or worsening of health. The difference in this measure between the groups is referred to as the treatment effect. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, log rate ratio, Cohen's $d$ or standardized mean difference, Fisher's $z$ transformed score.\\
 Let us consider a meta-analysis with $n$ study treatment effects ($n > 1$, but typically small). A study is indexed by $i$, and it's treatment effect by  $\theta_i$. The observed treatment effect is $\hat{\theta}_i$. The pooled treatment effect of a meta-analysis will be denoted as $\theta_M$, and consequently, the observed pooled treatment effect as $\hat{\theta}_M$. Furthermore, each treatment effect is typically measured with some standard error $\se_i$ and an estimate of $\se_i$ is denoted as $\hat{\se}_i$. The $\hat{}$ sign thus indicates if it is an estimate.\\
 For continuous outcomes, let $m_t$ be the mean of the treatment group, $m_c$ the mean of the control group, and equivalently $\textrm{sd}_t$ and $\textrm{sd}_c$ the corresponding standard deviations. 
 In the case of binary outcomes, let $e_t$ be the count of events in the treatment arm $e_c$ the events in the control group. $n_t$ and $n_c$ are the total number of participants in the groups ($c$ for control and $t$ for treatment).%The observed counts in a study $i$ are referred to as $e_{t,i}$ and analogously $e_{c,i}$.
@@ -186,12 +186,12 @@ y_n \\
 
 \vspace{2mm}
 
-Let $\mathbf{\beta} = (\beta_0, \beta_1)^\top$. It can be shown that 
+Let $\boldsymbol{\beta} = (\beta_0, \beta_1)^\top$. It can be shown that 
 
 \begin{align}
-\hat{\mathbf{\beta}} &= (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y} \label{eq:regression.parameters}
+\hat{\boldsymbol{\beta}} &= (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y} \label{eq:regression.parameters}
 \end{align}
-is an estimator of $\mathbf{\beta}$ that minimizes the squared residuals. Let $\hat{\mathbf{y}} = \mathbf{X}\hat{\mathbf{\beta}}$ and $\hat{\mathbf{r}} = \hat{\mathbf{y}} - \mathbf{y}$. The variance estimates $\hat{\sigma}^2$ and $\hat{\mathbf{s}}_\beta^2$ are
+is an estimator of $\boldsymbol{\beta}$ that minimizes the squared residuals. Let $\hat{\mathbf{y}} = \mathbf{X}\hat{\boldsymbol{\beta}}$ and $\hat{\mathbf{r}} = \hat{\mathbf{y}} - \mathbf{y}$. The variance estimates $\hat{\sigma}^2$ and $\hat{\mathbf{s}}_\beta^2$ are
 
 \begin{align}
 \hat{\sigma}^2 &= \frac{1}{n-2}\mathbf{r}^\top \hat{\mathbf{r}} & \hat{\mathbf{s}}_\beta^2 &= \hat{\sigma}^2 (\mathbf{X}^\top \mathbf{X})^{-1}. \label{eq:regression.variances}
@@ -221,7 +221,7 @@ Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weig
 The introduction of group-specific random effects allows to analyze grouped or repeated measurements by linear regression. Let $j$ be the group index, $i$ the index of the single observation from the group $j$ and $x_i$ the $i^\textrm{th}$ row of $\mathbf{X}$, $(1, \mathbf{X}_{i2})$. Then the equation
 
 \begin{align}
-\mathbf{y}_i \given U_j,\epsilon_{i} =  x_i\beta + U_j + \epsilon_{i}. \label{eq:one.random.intercept}
+\mathbf{y}_i \given U_j,\epsilon_{i} =  x_i\boldsymbol{\beta}+ U_j + \epsilon_{i}. \label{eq:one.random.intercept}
 \end{align}
 gives the marginal distribution of $\mathbf{y}_i$ depending on $U{_j}$ and $\epsilon_i$. The random effects $U_j \sim N(0, \mathbf{G})$ and the residual error term $\epsilon_i \sim N(0, \tau^{2})$ are independent from each other. Let $\mathbf{y}_j$ be a vector of all observations of group $j$. The expectation $\mathbb{E}(\mathbf{y}_i)$ is still $x_i \beta$, but the covariance between the observations within a group $j$, is modeled as
 
@@ -233,18 +233,18 @@ Nested groups can be modeled by extending the design matrix $\mathbf{X}$ with an
 An extension of the random intercepts model is the random slopes model, which allows for additional, group-specific slopes with respect to a explanatory variable $x$. It can be implemented by modifying \eqref{eq:one.random.intercept}. Let $\mathbf{U}_j$ be a two-dimensional random vector with a $2 \times 2$ covariance matrix $\mathbf{G}$. Again, we can specify the marginal distribution of a observation $i$ within a group $j$:
 
 \begin{align}
-\mathbf{y}_i \given U_j,\epsilon_i =  x_i\beta + x_i \mathbf{U}_j + \epsilon_i. \label{eq:one.random.intercept.and.slope}
+\mathbf{y}_i \given U_j,\epsilon_i =  x_i\boldsymbol{\beta}+ x_i \mathbf{U}_j + \epsilon_i. \label{eq:one.random.intercept.and.slope}
 \end{align}
 
 $\mathbf{D}_j$ is a $n_i \times 2$ equal to all rows of observations of $j$ in $\mathbf{X}$. The covariance matrix $\mathbf{V_j}$ for group $j$ is defined as in equation \eqref{eq:random.intercepts.covariance}, using the new $\mathbf{D}_j$. Defining $\mathbf{x}_j$ as the matrix with all observations from group $j$ of $\mathbf{X}$, and equivalently the vector $\mathbf{y}_j$, $\hat{\beta}$ is obtained by computing
 
 \begin{align}
-\hat{\mathbf{\beta}} &= \Big( \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j \Big)^{-1} \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{y}_j
+\hat{\boldsymbol{\beta}} &= \Big( \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j \Big)^{-1} \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{y}_j
 \end{align}
 with $m$ being the number of groups and $\hat{\mathbf{V}}_j$ being the estimated covariance, obtained by maximizing the log likelihood of the normal distribution, as $\mathbf{y}_j$ is distributed as
 
 \begin{align}
-\mathbf{y}_j \sim N(\mathbf{x}_j \mathbf{\beta}, \mathbf{V}_j). \nonumber
+\mathbf{y}_j \sim N(\mathbf{x}_j \boldsymbol{\beta}, \mathbf{V}_j). \nonumber
 \end{align}
 
 The matrices $\sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j$ and $\hat{\mathbf{V}}_j$ are assumed to be positive definite  . The approximate covariance matrix of $\hat{\beta}$ is given by
@@ -253,7 +253,7 @@ The matrices $\sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x
 \hat{\Cov}(\hat{\beta}) &= \Big( \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j \Big)^{-1}. \nonumber
 \end{align}
 
-Weights can be introduced by replacing $\mathbf{I}_{n_j}$ in \eqref{eq:random.intercepts.covariance} with the previously introduced weight matrix $\mathbf{W}_j$. Hypothesis tests for $\beta = \beta_\textrm{H0}$ can be made using the Wald method. \\
+Weights can be introduced by replacing $\mathbf{I}_{n_j}$ in \eqref{eq:random.intercepts.covariance} with the previously introduced weight matrix $\mathbf{W}_j$. Hypothesis tests for $\boldsymbol{\beta}= \boldsymbol{\beta}_\textrm{H0}$ can be made using the Wald method. \\
 It is necessary to check the model assumptions after fitting a linear regression. For this purpose, fitted values can be plotted against standardized residuals. If the standardized residuals are not dispersed evenly around zero for any size of fitted values, the assumption of the residuals being independently and equally distributed around zero is violated and estimates are biased. \\
 
 

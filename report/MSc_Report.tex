@@ -184,7 +184,7 @@ Earlier research however suggests that the efforts are only partially successful
 
 \section{Aim of the Study}
 None of the research so far has estimated the amount and impact of publication bias on meta-analytical findings thoroughly and with the most suitable methods. Also, the results are ironically often presented in the form of dichotomous hypothesis tests, a practice that is partly responsible for publication bias.\\
-The aim of this thesis was to use prevailed methods to detect publication bias, and make use of the full amount of data that the Cochrane Organisation provides. The research questions are: Are effects in meta-analyses \textit{larger} if their standard errors are small, and are there \textit{more} significant effects than expected? and How can this affect the combined treatment effects as commonly obtained by meta-analysis?. To answer these questions, methods to detect and adjust for publication bias in meta-analysis are applied on the data.\\
+The aim of this thesis was to use prevailed methods to detect publication bias, and make use of the full amount of data that the Cochrane Organisation provides. The research questions are: Are effects in meta-analyses \textit{larger} if their standard errors are small, and are there \textit{more} significant effects than expected? How can this affect the combined treatment effects as commonly obtained by meta-analysis? To answer these questions, methods to detect and adjust for publication bias in meta-analysis are applied on the data.\\
 At the end, we will not only give an estimate of publication bias in the Cochrane Library but also show to what extent treatment effects are overestimated. The analyses are exploratory, but may generate new hypotheses and stimulate future directions for confirmatory research.
 
 
@@ -198,7 +198,7 @@ At the end, we will not only give an estimate of publication bias in the Cochran
 
 \chapter{Methods} \label{ch:methods}
 \section{Introduction and Notation}
-The interventions are restricted to comparisons of two treatment groups by some measure of melioration or worsening of health. The difference in this measure between the groups is referred to as the treatment effect. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, log rate ratio, Cohen's $d$ or standardized mean difference, Fisher's z transformed score.\\
+The interventions are restricted to comparisons of two treatment groups by some measure of melioration or worsening of health. The difference in this measure between the groups is referred to as the treatment effect. Where it is not particularly mentioned, the term treatment effect refers to any effect measure such as log risk ratio, log hazard ratio, log rate ratio, Cohen's $d$ or standardized mean difference, Fisher's $z$ transformed score.\\
 Let us consider a meta-analysis with $n$ study treatment effects ($n > 1$, but typically small). A study is indexed by $i$, and it's treatment effect by  $\theta_i$. The observed treatment effect is $\hat{\theta}_i$. The pooled treatment effect of a meta-analysis will be denoted as $\theta_M$, and consequently, the observed pooled treatment effect as $\hat{\theta}_M$. Furthermore, each treatment effect is typically measured with some standard error $\se_i$ and an estimate of $\se_i$ is denoted as $\hat{\se}_i$. The $\hat{}$ sign thus indicates if it is an estimate.\\
 For continuous outcomes, let $m_t$ be the mean of the treatment group, $m_c$ the mean of the control group, and equivalently $\textrm{sd}_t$ and $\textrm{sd}_c$ the corresponding standard deviations. 
 In the case of binary outcomes, let $e_t$ be the count of events in the treatment arm $e_c$ the events in the control group. $n_t$ and $n_c$ are the total number of participants in the groups ($c$ for control and $t$ for treatment).%The observed counts in a study $i$ are referred to as $e_{t,i}$ and analogously $e_{c,i}$.
@@ -374,12 +374,12 @@ y_n \\
 
 \vspace{2mm}
 
-Let $\mathbf{\beta} = (\beta_0, \beta_1)^\top$. It can be shown that 
+Let $\boldsymbol{\beta} = (\beta_0, \beta_1)^\top$. It can be shown that 
 
 \begin{align}
-\hat{\mathbf{\beta}} &= (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y} \label{eq:regression.parameters}
+\hat{\boldsymbol{\beta}} &= (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y} \label{eq:regression.parameters}
 \end{align}
-is an estimator of $\mathbf{\beta}$ that minimizes the squared residuals. Let $\hat{\mathbf{y}} = \mathbf{X}\hat{\mathbf{\beta}}$ and $\hat{\mathbf{r}} = \hat{\mathbf{y}} - \mathbf{y}$. The variance estimates $\hat{\sigma}^2$ and $\hat{\mathbf{s}}_\beta^2$ are
+is an estimator of $\boldsymbol{\beta}$ that minimizes the squared residuals. Let $\hat{\mathbf{y}} = \mathbf{X}\hat{\boldsymbol{\beta}}$ and $\hat{\mathbf{r}} = \hat{\mathbf{y}} - \mathbf{y}$. The variance estimates $\hat{\sigma}^2$ and $\hat{\mathbf{s}}_\beta^2$ are
 
 \begin{align}
 \hat{\sigma}^2 &= \frac{1}{n-2}\mathbf{r}^\top \hat{\mathbf{r}} & \hat{\mathbf{s}}_\beta^2 &= \hat{\sigma}^2 (\mathbf{X}^\top \mathbf{X})^{-1}. \label{eq:regression.variances}
@@ -409,7 +409,7 @@ Let $\mathbf{W}$ be a $n \times n$ matrix with $\mathbf{W}_{ii} = w_i$, the weig
 The introduction of group-specific random effects allows to analyze grouped or repeated measurements by linear regression. Let $j$ be the group index, $i$ the index of the single observation from the group $j$ and $x_i$ the $i^\textrm{th}$ row of $\mathbf{X}$, $(1, \mathbf{X}_{i2})$. Then the equation
 
 \begin{align}
-\mathbf{y}_i \given U_j,\epsilon_{i} =  x_i\beta + U_j + \epsilon_{i}. \label{eq:one.random.intercept}
+\mathbf{y}_i \given U_j,\epsilon_{i} =  x_i\boldsymbol{\beta}+ U_j + \epsilon_{i}. \label{eq:one.random.intercept}
 \end{align}
 gives the marginal distribution of $\mathbf{y}_i$ depending on $U{_j}$ and $\epsilon_i$. The random effects $U_j \sim N(0, \mathbf{G})$ and the residual error term $\epsilon_i \sim N(0, \tau^{2})$ are independent from each other. Let $\mathbf{y}_j$ be a vector of all observations of group $j$. The expectation $\mathbb{E}(\mathbf{y}_i)$ is still $x_i \beta$, but the covariance between the observations within a group $j$, is modeled as
 
@@ -421,18 +421,18 @@ Nested groups can be modeled by extending the design matrix $\mathbf{X}$ with an
 An extension of the random intercepts model is the random slopes model, which allows for additional, group-specific slopes with respect to a explanatory variable $x$. It can be implemented by modifying \eqref{eq:one.random.intercept}. Let $\mathbf{U}_j$ be a two-dimensional random vector with a $2 \times 2$ covariance matrix $\mathbf{G}$. Again, we can specify the marginal distribution of a observation $i$ within a group $j$:
 
 \begin{align}
-\mathbf{y}_i \given U_j,\epsilon_i =  x_i\beta + x_i \mathbf{U}_j + \epsilon_i. \label{eq:one.random.intercept.and.slope}
+\mathbf{y}_i \given U_j,\epsilon_i =  x_i\boldsymbol{\beta}+ x_i \mathbf{U}_j + \epsilon_i. \label{eq:one.random.intercept.and.slope}
 \end{align}
 
 $\mathbf{D}_j$ is a $n_i \times 2$ equal to all rows of observations of $j$ in $\mathbf{X}$. The covariance matrix $\mathbf{V_j}$ for group $j$ is defined as in equation \eqref{eq:random.intercepts.covariance}, using the new $\mathbf{D}_j$. Defining $\mathbf{x}_j$ as the matrix with all observations from group $j$ of $\mathbf{X}$, and equivalently the vector $\mathbf{y}_j$, $\hat{\beta}$ is obtained by computing
 
 \begin{align}
-\hat{\mathbf{\beta}} &= \Big( \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j \Big)^{-1} \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{y}_j
+\hat{\boldsymbol{\beta}} &= \Big( \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j \Big)^{-1} \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{y}_j
 \end{align}
 with $m$ being the number of groups and $\hat{\mathbf{V}}_j$ being the estimated covariance, obtained by maximizing the log likelihood of the normal distribution, as $\mathbf{y}_j$ is distributed as
 
 \begin{align}
-\mathbf{y}_j \sim N(\mathbf{x}_j \mathbf{\beta}, \mathbf{V}_j). \nonumber
+\mathbf{y}_j \sim N(\mathbf{x}_j \boldsymbol{\beta}, \mathbf{V}_j). \nonumber
 \end{align}
 
 The matrices $\sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j$ and $\hat{\mathbf{V}}_j$ are assumed to be positive definite  . The approximate covariance matrix of $\hat{\beta}$ is given by
@@ -441,7 +441,7 @@ The matrices $\sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x
 \hat{\Cov}(\hat{\beta}) &= \Big( \sum_{j = 1}^m \mathbf{x}_j^\top \hat{\mathbf{V}}_j^{-1} \mathbf{x}_j \Big)^{-1}. \nonumber
 \end{align}
 
-Weights can be introduced by replacing $\mathbf{I}_{n_j}$ in \eqref{eq:random.intercepts.covariance} with the previously introduced weight matrix $\mathbf{W}_j$. Hypothesis tests for $\beta = \beta_\textrm{H0}$ can be made using the Wald method. \\
+Weights can be introduced by replacing $\mathbf{I}_{n_j}$ in \eqref{eq:random.intercepts.covariance} with the previously introduced weight matrix $\mathbf{W}_j$. Hypothesis tests for $\boldsymbol{\beta}= \boldsymbol{\beta}_\textrm{H0}$ can be made using the Wald method. \\
 It is necessary to check the model assumptions after fitting a linear regression. For this purpose, fitted values can be plotted against standardized residuals. If the standardized residuals are not dispersed evenly around zero for any size of fitted values, the assumption of the residuals being independently and equally distributed around zero is violated and estimates are biased. \\
 
 
@@ -759,16 +759,16 @@ The definition of a systematic review is that it ``attempts to collate all empir
 \end{itemize}
 
 At the end of a systematic review, ``a systematic presentation, and synthesis, of the characteristics and findings of the included studies'' is done. \\
-Fifty three Cochrane Review Groups prepare and maintain the reviews within specific areas of health care. A group consists of ``researchers, healthcare professionals and people using healthcare services (consumers)''. \\
-The groups are supported by Method Groups, Centers and Fields. The Cochrane Method Groups aim to discuss and consult the groups in methodological questions concerning review preparation. The Centers play a main role in training and support of the Groups. The Fields are responsible for broad medical research areas and follow priorities in those areas by advice and control of the groups. \\
+Fifty three Cochrane Review groups prepare and maintain the reviews within specific areas of health care. A group consists of ``researchers, healthcare professionals and people using healthcare services (consumers)''. \\
+The groups are supported by Method groups, centers and fields. The Cochrane Method groups aim to discuss and consult the groups in methodological questions concerning review preparation. The centers play a main role in training and support of the groups. The fields are responsible for broad medical research areas and follow priorities in those areas by advice and control of the groups. \\
 The first step in a review is writing a protocol, specifying the research question, the methods to be used in literature search and analysis and the eligibility criteria of the study. Changes in protocols are possible but have to be documented and the protocol is published in advance of the publication of the full review. The choices of methodology as well as the changes should not be made ``on the basis of how they affect the outcome of the research study''. \\
-In order to avoid potential conflicts of interests, there is a code of conduct that all entities of Cochrane have to agree on: conflicts of interest must be disclosed and possibly be forwarded to the Cochrane Center, and participation of review authors in the studies used have to be acknowledged. Additionally, a Steering Group publishes a report of potential conflicts of interests based on information about external funding of Cochrane Groups. \\
-In order for keeping the reviews up-to-date, they are revised in a two-year circle with exceptions. In addition to inclusion of new evidence in a field, the revision and maintenance process may as well includes change in analysis methods. This can reflect some advance in clinical science as for example new information about important subgroups, as well as new methods for conducting a Cochrane review. However, there are no clear guidelines and the Cochrane Groups are free in the rate and extent of up-dating their reviews.
+In order to avoid potential conflicts of interests, there is a code of conduct that all entities of Cochrane have to agree on: conflicts of interest must be disclosed and possibly be forwarded to the Cochrane center, and participation of review authors in the studies used have to be acknowledged. Additionally, a Steering group publishes a report of potential conflicts of interests based on information about external funding of Cochrane groups. \\
+In order for keeping the reviews up-to-date, they are revised in a two-year circle with exceptions. In addition to inclusion of new evidence in a field, the revision and maintenance process may as well includes change in analysis methods. This can reflect some advance in clinical science as for example new information about important subgroups, as well as new methods for conducting a Cochrane review. However, there are no clear guidelines and the Cochrane groups are free in the rate and extent of up-dating their reviews.
 
 \subsection{Methods for Cochrane Reviews}
 A research question defines the following points: ``the types of population (participants), types of interventions (and comparisons), and the types of outcomes that are of interest''. From the research question, usually the eligibility criteria follow. Usually, outcomes are not part of eligibility criteria, except for special cases such as adverse effect reviews. \\
 The type of study is an important eligibility criterium. Cochrane focuses ``primarily on randomized controlled trials'', and also, the methods of study identification in literature search are focused on randomized trials. Furthermore, study characteristics such as blinding of study operators with respect to treatment and cluster-randomizing might be additional eligibility criteria which have to be chosen by the review authors. \\
-After having specified the eligibility criteria, studies have to be collected. The central idea of systematic reviews, and also meta-analyses, is that the collected studies are a random sample of a population of studies, i.e. that they are representative and can be used to assess population properties. Therefore, the search process is crucial, as a selective search result may impose bias on the sample of studies available, making it a non-random sample. For this purpose, the Cochrane Groups are advised to go beyond MEDLINE, because a search restricted to it has been shown to deliver only 30\% to 80\% of available studies. ``Time and budget restraints require the review author to balance the thoroughness of the search with efficiency in use of time and funds and the best way of achieving this balance is to be aware of, and try to minimize, the biases such as publication bias and language bias that can result from restricting searches in different ways.'' It is important to note that not only studies, but also study reports are occasionally used in the reviews, as they may provide useful information. \\
+After having specified the eligibility criteria, studies have to be collected. The central idea of systematic reviews, and also meta-analyses, is that the collected studies are a random sample of a population of studies, i.e. that they are representative and can be used to assess population properties. Therefore, the search process is crucial, as a selective search result may impose bias on the sample of studies available, making it a non-random sample. For this purpose, the Cochrane groups are advised to go beyond MEDLINE, because a search restricted to it has been shown to deliver only 30\% to 80\% of available studies. ``Time and budget restraints require the review author to balance the thoroughness of the search with efficiency in use of time and funds and the best way of achieving this balance is to be aware of, and try to minimize, the biases such as publication bias and language bias that can result from restricting searches in different ways.'' It is important to note that not only studies, but also study reports are occasionally used in the reviews, as they may provide useful information. \\
 There are different sources that are being used to search for studies.
 \begin{itemize}
 \item The Cochrane Central Register of Controlled Trials is a source of reports of controlled trials. ``As of January 2008 (Issue 1, 2008), CENTRAL contains nearly 530,000 citations to reports of trials and other studies potentially eligible for inclusion in Cochrane reviews, of which 310,000 trial reports are from MEDLINE, 50,000 additional trial reports are from EMBASE and the remaining 170,000 are from other sources such as other databases and handsearching.'' It includes citations published in many languages, citations only available in conference proceedings, citations from trials registers and trials results registers.
@@ -789,7 +789,7 @@ The \texttt{comparison.name} variable specifies \textit{what kind} of treatments
 The result is of a binary type, and the counts of events in the treatment group are in \texttt{events1} and of the control group in \texttt{events2} and the total number of participants are given in columns \texttt{total1} and \texttt{total2}. As can be seen, events denote here "death at the end of follow-up".
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 14:07:28 2019
+% Wed Aug 28 08:50:16 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -864,7 +864,7 @@ A listing of important variables of a result is given in Table \ref{variable}. D
       \texttt{mean1/mean2} & Mean of patient measurements if outcome is continuous.\\
       \texttt{sd1/sd2} & Standard deviation if outcome is continuous.
     \end{tabular}
-  \caption{Dataset variable names and descriptions.  \label{variable}}
+  \caption{Dataset variable names and descriptions.}
   \label{variable}
   \end{center}
 \end{table}
@@ -876,7 +876,7 @@ The review comprises five studies in total. Three of them compared barbiturate t
 We have continuous (e.g. mean body temperature) and binary outcome data (e.g. death/no death). One study split up outcomes for patients with and without haematoma, which would be subgroups. %It is important not to confuse results with studies. A study can contribute multiple results to a systematic review, for example, primary and secondary outcomes and adverse effects.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 14:07:28 2019
+% Wed Aug 28 08:50:16 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -913,7 +913,7 @@ Bohn 1989 & Barbiturate vs no barbiturate & Death at the end of follow-up \\
 Information about missing values in the dataset is given in Table \ref{missing}. The relative amount of missing values is low, except for study years. For continuous outcomes, the cases are counted were neither a mean difference nor means are available. Similarly, the counts of cases where neither standard errors nor standard deviations are available are provided. Study years before 1920 and after 2019 are declared as missing, as well as sample sizes equal to zero.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 14:07:28 2019
+% Wed Aug 28 08:50:16 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -931,11 +931,11 @@ Neither means nor standard deviations (CONT) & 775 \\
 \end{table}
 
 
-The primary studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = 1982, 95\% quantile = 2014,). The median of the publication years is 2003, the mean 2001 and the quartiles are 1996 and 2008. NULL studies have been published in 2018.\\
+The primary studies that are included in the reviews and have been published are most often from the years after 1980 (5\% quantile = 1982, 95\% quantile = 2014,). The median of the publication years is 2003, the mean 2001 and the quartiles are 1996 and 2008. 1,075 studies have been published in 2018.\\
 The most frequent outcome measures are summarized in Table \ref{outcome.measure.frequencies}. One can conclude of the table that roughly 31\% of outcomes in the dataset are continuous and the rest being some sort of discrete or binary outcomes, most often binary (more than 65\%).
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 14:07:28 2019
+% Wed Aug 28 08:50:16 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -986,11 +986,11 @@ For results to be suitable for usage in meta-analysis, they have to be identical
 Some new variables are added to the obtained dataset:
 \begin{itemize}
 \item \texttt{lrr} and \texttt{var.lrr}: log risk ratio and variance of the log risk ratio for \texttt{outcome.flag} \texttt{DICH}.
-\item \texttt{cohensd} and \texttt{var.cohensd}: Cohen's $d$ and the variance for \texttt{outcome.flag} \texttt{CONT}'. 
+\item \texttt{cohensd} and \texttt{var.cohensd}: Cohen's $d$ and the variance for \texttt{outcome.flag} \texttt{CONT}. 
 \item \texttt{smd.ordl} and \texttt{var.smd.ordl}: Cohen's $d$ and its variance as obtained by transformation of a log odds ratio for \texttt{outcome.flag} \texttt{DICH}.
-\item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for \texttt{outcome.flag} \texttt{DICH}) or $d$ (for \texttt{outcome.flag} \texttt{CONT}') to $r$ transformation.
-\item \texttt{z} and \texttt{var.z}: Fisher's z score and it's variance obtained from the Pearson correlation $r$ to $z$ transformation.
-\item \texttt{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for \texttt{outcome.flag} \texttt{CONT}' or Wald test for \texttt{outcome.flag} \texttt{DICH}.
+\item \texttt{cor.Pearson} and \texttt{var.cor.Pearson}: Pearson correlation coefficient and variance as obtained from the $d$ (for \texttt{outcome.flag} \texttt{DICH}) or $d$ (for \texttt{outcome.flag} \texttt{CONT}) to $r$ transformation.
+\item \texttt{z} and \texttt{var.z}: Fisher's $z$ score and it's variance obtained from the Pearson correlation $r$ to $z$ transformation.
+\item \texttt{pval.single}: $p$-value against the null hypothesis of no treatment effect, derived by a $t$-test for \texttt{outcome.flag} \texttt{CONT} or Wald test for \texttt{outcome.flag} \texttt{DICH}.
 \item \texttt{events1c} and \texttt{events2c}: Correction of \texttt{events1} and \texttt{events2} zero event counts or event counts = patient number. When no events occurred, 0.5 was added, and when all patients experienced the event, 0.5 was subtracted. When one of \texttt{events} had zero counts while the other had maximum counts, no adjustment occurred.
 \item \texttt{meta.id}: Meta-analysis ID variable to uniquely identify any potential meta-analysis in the dataset. Consistent to what has been discussed before, all results that share a common comparison, outcome and subgroup (optional, subgroups not given in any case) may be combined in a meta-analysis.
 \item \texttt{smd.pool} and \texttt{se.smd.pool}: Depending on \texttt{outcome.flag}, \texttt{smd.pool} is equal to \texttt{smd.ordl} (\texttt{outcome.flag} = \texttt{DICH}), \texttt{cohensd} (\texttt{CONT}), or \texttt{effect} (\texttt{IV} and \texttt{outcome.measure.merged} = \texttt{SMD}).
@@ -1127,14 +1127,14 @@ The results of this reduction of the dataset are shown in the flow-chart in Figu
 
 
 \subsubsection{Exclusions for other Reasons}
-In some more cases, meta-analyses were excluded because their results seemed to be erroneous (1) or because participant numbers were missing (5), necessary to compute the variance of Fisher's z transformed correlation coefficient. The latter meta-analyses (all \texttt{outcome.flag} = \texttt{IV}) were only omitted when doing the adjustment based on the Fisher's $z$ transformed correlations, but kept when adjusting based on std. mean differences. The meta-analysis that is considered erroneous is from a review with the title ``School-based programs for preventing smoking''. The reason why it is suspected to be erroneous is because there are results from one study (Severson, 1991) with rather large effects (13, 0.4, 6.3, 2.4) compared to a mean std. mean difference in 12 other results of 0.22 (max.: 0.91) and very large standard errors (64, 60, 46, 70) compared to a mean \texttt{se} of 0.6 (max.: 3.8). It is not included in the analysis.
+In some more cases, meta-analyses were excluded because their results seemed to be erroneous (1) or because participant numbers were missing (5), necessary to compute the variance of Fisher's $z$ transformed correlation coefficient. The latter meta-analyses (all \texttt{outcome.flag} = \texttt{IV}) were only omitted when doing the adjustment based on the Fisher's $z$ transformed correlations, but kept when adjusting based on std. mean differences. The meta-analysis that is considered erroneous is from a review with the title ``School-based programs for preventing smoking''. The reason why it is suspected to be erroneous is because there are results from one study (Severson, 1991) with rather large effects (13, 0.4, 6.3, 2.4) compared to a mean std. mean difference in 12 other results of 0.22 (max.: 0.91) and very large standard errors (64, 60, 46, 70) compared to a mean \texttt{se} of 0.6 (max.: 3.8). It is not included in the analysis.
 
 \subsubsection{The Analysis Dataset}
 The dataset that was ultimately tested and adjusted for publication bias comprises 1,388 meta-analyses and 22,937 results. The mean number of participants in the treatment group is 253.5 vs 256.7 in the complete dataset and the mean total number of participants 589.3 vs 623.2. The mean publication year is 2000 vs 2001 in the complete dataset. \\
-From the meta-analyses with incomplete data (\texttt{outcome.flag} == \texttt{IV}), there are 36 with \\ \texttt{outcome.measure.merged} = \texttt{RR}, 26 \texttt{SMD},  25 \texttt{Hazard Ratio}, 15 \texttt{OR}, 11 \texttt{MD} and 8 \texttt{Rate Ratio}.
+From the meta-analyses with incomplete data (\texttt{outcome.flag} == \texttt{IV}), there are 36 meta-analyses with \\ \texttt{outcome.measure.merged} = \texttt{RR}, 26 \texttt{SMD},  25 \texttt{Hazard Ratio}, 15 \texttt{OR}, 11 \texttt{MD} and 8 \texttt{Rate Ratio}.
 
 \subsection{Analysis Procedure} \label{sec:procedure}
-Meta-analysis within a review were obtained by grouping by comparison, outcome and subgroup. The last step is optional, and the Cochrane Groups do also meta-analysis without taking into account subgroups. Subgroups are often specifications of treatment, \eg the form of the medication or the protocol. Thus, using the subgroups should increase the within-study homogeneity. However, the Cochrane disencourages meta-analyses based on subgroups only, because subgroups are often set up after the collection of the data analysis. Since the main interest of this study is not to precisely assess the efficacy of treatments, but the interest is merely on systematic differences between single studies investigating the same scientific question and not in the effect per se, it has been decided that the increase in precision is worthwhile the loss of a number of studies. While it is possible that the use of subgroups introduces bias in the meta-analysis, it is also possible that ignoring subgroups will do (which is one of the reasons why subgroups are analyses as well). When one subgroup has substantially different real treatment effects, and the specific properties influence study size, publication bias assessment fails. Subgroups are not indicated in 50.8\% of the meta-analyses in the analysis dataset 1, thus, there the analyses are identical to the overall analyses that the Cochrane Review Groups did. \\
+Meta-analysis within a review were obtained by grouping by comparison, outcome and subgroup. The last step is optional, and the Cochrane groups do also meta-analysis without taking into account subgroups. Subgroups are often specifications of treatment, \eg the form of the medication or the protocol. Thus, using the subgroups should increase the within-study homogeneity. However, the Cochrane disencourages meta-analyses based on subgroups only, because subgroups are often set up after the collection of the data analysis. Since the main interest of this study is not to precisely assess the efficacy of treatments, but the interest is merely on systematic differences between single studies investigating the same scientific question and not in the effect per se, it has been decided that the increase in precision is worthwhile the loss of a number of studies. While it is possible that the use of subgroups introduces bias in the meta-analysis, it is also possible that ignoring subgroups will do (which is one of the reasons why subgroups are analyses as well). When one subgroup has substantially different real treatment effects, and the specific properties influence study size, publication bias assessment fails. Subgroups are not indicated in 50.8\% of the meta-analyses in the analysis dataset 1, thus, there the analyses are identical to the overall analyses that the Cochrane Review groups did. \\
 The methods described in the methods chapter \ref{ch:methods} most often apply directly to the algorithms used in \texttt{meta} and \texttt{metafor}. \\
 For applying publication bias tests and adjustment methods, the analysis was applied such that the effects used are similar or identical to the effects on which journal editors decided upon publication bias. For \texttt{outcome.flag} = \texttt{DICH}, log risk ratios were used as treatment effect estimates in the meta-analysis, for \texttt{outcome.flag} = \texttt{CONT}, mean difference or standardized mean difference, depending on \texttt{outcome.measure.merged}. For \texttt{outcome.flag} = \texttt{IV}, the \texttt{effect} and \texttt{se} as provided in the dataset was passed to \texttt{meta::metagen}. Since the intuition behind small study effect tests is that effects with larger standard errors have to be larger to reach significance, the publication bias tests and adjustments are most meaningful if the effects are used in their original scale. Transformation will change the relative size of uncertainty estimates and effects.\\
 To be able to compare the effects of adjustment among meta-analyses, the effect sizes were transformed on a common scale, as described in section \ref{sec:transformation.effectsizes}. As shown in the flow-chart in Figure \ref{Inclusion.criteria}, this leads to a reduced dataset (compare analysis dataset (1) and (2)). The $p$-values for adjusted treatment effect estimates were calculated by the Wald method. \\
@@ -1247,7 +1247,7 @@ The pattern for efficacy outcomes is the same for all common outcome measures as
 
 
 
-The meta-analyses fulfilling the criteria from Chapter \ref{ch:dataset}, Section \ref{sec:Processing}, are analysed with one-sided publication bias tests and excess significance tests. The direction in which bias is expected is the one on which more significant results of primary studies are (two-sided $p$-value < 0.05). The tests are applied on the original effect size measures, since the journal editors and the researchers also base their decisions on them. Different tests are applied depending on the outcome being binary or continuous or if the data is only partially available (\texttt{outcome.flag} = \texttt{IV}).\\
+The meta-analyses fulfilling the criteria from Section \ref{sec:Processing}, are analysed with one-sided publication bias tests and excess significance tests. The direction in which bias is expected is the one on which more significant results of primary studies are (two-sided $p$-value < 0.05). The tests are applied on the original effect size measures, since the journal editors and the researchers also base their decisions on them. Different tests are applied depending on the outcome being binary or continuous or if the data is only partially available (\texttt{outcome.flag} = \texttt{IV}).\\
 Multiple tests are applied in order to compare their results. A histogram of $p$-values for each test will summarize the overall evidence against the null-hypothesis of no publication bias, as displayed in Figure \ref{fig:test}.\\
 The abbreviations in Figure \ref{fig:test}  are shortly explained with references to Chapter \ref{ch:methods}: \\
 ``Excess significance'' denotes the excess of significant $p$-values testing method from \citet{excess.significance}, see \ref{sec:excess.significance}. For continuous and \texttt{IV} outcomes, the names refer to: 
@@ -1348,7 +1348,7 @@ In green, a linear regression fit is shown with 95\% CI bands.}
 The previous results suggest that the results will also differ substantially after applying the common dichotomization of $p$-values. Some proportion of the meta-analyses will only be significant using a single test, while being non-significant otherwise. This can be seen in Table \ref{number.sig.tests}. It displays the percentage of meta-analyses with a certain number of significant test results. Very few meta-analyses are give a significant result, independently of the test applied. Around 67\% of the dataset is not significant, no matter which test is used. \\
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 14:07:42 2019
+% Wed Aug 28 09:15:48 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1379,7 +1379,7 @@ The precise proportions of agreement in significance/non-significance are provid
 Linear regression based tests agree more often with other linear regression based tests, and agreement between small study effect tests is in general well above 60 \% (at best, 95\% test agreement in significance for \texttt{IV} \texttt{outcome.flag}). The agreement on statistical significance between small study effect tests and excess significance tests ranges from 64\% to 4\% (for \texttt{IV} and rank tests). Note that these numbers are difficult to interpret because there are substantially less significant results of the excess significance tests, and thus, a agreement of 100\% still does not indicate perfect compatibility/replaceability of the tests.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 14:07:42 2019
+% Wed Aug 28 09:15:48 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1389,12 +1389,12 @@ Linear regression based tests agree more often with other linear regression base
   \hline
 Excess significance, Schwarzer & 0.85 & 0.27 \\ 
   Excess significance, Peter & 0.77 & 0.32 \\ 
-  Excess significance, Rucker & 0.79 & 0.43 \\ 
+  Excess significance, R\"ucker & 0.79 & 0.43 \\ 
   Excess significance, Harbord & 0.81 & 0.46 \\ 
   Peter, Schwarzer & 0.84 & 0.63 \\ 
-  Schwarzer, Rucker & 0.85 & 0.72 \\ 
+  Schwarzer, R\"ucker & 0.85 & 0.72 \\ 
   Schwarzer, Harbord & 0.87 & 0.78 \\ 
-  Rucker, Peter & 0.88 & 0.67 \\ 
+  R\"ucker, Peter & 0.88 & 0.67 \\ 
   Harbord, Peter & 0.87 & 0.63 \\ 
   Excess significance, Egger & 0.77 & 0.64 \\ 
   Excess significance, Thompson & 0.80 & 0.59 \\ 
@@ -1457,7 +1457,11 @@ Additionally, some meta-analyses with positively adjusted, larger overall treatm
 
 \begin{figure}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## [1] 5.1 6.0 4.1 2.1
+\end{verbatim}
+\end{kframe}
 
 {\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-20-1} 
 
@@ -1490,7 +1494,7 @@ Table \ref{adjustment.difference} shows quantiles and means for the various diff
 \end{figure}
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 14:07:57 2019
+% Wed Aug 28 09:16:02 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1520,7 +1524,7 @@ $z$: Fixed - Copas & -0.05 & -0.01 & 0.00 & 0.01 & 0.05 & 0.00 & 6.20 & 48.70 & 
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 14:07:57 2019
+% Wed Aug 28 09:16:02 2019
 \begin{table}[ht]
 \centering
 \begingroup\tiny
@@ -1613,7 +1617,7 @@ The Copas selection model also allows to compute the number of missing (\ie unpu
 We can see that in some occasions, the method finds more than half of all studies in a meta-analysis are missing. In most occasions, the estimate of missing studies is zero, as can be seen in Table \ref{copas.missing}, where both the absolute number of missing studies and the fraction of missing studies in a meta-analysis are given. The discrepancy between mean and median may indicate that the estimate of 11.4\% missing studies depends somewhat on these extreme cases. As can be written of from Table \ref{copas.missing}, 5\%, \ie 28 meta-analyses have 17.6 or more studies missing: in fact, these 5\% most extreme make up for 1,060, more than 30\% of all missing studies.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 13:57:11 2019
+% Wed Aug 28 09:16:04 2019
 \begin{table}[ht]
 \centering
 \begingroup\footnotesize
@@ -1642,26 +1646,17 @@ To test if publication bias in meta-analyses has changed over time and newer met
 
 where $j$ and $k$ are corresponding indexes for the meta-analysis and the review, and $y_i$ is the effect size and $x_i$ the standard error belonging to result $i$. Additionally, weights equal to the inverse of the standard errors are introduced. The framework allows to analyze all meta-analyses jointly, such that statistical power is increased.\\   
 First, it is investigated if the model fit improves if we allow for random slopes within a meta-analysis,. Then, we will introduce an interaction term between the year of review publication or the mean study publication year and publication bias. If the interaction term improves model fit, we will analyse the sign and the size of the interaction term, and otherwise state that no evidence could be found that publication bias in meta-analyses changed over the years. Because it is a exploratory analysis, the procedure is to first start with the simplest model and consecutively add more explanatory variables and check by means of the AIC, BIC and F-test if the fit of the model has improved. Fisher's $z$-score are and its standard error is used for analysis. One model will be fitted with review publication year and one with mean study publication year.\\
-The dependent variable is the effect size $z$. As before in Section \ref{sec:change.size}, the effect sizes are mirrored to one side by multiplying with the sign of the expected side of bias, \ie -1 or 1. Taking the absolute values might obscure cases where the sign of the effect size changes but its absolute value is equal.\\
-In a first step, the explanatory variable is the standard error, and the weights are the inverse of the variance of $z$. Additionally, random effects for the meta-analysis and for the review are added, the former being nested in the latter. Figure \ref{fig:smds} shows the complete dataset with the fit of the previously described model (dotted red line). The details and evidence for the small study effects in the mixed linear model are given in Table \ref{anova.small.study}, the coefficients in Table \ref{coefficients.small.study}:
+The dependent variable is the effect size $z$. As before in Section \ref{sec:change.size}, the effect sizes are mirrored to one side by multiplying with the sign of the expected side of bias, \ie \vspace{1mm}-1 or 1. Taking the absolute values might obscure cases where the sign of the effect size changes but its absolute value is equal.\\
+In a first step, the explanatory variable is the standard error, and the weights are the inverse of the variance of $z$. Additionally, random effects for the meta-analysis and for the review are added, the former being nested in the latter. The details and evidence for the small study effects in the mixed linear model are given in Table \ref{anova.small.study}, the coefficients in Table \ref{coefficients.small.study}:
 
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}
+% \begin{figure}
 
-{\centering \includegraphics[width=\textwidth-3cm]{figure/ch03_figunnamed-chunk-28-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{$z$-scores of all meta-analyses plotted against their standard error, with the fit of a mixed linear model (dotted red line).}
-\label{fig:smds}
-\end{figure}
+% \caption{$z$-scores of all meta-analyses plotted against their standard error, with the fit of a mixed linear model (dotted red line).}
+% \label{fig:smds}
+% \end{figure}
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 13:57:19 2019
+% Wed Aug 28 09:16:11 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1680,7 +1675,7 @@ null.fit &  1 & 4.0 & 1480.7 & 1512.6 & -736.4 &  &  &  \\
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 13:57:20 2019
+% Wed Aug 28 09:16:12 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1702,7 +1697,7 @@ It is possible to include meta-analysis specific random slopes. Before continuin
 To test if publication bias varies over time, we include the year of the publication of the review as an additional explanatory variable. Ultimately, it is of interest if there is an interaction between the small study effect (publication bias) and time of publication, i.e. if the slope varies depending on the year. Because such a model is nested in a more simpler model where the study year is only an additive effect, all these models are fitted. Table \ref{anova.lme} displays model fit diagnostics.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 13:57:23 2019
+% Wed Aug 28 09:16:15 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1724,7 +1719,7 @@ publication.bias.fit &  1 & 5.0 & 1306.2 & 1346.1 & -648.1 &  &  &  \\
 
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 13:57:25 2019
+% Wed Aug 28 09:16:17 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1746,7 +1741,7 @@ publication.bias.fit &  1 & 5.0 & 1306.2 & 1346.1 & -648.1 &  &  &  \\
 Because neither AIC, BIC nor the F-test do show any improvement of model fit, we can not reject the null hypothesis that publication bias has not decreased or increased over the years. The review publication year is however only one measure of time, and possibly imprecise. Thus, the models are re-fitted with the mean centered study publication year of a meta-analysis. The mean of the study years is 2000.3.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 13:57:28 2019
+% Wed Aug 28 09:16:20 2019
 \begin{table}[ht]
 \centering
 \begingroup\scriptsize
@@ -1761,11 +1756,11 @@ publication.bias.fit &  1 & 5.0 & 1404.0 & 1443.8 & -697.0 &  &  &  \\
 \end{tabular}
 \endgroup
 \caption{Anova table for three mixed linear model fits. 'Small study fit' denotes the model with the standard error as explanatory variable, 'study.year.fit' the model with standard error and the centered (- 2000) mean study year of the meta-analysis as explanatory variable, and 'study.year.int.fit' the model with interaction between the two.} 
-\label{anova.lme}
+\label{anova.lme.2}
 \end{table}
 
 
-The analysis of model fit indicates that there is no improvement when using the study year as a covariate. Thus, there is no evidence for a interaction between small study effects and mean study publication year
+The analysis of model fit in Table \ref{anova.lme.2} indicates that there is no improvement when using the study year as a covariate. Thus, there is no evidence for an interaction between small study effects and mean study publication year.
 
 
 % % # <<echo =FALSE, results='asis', warning=FALSE>>=
@@ -2011,7 +2006,7 @@ Therefore, we suggest that publication bias in meta-analyses of clinical trials 
 
 \chapter{Appendix}\label{ch:Appendix}
 
-\section{Comparison of Results with previous Studies}
+\section{Comparison of Results with Previous Studies}
 
 
 
@@ -2031,7 +2026,7 @@ Data processing steps were however different, and only binary outcomes as used i
 % The results seem to be similar enough to claim that neither the methods nor the data and it's results are differing substantially. Because the study relies on more data, it is likely to be more accurate and can possibly add to the findings of \citealp{Ioannidis2007}.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Aug 23 13:58:08 2019
+% Wed Aug 28 09:17:02 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrr}
@@ -2075,7 +2070,7 @@ The author's come to the conclusion in their study that in contrast to other stu
 
 
 
-\section{R Session information}
+\section{R Session Information}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.98, 0.98, 0.98}\color{fgcolor}\begin{kframe}
@@ -4035,7 +4030,7 @@ The author's come to the conclusion in their study that in contrast to other stu
 \cleardoublepage
 \phantomsection
 \addtocontents{toc}{\protect \vspace*{10mm}}
-\addcontentsline{toc}{chapter}{\bfseries Bibliography}
+\addcontentsline{toc}{chapter}{\bfseries Bibliography}  
 
 
 \bibliographystyle{mywiley} 

@@ -165,6 +165,11 @@ Higgins~JPT, G.~S. (2011).
 \newblock {\em Cochrane Handbook for Systematic Reviews of Interventions}.
 \newblock The Cochrane Collaboration.
 
+\bibitem[Ioannidis, 2005]{ioannidis.2005}
+Ioannidis, J.~P. (2005).
+\newblock Why most published research findings are false.
+\newblock {\em PLOS Medicine}, {\bf2},  124.
+
 \bibitem[Ioannidis and Trikalinos, 2007a]{Ioannidis2007}
 Ioannidis, J.~P. and Trikalinos, T.~A. (2007a).
 \newblock The appropriateness of asymmetry tests for publication bias in
@@ -175,11 +180,6 @@ Ioannidis, J.~P. and Trikalinos, T.~A. (2007a).
 Ioannidis, J.~P. and Trikalinos, T.~A. (2007b).
 \newblock An exploratory test for an excess of significant findings.
 \newblock {\em Clinical Trials}, {\bf4},  245--253.
-
-\bibitem[Ioannidis, 2005]{ioannidis.2005}
-Ioannidis, J. P.~A. (2005).
-\newblock Why most published research findings are false.
-\newblock {\em PLOS Medicine}, {\bf2},  124.
 
 \bibitem[Jones {\it et~al.}, 2013]{pb.clinicalscience.2013}
 Jones, C.~W., Handler, L., Crowell, K.~E., Keil, L.~G., Weaver, M.~A., and

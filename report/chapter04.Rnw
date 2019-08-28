@@ -160,9 +160,9 @@ agreement.sig.bin <- meta.bin %>% ungroup() %>% summarise(tes.d.schwarzer = sum(
 binary.tests.agreement <- rbind(agreement.bin, agreement.sig.bin)
 rownames(binary.tests.agreement) <- c("Agreement (overall)", "Agreement (significance)")
 colnames(binary.tests.agreement) <- c("Excess significance, Schwarzer", "Excess significance, Peter",
-                                      "Excess significance, Rucker", "Excess significance, Harbord",
-                                      "Peter, Schwarzer", "Schwarzer, Rucker", "Schwarzer, Harbord",
-                                      "Rucker, Peter", "Harbord, Peter")
+                                      "Excess significance, R\\\"ucker", "Excess significance, Harbord",
+                                      "Peter, Schwarzer", 'Schwarzer, R\\\"ucker', "Schwarzer, Harbord",
+                                      "R\\\"ucker, Peter", "Harbord, Peter")
 #--------------------------------------------------------------------------------------------------------------------#
 
 
@@ -260,7 +260,7 @@ dat_text <- data.frame(
   test.type   = c("pval1.harbord", "pval1.peter", "pval1.rucker", "pval1.rucker.linreg", "pval1.schwarzer", "pval1.d.tes"),
   i2f = factor(rep(0, times = 6)))
 
-labels <- c(pval1.harbord = "Harbord", pval1.peter = "Peter", pval1.rucker = "Rucker (Thompson)", pval1.rucker.linreg = "Rucker (Egger)", pval1.schwarzer = "Schwarzer", pval1.d.tes = "Excess significance")
+labels <- c(pval1.harbord = "Harbord", pval1.peter = "Peter", pval1.rucker = "Rücker (Thompson)", pval1.rucker.linreg = "Rücker (Egger)", pval1.schwarzer = "Schwarzer", pval1.d.tes = "Excess significance")
 
 p.dist.bin <- meta.bin %>% ungroup() %>% 
   select(i2f, pval1.harbord, pval1.peter, pval1.rucker, pval1.rucker.linreg, pval1.d.tes, pval1.schwarzer) %>% 
@@ -268,7 +268,7 @@ p.dist.bin <- meta.bin %>% ungroup() %>%
   ggplot(aes(x = p.value, fill = i2f)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
   facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
   geom_text(data = dat_text, mapping = aes(x = 0.5, y = 125, label = label), color = "black") + 
-  theme(strip.text.x = element_text(size=7)) + ggtitle("Binary Outcomes") + 
+  theme(strip.text.x = element_text(size=9)) + ggtitle("Binary Outcomes") + 
   theme(legend.position = "none")
 
 #--------------------------------------------------------------------------------------------------------------------#
@@ -286,7 +286,7 @@ p.dist.cont <- meta.cont %>% ungroup() %>%
   ggplot(aes(x = p.value, fill = i2f)) + geom_histogram(boundary = 0, binwidth = 0.1) + theme_bw() + 
   facet_wrap(~test.type, labeller = labeller(test.type = labels)) + 
   geom_text(data = dat_text, mapping = aes(x = 0.5, y = 60, label = label),  color = "black") + 
-  theme(strip.text.x = element_text(size=7)) + ggtitle("Continuous Outcomes") + 
+  theme(strip.text.x = element_text(size=9)) + ggtitle("Continuous Outcomes") + 
   theme(legend.position = "none")
 
 #--------------------------------------------------------------------------------------------------------------------#
@@ -305,7 +305,7 @@ p.dist.iv <- meta.iv %>% ungroup() %>%
   guides(fill=guide_legend(title=expression(paste(I^2, " Heterogeneity")))) + 
   geom_text(data = dat_text, mapping = aes(x = 0.5, y = 25, label = label),  color = "black")  + 
   scale_fill_discrete(labels = c("> 0", "= 0")) +
-  theme(strip.text.x = element_text(size=7)) + 
+  theme(strip.text.x = element_text(size=9)) + 
   ggtitle("IV Outcomes") 
 #--------------------------------------------------------------------------------------------------------------------#
 
@@ -318,7 +318,7 @@ p.dist.iv <- meta.iv %>% ungroup() %>%
 
 cor.data <- meta.f %>% select(stat.rucker, stat.harbord, stat.peter, stat.schwarzer, 
                              stat.egger, stat.thompson, stat.begg, I2)
-colnames(cor.data) <- c("Rucker", "Harbord", "Peter", "Schwarzer", "Egger", "Thompson",
+colnames(cor.data) <- c("Rücker", "Harbord", "Peter", "Schwarzer", "Egger", "Thompson",
                         "Begg", "I-squared")
 
 panel.pts.new <- function (x, y, corr = NULL, col.regions, cor.method, ...) 
@@ -391,7 +391,7 @@ harbord.rucker.plot <- meta.f %>%
   theme_bw() + theme(legend.position = "none") +
   scale_color_manual(labels = c("systematic error", "95 % confidence intervals"), 
                      values = c("red", "blue")) +
-  ggtitle(expression(paste("logit(", italic(p),"-value Harbord) - logit(", italic(p), "-value Rucker)" ))) + geom_smooth(method = "lm", col = "green")
+  ggtitle(expression(paste("logit(", italic(p),"-value Harbord) - logit(", italic(p), "-value Rücker)" ))) + geom_smooth(method = "lm", col = "green")
 #--------------------------------------------------------------------------------------------------------------------#
 
 harbord.excess.plot <- meta.f %>% 
@@ -513,7 +513,7 @@ harmonic.means <- round(harmonic.means*100, 1)
 
 
 
-The meta-analyses fulfilling the criteria from Chapter \ref{ch:dataset}, Section \ref{sec:Processing}, are analysed with one-sided publication bias tests and excess significance tests. The direction in which bias is expected is the one on which more significant results of primary studies are (two-sided $p$-value < 0.05). The tests are applied on the original effect size measures, since the journal editors and the researchers also base their decisions on them. Different tests are applied depending on the outcome being binary or continuous or if the data is only partially available (\texttt{outcome.flag} = \texttt{IV}).\\
+The meta-analyses fulfilling the criteria from Section \ref{sec:Processing}, are analysed with one-sided publication bias tests and excess significance tests. The direction in which bias is expected is the one on which more significant results of primary studies are (two-sided $p$-value < 0.05). The tests are applied on the original effect size measures, since the journal editors and the researchers also base their decisions on them. Different tests are applied depending on the outcome being binary or continuous or if the data is only partially available (\texttt{outcome.flag} = \texttt{IV}).\\
 Multiple tests are applied in order to compare their results. A histogram of $p$-values for each test will summarize the overall evidence against the null-hypothesis of no publication bias, as displayed in Figure \ref{fig:test}.\\
 The abbreviations in Figure \ref{fig:test}  are shortly explained with references to Chapter \ref{ch:methods}: \\
 ``Excess significance'' denotes the excess of significant $p$-values testing method from \citet{excess.significance}, see \ref{sec:excess.significance}. For continuous and \texttt{IV} outcomes, the names refer to: 
@@ -615,7 +615,7 @@ Linear regression based tests agree more often with other linear regression base
 
 <<echo = FALSE, results = 'asis'>>=
 print(xtable(test.agreement, align = "lcc", caption = "Overall proportion of agreement if publication bias is significant or non-significant, and if significant only. When comparing agreement if significant only, the proportion of the test with fewer significant results that is significant with another test as well is shown.",
-             label = "test.agreement"),, size = "scriptsize")
+             label = "test.agreement"), size = "scriptsize", sanitize.rownames.function = identity)
 @
 
 
@@ -1235,7 +1235,8 @@ grid.arrange(diff.z.fixef.reg, diff.z.ranef.reg, diff.d.fixef.reg, diff.d.ranef.
 
 \begin{figure}
 <<echo = FALSE, warning=FALSE, fig.height=5>>=
-par(mfrow = c(2,3), cex.lab = 1.5, cex.axis = 1.5, las = 1, mar = c(5.1,6,4.1,2.1),mgp=c(4,1,0))
+c(5.1,6,4.1,2.1)
+par(mfrow = c(2,3), cex.lab = 1.3, cex.axis = 1.5, las = 1, mar = c(5.1,6,4.1,2.1),mgp=c(4,1,0))
 example <- data.ext2 %>% filter(meta.id == 81244)
 funnel(limitmeta(metagen(TE = effect, se = se, studlab = study.name, sm = "MD", data = example)), col.adjust = "blue", col.line = "blue")
 funnel(limitmeta(metagen(TE = smd.pool, se = se.smd.pool, studlab = study.name, sm = "SMD", data = example)), col.adjust = "blue", col.line = "blue")
@@ -1345,11 +1346,11 @@ To test if publication bias in meta-analyses has changed over time and newer met
 
 where $j$ and $k$ are corresponding indexes for the meta-analysis and the review, and $y_i$ is the effect size and $x_i$ the standard error belonging to result $i$. Additionally, weights equal to the inverse of the standard errors are introduced. The framework allows to analyze all meta-analyses jointly, such that statistical power is increased.\\   
 First, it is investigated if the model fit improves if we allow for random slopes within a meta-analysis,. Then, we will introduce an interaction term between the year of review publication or the mean study publication year and publication bias. If the interaction term improves model fit, we will analyse the sign and the size of the interaction term, and otherwise state that no evidence could be found that publication bias in meta-analyses changed over the years. Because it is a exploratory analysis, the procedure is to first start with the simplest model and consecutively add more explanatory variables and check by means of the AIC, BIC and F-test if the fit of the model has improved. Fisher's $z$-score are and its standard error is used for analysis. One model will be fitted with review publication year and one with mean study publication year.\\
-The dependent variable is the effect size $z$. As before in Section \ref{sec:change.size}, the effect sizes are mirrored to one side by multiplying with the sign of the expected side of bias, \ie -1 or 1. Taking the absolute values might obscure cases where the sign of the effect size changes but its absolute value is equal.\\
-In a first step, the explanatory variable is the standard error, and the weights are the inverse of the variance of $z$. Additionally, random effects for the meta-analysis and for the review are added, the former being nested in the latter. Figure \ref{fig:smds} shows the complete dataset with the fit of the previously described model (dotted red line). The details and evidence for the small study effects in the mixed linear model are given in Table \ref{anova.small.study}, the coefficients in Table \ref{coefficients.small.study}:
+The dependent variable is the effect size $z$. As before in Section \ref{sec:change.size}, the effect sizes are mirrored to one side by multiplying with the sign of the expected side of bias, \ie \vspace{1mm}-1 or 1. Taking the absolute values might obscure cases where the sign of the effect size changes but its absolute value is equal.\\
+In a first step, the explanatory variable is the standard error, and the weights are the inverse of the variance of $z$. Additionally, random effects for the meta-analysis and for the review are added, the former being nested in the latter. The details and evidence for the small study effects in the mixed linear model are given in Table \ref{anova.small.study}, the coefficients in Table \ref{coefficients.small.study}:
 
-\begin{figure}
-<<echo = FALSE, message = FALSE, warning = FALSE, fig.height=4>>=
+% \begin{figure}
+<<echo = FALSE, message = FALSE, warning = FALSE>>=
 ##-------Prepare data--------#
 reg.dat <- data.ext2 %>% filter(meta.id %in% meta.id.vector) #Filter meta-analysis data
 
@@ -1406,9 +1407,9 @@ reg.dat <- reg.dat %>% ungroup() %>%
 study.number.review.model <- dim(reg.dat)[1]
 publication.bias.fit <- lme(fixed = z.mirrored ~ se.z.mirrored, random = list(~ 1 | id, ~ 1 | meta.id),
                        weights = ~ se.z.mirrored^2, method = "ML", data = reg.dat)
-plot(y = reg.dat$z.mirrored, x = reg.dat$se.z.mirrored, cex = .1, xlab = "standard error", ylab = "z mirrored", las = 1)
-publication.bias.fit.coef <- summary(publication.bias.fit)$coefficients$fixed
-abline(a = publication.bias.fit.coef, col = "red", lty = 2)
+# plot(y = reg.dat$z.mirrored, x = reg.dat$se.z.mirrored, cex = .1, xlab = "standard error", ylab = "z mirrored", las = 1)
+# publication.bias.fit.coef <- summary(publication.bias.fit)$coefficients$fixed
+# abline(a = publication.bias.fit.coef, col = "red", lty = 2)
 
 lmer.table <- function(model){
   sum <- summary(model)
@@ -1419,9 +1420,9 @@ lmer.table <- function(model){
   return(tb)
 }
 @
-\caption{$z$-scores of all meta-analyses plotted against their standard error, with the fit of a mixed linear model (dotted red line).}
-\label{fig:smds}
-\end{figure}
+% \caption{$z$-scores of all meta-analyses plotted against their standard error, with the fit of a mixed linear model (dotted red line).}
+% \label{fig:smds}
+% \end{figure}
 
 <<echo =FALSE, results='asis', warning=FALSE>>=
 null.fit <- lme(fixed = z.mirrored ~ 1, random = list(~ 1 | id, ~ 1 | meta.id),
@@ -1480,10 +1481,10 @@ study.year.int.fit <- lme(fixed = z.mirrored ~ se.z.mirrored * mean.study.year,
                     random = list(~ 1 | id, ~ 1 | meta.id),
                 weights = ~ se.z.mirrored^2, method = "ML", data = reg.dat)
 print(xtable(anova(publication.bias.fit, study.year.fit, study.year.int.fit)[,-1], caption = "Anova table for three mixed linear model fits. 'Small study fit' denotes the model with the standard error as explanatory variable, 'study.year.fit' the model with standard error and the centered (- 2000) mean study year of the meta-analysis as explanatory variable, and 'study.year.int.fit' the model with interaction between the two.",
-             label = "anova.lme", digits = c(1,1,1,1,1,1,1,1,6)), size = "scriptsize")
+             label = "anova.lme.2", digits = c(1,1,1,1,1,1,1,1,6)), size = "scriptsize")
 @
 
-The analysis of model fit indicates that there is no improvement when using the study year as a covariate. Thus, there is no evidence for a interaction between small study effects and mean study publication year
+The analysis of model fit in Table \ref{anova.lme.2} indicates that there is no improvement when using the study year as a covariate. Thus, there is no evidence for an interaction between small study effects and mean study publication year.
 
 
 % % # <<echo =FALSE, results='asis', warning=FALSE>>=

@@ -133,7 +133,7 @@ thesis to them.
 \cleardoublepage
 \phantomsection
 \addtocontents{toc}{\protect \vspace*{10mm}}
-\addcontentsline{toc}{chapter}{\bfseries Bibliography}
+\addcontentsline{toc}{chapter}{\bfseries Bibliography}  
 
 
 \bibliographystyle{mywiley} 
